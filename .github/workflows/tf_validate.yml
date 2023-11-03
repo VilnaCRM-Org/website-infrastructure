@@ -1,0 +1,23 @@
+name: lint
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: validate terraform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: terraform validate
+        uses: dflook/terraform-validate@v1
+        id: validate
+        with:
+          path: terraform
+
+      - name: Validate failed
+        if: ${{ failure() && steps.validate.outputs.failure-reason == 'validate-failed' }}
+        run: echo "terraform validate failed"

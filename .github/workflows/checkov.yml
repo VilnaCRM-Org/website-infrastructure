@@ -1,0 +1,19 @@
+name: security
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  checkov:
+    runs-on: ubuntu-latest
+    name: run checkov
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+
+      - name: Run Checkov action
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: terraform
