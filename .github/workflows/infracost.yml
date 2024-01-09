@@ -17,7 +17,6 @@ jobs:
 
     env:
       TF_ROOT: terraform/plan.json
-      INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
 
     steps:
       - name: Setup Infracost
@@ -35,6 +34,8 @@ jobs:
           infracost breakdown --path=${TF_ROOT} \
                               --format=json \
                               --out-file=/tmp/infracost-base.json
+        env:
+          INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
 
       - name: Checkout PR branch
         uses: actions/checkout@v3
