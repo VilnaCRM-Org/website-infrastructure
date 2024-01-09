@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "The AWS region where resources will be deployed"
   type        = string
-  default     = "us-east-1"  # You can set a default value or remove this line if you always want to pass this variable explicitly
+  default     = "us-east-1" # You can set a default value or remove this line if you always want to pass this variable explicitly
 }
 
 variable "site_domain" {
