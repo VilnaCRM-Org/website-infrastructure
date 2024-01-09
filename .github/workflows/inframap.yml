@@ -11,8 +11,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Create & commit diagram with PR
         uses: erzz/inframap-action@v1
         with:
-          plan-files: terraform/app/stacks/website/
+          plan-files: terraform
