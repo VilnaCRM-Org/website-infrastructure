@@ -8,6 +8,10 @@ jobs:
   inframap:
     name: create inframap diagram
     runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: eu-central-1
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
