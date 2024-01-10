@@ -2,15 +2,12 @@ name: docs
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
   inframap:
     name: create inframap diagram
     runs-on: ubuntu-latest
-
-    env:
-      AWS_REGION: eu-central-1
 
     steps:
       - name: Checkout
@@ -21,7 +18,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.TERRAFORM_PLAN_AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.TERRAFORM_PLAN_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{env.AWS_REGION}}
+          aws-region: ${{vars.AWS_REGION}}
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
@@ -31,7 +28,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.5.4"
+          terraform_version: '1.5.4'
 
       - name: Install gems
         run: gem install terraspace terraspace_plugin_aws
