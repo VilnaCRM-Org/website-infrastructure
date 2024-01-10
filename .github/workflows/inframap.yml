@@ -11,10 +11,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ruby-version: '3.1'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Install gems
+        run: gem install terraspace terraspace_plugin_aws
+
+      - name: Get terraspace plan
+        run: cd terraform && terraspace plan website --out "app.plan"
 
       - name: Create & commit diagram with PR
         uses: erzz/inframap-action@v1
         with:
-          plan-files: terraform
+          plan-files: terraform/app.plan
