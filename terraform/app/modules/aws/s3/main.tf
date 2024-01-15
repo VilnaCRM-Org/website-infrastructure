@@ -18,11 +18,6 @@ resource "aws_s3_bucket_policy" "bucket_policy_codepipeline_bucket" {
   policy = data.aws_iam_policy_document.bucket_policy_doc_codepipeline_bucket.json
 }
 
-resource "aws_s3_bucket_acl" "codepipeline_bucket_acl" {
-  bucket = aws_s3_bucket.codepipeline_bucket.id
-  acl    = "private"
-}
-
 resource "aws_s3_bucket_versioning" "codepipeline_bucket_versioning" {
   bucket = aws_s3_bucket.codepipeline_bucket.id
   versioning_configuration {
