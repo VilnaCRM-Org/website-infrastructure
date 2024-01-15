@@ -6,7 +6,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
   service_role   = var.role_arn
   encryption_key = var.kms_key_arn
   tags           = var.tags
-  
+
   artifacts {
     type = var.build_project_source
   }

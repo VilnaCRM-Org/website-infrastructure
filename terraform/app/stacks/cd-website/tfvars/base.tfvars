@@ -1,2 +1,2 @@
-project_name       = "vilnacrm-project"
-environment        = "production"
+project_name = "vilnacrm-project"
+environment  = "production"
