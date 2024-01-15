@@ -15,10 +15,8 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
     sid       = "Enable IAM User Permissions"
     effect    = "Allow"
     actions   = ["kms:*"]
-    #checkov:skip=CKV_AWS_111:Without this statement, KMS key cannot be managed by root
-    #checkov:skip=CKV_AWS_109:Without this statement, KMS key cannot be managed by root
+    #checkov:skip=CKV_AWS_356:Without this statement, KMS key cannot be managed by root
     resources = ["*"]
-
     principals {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${local.account_id}:root"]
