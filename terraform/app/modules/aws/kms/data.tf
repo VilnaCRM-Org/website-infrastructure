@@ -2,8 +2,9 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 data "aws_iam_policy_document" "kms_key_policy_doc" {
+  depends_on = [aws_kms_key.encryption_key]
   statement {
-    sid     = "Enable IAM User Permissions"
+    sid     = "EnableRootAccessAndPreventPermissionDelegation"
     effect  = "Allow"
     actions = ["kms:*"]
     #checkov:skip=CKV_AWS_356:Without this statement, KMS key cannot be managed by root
