@@ -3,20 +3,15 @@ module "s3_artifacts_bucket" {
   project_name          = var.project_name
   kms_key_arn           = module.codepipeline_kms.arn
   codepipeline_role_arn = module.codepipeline_iam_role.role_arn
-  tags = {
-    Project_Name = var.project_name
-    Environment  = var.environment
-  }
+
+  tags = var.tags
 }
 
 module "codepipeline_kms" {
   source                = "../../modules/aws/kms"
   codepipeline_role_arn = module.codepipeline_iam_role.role_arn
-  tags = {
-    Project_Name = var.project_name
-    Environment  = var.environment
-  }
 
+  tags = var.tags
 }
 
 module "codepipeline_iam_role" {
@@ -27,8 +22,6 @@ module "codepipeline_iam_role" {
   source_repository_name     = var.source_repo_name
   kms_key_arn                = module.codepipeline_kms.arn
   s3_bucket_arn              = module.s3_artifacts_bucket.arn
-  tags = {
-    Project_Name = var.project_name
-    Environment  = var.environment
-  }
+
+  tags = var.tags
 }
