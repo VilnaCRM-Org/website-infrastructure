@@ -13,9 +13,9 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
       identifiers = ["arn:aws:iam::${local.account_id}:root"]
     }
     condition {
-      test = "StringEquals"
+      test     = "StringEquals"
       variable = "aws:PrincipalType"
-      values = ["Account"]
+      values   = [var.kms_condition_account_value]
     }
   }
 
