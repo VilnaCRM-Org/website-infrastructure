@@ -3,13 +3,23 @@ variable "project_name" {
   type        = string
 }
 
+variable "source_repo_owner" {
+  description = "Source repo owner of the GitHub repository"
+  type        = string
+}
+
 variable "source_repo_name" {
-  description = "Source repo name of the CodeCommit repository"
+  description = "Source repo name of the GitHub repository"
   type        = string
 }
 
 variable "source_repo_branch" {
   description = "Default branch in the Source repo for which CodePipeline needs to be configured"
+  type        = string
+}
+
+variable "github_oauthtoken" {
+  description = "GitHub OAuthToken which CodePipeline needs to be set"
   type        = string
 }
 
