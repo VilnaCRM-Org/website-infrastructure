@@ -58,26 +58,6 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
   }
 
   statement {
-    sid = "AllowCodeCommitActions"
-    effect = "Allow"
-    actions = [
-      "codecommit:GitPull",
-      "codecommit:GitPush",
-      "codecommit:GetBranch",
-      "codecommit:CreateCommit",
-      "codecommit:ListRepositories",
-      "codecommit:BatchGetCommits",
-      "codecommit:BatchGetRepositories",
-      "codecommit:GetCommit",
-      "codecommit:GetRepository",
-      "codecommit:GetUploadArchiveStatus",
-      "codecommit:ListBranches",
-      "codecommit:UploadArchive"
-    ]
-    resources = ["arn:aws:codecommit:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:${var.source_repository_name}"]
-  }
-
-  statement {
     sid = "AllowCodeBuildActions"
     effect = "Allow"
     actions = [
