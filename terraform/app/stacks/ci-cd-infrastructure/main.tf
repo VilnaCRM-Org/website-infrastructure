@@ -36,8 +36,8 @@ module "codepipeline_terraform" {
   source_repo_name   = var.source_repo_name
   source_repo_branch = var.source_repo_branch
   github_oauthtoken  = var.github_oauthtoken
-  
-  stages                = var.stage_input
+
+  stages = var.stage_input
 
   s3_bucket_name        = module.s3_artifacts_bucket.bucket
   codepipeline_role_arn = module.codepipeline_iam_role.role_arn
