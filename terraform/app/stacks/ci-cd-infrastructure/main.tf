@@ -17,7 +17,7 @@ module "codepipeline_kms" {
 
 module "codestar_connection" {
   source       = "../../modules/aws/codestar"
-  project_name = var.project_name
+  github_connection_name = var.github_connection_name
 
   tags = var.tags
 }
@@ -43,7 +43,6 @@ module "codepipeline_terraform" {
   source_repo_owner  = var.source_repo_owner
   source_repo_name   = var.source_repo_name
   source_repo_branch = var.source_repo_branch
-  github_oauthtoken  = var.github_oauthtoken
 
   stages = var.stage_input
 

@@ -18,11 +18,6 @@ variable "source_repo_branch" {
   type        = string
 }
 
-variable "github_oauthtoken" {
-  description = "GitHub OAuthToken which CodePipeline needs to be set"
-  type        = string
-}
-
 variable "s3_bucket_name" {
   description = "S3 bucket name to be used for storing the artifacts"
   type        = string

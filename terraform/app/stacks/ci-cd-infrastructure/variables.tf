@@ -23,11 +23,10 @@ variable "source_repo_branch" {
   type        = string
 }
 
-variable "github_oauthtoken" {
-  description = "GitHub OAuthToken which CodePipeline needs to be set"
+variable "github_connection_name" {
+  description = "Name of the CodeStar connection"
   type        = string
 }
-
 
 variable "create_new_role" {
   description = "Whether to create a new IAM Role. Values are true or false. Defaulted to true always."
