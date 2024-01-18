@@ -19,18 +19,17 @@ resource "aws_codepipeline" "terraform_pipeline" {
     action {
       name             = "Download-Source"
       category         = "Source"
-      owner            = "ThirdParty"
-      provider         = "GitHub"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
       version          = "1"
       namespace        = "SourceVariables"
       output_artifacts = ["SourceOutput"]
       run_order        = 1
 
       configuration = {
-        Owner      = var.source_repo_owner
-        Repo       = var.source_repo_name
-        Branch     = var.source_repo_branch
-        OAuthToken = var.github_oauthtoken
+        ConnectionArn    = aws_codestarconnections_connection.github_connection.arn
+        FullRepositoryId = "${var.source_repo_owner}/${var.source_repo_name}"
+        BranchName       = var.source_repo_branch
       }
     }
   }
@@ -57,4 +56,9 @@ resource "aws_codepipeline" "terraform_pipeline" {
     }
   }
 
+}
+
+resource "aws_codestarconnections_connection" "github_connection" {
+  name          = "${var.project_name}-codestar-connection"
+  provider_type = "GitHub"
 }
