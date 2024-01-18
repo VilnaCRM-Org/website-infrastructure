@@ -54,6 +54,7 @@ module "codepipeline_terraform" {
   tags = var.tags
 
   depends_on = [
+    module.codestar_connection,
     module.codepipeline_iam_role,
     module.s3_artifacts_bucket
   ]
