@@ -41,6 +41,11 @@ variable "codepipeline_iam_role_name" {
   default     = "codepipeline-role"
 }
 
+variable "stage_input" {
+  description = "List of Map containing information about the stages of the CodePipeline"
+  type        = list(map(any))
+}
+
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)
