@@ -15,6 +15,13 @@ module "codepipeline_kms" {
   tags = var.tags
 }
 
+module "codestar_connection" {
+  source       = "../../modules/aws/codestar"
+  project_name = var.project_name
+
+  tags = var.tags
+}
+
 module "codepipeline_iam_role" {
   source = "../../modules/aws/iam-role"
 
@@ -22,8 +29,9 @@ module "codepipeline_iam_role" {
   create_new_role            = var.create_new_role
   codepipeline_iam_role_name = var.create_new_role == true ? "${var.project_name}-codepipeline-role" : var.codepipeline_iam_role_name
 
-  kms_key_arn   = module.codepipeline_kms.arn
-  s3_bucket_arn = module.s3_artifacts_bucket.arn
+  kms_key_arn             = module.codepipeline_kms.arn
+  s3_bucket_arn           = module.s3_artifacts_bucket.arn
+  codestar_connection_arn = module.codestar_connection.arn
 
   tags = var.tags
 }
@@ -39,14 +47,15 @@ module "codepipeline_terraform" {
 
   stages = var.stage_input
 
-  s3_bucket_name        = module.s3_artifacts_bucket.bucket
-  codepipeline_role_arn = module.codepipeline_iam_role.role_arn
-  kms_key_arn           = module.codepipeline_kms.arn
+  s3_bucket_name          = module.s3_artifacts_bucket.bucket
+  codepipeline_role_arn   = module.codepipeline_iam_role.role_arn
+  kms_key_arn             = module.codepipeline_kms.arn
+  codestar_connection_arn = module.codestar_connection.arn
 
   tags = var.tags
 
   depends_on = [
-    //module.codebuild_terraform,
+    module.codepipeline_iam_role,
     module.s3_artifacts_bucket
   ]
 }

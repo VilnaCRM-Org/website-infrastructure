@@ -23,6 +23,11 @@ variable "s3_bucket_arn" {
   type        = string
 }
 
+variable "codestar_connection_arn" {
+  description = "The ARN of the CodeStar connection"
+  type        = string
+}
+
 variable "create_new_role" {
   type        = bool
   description = "Flag for deciding if a new role needs to be created"

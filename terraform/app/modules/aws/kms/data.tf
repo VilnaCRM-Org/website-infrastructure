@@ -12,11 +12,11 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${local.account_id}:root"]
     }
-    condition {
-      test     = "StringEquals"
-      variable = "aws:PrincipalType"
-      values   = [var.kms_condition_account_value]
-    }
+    # condition {
+    #   test     = "StringEquals"
+    #   variable = "aws:PrincipalType"
+    #   values   = [var.kms_condition_account_value]
+    # }
   }
 
   statement {

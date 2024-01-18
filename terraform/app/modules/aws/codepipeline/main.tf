@@ -27,7 +27,7 @@ resource "aws_codepipeline" "terraform_pipeline" {
       run_order        = 1
 
       configuration = {
-        ConnectionArn    = aws_codestarconnections_connection.github_connection.arn
+        ConnectionArn    = var.codestar_connection_arn
         FullRepositoryId = "${var.source_repo_owner}/${var.source_repo_name}"
         BranchName       = var.source_repo_branch
       }
@@ -55,10 +55,4 @@ resource "aws_codepipeline" "terraform_pipeline" {
       }
     }
   }
-
-}
-
-resource "aws_codestarconnections_connection" "github_connection" {
-  name          = "${var.project_name}-codestar-connection"
-  provider_type = "GitHub"
 }

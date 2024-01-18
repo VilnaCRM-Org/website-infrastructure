@@ -38,6 +38,11 @@ variable "kms_key_arn" {
   type        = string
 }
 
+variable "codestar_connection_arn" {
+  description = "The ARN of the CodeStar connection"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to be attached to the CodePipeline"
   type        = map(any)
