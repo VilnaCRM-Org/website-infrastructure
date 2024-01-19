@@ -19,7 +19,7 @@ phases:
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/${CODE_SRC_DIR}/terraform'
-      - 'terraform destroy --auto-approve'
+      - 'terraspace destroy --auto-approve'
 
 artifacts:
   files:

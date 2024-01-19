@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     CODE_SRC_DIR: '.'
-    SCRIPT_DIR: './templates/scripts'
+    SCRIPT_DIR: './aws/scripts'
     TF_VERSION: '1.6.6'
     ENVIRONMENT: 'dev'
     SKIPVALIDATIONFAILURE: 'Y'
@@ -11,7 +11,7 @@ env:
     ENABLE_TFFORMAT: 'Y'
     ENABLE_TFCHECKOV: 'Y'
     ENABLE_TFSEC: 'Y'
-    TFSEC_VERSION: 'v1.28.1'
+    TFSEC_VERSION: 'v1.28.5'
 
 phases:
   install:
@@ -35,8 +35,6 @@ phases:
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/${CODE_SRC_DIR}/terraform'
-      - 'echo ## TERRAFORM INIT : Initialize the Terraform Workspace'
-      - 'terraform init'
       - 'echo ## VALIDATION : Starting ...'
       - 'mkdir -p ${CODEBUILD_SRC_DIR}/reports'
       - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/tf_ssp_validation.sh ${SKIPVALIDATIONFAILURE} ${ENABLE_TFVALIDATE} ${ENABLE_TFFORMAT} ${ENABLE_TFCHECKOV} ${ENABLE_TFSEC}'

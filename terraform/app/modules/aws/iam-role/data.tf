@@ -76,9 +76,10 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
   }
   statement {
     sid    = "AllowUseOfCodeStarConnection"
-    effect    = "Allow"
-    actions   = [ "codestar-connections:UseConnection" ]
-    resources = [ "${var.codestar_connection_arn}" ]
+    effect = "Allow"
+    actions = ["codestar-connections:UseConnection",
+    "codestar-connections:PassConnection"]
+    resources = ["${var.codestar_connection_arn}"]
   }
 
   statement {

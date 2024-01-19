@@ -16,7 +16,7 @@ echo "------------------------"
 terraform init
 if ((${tfValidate} == "Y")); then
     echo "## VALIDATION : Validating Terraform code ..."
-    terraform validate
+    terraspace validate
 fi
 tfValidateOutput=$?
 
