@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "codebuild:CreateReportGroup",
       "codebuild:CreateReport",
       "codebuild:UpdateReport",
-      "codebuild:BatchPutTestCases"
+      "codebuild:BatchPutTestCases",
     ]
     resources = [
       "arn:aws:codebuild:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:project/${var.project_name}*",
@@ -77,9 +77,25 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
   statement {
     sid    = "AllowUseOfCodeStarConnection"
     effect = "Allow"
-    actions = ["codestar-connections:UseConnection",
-    "codestar-connections:PassConnection"]
+    actions = [
+      "codestar-connections:UseConnection",
+      "codestar-connections:PassConnection"
+    ]
     resources = ["${var.codestar_connection_arn}"]
+  }
+
+  statement {
+    sid    = "AllowCodeCommitActions"
+    effect = "Allow"
+    actions = [
+      "codecommit:GitPull",
+      "codecommit:GetRepository",
+      "codecommit:GetCommit",
+      "codecommit:GetRepository",
+      "codecommit:GetUploadArchiveStatus",
+      "codecommit:GetBranch"
+    ]
+    resources = ["*"]
   }
 
   statement {
