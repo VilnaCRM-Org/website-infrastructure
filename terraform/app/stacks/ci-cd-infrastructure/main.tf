@@ -18,6 +18,7 @@ module "s3_artifacts_bucket" {
 module "codepipeline_kms" {
   source                = "../../modules/aws/kms"
   codepipeline_role_arn = module.codepipeline_iam_role.role_arn
+  kms_condition_account_value = var.kms_condition_account_value
 
   tags = var.tags
 }

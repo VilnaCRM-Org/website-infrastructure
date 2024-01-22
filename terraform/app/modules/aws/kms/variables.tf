@@ -11,5 +11,4 @@ variable "codepipeline_role_arn" {
 variable "kms_condition_account_value" {
   description = "Value for sid EnableRootAccessAndPreventPermissionDelegation condition"
   type        = string
-  default     = "Account"
 }

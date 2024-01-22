@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
     # condition {
     #   test     = "StringEquals"
     #   variable = "aws:PrincipalType"
-    #   values   = [var.kms_condition_account_value]
+    #   values   = [ "${var.kms_condition_account_value}" ]
     # }
   }
 
@@ -27,9 +27,7 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
 
     principals {
       type = "AWS"
-      identifiers = [
-        var.codepipeline_role_arn
-      ]
+      identifiers = [ "${var.codepipeline_role_arn}" ]
     }
   }
 
@@ -47,9 +45,7 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
 
     principals {
       type = "AWS"
-      identifiers = [
-        var.codepipeline_role_arn
-      ]
+      identifiers = [ "${var.codepipeline_role_arn}" ]
     }
   }
 
@@ -65,9 +61,7 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
 
     principals {
       type = "AWS"
-      identifiers = [
-        var.codepipeline_role_arn
-      ]
+      identifiers = [ "${var.codepipeline_role_arn}" ]
     }
 
     condition {

@@ -8,6 +8,11 @@ variable "environment" {
   type        = string
 }
 
+variable "kms_condition_account_value" {
+  description = "Value for sid EnableRootAccessAndPreventPermissionDelegation condition"
+  type        = string
+}
+
 variable "source_repo_owner" {
   description = "Source repo owner of the GitHub repository"
   type        = string

@@ -4,6 +4,7 @@ source_repo_owner      = "VilnaCRM-Org"
 source_repo_name       = "website-infrastructure"
 source_repo_branch     = "main"
 github_connection_name = "github-connect"
+kms_condition_account_value = "Account"
 tags = {
   Project     = "vilnacrm-project"
   Environment = "production"
