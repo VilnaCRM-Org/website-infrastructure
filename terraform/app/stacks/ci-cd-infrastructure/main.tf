@@ -1,3 +1,10 @@
+module "codestar_connection" {
+  source       = "../../modules/aws/codestar"
+  github_connection_name = var.github_connection_name
+
+  tags = var.tags
+}
+
 module "s3_artifacts_bucket" {
   source       = "../../modules/aws/s3"
   project_name = var.project_name
@@ -11,13 +18,6 @@ module "s3_artifacts_bucket" {
 module "codepipeline_kms" {
   source                = "../../modules/aws/kms"
   codepipeline_role_arn = module.codepipeline_iam_role.role_arn
-
-  tags = var.tags
-}
-
-module "codestar_connection" {
-  source       = "../../modules/aws/codestar"
-  github_connection_name = var.github_connection_name
 
   tags = var.tags
 }
@@ -53,8 +53,10 @@ module "codebuild_terraform" {
   tags = var.tags
 
   depends_on = [
-    module.codestar_connection,
-    module.codepipeline_iam_role
+    module.s3_artifacts_bucket,
+    module.codepipeline_iam_role,
+    module.codepipeline_kms,
+    module.codestar_connection
   ]
 }
 
@@ -75,9 +77,5 @@ module "codepipeline_terraform" {
 
   tags = var.tags
 
-  depends_on = [
-    module.codebuild_terraform,
-    module.s3_artifacts_bucket,
-    module.codepipeline_iam_role
-  ]
+  depends_on = [module.codebuild_terraform, module.s3_artifacts_bucket,]
 }
