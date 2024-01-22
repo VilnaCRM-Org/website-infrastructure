@@ -8,8 +8,8 @@ env:
 phases:
   install:
     runtime-versions:
-      python: 3.12
-      ruby: 3.2
+      python: $PYTHON_VERSION
+      ruby: $RUBY_VERSION
     commands:
       - 'yum install -y yum-utils'
       - 'yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo'
