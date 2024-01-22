@@ -3,6 +3,16 @@ variable "project_name" {
   type        = string
 }
 
+variable "source_repo_owner" {
+  description = "Source repo owner of the GitHub repository"
+  type        = string
+}
+
+variable "source_repo_name" {
+  description = "Source repo name of the repository"
+  type        = string
+}
+
 variable "codepipeline_iam_role_name" {
   description = "Name of the IAM role to be used by the project"
   type        = string
