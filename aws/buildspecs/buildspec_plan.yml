@@ -24,3 +24,12 @@ phases:
 artifacts:
   files:
     - '**/*'
+
+cache:
+  paths:
+    - '/bin'
+    - '/usr/local/bin'
+    - '/root/.terraform'
+    - '/root/.cache'
+    - '/root/.gem'
+    - '/usr/local/bundle'
