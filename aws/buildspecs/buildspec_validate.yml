@@ -30,7 +30,7 @@ phases:
       - 'wget -q -O tfsec https://github.com/aquasecurity/tfsec/releases/download/${TFSEC_VERSION}/tfsec-linux-amd64'
       - 'chmod +x ./tfsec'
       - 'mv ./tfsec /usr/local/bin/tfsec'
-      - 'bundle install ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
+      - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
