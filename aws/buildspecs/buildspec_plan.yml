@@ -11,10 +11,9 @@ phases:
       python: 3.12
       ruby: 3.2
     commands:
-      - 'curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip'
-      - 'unzip -o terraform.zip'
-      - 'mv terraform /bin'
-      - 'rm terraform.zip'
+      - 'yum install -y yum-utils'
+      - 'yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo'
+      - 'yum -y install terraform'
       - 'bundle install ${CODEBUILD_SRC_DIR}/${CODE_SRC_DIR}/terraform/Gemfile'
   build:
     commands:
