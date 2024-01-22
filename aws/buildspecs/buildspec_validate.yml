@@ -30,10 +30,10 @@ phases:
       - 'wget -q -O tfsec https://github.com/aquasecurity/tfsec/releases/download/${TFSEC_VERSION}/tfsec-linux-amd64'
       - 'chmod +x ./tfsec'
       - 'mv ./tfsec /usr/local/bin/tfsec'
-      - 'bundle install ${CODEBUILD_SRC_DIR}/${CODE_SRC_DIR}/terraform/Gemfile'
+      - 'bundle install ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}/${CODE_SRC_DIR}/terraform'
+      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## VALIDATION : Starting ...'
       - 'mkdir -p ${CODEBUILD_SRC_DIR}/reports'
       - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/tf_ssp_validation.sh ${SKIPVALIDATIONFAILURE} ${ENABLE_TFVALIDATE} ${ENABLE_TFFORMAT} ${ENABLE_TFCHECKOV} ${ENABLE_TFSEC}'
