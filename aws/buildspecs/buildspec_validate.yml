@@ -16,8 +16,8 @@ env:
 phases:
   install:
     runtime-versions:
-      python: 3.9
-      golang: 1.14
+      python: 3.12
+      golang: 1.21
       ruby: 3.2
     commands:
       - 'curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip'

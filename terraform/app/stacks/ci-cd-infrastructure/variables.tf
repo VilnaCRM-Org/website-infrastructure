@@ -64,7 +64,7 @@ variable "builder_compute_type" {
 variable "builder_image" {
   description = "Docker Image to be used by codebuild"
   type        = string
-  default     = "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
+  default     = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
 }
 
 variable "builder_type" {
@@ -80,7 +80,7 @@ variable "builder_image_pull_credentials_type" {
 }
 
 variable "build_project_source" {
-  description = "aws/codebuild/standard:4.0"
+  description = "Source for build project"
   type        = string
   default     = "CODEPIPELINE"
 }
