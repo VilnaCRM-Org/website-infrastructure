@@ -23,8 +23,8 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
     }
   }
   source {
-    type      = var.build_project_source
-    buildspec = "./aws/buildspecs/buildspec_${var.build_projects[count.index]}.yml"
+    type            = var.build_project_source
+    buildspec       = "./aws/buildspecs/buildspec_${var.build_projects[count.index]}.yml"
     git_clone_depth = 1
   }
 }

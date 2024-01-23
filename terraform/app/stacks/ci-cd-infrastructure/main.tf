@@ -1,5 +1,5 @@
 module "codestar_connection" {
-  source       = "../../modules/aws/codestar"
+  source                 = "../../modules/aws/codestar"
   github_connection_name = var.github_connection_name
 
   tags = var.tags
@@ -16,8 +16,8 @@ module "s3_artifacts_bucket" {
 }
 
 module "codepipeline_kms" {
-  source                = "../../modules/aws/kms"
-  codepipeline_role_arn = module.codepipeline_iam_role.role_arn
+  source                      = "../../modules/aws/kms"
+  codepipeline_role_arn       = module.codepipeline_iam_role.role_arn
   kms_condition_account_value = var.kms_condition_account_value
 
   tags = var.tags
@@ -30,8 +30,8 @@ module "codepipeline_iam_role" {
   create_new_role            = var.create_new_role
   codepipeline_iam_role_name = var.create_new_role == true ? "${var.project_name}-codepipeline-role" : var.codepipeline_iam_role_name
 
-  source_repo_owner  = var.source_repo_owner
-  source_repo_name   = var.source_repo_name
+  source_repo_owner = var.source_repo_owner
+  source_repo_name  = var.source_repo_name
 
   kms_key_arn             = module.codepipeline_kms.arn
   s3_bucket_arn           = module.s3_artifacts_bucket.arn
@@ -53,7 +53,7 @@ module "codebuild_terraform" {
   builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
   builder_type                        = var.builder_type
   kms_key_arn                         = module.codepipeline_kms.arn
-  
+
   tags = var.tags
 
   depends_on = [
@@ -81,13 +81,13 @@ module "codepipeline_terraform" {
 
   tags = var.tags
 
-  depends_on = [module.codebuild_terraform, module.s3_artifacts_bucket,]
+  depends_on = [module.codebuild_terraform, module.s3_artifacts_bucket, ]
 }
 
 resource "null_resource" "restart_codepipeline" {
   triggers = {
     always_run = "${timestamp()}"
-  } 
+  }
   provisioner "local-exec" {
     command = "aws codepipeline start-pipeline-execution --name ${var.project_name}-pipeline"
   }

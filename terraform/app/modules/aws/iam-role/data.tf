@@ -83,9 +83,9 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     resources = ["${var.codestar_connection_arn}"]
 
     condition {
-      test = "ForAllValues:StringEquals"
+      test     = "ForAllValues:StringEquals"
       variable = "codestar-connections:FullRepositoryId"
-      values = ["${var.source_repo_owner}/${var.source_repo_name}"]
+      values   = ["${var.source_repo_owner}/${var.source_repo_name}"]
     }
   }
 

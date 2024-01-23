@@ -1,9 +1,9 @@
-project_name           = "vilnacrm-project"
-environment            = "production"
-source_repo_owner      = "VilnaCRM-Org"
-source_repo_name       = "website-infrastructure"
-source_repo_branch     = "2-set-up-the-frontend-production-infrastructure"
-github_connection_name = "github-connect"
+project_name                = "vilnacrm-project"
+environment                 = "production"
+source_repo_owner           = "VilnaCRM-Org"
+source_repo_name            = "website-infrastructure"
+source_repo_branch          = "2-set-up-the-frontend-production-infrastructure"
+github_connection_name      = "github-connect"
 kms_condition_account_value = "Account"
 tags = {
   Project     = "vilnacrm-project"
@@ -17,8 +17,8 @@ stage_input = [
   { name = "down", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "UpOutput", output_artifacts = "DownOutput" }
 ]
 build_projects = [
-  "validate", 
-  "plan", 
-  "up", 
+  "validate",
+  "plan",
+  "up",
   "down"
-  ]
+]
