@@ -81,7 +81,18 @@ module "codepipeline_terraform" {
 
   tags = var.tags
 
-  depends_on = [module.codebuild_terraform, module.s3_artifacts_bucket, ]
+  depends_on = [module.codebuild_terraform, module.s3_artifacts_bucket]
+}
+
+module "codepipeline_trigger_user" {
+  source = "../../modules/aws/iam-user"
+
+  project_name               = var.project_name
+  codepipeline_terraform_arn = module.codepipeline_terraform.arn
+
+  tags = var.tags
+
+  depends_on = [module.codepipeline_terraform]
 }
 
 resource "null_resource" "restart_codepipeline" {
@@ -91,5 +102,5 @@ resource "null_resource" "restart_codepipeline" {
   provisioner "local-exec" {
     command = "aws codepipeline start-pipeline-execution --name ${var.project_name}-pipeline"
   }
-  depends_on = [module.codepipeline_terraform]
+  depends_on = [module.codepipeline_trigger_user]
 }
