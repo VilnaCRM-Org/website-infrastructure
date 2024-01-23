@@ -48,8 +48,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "example" {
   bucket = aws_s3_bucket.codepipeline_bucket.id
 
   rule {
-    id = "lifecycle_enabled"
-
+    id     = "Delete old incomplete multi-part uploads"
     status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
   }
 }
