@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
     effect    = "Allow"
     actions   = ["kms:*"]
     resources = ["*"]
-
+    #checkov:skip=CKV_AWS_109:KMS key is limited by role
     principals {
       type        = "AWS"
       identifiers = ["${var.codepipeline_role_arn}"]
@@ -36,6 +36,7 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
       "kms:GenerateDataKey*",
       "kms:DescribeKey"
     ]
+    #checkov:skip=CKV_AWS_111:Without this statement, KMS key cannot work
     resources = ["*"]
 
     principals {

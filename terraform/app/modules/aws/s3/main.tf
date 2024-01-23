@@ -3,6 +3,7 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket_prefix = regex("[a-z0-9.-]+", lower(var.project_name))
   tags          = var.tags
   force_destroy = true
+  #checkov:skip=CKV_AWS_144: No usage of cross-region
 }
 
 resource "aws_s3_bucket_public_access_block" "codepipeline_bucket_access" {
@@ -40,4 +41,15 @@ resource "aws_s3_bucket_logging" "codepipeline_bucket_logging" {
   bucket        = aws_s3_bucket.codepipeline_bucket.id
   target_bucket = aws_s3_bucket.codepipeline_bucket.id
   target_prefix = "log/"
+}
+
+
+resource "aws_s3_bucket_lifecycle_configuration" "example" {
+  bucket = aws_s3_bucket.codepipeline_bucket.id
+
+  rule {
+    id = "lifecycle_enabled"
+
+    status = "Enabled"
+  }
 }

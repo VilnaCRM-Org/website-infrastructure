@@ -90,20 +90,6 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
   }
 
   statement {
-    sid    = "AllowCodeCommitActions"
-    effect = "Allow"
-    actions = [
-      "codecommit:GitPull",
-      "codecommit:GetRepository",
-      "codecommit:GetCommit",
-      "codecommit:GetRepository",
-      "codecommit:GetUploadArchiveStatus",
-      "codecommit:GetBranch"
-    ]
-    resources = ["*"]
-  }
-
-  statement {
     sid    = "AllowLogsActions"
     effect = "Allow"
     actions = [
