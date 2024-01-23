@@ -89,9 +89,6 @@ resource "null_resource" "restart_codepipeline" {
     always_run = "${timestamp()}"
   } 
   provisioner "local-exec" {
-    command = "sleep 2"
-  }
-  provisioner "local-exec" {
     command = "aws codepipeline start-pipeline-execution --name ${var.project_name}-pipeline"
   }
   depends_on = [module.codepipeline_terraform]
