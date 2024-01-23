@@ -19,8 +19,4 @@ resource "aws_iam_role_policy_attachment" "codepipeline_role_attach" {
   role       = aws_iam_role.codepipeline_role[0].name
   policy_arn = aws_iam_policy.codepipeline_policy[0].arn
   depends_on = [aws_iam_role.codepipeline_role, aws_iam_policy.codepipeline_policy]
-
-  provisioner "local-exec" {
-    command = "sleep 5"
-  }
 }

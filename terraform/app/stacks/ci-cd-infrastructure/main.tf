@@ -83,3 +83,13 @@ module "codepipeline_terraform" {
 
   depends_on = [module.codebuild_terraform, module.s3_artifacts_bucket,]
 }
+
+resource "null_resource" "restart_codepipeline" {
+  triggers = {
+    always_run = "${timestamp()}"
+  } 
+  provisioner "local-exec" {
+    command = "aws codepipeline start-pipeline-execution --name ${var.project_name}-pipeline"
+  }
+  depends_on = [module.codepipeline_terraform]
+}
