@@ -99,8 +99,8 @@ module "github_aws_secrets" {
   source = "../../modules/github/github-secret"
 
   repository_name   = "${var.source_repo_name}"
-  access_key        = "test-value"
-  secret_key        = "test-value"
+  access_key        = "${module.codepipeline_trigger_user.access_key}"
+  secret_key        = "${module.codepipeline_trigger_user.secret_key}"
   codepipeline_name = "${var.project_name}-pipeline"
 
   depends_on = [module.codepipeline_trigger_user]
