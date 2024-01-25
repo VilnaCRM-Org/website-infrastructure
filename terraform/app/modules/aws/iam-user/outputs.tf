@@ -3,5 +3,6 @@ output "access_key" {
 }
 
 output "secret_key" {
-  value = aws_iam_access_key.codepipeline_user_iam_access_key.encrypted_secret
+  value = aws_iam_access_key.codepipeline_user_iam_access_key.secret
+  sensitive = true
 }
