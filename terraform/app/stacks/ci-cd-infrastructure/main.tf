@@ -44,14 +44,15 @@ module "codebuild_terraform" {
   source = "../../modules/aws/codebuild"
 
   project_name                        = var.project_name
-  role_arn                            = module.codepipeline_iam_role.role_arn
-  s3_bucket_name                      = module.s3_artifacts_bucket.bucket
-  build_projects                      = var.build_projects
+  build_projects                      = local.build_project_to_create
   build_project_source                = var.build_project_source
   builder_compute_type                = var.builder_compute_type
   builder_image                       = var.builder_image
   builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
   builder_type                        = var.builder_type
+
+  s3_bucket_name                      = module.s3_artifacts_bucket.bucket
+  role_arn                            = module.codepipeline_iam_role.role_arn
   kms_key_arn                         = module.codepipeline_kms.arn
 
   tags = var.tags
@@ -72,7 +73,7 @@ module "codepipeline_terraform" {
   source_repo_name   = var.source_repo_name
   source_repo_branch = var.source_repo_branch
 
-  stages = var.stage_input
+  stages = local.stages_to_create
 
   s3_bucket_name          = module.s3_artifacts_bucket.bucket
   codepipeline_role_arn   = module.codepipeline_iam_role.role_arn
@@ -85,6 +86,8 @@ module "codepipeline_terraform" {
 }
 
 module "codepipeline_trigger_user" {
+  count = var.environment == "prod" ? 1 : 0
+
   source = "../../modules/aws/iam-user"
 
   project_name               = var.project_name
@@ -96,12 +99,14 @@ module "codepipeline_trigger_user" {
 }
 
 module "github_aws_secrets" {
+  count = var.environment == "prod" ? 1 : 0
+
   source = "../../modules/github/github-secret"
 
   repository_name   = var.source_repo_name
-  access_key        = module.codepipeline_trigger_user.access_key
-  secret_key        = module.codepipeline_trigger_user.secret_key
+  access_key        = module.codepipeline_trigger_user[0].access_key
+  secret_key        = module.codepipeline_trigger_user[0].secret_key
   codepipeline_name = "${var.project_name}-pipeline"
 
-  depends_on = [module.codepipeline_trigger_user]
+  depends_on = [module.codepipeline_terraform]
 }
