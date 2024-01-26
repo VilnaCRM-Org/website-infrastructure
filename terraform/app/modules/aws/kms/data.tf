@@ -15,11 +15,11 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
   }
 
   statement {
-    sid       = "Allow access for Key Administrators"
+    sid       = "AllowAccessForKeyAdministrators"
     effect    = "Allow"
     actions   = ["kms:*"]
-    resources = ["*"]
-    #checkov:skip=CKV_AWS_109:KMS key is limited by role
+    resources = ["${aws_kms_key.encryption_key.arn}"]
+
     principals {
       type        = "AWS"
       identifiers = ["${var.codepipeline_role_arn}"]
@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
   }
 
   statement {
-    sid    = "Allow use of the key"
+    sid    = "AllowUseOfTheKey"
     effect = "Allow"
     actions = [
       "kms:Encrypt",
@@ -36,8 +36,8 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
       "kms:GenerateDataKey*",
       "kms:DescribeKey"
     ]
-    #checkov:skip=CKV_AWS_111:Without this statement, KMS key cannot work
-    resources = ["*"]
+
+    resources = ["${aws_kms_key.encryption_key.arn}"]
 
     principals {
       type        = "AWS"
@@ -46,14 +46,14 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
   }
 
   statement {
-    sid    = "Allow attachment of persistent resources"
+    sid    = "AllowAttachmentOfPersistentResources"
     effect = "Allow"
     actions = [
       "kms:CreateGrant",
       "kms:ListGrants",
       "kms:RevokeGrant"
     ]
-    resources = ["*"]
+    resources = ["${aws_kms_key.encryption_key.arn}"]
 
     principals {
       type        = "AWS"
