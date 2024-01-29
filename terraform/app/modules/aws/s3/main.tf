@@ -43,8 +43,7 @@ resource "aws_s3_bucket_logging" "codepipeline_bucket_logging" {
   target_prefix = "log/"
 }
 
-
-resource "aws_s3_bucket_lifecycle_configuration" "example" {
+resource "aws_s3_bucket_lifecycle_configuration" "lifecycle_config" {
   bucket = aws_s3_bucket.codepipeline_bucket.id
 
   rule {
@@ -55,4 +54,27 @@ resource "aws_s3_bucket_lifecycle_configuration" "example" {
       days_after_initiation = 7
     }
   }
+}
+
+resource "aws_sns_topic" "bucket_notifications" {
+  name = "${var.project_name}-bucket-notifications"
+
+  tags = var.tags
+}
+
+resource "aws_sns_topic_policy" "bucket_notifications" {
+  arn    = aws_sns_topic.bucket_notifications.arn
+  policy = data.aws_iam_policy_document.bucket_topic_doc.json
+
+  depends_on = [aws_sns_topic.bucket_notifications]
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = aws_s3_bucket.codepipeline_bucket.id
+
+  topic {
+    topic_arn = aws_sns_topic.bucket_notifications.arn
+    events    = ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"]
+  }
+  depends_on = [aws_s3_bucket.codepipeline_bucket]
 }

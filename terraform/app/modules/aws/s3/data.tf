@@ -22,3 +22,23 @@ data "aws_iam_policy_document" "bucket_policy_doc_codepipeline_bucket" {
     ]
   }
 }
+
+data "aws_iam_policy_document" "bucket_topic_doc" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+
+    actions   = ["SNS:Publish"]
+    resources = ["${aws_sns_topic.bucket_notifications.arn}"]
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values   = [aws_s3_bucket.codepipeline_bucket.arn]
+    }
+  }
+}

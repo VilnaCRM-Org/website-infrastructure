@@ -51,9 +51,9 @@ module "codebuild_terraform" {
   builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
   builder_type                        = var.builder_type
 
-  s3_bucket_name                      = module.s3_artifacts_bucket.bucket
-  role_arn                            = module.codepipeline_iam_role.role_arn
-  kms_key_arn                         = module.codepipeline_kms.arn
+  s3_bucket_name = module.s3_artifacts_bucket.bucket
+  role_arn       = module.codepipeline_iam_role.role_arn
+  kms_key_arn    = module.codepipeline_kms.arn
 
   tags = var.tags
 
