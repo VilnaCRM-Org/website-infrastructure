@@ -61,7 +61,7 @@ resource "aws_sns_topic" "codepipeline_notifications" {
   name = "${var.project_name}-codepipeline-notifications"
 
   tags = var.tags
-  
+
   depends_on = [aws_codepipeline.terraform_pipeline]
 }
 
