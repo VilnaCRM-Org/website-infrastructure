@@ -85,13 +85,13 @@ variable "build_project_source" {
   default     = "CODEPIPELINE"
 }
 
-variable "slack_url" {
-  description = "Slack Hook for Notifications"
+variable "slack_workspace_id" {
+  description = "Slack Workspace ID for Notifications"
   type        = string
 }
 
-variable "slack_channel" {
-  description = "Slack Channel for Notifications"
+variable "slack_channel_id" {
+  description = "Slack Channel ID for Notifications"
   type        = string
 }
 

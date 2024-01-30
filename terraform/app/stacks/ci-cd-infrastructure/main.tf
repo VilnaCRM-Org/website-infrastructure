@@ -110,3 +110,16 @@ module "github_aws_secrets" {
 
   depends_on = [module.codepipeline_terraform]
 }
+
+module "chatbot" {
+  source = "../../modules/aws/chatbot"
+
+  project_name  = var.project_name
+  channel_id    = var.slack_channel_id
+  workspace_id  = var.slack_workspace_id
+  sns_topic_arn = module.codepipeline_terraform.sns_topic_arn
+
+  tags          = var.tags
+
+  depends_on = [module.codepipeline_terraform]
+}

@@ -56,3 +56,44 @@ resource "aws_codepipeline" "terraform_pipeline" {
     }
   }
 }
+
+resource "aws_sns_topic" "codepipeline_notifications" {
+  name = "${var.project_name}-codepipeline-notifications"
+
+  tags = var.tags
+  
+  depends_on = [aws_codepipeline.terraform_pipeline]
+}
+
+resource "aws_sns_topic_policy" "codepipeline_notifications" {
+  arn    = aws_sns_topic.codepipeline_notifications.arn
+  policy = data.aws_iam_policy_document.codepipeline_topic_doc.json
+
+  depends_on = [aws_sns_topic.codepipeline_notifications]
+}
+
+resource "aws_codestarnotifications_notification_rule" "codepipeline_rule" {
+  detail_type = "BASIC"
+  event_type_ids = [
+    "codepipeline-pipeline-pipeline-execution-failed",
+    "codepipeline-pipeline-pipeline-execution-canceled",
+    "codepipeline-pipeline-pipeline-execution-started",
+    "codepipeline-pipeline-pipeline-execution-resumed",
+    "codepipeline-pipeline-pipeline-execution-succeeded",
+    "codepipeline-pipeline-pipeline-execution-superseded",
+    "codepipeline-pipeline-stage-execution-started",
+    "codepipeline-pipeline-stage-execution-succeeded",
+    "codepipeline-pipeline-stage-execution-resumed",
+    "codepipeline-pipeline-stage-execution-canceled",
+    "codepipeline-pipeline-stage-execution-failed"
+  ]
+
+  name     = "${var.project_name}-notifications"
+  resource = aws_codepipeline.terraform_pipeline.arn
+
+  target {
+    address = aws_sns_topic.codepipeline_notifications.arn
+  }
+
+  tags = var.tags
+}

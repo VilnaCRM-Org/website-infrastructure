@@ -6,5 +6,5 @@ tags = {
   Environment = "prod"
 }
 
-slack_url = ""
-slack_channel = "#deployments"
+slack_workspace_id = ""
+slack_channel_id = ""

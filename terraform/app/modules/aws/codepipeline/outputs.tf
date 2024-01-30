@@ -13,3 +13,7 @@ output "arn" {
   description = "The arn of the CodePipeline"
 }
 
+output "sns_topic_arn" {
+  value       = aws_sns_topic.codepipeline_notifications.arn
+  description = "The SNS Topic Arn of the CodePipeline"
+}
