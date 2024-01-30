@@ -85,6 +85,16 @@ variable "build_project_source" {
   default     = "CODEPIPELINE"
 }
 
+variable "slack_url" {
+  description = "Slack Hook for Notifications"
+  type        = string
+}
+
+variable "slack_channel" {
+  description = "Slack Channel for Notifications"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)

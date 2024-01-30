@@ -5,3 +5,6 @@ tags = {
   Project     = "vilnacrm-project"
   Environment = "prod"
 }
+
+slack_url = ""
+slack_channel = "#deployments"
