@@ -53,6 +53,7 @@ module "codebuild_terraform" {
   builder_image                       = var.builder_image
   builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
   builder_type                        = var.builder_type
+  environment = var.environment
 
   s3_bucket_name = module.s3_artifacts_bucket.bucket
   role_arn       = module.codepipeline_iam_role.role_arn
@@ -115,6 +116,8 @@ module "github_aws_secrets" {
 }
 
 module "chatbot" {
+  count = local.create_test_env_slack_notification
+
   source = "../../modules/aws/chatbot"
 
   project_name  = var.project_name

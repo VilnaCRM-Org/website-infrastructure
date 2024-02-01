@@ -3,6 +3,11 @@ variable "project_name" {
   type        = string
 }
 
+variable "environment" {
+  description = "Environment for this project"
+  type        = string
+}
+
 variable "role_arn" {
   description = "Codepipeline IAM role arn. "
   type        = string

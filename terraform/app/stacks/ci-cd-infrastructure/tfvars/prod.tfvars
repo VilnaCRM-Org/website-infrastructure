@@ -1,10 +1,21 @@
-project_name           = "vilnacrm-project"
+project_name           = "website-prod"
 environment            = "prod"
 github_connection_name = "Github"
 tags = {
-  Project     = "vilnacrm-project"
+  Project     = "website-prod"
   Environment = "prod"
 }
 
 slack_workspace_id = ""
 slack_channel_id   = ""
+
+stage_input = [
+  { name = "validate", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "ValidateOutput" },
+  { name = "plan", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "ValidateOutput", output_artifacts = "PlanOutput" },
+  { name = "up", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "PlanOutput", output_artifacts = "UpOutput" }
+]
+build_projects = [
+  "validate",
+  "plan",
+  "up"
+]

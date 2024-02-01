@@ -4,5 +4,6 @@ locals {
 
   stages_to_create        = var.environment != "prod" ? var.stage_input : slice(var.stage_input, 0, length(var.stage_input) - 1)
   build_project_to_create = var.environment != "prod" ? var.build_projects : slice(var.build_projects, 0, length(var.build_projects) - 1)
+  create_test_env_slack_notification        = var.environment == "test" ? 0 : 1
 }
 
