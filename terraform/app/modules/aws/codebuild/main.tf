@@ -16,13 +16,15 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
     type                        = var.builder_type
     privileged_mode             = false
     image_pull_credentials_type = var.builder_image_pull_credentials_type
+
+    environment_variable {
+      name  = "TS_ENV"
+      value = var.environment == "dev" ? "test" : var.environment
+    }
   }
 
-  environment_variable {
-    name  = "TS_ENV"
-    value = var.environment
-  }
-  
+
+
   logs_config {
     cloudwatch_logs {
       status = "ENABLED"
