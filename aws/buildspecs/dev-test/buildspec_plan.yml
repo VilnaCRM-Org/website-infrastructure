@@ -21,7 +21,7 @@ phases:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
-      - 'terraspace all plan --out ":MOD_NAME.plan"'
+      - 'terraspace all plan --out "tf.plan"'
 
 artifacts:
   files:
