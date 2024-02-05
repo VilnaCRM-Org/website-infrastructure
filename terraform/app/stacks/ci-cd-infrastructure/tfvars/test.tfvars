@@ -1,9 +1,9 @@
-project_name           = "website-dev"
-environment            = "dev"
+project_name           = "website-test"
+environment            = "test"
 github_connection_name = "Github"
 tags = {
-  Project     = "website-dev"
-  Environment = "dev"
+  Project     = "website-test"
+  Environment = "test"
 }
 
 slack_workspace_id = ""

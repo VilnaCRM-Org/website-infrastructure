@@ -36,6 +36,9 @@ module "codepipeline_iam_role" {
   source_repo_owner = var.source_repo_owner
   source_repo_name  = var.source_repo_name
 
+  region      = var.region
+  environment = var.environment
+
   kms_key_arn             = module.codepipeline_kms.arn
   s3_bucket_arn           = module.s3_artifacts_bucket.arn
   codestar_connection_arn = module.codestar_connection.arn
@@ -47,7 +50,7 @@ module "codebuild_terraform" {
   source = "../../modules/aws/codebuild"
 
   project_name                        = var.project_name
-  build_projects                      = local.build_project_to_create
+  build_projects                      = var.build_projects
   build_project_source                = var.build_project_source
   builder_compute_type                = var.builder_compute_type
   builder_image                       = var.builder_image
@@ -77,7 +80,7 @@ module "codepipeline_terraform" {
   source_repo_name   = var.source_repo_name
   source_repo_branch = var.source_repo_branch
 
-  stages = local.stages_to_create
+  stages = var.stage_input
 
   s3_bucket_name          = module.s3_artifacts_bucket.bucket
   codepipeline_role_arn   = module.codepipeline_iam_role.role_arn

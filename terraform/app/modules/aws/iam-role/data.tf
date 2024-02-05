@@ -8,6 +8,10 @@ data "aws_iam_role" "existing_codepipeline_role" {
   name  = var.codepipeline_iam_role_name
 }
 
+data "aws_s3_bucket" "aws_s3_bucket_backend" {
+  bucket = "terraform-state-${data.aws_caller_identity.current.account_id}-${var.region}-${var.environment}"
+}
+
 data "aws_iam_policy_document" "codepipeline_role_document" {
   statement {
     sid     = "AllowAssumeRoleByCodePipeline"
@@ -41,7 +45,11 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "s3:PutObject",
       "s3:GetBucketVersioning"
     ]
-    resources = ["${var.s3_bucket_arn}/*", "${var.s3_bucket_arn}"]
+    resources = [
+      "${var.s3_bucket_arn}/*", 
+      "${var.s3_bucket_arn}", 
+      "${data.aws_s3_bucket.aws_s3_bucket_backend.arn}"
+    ]
   }
 
   statement {
@@ -74,6 +82,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "arn:aws:codebuild:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:report-group/${var.project_name}*"
     ]
   }
+  
   statement {
     sid    = "AllowUseOfCodeStarConnection"
     effect = "Allow"

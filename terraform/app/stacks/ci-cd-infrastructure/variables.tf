@@ -8,6 +8,11 @@ variable "environment" {
   type        = string
 }
 
+variable "region" {
+  description = "Region for this project"
+  type        = string
+}
+
 variable "kms_condition_account_value" {
   description = "Value for sid EnableRootAccessAndPreventPermissionDelegation condition"
   type        = string
