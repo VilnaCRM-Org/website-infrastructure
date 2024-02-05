@@ -41,15 +41,33 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     actions = [
       "s3:GetObject",
       "s3:GetObjectVersion",
+      "s3:GetBucketVersioning",
       "s3:PutObjectAcl",
-      "s3:PutObject",
-      "s3:GetBucketVersioning"
+      "s3:PutObject"  
     ]
     resources = [
       "${var.s3_bucket_arn}/*", 
       "${var.s3_bucket_arn}", 
-      "${data.aws_s3_bucket.aws_s3_bucket_backend.arn}"
+      "${data.aws_s3_bucket.aws_s3_bucket_backend.arn}",
+      "${data.aws_s3_bucket.aws_s3_bucket_backend.arn}/*"
     ]
+  }
+  statement {
+      
+    sid    = "AllowDynamoDB"
+    effect = "Allow"
+        actions = [
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:BatchGetItem",
+          "dynamodb:Query",
+          "dynamodb:Scan"
+        ]
+        resources = ["arn:aws:dynamodb:${var.region}:${data.aws_caller_identity.current.account_id}:table/terraform_locks"]
+      
   }
 
   statement {

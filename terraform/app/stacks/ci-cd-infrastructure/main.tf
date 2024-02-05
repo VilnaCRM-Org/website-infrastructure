@@ -11,6 +11,9 @@ module "s3_artifacts_bucket" {
 
   project_name = var.project_name
 
+  region      = var.region
+  environment = var.environment
+
   kms_key_arn           = module.codepipeline_kms.arn
   codepipeline_role_arn = module.codepipeline_iam_role.role_arn
 

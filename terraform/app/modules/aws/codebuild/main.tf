@@ -19,7 +19,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
 
     environment_variable {
       name  = "TS_ENV"
-      value = var.environment == "dev" ? "test" : var.environment
+      value = var.environment ==  var.environment
     }
   }
 
