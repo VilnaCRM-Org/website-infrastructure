@@ -13,15 +13,17 @@ phases:
       python: $PYTHON_VERSION
       ruby: $RUBY_VERSION
     commands:
-      - 'yum install -y yum-utils'
-      - 'yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo'
-      - 'yum -y install terraform'
-      - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
+      - 'cat ~/.aws/config'
+      - 'cat ~/.aws/credentials'
+      - 'aws s3 ls s3://terraform-state-891377212104-eu-central-1-test/'
+      # - 'yum install -y yum-utils'
+      # - 'yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo'
+      # - 'yum -y install terraform'
+      # - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
-      - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
-      - 'aws s3 ls s3://terraform-state-891377212104-eu-central-1-test/'
+      # - 'cd ${CODEBUILD_SRC_DIR}/terraform'
+      # - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
       - 'TF_LOG=DEBUG terraspace all plan --out "tf.plan"'
 
 artifacts:
