@@ -21,6 +21,7 @@ phases:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
+      - 'aws s3 ls s3://terraform-state-891377212104-eu-central-1-test/'
       - 'TF_LOG=DEBUG terraspace all plan --out "tf.plan"'
 
 artifacts:
