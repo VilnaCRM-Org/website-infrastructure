@@ -78,11 +78,3 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   }
   depends_on = [aws_s3_bucket.codepipeline_bucket]
 }
-
-resource "aws_s3_bucket_ownership_controls" "example" {
-  bucket = data.aws_s3_bucket.aws_s3_bucket_backend.id
-
-  rule {
-    object_ownership = "ObjectWriter"
-  }
-}

@@ -2,10 +2,6 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
-data "aws_s3_bucket" "aws_s3_bucket_backend" {
-  bucket = "terraform-state-${data.aws_caller_identity.current.account_id}-${var.region}-${var.environment}"
-}
-
 data "aws_iam_policy_document" "bucket_policy_doc_codepipeline_bucket" {
   statement {
     principals {
