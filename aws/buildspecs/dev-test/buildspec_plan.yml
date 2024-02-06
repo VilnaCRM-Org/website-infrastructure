@@ -16,6 +16,8 @@ phases:
       # - 'cat ~/.aws/config'
       # - 'cat ~/.aws/credentials'
       - 'aws configure list'
+      - 'aws configure list-profiles'
+      - 'aws configure export-credential'
       - 'export AWS_PROFILE=container-role'
       - 'aws s3 ls s3://terraform-state-891377212104-eu-central-1-test/'
       - 'yum install -y yum-utils'
