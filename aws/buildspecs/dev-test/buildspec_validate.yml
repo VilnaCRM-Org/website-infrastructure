@@ -56,12 +56,3 @@ reports:
     files:
       - './reports/tfsec-junit.xml'
     file-format: 'JUNITXML'
-
-cache:
-  paths:
-    - '/bin'
-    - '/usr/local/bin'
-    - '/root/.terraform'
-    - '/root/.cache'
-    - '/root/.gem'
-    - '/usr/local/bundle'
