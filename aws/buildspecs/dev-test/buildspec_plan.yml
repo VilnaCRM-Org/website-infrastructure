@@ -16,15 +16,16 @@ phases:
       # - 'cat ~/.aws/config'
       # - 'cat ~/.aws/credentials'
       - 'aws configure list'
+      - 'export AWS_PROFILE=container-role'
       - 'aws s3 ls s3://terraform-state-891377212104-eu-central-1-test/'
-      # - 'yum install -y yum-utils'
-      # - 'yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo'
-      # - 'yum -y install terraform'
-      # - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
+      - 'yum install -y yum-utils'
+      - 'yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo'
+      - 'yum -y install terraform'
+      - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
   build:
     commands:
-      # - 'cd ${CODEBUILD_SRC_DIR}/terraform'
-      # - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
+      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
+      - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
       - 'TF_LOG=DEBUG terraspace all plan --out "tf.plan"'
 
 artifacts:

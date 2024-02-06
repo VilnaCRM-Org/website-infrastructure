@@ -21,10 +21,10 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
       name  = "TS_ENV"
       value = var.environment
     }
-    environment_variable {
-      name  = "AWS_ROLE_ARN"
-      value = var.role_arn
-    }
+    # environment_variable {
+    #   name  = "AWS_ROLE_ARN"
+    #   value = var.role_arn
+    # }
   }
 
 
