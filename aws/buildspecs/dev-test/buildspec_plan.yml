@@ -25,6 +25,7 @@ phases:
       - 'mkdir ~/.aws/'
       - 'mv config ~/.aws/config'
       - 'mv credentials ~/.aws/credentials'
+      - 'export AWS_PROFILE=terraform'
       # - 'aws configure set aws_access_key_id $(aws secretsmanager get-secret-value --secret-id test/AWS/Website --query SecretString --output text | jq -r ".WEBSITE_AWS_ACCESS_KEY") --profile $AWS_PROFILE'
       # - 'aws configure set aws_secret_access_key $(aws secretsmanager get-secret-value --secret-id test/AWS/Website --query SecretString --output text | jq -r ".WEBSITE_AWS_SECRET_KEY") --profile $AWS_PROFILE'
       # - 'aws configure set default.region $AWS_DEFAULT_REGION --profile $AWS_PROFILE'
@@ -37,7 +38,7 @@ phases:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
-      - 'TF_LOG=DEBUG terraspace all plan --out "tf.plan"'
+      - 'terraspace all plan --out "tf.plan"'
 
 artifacts:
   files:
