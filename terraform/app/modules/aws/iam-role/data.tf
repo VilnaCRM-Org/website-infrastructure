@@ -76,6 +76,17 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       
   }
 
+    statement {
+      
+    sid    = "AllowSecretManager"
+    effect = "Allow"
+        actions = [
+          "secretsmanager:GetSecretValue"
+        ]
+        resources = ["arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.secretsmanager_secret_name}"]
+      
+  }
+
   statement {
     sid    = "AllowKMSActions"
     effect = "Allow"

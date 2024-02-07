@@ -50,6 +50,11 @@ variable "codepipeline_iam_role_name" {
   default     = "codepipeline-role"
 }
 
+variable "secretsmanager_secret_name" {
+  description = "Secrets Manager secret name for the codepipeline iam role"
+  type        = string
+}
+
 variable "stage_input" {
   description = "List of Map containing information about the stages of the CodePipeline"
   type        = list(map(any))

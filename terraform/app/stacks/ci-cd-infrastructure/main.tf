@@ -38,6 +38,7 @@ module "codepipeline_iam_role" {
 
   source_repo_owner = var.source_repo_owner
   source_repo_name  = var.source_repo_name
+  secretsmanager_secret_name = var.secretsmanager_secret_name
 
   region      = var.region
   environment = var.environment
@@ -59,7 +60,9 @@ module "codebuild_terraform" {
   builder_image                       = var.builder_image
   builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
   builder_type                        = var.builder_type
-  environment                         = var.environment
+  
+  region      = var.region
+  environment = var.environment
 
   s3_bucket_name = module.s3_artifacts_bucket.bucket
   role_arn       = module.codepipeline_iam_role.role_arn

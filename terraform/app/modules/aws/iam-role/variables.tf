@@ -53,3 +53,8 @@ variable "create_new_role" {
   description = "Flag for deciding if a new role needs to be created"
   default     = true
 }
+
+variable "secretsmanager_secret_name" {
+  description = "Secrets Manager secret name for the codepipeline"
+  type        = string
+}
