@@ -32,7 +32,8 @@ phases:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
-      - 'terraspace all plan --out "tf.plan"'
+      - 'terraspace plan website --out "website.plan"'
+      - 'terraspace plan ci-cd-infrastructure --out "ci-cd-infrastructure.plan"'
 
 artifacts:
   files:

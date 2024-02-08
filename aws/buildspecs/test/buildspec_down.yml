@@ -31,7 +31,8 @@ phases:
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
-      - 'terraspace all down -y'
+      - 'terraspace down website -y'
+      - 'terraspace down ci-cd-infrastructure -y'
 
 artifacts:
   files:
