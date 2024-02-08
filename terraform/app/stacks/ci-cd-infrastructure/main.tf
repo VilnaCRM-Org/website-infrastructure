@@ -129,7 +129,7 @@ module "github_aws_secrets" {
 
 module "chatbot" {
   count = local.create_slack_notification ? 1 : 0
-
+  
   source = "../../modules/aws/chatbot"
 
   project_name  = var.project_name
