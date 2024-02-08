@@ -25,6 +25,14 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
       name  = "AWS_DEFAULT_REGION"
       value = var.region
     }
+    environment_variable {
+      name  = "SLACK_WORKSPACE_ID"
+      value = var.slack_workspace_id
+    }
+    environment_variable {
+      name  = "SLACK_CHANNEL_ID"
+      value = var.slack_channel_id
+    }
   }
 
   logs_config {

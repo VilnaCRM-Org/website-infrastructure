@@ -6,9 +6,6 @@ tags = {
   Environment = "prod"
 }
 
-slack_workspace_id = ""
-slack_channel_id   = ""
-
 stage_input = [
   { name = "validate", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "ValidateOutput" },
   { name = "plan", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "ValidateOutput", output_artifacts = "PlanOutput" },

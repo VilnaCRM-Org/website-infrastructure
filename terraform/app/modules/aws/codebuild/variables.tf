@@ -63,3 +63,13 @@ variable "kms_key_arn" {
   description = "ARN of KMS key for encryption"
   type        = string
 }
+
+variable "slack_workspace_id" {
+  description = "Slack Workspace ID for Notifications"
+  type        = string
+}
+
+variable "slack_channel_id" {
+  description = "Slack Channel ID for Notifications"
+  type        = string
+}

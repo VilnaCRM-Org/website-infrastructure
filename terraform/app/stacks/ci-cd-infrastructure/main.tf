@@ -64,6 +64,9 @@ module "codebuild_terraform" {
   region      = var.region
   environment = var.environment
 
+  slack_workspace_id = var.slack_workspace_id
+  slack_channel_id = var.slack_channel_id
+
   s3_bucket_name = module.s3_artifacts_bucket.bucket
   role_arn       = module.codepipeline_iam_role.role_arn
   kms_key_arn    = module.codepipeline_kms.arn
@@ -125,7 +128,7 @@ module "github_aws_secrets" {
 }
 
 module "chatbot" {
-  count = local.create_test_env_slack_notification
+  count = local.create_slack_notification ? 1 : 0
 
   source = "../../modules/aws/chatbot"
 
