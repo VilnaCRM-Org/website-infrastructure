@@ -26,11 +26,11 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
       value = var.region
     }
     environment_variable {
-      name  = "SLACK_WORKSPACE_ID"
+      name  = "TF_VAR_slack_workspace_id"
       value = var.slack_workspace_id
     }
     environment_variable {
-      name  = "SLACK_CHANNEL_ID"
+      name  = "TF_VAR_slack_channel_id"
       value = var.slack_channel_id
     }
   }
