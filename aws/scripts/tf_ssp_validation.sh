@@ -13,7 +13,7 @@ echo "Terraform Format   : ${tfFormat}"
 echo "Terraform checkov  : ${tfCheckov}"
 echo "Terraform tfsec    : ${tfTfsec}"
 echo "------------------------"
-terraform init
+terraspace init
 if ((${tfValidate} == "Y")); then
     echo "## VALIDATION : Validating Terraform code ..."
     terraspace validate
