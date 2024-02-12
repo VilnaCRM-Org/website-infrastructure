@@ -24,8 +24,11 @@ phases:
       ruby: $RUBY_VERSION
     commands:
       - 'yum install -y yum-utils'
-      - 'yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo'
-      - 'yum -y install terraform'
+      - 'git clone https://github.com/tfutils/tfenv.git ~/.tfenv'
+      - 'echo `export PATH="$HOME/.tfenv/bin:$PATH"` >> ~/.bash_profile'
+      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
+      - 'tfenv install 1.5.5 '
+      - 'tfenv use 1.5.5'
       - 'yum update -y'
       - 'yum install -y jq awscli'
       - 'pip3 install checkov'

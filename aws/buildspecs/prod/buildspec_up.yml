@@ -13,15 +13,30 @@ phases:
       python: $PYTHON_VERSION
       ruby: $RUBY_VERSION
     commands:
+      - 'touch config'
+      - 'touch credentials'
+      - 'echo "[profile terraform]" > config'
+      - 'echo "region = ${AWS_DEFAULT_REGION}" >> config'
+      - 'echo "[terraform]" > credentials'
+      - 'echo "aws_access_key_id = $(aws secretsmanager get-secret-value --secret-id $SECRET_ID --query SecretString --output text | jq -r ".WEBSITE_AWS_ACCESS_KEY")" >> credentials'
+      - 'echo "aws_secret_access_key = $(aws secretsmanager get-secret-value --secret-id $SECRET_ID --query SecretString --output text | jq -r ".WEBSITE_AWS_SECRET_KEY")" >> credentials'
+      - 'mkdir ~/.aws/'
+      - 'mv config ~/.aws/config'
+      - 'mv credentials ~/.aws/credentials'
+      - 'export AWS_PROFILE=terraform'
       - 'yum install -y yum-utils'
-      - 'yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo'
-      - 'yum -y install terraform'
+      - 'git clone https://github.com/tfutils/tfenv.git ~/.tfenv'
+      - 'echo `export PATH="$HOME/.tfenv/bin:$PATH"` >> ~/.bash_profile'
+      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
+      - 'tfenv install 1.5.5 '
+      - 'tfenv use 1.5.5'
       - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## TERRAFORM APPLY : Starting with the Terraform Apply'
-      - 'terraspace up website --plan "tf.plan" -y'
+      - 'terraspace up website --plan "website.plan" -y'
+      - 'terraspace up ci-cd-infrastructure --plan "ci-cd-infrastructure.plan" -y'
 
 artifacts:
   files:

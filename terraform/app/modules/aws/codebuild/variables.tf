@@ -73,3 +73,8 @@ variable "slack_channel_id" {
   description = "Slack Channel ID for Notifications"
   type        = string
 }
+
+variable "secret_id" {
+  description = "Secret ID of Secret Manager"
+  type        = string
+}

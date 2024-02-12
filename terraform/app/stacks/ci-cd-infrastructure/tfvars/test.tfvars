@@ -1,6 +1,7 @@
 project_name           = "website-test"
 environment            = "test"
 github_connection_name = "Github"
+secret_id = "test/AWS/Website"
 tags = {
   Project     = "website-test"
   Environment = "test"

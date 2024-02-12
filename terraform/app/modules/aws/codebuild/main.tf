@@ -26,6 +26,10 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
       value = var.region
     }
     environment_variable {
+      name  = "SECRET_ID"
+      value = var.secret_id
+    }
+    environment_variable {
       name  = "TF_VAR_slack_workspace_id"
       value = var.slack_workspace_id
     }
