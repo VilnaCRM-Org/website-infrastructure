@@ -25,8 +25,11 @@ phases:
       - 'mv credentials ~/.aws/credentials'
       - 'export AWS_PROFILE=terraform'
       - 'yum install -y yum-utils'
-      - 'yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo'
-      - 'yum -y install terraform'
+      - 'git clone https://github.com/tfutils/tfenv.git ~/.tfenv'
+      - 'echo `export PATH="$HOME/.tfenv/bin:$PATH"` >> ~/.bash_profile'
+      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
+      - 'tfenv install 1.5.5 '
+      - 'tfenv use 1.5.5'
       - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
   build:
     commands:
