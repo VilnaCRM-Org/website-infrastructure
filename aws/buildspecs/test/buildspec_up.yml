@@ -35,8 +35,8 @@ phases:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## TERRAFORM APPLY : Starting with the Terraform Apply'
-      - 'terraspace up website --out "website.plan" -y'
-      - 'terraspace up ci-cd-infrastructure --out "ci-cd-infrastructure.plan" -y'
+      - 'terraspace up website --plan "website.plan" -y'
+      - 'terraspace up ci-cd-infrastructure --plan "ci-cd-infrastructure.plan" -y'
 
 artifacts:
   files:
