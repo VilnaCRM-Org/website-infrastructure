@@ -24,7 +24,7 @@ phases:
       ruby: $RUBY_VERSION
     commands:
       - 'yum install -y yum-utils'
-      - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/tf_ssp_validation.sh'
+      - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
       - 'yum update -y'
       - 'terraform -version'
       - 'yum install -y jq awscli'
