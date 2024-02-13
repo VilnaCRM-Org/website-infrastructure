@@ -24,11 +24,7 @@ phases:
       ruby: $RUBY_VERSION
     commands:
       - 'yum install -y yum-utils'
-      - 'git clone https://github.com/tfutils/tfenv.git ~/.tfenv'
-      - 'echo `export PATH="$HOME/.tfenv/bin:$PATH"` >> ~/.bash_profile'
-      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
-      - 'tfenv install 1.5.5 '
-      - 'tfenv use 1.5.5'
+      - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/tf_ssp_validation.sh'
       - 'yum update -y'
       - 'terraform -version'
       - 'yum install -y jq awscli'
