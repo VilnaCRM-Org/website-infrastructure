@@ -1,7 +1,7 @@
 project_name           = "website-prod"
 environment            = "prod"
 github_connection_name = "Github"
-secret_id = "prod/AWS/Website"
+secretsmanager_secret_name = "prod/AWS/Website"
 tags = {
   Project     = "website-prod"
   Environment = "prod"

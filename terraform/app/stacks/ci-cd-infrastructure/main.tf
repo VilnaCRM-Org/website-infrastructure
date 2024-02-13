@@ -67,7 +67,7 @@ module "codebuild_terraform" {
   slack_workspace_id = var.slack_workspace_id
   slack_channel_id = var.slack_channel_id
 
-  secret_id = var.secret_id
+  secretsmanager_secret_name = var.secretsmanager_secret_name
 
   s3_bucket_name = module.s3_artifacts_bucket.bucket
   role_arn       = module.codepipeline_iam_role.role_arn

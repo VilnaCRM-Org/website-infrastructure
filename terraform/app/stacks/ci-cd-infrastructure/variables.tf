@@ -105,11 +105,6 @@ variable "slack_channel_id" {
   type        = string
 }
 
-variable "secret_id" {
-  description = "Secret ID of Secret Manager"
-  type        = string
-}
-
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)
