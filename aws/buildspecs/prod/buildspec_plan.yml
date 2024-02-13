@@ -16,6 +16,7 @@ phases:
       - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
       - 'yum install -y yum-utils'
       - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
+      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
       - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
   build:
     commands:
