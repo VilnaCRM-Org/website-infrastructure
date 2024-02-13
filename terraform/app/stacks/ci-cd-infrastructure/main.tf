@@ -103,31 +103,6 @@ module "codepipeline_terraform" {
   depends_on = [module.codebuild_terraform, module.s3_artifacts_bucket]
 }
 
-module "codepipeline_trigger_user" {
-  count = var.environment == "prod" ? 1 : 0
-
-  source = "../../modules/aws/iam-user"
-
-  project_name               = var.project_name
-  codepipeline_terraform_arn = module.codepipeline_terraform.arn
-
-  tags = var.tags
-
-  depends_on = [module.codepipeline_terraform]
-}
-
-module "github_aws_secrets" {
-  count = var.environment == "prod" ? 1 : 0
-
-  source = "../../modules/github/github-secret"
-
-  repository_name   = var.source_repo_name
-  access_key        = module.codepipeline_trigger_user[0].access_key
-  secret_key        = module.codepipeline_trigger_user[0].secret_key
-  codepipeline_name = "${var.project_name}-pipeline"
-
-  depends_on = [module.codepipeline_terraform]
-}
 
 module "chatbot" {
   count = local.create_slack_notification ? 1 : 0
