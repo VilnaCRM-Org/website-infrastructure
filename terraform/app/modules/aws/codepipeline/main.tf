@@ -30,7 +30,7 @@ resource "aws_codepipeline" "terraform_pipeline" {
         ConnectionArn    = var.codestar_connection_arn
         FullRepositoryId = "${var.source_repo_owner}/${var.source_repo_name}"
         BranchName       = var.source_repo_branch
-        DetectChanges = "false"
+        DetectChanges = "true"
       }
     }
   }
