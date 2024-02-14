@@ -15,6 +15,7 @@ phases:
       ruby: $RUBY_VERSION
     commands:
       - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
+      - 'export AWS_PROFILE=terraform'
       - 'yum install -y yum-utils'
       - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
       - 'export PATH="$HOME/.tfenv/bin:$PATH"'
