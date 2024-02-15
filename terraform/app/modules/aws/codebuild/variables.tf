@@ -78,3 +78,8 @@ variable "secretsmanager_secret_name" {
   description = "Secret ID of Secret Manager"
   type        = string
 }
+
+variable "website_url" {
+  description = "URL of website for healthcheck"
+  type        = string
+}

@@ -13,3 +13,8 @@ variable "s3_bucket_name" {
   type        = string
   description = "The s3 bucket name to use for the static site"
 }
+
+variable "environment" {
+  type        = string
+  description = "Environment of the static site"
+}

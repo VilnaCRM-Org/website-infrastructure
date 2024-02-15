@@ -37,6 +37,11 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
       name  = "TF_VAR_slack_channel_id"
       value = var.slack_channel_id
     }
+    environment_variable {
+      name  = "WEBSITE_URL"
+      value = var.website_url
+    }
+    
   }
 
   logs_config {

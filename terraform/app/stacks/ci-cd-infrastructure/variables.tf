@@ -55,6 +55,11 @@ variable "secretsmanager_secret_name" {
   type        = string
 }
 
+variable "website_url" {
+  description = "URL of website for healthcheck"
+  type        = string
+}
+
 variable "stage_input" {
   description = "List of Map containing information about the stages of the CodePipeline"
   type        = list(map(any))

@@ -1,0 +1,16 @@
+version: 0.2
+
+env:
+  variables:
+    SCRIPT_DIR: './aws/scripts'
+
+phases:
+  build:
+    commands:
+      - 'echo ## Test Website Connection...'
+      - 'chmod +x ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/healthcheck.sh'
+      - '/bin/sh ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/healthcheck.sh ${WEBSITE_URL}'
+
+artifacts:
+  files:
+    - '**/*'

@@ -67,6 +67,8 @@ module "codebuild_terraform" {
   slack_workspace_id = var.slack_workspace_id
   slack_channel_id = var.slack_channel_id
 
+  website_url = var.website_url
+
   secretsmanager_secret_name = var.secretsmanager_secret_name
 
   s3_bucket_name = module.s3_artifacts_bucket.bucket
