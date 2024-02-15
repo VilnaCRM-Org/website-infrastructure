@@ -41,7 +41,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
       name  = "WEBSITE_URL"
       value = var.website_url
     }
-    
+
   }
 
   logs_config {

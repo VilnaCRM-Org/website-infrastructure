@@ -1,8 +1,8 @@
-project_name           = "website-test"
-environment            = "test"
-github_connection_name = "Github"
+project_name               = "website-test"
+environment                = "test"
+github_connection_name     = "Github"
 secretsmanager_secret_name = "test/AWS/Website"
-website_url    = "vilnacrmtest.com"
+website_url                = "vilnacrmtest.com"
 
 tags = {
   Project     = "website-test"

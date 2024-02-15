@@ -13,7 +13,7 @@ data "aws_s3_bucket" "aws_s3_bucket_backend" {
 }
 
 data "aws_secretsmanager_secret" "terraform_secret" {
-  name = "${var.secretsmanager_secret_name}"
+  name = var.secretsmanager_secret_name
 }
 
 data "aws_iam_policy_document" "codepipeline_role_document" {
@@ -49,45 +49,45 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "s3:GetBucketVersioning",
       "s3:PutObjectAcl",
       "s3:PutObject",
-      "s3:GetBucketObjectLockConfiguration", 
-      "s3:GetEncryptionConfiguration", 
-      "s3:GetLifecycleConfiguration", 
+      "s3:GetBucketObjectLockConfiguration",
+      "s3:GetEncryptionConfiguration",
+      "s3:GetLifecycleConfiguration",
       "s3:GetReplicationConfiguration"
     ]
     resources = [
-      "${var.s3_bucket_arn}/*", 
-      "${var.s3_bucket_arn}", 
+      "${var.s3_bucket_arn}/*",
+      "${var.s3_bucket_arn}",
       "${data.aws_s3_bucket.aws_s3_bucket_backend.arn}",
       "${data.aws_s3_bucket.aws_s3_bucket_backend.arn}/*"
     ]
   }
   statement {
-      
+
     sid    = "AllowDynamoDB"
     effect = "Allow"
-        actions = [
-          "dynamodb:PutItem",
-          "dynamodb:GetItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem",
-          "dynamodb:BatchWriteItem",
-          "dynamodb:BatchGetItem",
-          "dynamodb:Query",
-          "dynamodb:Scan",
-          "dynamodb:DescribeTable"
-        ]
-        resources = ["arn:aws:dynamodb:${var.region}:${data.aws_caller_identity.current.account_id}:table/terraform_locks"]
-      
+    actions = [
+      "dynamodb:PutItem",
+      "dynamodb:GetItem",
+      "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:BatchGetItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:DescribeTable"
+    ]
+    resources = ["arn:aws:dynamodb:${var.region}:${data.aws_caller_identity.current.account_id}:table/terraform_locks"]
+
   }
 
-    statement {
+  statement {
     sid    = "AllowSecretManager"
     effect = "Allow"
-        actions = [
-          "secretsmanager:GetSecretValue"
-        ]
-        resources = ["${data.aws_secretsmanager_secret.terraform_secret.arn}"]
-      
+    actions = [
+      "secretsmanager:GetSecretValue"
+    ]
+    resources = ["${data.aws_secretsmanager_secret.terraform_secret.arn}"]
+
   }
 
   statement {
@@ -120,7 +120,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "arn:aws:codebuild:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:report-group/${var.project_name}*"
     ]
   }
-  
+
   statement {
     sid    = "AllowUseOfCodeStarConnection"
     effect = "Allow"

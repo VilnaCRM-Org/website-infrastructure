@@ -36,8 +36,8 @@ module "codepipeline_iam_role" {
   create_new_role            = var.create_new_role
   codepipeline_iam_role_name = var.create_new_role == true ? "${var.project_name}-codepipeline-role" : var.codepipeline_iam_role_name
 
-  source_repo_owner = var.source_repo_owner
-  source_repo_name  = var.source_repo_name
+  source_repo_owner          = var.source_repo_owner
+  source_repo_name           = var.source_repo_name
   secretsmanager_secret_name = var.secretsmanager_secret_name
 
   region      = var.region
@@ -60,12 +60,12 @@ module "codebuild_terraform" {
   builder_image                       = var.builder_image
   builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
   builder_type                        = var.builder_type
-  
+
   region      = var.region
   environment = var.environment
 
   slack_workspace_id = var.slack_workspace_id
-  slack_channel_id = var.slack_channel_id
+  slack_channel_id   = var.slack_channel_id
 
   website_url = var.website_url
 
@@ -108,7 +108,7 @@ module "codepipeline_terraform" {
 
 module "chatbot" {
   count = local.create_slack_notification ? 1 : 0
-  
+
   source = "../../modules/aws/chatbot"
 
   project_name  = var.project_name

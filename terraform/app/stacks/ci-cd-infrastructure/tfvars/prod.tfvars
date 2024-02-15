@@ -1,8 +1,8 @@
-project_name           = "website-prod"
-environment            = "prod"
-github_connection_name = "Github"
+project_name               = "website-prod"
+environment                = "prod"
+github_connection_name     = "Github"
 secretsmanager_secret_name = "prod/AWS/Website"
-website_url    = "vilnacrm.com"
+website_url                = "vilnacrm.com"
 
 tags = {
   Project     = "website-prod"
