@@ -3,6 +3,11 @@ variable "project_name" {
   type        = string
 }
 
+variable "kms_key_arn" {
+  description = "ARN of KMS key for encryption"
+  type        = string
+}
+
 variable "channel_id" {
   description = "Channel ID of Slack"
   type        = string
