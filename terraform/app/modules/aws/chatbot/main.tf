@@ -7,12 +7,19 @@ resource "awscc_chatbot_slack_channel_configuration" "slack_channel_configuratio
 }
 
 resource "awscc_iam_role" "chatbot_role" {
-  role_name                   = "${var.project_name}-chatbot-channel-role"
-  assume_role_policy_document = data.aws_iam_policy_document.chatbot_role_assume_role_policy_doc.json
-  policies = [{
-    policy_document = data.aws_iam_policy_document.kms_key_access_doc.json
-    policy_name     = "kms_key_access"
-    }
-  ]
+  role_name = "${var.project_name}-chatbot-channel-role"
+  assume_role_policy_document = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "chatbot.amazonaws.com"
+        }
+      },
+    ]
+  })
   managed_policy_arns = ["arn:aws:iam::aws:policy/AWSResourceExplorerReadOnlyAccess"]
 }

@@ -61,8 +61,6 @@ resource "aws_codepipeline" "terraform_pipeline" {
 resource "aws_sns_topic" "codepipeline_notifications" {
   name = "${var.project_name}-codepipeline-notifications"
 
-  kms_master_key_id = data.aws_kms_key.encryption_key.id
-
   tags = var.tags
 
   depends_on = [aws_codepipeline.terraform_pipeline]

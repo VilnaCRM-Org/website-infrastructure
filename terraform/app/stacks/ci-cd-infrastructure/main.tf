@@ -115,7 +115,6 @@ module "chatbot" {
   channel_id    = var.slack_channel_id
   workspace_id  = var.slack_workspace_id
   sns_topic_arn = module.codepipeline_terraform.sns_topic_arn
-  kms_key_arn   = module.codepipeline_kms.arn
 
   tags = var.tags
 

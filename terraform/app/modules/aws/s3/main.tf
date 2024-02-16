@@ -59,8 +59,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "lifecycle_config" {
 resource "aws_sns_topic" "bucket_notifications" {
   name = "${var.project_name}-bucket-notifications"
 
-  kms_master_key_id = data.aws_kms_key.encryption_key.id
-
   tags = var.tags
 }
 

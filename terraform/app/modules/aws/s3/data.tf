@@ -46,7 +46,3 @@ data "aws_iam_policy_document" "bucket_topic_doc" {
     }
   }
 }
-
-data "aws_kms_key" "encryption_key" {
-  key_id = var.kms_key_arn
-}
