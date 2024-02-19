@@ -61,9 +61,11 @@ resource "aws_codepipeline" "terraform_pipeline" {
 resource "aws_sns_topic" "codepipeline_notifications" {
   name = "${var.project_name}-codepipeline-notifications"
 
+  kms_master_key_id = aws_kms_key.codepipeline_sns_encryption_key.id
+
   tags = var.tags
 
-  depends_on = [aws_codepipeline.terraform_pipeline]
+  depends_on = [aws_codepipeline.terraform_pipeline, aws_kms_key.codepipeline_sns_encryption_key]
 }
 
 resource "aws_sns_topic_policy" "codepipeline_notifications" {
@@ -71,6 +73,20 @@ resource "aws_sns_topic_policy" "codepipeline_notifications" {
   policy = data.aws_iam_policy_document.codepipeline_topic_doc.json
 
   depends_on = [aws_sns_topic.codepipeline_notifications]
+}
+
+resource "aws_kms_key" "codepipeline_sns_encryption_key" {
+  description             = "This key is used to encrypt codepipeline objects"
+  deletion_window_in_days = 10
+  enable_key_rotation     = true
+  tags                    = var.tags
+}
+
+resource "aws_kms_key_policy" "codepipeline_sns_encryption_key" {
+  key_id = aws_kms_key.codepipeline_sns_encryption_key.key_id
+  policy = data.aws_iam_policy_document.codepipeline_sns_kms_key_policy_doc.json
+
+  depends_on = [aws_kms_key.codepipeline_sns_encryption_key]
 }
 
 resource "aws_codestarnotifications_notification_rule" "codepipeline_rule" {
