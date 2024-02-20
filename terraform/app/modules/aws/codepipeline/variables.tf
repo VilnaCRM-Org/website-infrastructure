@@ -18,6 +18,11 @@ variable "source_repo_branch" {
   type        = string
 }
 
+variable "region" {
+  description = "Region for this project"
+  type        = string
+}
+
 variable "s3_bucket_name" {
   description = "S3 bucket name to be used for storing the artifacts"
   type        = string

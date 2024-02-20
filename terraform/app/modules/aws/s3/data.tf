@@ -89,4 +89,26 @@ data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
       identifiers = ["sns.amazonaws.com"]
     }
   }
+  statement {
+    sid    = "AllowUseOfTheKeyForCodeStarNotificationKMSKey"
+    effect = "Allow"
+    actions = [
+      "kms:GenerateDataKey*",
+      "kms:Decrypt"
+    ]
+
+    resources = ["${aws_kms_key.bucket_sns_encryption_key.arn}"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["codestar-notifications.amazonaws.com"]
+    }
+    condition {
+      test = "StringEquals"
+      variable = "kms:ViaService"
+      values = [
+        "sns.${var.region}.amazonaws.com"
+      ]
+    }
+  }
 }
