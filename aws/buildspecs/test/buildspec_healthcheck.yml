@@ -4,6 +4,7 @@ env:
   variables:
     HURL_VERSION: '4.2.0'
     HURL: './target/release/hurl-installation'
+    HURL_DIR: './hurl'
 
 phases:
   install:
