@@ -92,15 +92,15 @@ resource "aws_kms_key_policy" "codepipeline_sns_encryption_key" {
 resource "aws_codestarnotifications_notification_rule" "codepipeline_rule" {
   detail_type = "BASIC"
   event_type_ids = [
+    "codepipeline-pipeline-stage-execution-started",
+    "codepipeline-pipeline-stage-execution-succeeded",
+    "codepipeline-pipeline-stage-execution-resumed",
     "codepipeline-pipeline-pipeline-execution-failed",
     "codepipeline-pipeline-pipeline-execution-canceled",
     "codepipeline-pipeline-pipeline-execution-started",
     "codepipeline-pipeline-pipeline-execution-resumed",
     "codepipeline-pipeline-pipeline-execution-succeeded",
     "codepipeline-pipeline-pipeline-execution-superseded",
-    "codepipeline-pipeline-stage-execution-started",
-    "codepipeline-pipeline-stage-execution-succeeded",
-    "codepipeline-pipeline-stage-execution-resumed",
     "codepipeline-pipeline-stage-execution-canceled",
     "codepipeline-pipeline-stage-execution-failed"
   ]
