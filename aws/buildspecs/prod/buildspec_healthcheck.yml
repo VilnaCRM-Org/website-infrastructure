@@ -2,14 +2,18 @@ version: 0.2
 
 env:
   variables:
-    SCRIPT_DIR: './aws/scripts'
+    HURL_DIR: './hurl'
+    HURL_VERSION: '4.2.0'
 
 phases:
+  install:
+    commands:
+      - 'curl --location --remote-name https://github.com/Orange-OpenSource/hurl/releases/download/$VERSION/hurl_${HURL_VERSION}_amd64.deb'
+      - 'sudo apt update && sudo apt install ./hurl_${HURL_VERSION}_amd64.deb'
   build:
     commands:
       - 'echo ## Test Website Connection...'
-      - 'chmod +x ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/healthcheck.sh'
-      - '/bin/sh ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/healthcheck.sh ${WEBSITE_URL}'
+      - 'hurl --test --variable website_url=$WEBSITE_URL ${CODEBUILD_SRC_DIR}/${HURL_DIR}/healthcheck.hurl'
 
 artifacts:
   files:
