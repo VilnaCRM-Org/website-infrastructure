@@ -4,12 +4,14 @@ env:
   variables:
     HURL_DIR: './hurl'
     HURL_VERSION: '4.2.0'
+    INSTALL_DIR: '/tmp'
 
 phases:
   install:
     commands:
-      - 'curl --location --remote-name https://github.com/Orange-OpenSource/hurl/releases/download/$VERSION/hurl_${HURL_VERSION}_amd64.deb'
-      - 'sudo apt update && sudo apt install ./hurl_${HURL_VERSION}_amd64.deb'
+      - 'curl --silent --location https://github.com/Orange-OpenSource/hurl/releases/download/$HURL_VERSION/hurl-$HURL_VERSION-x86_64-unknown-linux-gnu.tar.gz | tar xvz -C $INSTALL_DIR'
+      - 'export PATH=$INSTALL_DIR/hurl-$HURL_VERSION:$PATH'
+
   build:
     commands:
       - 'echo ## Test Website Connection...'
