@@ -18,7 +18,7 @@ phases:
   build:
     commands:
       - 'echo ## Test Website Connection...'
-      - 'hurl --test --variable website_url=$WEBSITE_URL ${CODEBUILD_SRC_DIR}/${HURL_DIR}/healthcheck.hurl'
+      - 'hurl --test --variable website_url=$WEBSITE_URL ${CODEBUILD_SRC_DIR}/${HURL_DIR}/$TS_ENV/healthcheck.hurl'
 
 artifacts:
   files:

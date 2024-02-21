@@ -25,8 +25,8 @@ phases:
     commands:
       - 'yum install -y yum-utils'
       - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
-      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
       - 'yum update -y'
+      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
       - 'yum install -y jq awscli'
       - 'pip3 install checkov'
       - 'yum install -y golang'
