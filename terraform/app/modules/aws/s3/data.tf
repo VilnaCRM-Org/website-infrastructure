@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "bucket_topic_doc" {
 }
 
 data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
-      statement {
+  statement {
     sid     = "EnableRootAccessAndPreventPermissionDelegationForS3BucketSNSKMSKey"
     effect  = "Allow"
     actions = ["kms:*"]
@@ -104,7 +104,7 @@ data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
       identifiers = ["codestar-notifications.amazonaws.com"]
     }
     condition {
-      test = "StringEquals"
+      test     = "StringEquals"
       variable = "kms:ViaService"
       values = [
         "sns.${var.region}.amazonaws.com"

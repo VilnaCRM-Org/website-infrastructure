@@ -95,7 +95,7 @@ module "codepipeline_terraform" {
 
   stages = var.stage_input
 
-  region      = var.region
+  region = var.region
 
   s3_bucket_name          = module.s3_artifacts_bucket.bucket
   codepipeline_role_arn   = module.codepipeline_iam_role.role_arn
