@@ -26,7 +26,7 @@ phases:
       - 'chmod +x ./tfsec'
       - 'mv ./tfsec /usr/local/bin/tfsec'
       - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
-      - 'sudo snap install task --classic'
+      - 'go install github.com/go-task/task/v3/cmd/task@latest'
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
