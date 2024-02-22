@@ -15,16 +15,14 @@ phases:
       golang: $GOLANG_VERSION
       ruby: $RUBY_VERSION
     commands:
-      - 'yum install -y yum-utils'
+      - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
+      - 'export AWS_PROFILE=terraform'
       - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
       - 'yum update -y'
+      - 'yum install -y jq yum-utils'
       - 'export PATH="$HOME/.tfenv/bin:$PATH"'
-      - 'yum install -y jq awscli'
       - 'pip3 install checkov'
-      - 'yum install -y golang'
-      - 'wget -q -O tfsec https://github.com/aquasecurity/tfsec/releases/download/${TFSEC_VERSION}/tfsec-linux-amd64'
-      - 'chmod +x ./tfsec'
-      - 'mv ./tfsec /usr/local/bin/tfsec'
+      - 'curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash'
       - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
       - 'go install github.com/go-task/task/v3/cmd/task@latest'
   build:
@@ -32,6 +30,7 @@ phases:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## VALIDATION : Starting ...'
       - 'mkdir -p ${CODEBUILD_SRC_DIR}/reports'
+      - 'cp ${CODEBUILD_SRC_DIR}/task/Taskfile.yml ${CODEBUILD_SRC_DIR}/terraform/Taskfile.yml'
       - 'task deploy -t ${CODEBUILD_SRC_DIR}/task/Taskfile.yml'
       - 'cp checkov.xml ${CODEBUILD_SRC_DIR}/reports/checkov.xml'
       - 'cp tfsec-junit.xml ${CODEBUILD_SRC_DIR}/reports/tfsec-junit.xml'
