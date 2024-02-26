@@ -1,10 +1,42 @@
-module "static-website-s3-cloudfront-acm" {
-  source                = "git::https://github.com/joshuamkite/terraform-aws-static-website-s3-cloudfront-acm.git?ref=8103476a4ed0a960a6bd1ebe1f012d66525ce78a"
-  domain_name           = var.site_domain
-  s3_bucket_custom_name = var.s3_bucket_name
-  deploy_sample_content = local.to_deploy_sample_content
-  providers = {
-    aws.us-east-1 = aws.us-east-1
-    aws           = aws
-  }
+module "s3_bucket" {
+  source = "../../modules/aws/s3/website-s3"
+
+  domain_name = var.domain_name
+
+  s3_bucket_custom_name         = var.s3_bucket_custom_name
+  s3_bucket_versioning          = var.s3_bucket_versioning
+  s3_bucket_public_access_block = var.s3_bucket_public_access_block
+  deploy_sample_content         = var.deploy_sample_content
+
+  aws_cloudfront_distribution_arn = module.cloudfront.arn
+
+  tags = var.tags
+}
+
+module "dns" {
+  source = "../../modules/aws/dns"
+
+  domain_name = var.domain_name
+
+  aws_cloudfront_distribution_this_domain_name = module.cloudfront.domain_name
+}
+
+module "cloudfront" {
+  source = "../../modules/aws/cloudfront"
+
+  domain_name = var.domain_name
+
+  aws_s3_bucket_this_bucket_regional_domain_name = module.s3_bucket.bucket_regional_domain_name
+
+  aws_acm_certificate_arn = module.dns.arn
+  aws_acm_certificate_id  = module.dns.id
+
+  cloudfront_default_root_object      = var.cloudfront_default_root_object
+  cloudfront_minimum_protocol_version = var.cloudfront_minimum_protocol_version
+  cloudfront_custom_error_responses   = var.cloudfront_custom_error_responses
+  cloudfront_price_class              = var.cloudfront_price_class
+  cloudfront_min_ttl                  = var.cloudfront_min_ttl
+  cloudfront_default_ttl              = var.cloudfront_default_ttl
+  cloudfront_max_ttl                  = var.cloudfront_max_ttl
+
 }

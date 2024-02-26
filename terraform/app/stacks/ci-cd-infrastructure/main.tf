@@ -7,7 +7,7 @@ module "codestar_connection" {
 }
 
 module "s3_artifacts_bucket" {
-  source = "../../modules/aws/s3"
+  source = "../../modules/aws/s3/codepipeline-s3"
 
   project_name = var.project_name
 

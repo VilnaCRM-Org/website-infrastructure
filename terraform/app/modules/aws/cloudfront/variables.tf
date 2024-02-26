@@ -1,11 +1,21 @@
-variable "environment" {
-  description = "Environment for this project"
+variable "aws_s3_bucket_this_bucket_regional_domain_name" {
   type        = string
+  description = "S3 Bucket Regional Domain Name"
 }
 
 variable "domain_name" {
   type        = string
   description = "Domain name for website, used for all resources"
+}
+
+variable "aws_acm_certificate_id" {
+  type        = string
+  description = "ID of ACM Certificate"
+}
+
+variable "aws_acm_certificate_arn" {
+  type        = string
+  description = "ARN of ACM Certificate"
 }
 
 variable "cloudfront_price_class" {
@@ -34,30 +44,10 @@ variable "cloudfront_minimum_protocol_version" {
   default     = "TLSv1.2_2019"
 }
 
-variable "deploy_sample_content" {
-  type        = bool
-  default     = false
-  description = "Deploy sample content to show website working?"
-}
-
 variable "cloudfront_default_root_object" {
   type        = string
   description = "Default root object for cloudfront. Need to also provide custom error response if changing from default"
-}
-
-variable "s3_bucket_custom_name" {
-  type        = string
-  description = "Any non-empty string here will replace default name of bucket `var.domain_name`"
-}
-
-variable "s3_bucket_versioning" {
-  type        = bool
-  description = "Apply versioning to S3 bucket?"
-}
-
-variable "s3_bucket_public_access_block" {
-  type        = bool
-  description = "Apply public access block to S3 bucket?"
+  default     = "index.html"
 }
 
 variable "cloudfront_custom_error_responses" {
@@ -68,9 +58,4 @@ variable "cloudfront_custom_error_responses" {
     response_page_path    = string
   }))
   description = "See https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GeneratingCustomErrorResponses.html"
-}
-
-variable "tags" {
-  description = "Tags to be associated with the S3 bucket"
-  type        = map(any)
 }

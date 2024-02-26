@@ -1,3 +1,14 @@
-site_domain    = "vilnacrmtest.com"
-s3_bucket_name = "vilnacrmtest.com"
-environment    = "test"
+environment = "test"
+tags = {
+  Project     = "website-test"
+  Environment = "test"
+}
+domain_name                   = "vilnacrmtest.com"
+s3_bucket_custom_name         = "vilnacrmtest.com"
+s3_bucket_versioning          = false
+s3_bucket_public_access_block = true
+deploy_sample_content         = true
+cloudfront_price_class        = "PriceClass_100"
+cloudfront_min_ttl            = 0
+cloudfront_default_ttl        = 86400
+cloudfront_max_ttl            = 31536000
