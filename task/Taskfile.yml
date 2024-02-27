@@ -9,6 +9,7 @@ tasks:
     silent: false
 
   validate:
+    deps: [init]
     desc: 'Validate Terraform code'
     cmds:
       - terraspace validate website
