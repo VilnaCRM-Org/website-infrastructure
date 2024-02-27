@@ -1,6 +1,6 @@
 environment = "prod"
 tags = {
-  Project     = "website-prod"
+  Project     = "website"
   Environment = "prod"
 }
 domain_name           = "vilnacrm.com"

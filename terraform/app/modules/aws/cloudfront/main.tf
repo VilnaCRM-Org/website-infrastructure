@@ -1,4 +1,5 @@
 resource "aws_cloudfront_distribution" "this" {
+  provider    = aws.us-east-1
   origin {
     domain_name              = var.aws_s3_bucket_this_bucket_regional_domain_name
     origin_id                = local.s3_origin_id

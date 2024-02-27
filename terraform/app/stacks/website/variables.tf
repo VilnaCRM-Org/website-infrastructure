@@ -70,6 +70,21 @@ variable "cloudfront_custom_error_responses" {
   description = "See https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GeneratingCustomErrorResponses.html"
 }
 
+variable "ttl_validation" {
+  type        = number
+  description = "TTL of AWS Route53 Record Validation"
+}
+
+variable "ttl_route53_record" {
+  type        = number
+  description = "TTL of AWS Route53 Record of WWW Domain Name"
+}
+
+variable "alias_zone_id" {
+  type        = string
+  description = "Zone ID for the record alias"
+}
+
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)

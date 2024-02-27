@@ -21,7 +21,7 @@ resource "aws_route53_record" "validation" {
   allow_overwrite = true
   name            = each.value.name
   records         = [each.value.record]
-  ttl             = 60
+  ttl             = var.ttl_validation
   type            = each.value.type
   zone_id         = data.aws_route53_zone.this.zone_id
 }
@@ -38,7 +38,7 @@ resource "aws_route53_record" "www_domain_name" {
   zone_id = data.aws_route53_zone.this.zone_id
   name    = "www.${var.domain_name}"
   records = [var.domain_name]
-  ttl     = "300"
+  ttl     = var.ttl_route53_record
 }
 
 resource "aws_route53_record" "domain_name" {
@@ -49,7 +49,7 @@ resource "aws_route53_record" "domain_name" {
   alias {
     name = var.aws_cloudfront_distribution_this_domain_name
     //HardCoded value for CloudFront
-    zone_id                = "Z2FDTNDATAQYW2"
+    zone_id                = var.alias_zone_id
     evaluate_target_health = false
   }
 }
