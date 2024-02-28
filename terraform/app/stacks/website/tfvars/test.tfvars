@@ -12,5 +12,5 @@ cloudfront_price_class        = "PriceClass_100"
 cloudfront_min_ttl            = 0
 cloudfront_default_ttl        = 86400
 cloudfront_max_ttl            = 31536000
-ttl_validation = 60
-ttl_route53_record = "300"
+ttl_validation                = 60
+ttl_route53_record            = "300"

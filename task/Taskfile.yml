@@ -4,16 +4,14 @@ tasks:
   init:
     desc: 'Initialize Terraspace'
     cmds:
-      - terraspace init website
-      - terraspace init ci-cd-infrastructure
+      - terraspace all init
     silent: false
 
   validate:
     deps: [init]
     desc: 'Validate Terraform code'
     cmds:
-      - terraspace validate website
-      - terraspace validate ci-cd-infrastructure
+      - terraspace all validate
     silent: false
 
   format:
@@ -25,7 +23,7 @@ tasks:
   checkov:
     desc: 'Run checkov'
     cmds:
-      - checkov --download-external-modules true -o junitxml --framework terraform -d ./ > checkov.xml
+      - checkov -o junitxml --framework terraform -d ./ > checkov.xml
     silent: false
 
   tfsec:
@@ -36,10 +34,6 @@ tasks:
 
   summary:
     desc: 'Display summary'
+    deps: [validate, format, checkov, tfsec]
     cmds:
       - echo "Validation and checks have been completed."
-
-  deploy:
-    desc: 'Run all tasks'
-    deps: [init, validate, format, checkov, tfsec, summary]
-    silent: false
