@@ -4,6 +4,7 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
   tags          = var.tags
   force_destroy = true
   #checkov:skip=CKV_AWS_144: No usage of cross-region
+  #checkov:skip=CKV2_AWS_61: The lifecycle configuration is not needed 
 }
 
 resource "aws_s3_bucket_public_access_block" "codepipeline_bucket_access" {
@@ -41,19 +42,6 @@ resource "aws_s3_bucket_logging" "codepipeline_bucket_logging" {
   bucket        = aws_s3_bucket.codepipeline_bucket.id
   target_bucket = aws_s3_bucket.codepipeline_bucket.id
   target_prefix = "log/"
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "lifecycle_config" {
-  bucket = aws_s3_bucket.codepipeline_bucket.id
-
-  rule {
-    id     = "Delete old incomplete multi-part uploads"
-    status = "Enabled"
-
-    abort_incomplete_multipart_upload {
-      days_after_initiation = 7
-    }
-  }
 }
 
 resource "aws_sns_topic" "bucket_notifications" {

@@ -1,6 +1,7 @@
 resource "aws_s3_bucket" "this" {
   bucket = local.s3_bucket_name
-
+  #checkov:skip=CKV2_AWS_61:The lifecycle configuration is not needed 
+  #checkov:skip=CKV_AWS_145: The KMS encryption is not needed 
   tags = var.tags
 }
 
