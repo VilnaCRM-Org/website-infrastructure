@@ -100,6 +100,21 @@ variable "build_project_source" {
   default     = "CODEPIPELINE"
 }
 
+variable "ruby_version" {
+  description = "Ruby Version to be used in codebuild stages"
+  type        = string
+}
+
+variable "python_version" {
+  description = "Python Version to be used in codebuild stages"
+  type        = string
+}
+
+variable "script_dir" {
+  description = "Directory for Scripts of CodeBuild"
+  type        = string
+}
+
 variable "slack_workspace_id" {
   description = "Slack Workspace ID for Notifications"
   type        = string

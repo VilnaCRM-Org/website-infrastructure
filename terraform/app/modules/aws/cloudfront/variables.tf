@@ -59,3 +59,8 @@ variable "cloudfront_custom_error_responses" {
   }))
   description = "See https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GeneratingCustomErrorResponses.html"
 }
+
+variable "cloudfront_access_control_max_age_sec" {
+  type        = number
+  description = "Value of Policy Access Control Max Age Sec"
+}

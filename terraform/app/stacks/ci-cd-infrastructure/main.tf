@@ -61,6 +61,10 @@ module "codebuild_terraform" {
   builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
   builder_type                        = var.builder_type
 
+  ruby_version   = var.ruby_version
+  python_version = var.python_version
+  script_dir     = var.script_dir
+
   region      = var.region
   environment = var.environment
 

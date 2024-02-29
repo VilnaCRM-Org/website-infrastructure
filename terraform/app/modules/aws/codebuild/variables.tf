@@ -59,6 +59,21 @@ variable "build_project_source" {
   type        = string
 }
 
+variable "ruby_version" {
+  description = "Ruby Version to be used in codebuild stages"
+  type        = string
+}
+
+variable "python_version" {
+  description = "Python Version to be used in codebuild stages"
+  type        = string
+}
+
+variable "script_dir" {
+  description = "Directory for Scripts of CodeBuild"
+  type        = string
+}
+
 variable "kms_key_arn" {
   description = "ARN of KMS key for encryption"
   type        = string

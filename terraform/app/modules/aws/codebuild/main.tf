@@ -17,29 +17,22 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
     privileged_mode             = false
     image_pull_credentials_type = var.builder_image_pull_credentials_type
 
-    environment_variable {
-      name  = "TS_ENV"
-      value = var.environment
-    }
-    environment_variable {
-      name  = "AWS_DEFAULT_REGION"
-      value = var.region
-    }
-    environment_variable {
-      name  = "SECRET_NAME"
-      value = var.secretsmanager_secret_name
-    }
-    environment_variable {
-      name  = "TF_VAR_slack_workspace_id"
-      value = var.slack_workspace_id
-    }
-    environment_variable {
-      name  = "TF_VAR_slack_channel_id"
-      value = var.slack_channel_id
-    }
-    environment_variable {
-      name  = "WEBSITE_URL"
-      value = var.website_url
+    dynamic "environment_variable" {
+      for_each = {
+        "TS_ENV"                    = var.environment,
+        "AWS_DEFAULT_REGION"        = var.region,
+        "SECRET_NAME"               = var.secretsmanager_secret_name,
+        "TF_VAR_slack_workspace_id" = var.slack_workspace_id,
+        "TF_VAR_slack_channel_id"   = var.slack_channel_id,
+        "WEBSITE_URL"               = var.website_url,
+        "PYTHON_VERSION"            = var.python_version,
+        "RUBY_VERSION"              = var.ruby_version,
+        "SCRIPT_DIR"                = var.script_dir,
+      }
+      content {
+        name  = environment_variable.key
+        value = environment_variable.value
+      }
     }
 
   }

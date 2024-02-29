@@ -2,11 +2,8 @@ version: 0.2
 
 env:
   variables:
-    SCRIPT_DIR: './aws/scripts'
     TFSEC_VERSION: 'v1.28.5'
-    PYTHON_VERSION: '3.12'
     GOLANG_VERSION: '1.21'
-    RUBY_VERSION: '3.2'
 
 phases:
   install:
