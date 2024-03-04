@@ -5,6 +5,13 @@ resource "aws_s3_bucket" "this" {
   tags = var.tags
 }
 
+resource "aws_s3_bucket_logging" "bucket_logging" {
+  bucket = aws_s3_bucket.this.id
+
+  target_bucket = var.s3_logging_bucket_id
+  target_prefix = "s3-logs/"
+}
+
 resource "aws_s3_bucket_policy" "this" {
   bucket = aws_s3_bucket.this.id
   policy = data.aws_iam_policy_document.this.json
@@ -34,4 +41,13 @@ resource "aws_s3_object" "sample_index_html" {
   source       = "../../../../../../site-content/index.html"
   content_type = "text/html"
   etag         = filemd5("../../../../../../site-content/index.html")
+}
+
+resource "aws_s3_object" "sample_logo_png" {
+  count        = var.deploy_sample_content == true ? 1 : 0
+  bucket       = aws_s3_bucket.this.id
+  key          = "logo.png"
+  source       = "../../../../../../site-content/logo.png"
+  content_type = "text/html"
+  etag         = filemd5("../../../../../../site-content/logo.png")
 }

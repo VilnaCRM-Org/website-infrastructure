@@ -3,6 +3,11 @@ variable "aws_cloudfront_distribution_arn" {
   description = "CloudFront Distribution ARN"
 }
 
+variable "s3_logging_bucket_id" {
+  type        = string
+  description = "ID of the logging bucket"
+}
+
 variable "domain_name" {
   type        = string
   description = "Domain name for website, used for all resources"

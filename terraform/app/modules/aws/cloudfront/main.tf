@@ -27,7 +27,7 @@ resource "aws_cloudfront_distribution" "this" {
       "GET",
       "HEAD",
     ]
-    response_headers_policy_id = aws_cloudfront_response_headers_policy.pass.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers.id
 
     target_origin_id = local.s3_origin_id
 
@@ -85,7 +85,7 @@ resource "aws_cloudfront_origin_access_control" "this" {
   signing_protocol                  = "sigv4"
 }
 
-resource "aws_cloudfront_response_headers_policy" "pass" {
+resource "aws_cloudfront_response_headers_policy" "response_headers" {
   provider = aws.us-east-1
   name = "cloudfront-policy"
 

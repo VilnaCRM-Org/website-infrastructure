@@ -1,3 +1,14 @@
+module "logging_s3_bucket" {
+  source = "../../modules/aws/s3/website-logging-s3"
+
+  project_name = var.project_name
+
+  aws_cloudfront_distribution_arn = module.cloudfront.arn
+  aws_s3_bucket_this_arn = module.s3_bucket.arn
+
+  tags = var.tags
+}
+
 module "s3_bucket" {
   source = "../../modules/aws/s3/website-s3"
 
@@ -7,6 +18,8 @@ module "s3_bucket" {
   s3_bucket_versioning          = var.s3_bucket_versioning
   s3_bucket_public_access_block = var.s3_bucket_public_access_block
   deploy_sample_content         = var.deploy_sample_content
+
+  s3_logging_bucket_id         = module.logging_s3_bucket.id
 
   aws_cloudfront_distribution_arn = module.cloudfront.arn
 
