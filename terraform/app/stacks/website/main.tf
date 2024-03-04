@@ -44,4 +44,5 @@ module "cloudfront" {
   cloudfront_max_ttl                    = var.cloudfront_max_ttl
   cloudfront_access_control_max_age_sec = var.cloudfront_access_control_max_age_sec
 
+  tags = var.tags
 }

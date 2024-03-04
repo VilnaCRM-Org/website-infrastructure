@@ -1,5 +1,5 @@
 resource "aws_acm_certificate" "this" {
-  provider    = aws.us-east-1
+  provider    = aws.us-east-1 # Only can be created in us-east-1
   domain_name = var.domain_name
   subject_alternative_names = [
     "*.${var.domain_name}",
@@ -47,8 +47,7 @@ resource "aws_route53_record" "domain_name" {
   name    = var.domain_name
 
   alias {
-    name = var.aws_cloudfront_distribution_this_domain_name
-    //HardCoded value for CloudFront
+    name                   = var.aws_cloudfront_distribution_this_domain_name
     zone_id                = var.alias_zone_id
     evaluate_target_health = false
   }

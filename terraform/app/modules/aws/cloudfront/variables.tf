@@ -8,6 +8,11 @@ variable "domain_name" {
   description = "Domain name for website, used for all resources"
 }
 
+variable "tags" {
+  description = "Tags to be associated with the CloudFront"
+  type        = map(any)
+}
+
 variable "aws_acm_certificate_id" {
   type        = string
   description = "ID of ACM Certificate"
