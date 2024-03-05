@@ -8,9 +8,25 @@ variable "s3_logging_bucket_id" {
   description = "ID of the logging bucket"
 }
 
+variable "path_to_site_content" {
+  type        = string
+  description = "ID of the logging bucket"
+  default = "../../../../../.."
+}
+
 variable "domain_name" {
   type        = string
   description = "Domain name for website, used for all resources"
+}
+
+variable "project_name" {
+  description = "Name of the project to be prefixed to create the s3 bucket"
+  type        = string
+}
+
+variable "region" {
+  description = "Region for this project"
+  type        = string
 }
 
 variable "s3_bucket_custom_name" {

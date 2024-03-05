@@ -22,7 +22,7 @@ resource "aws_s3_bucket_public_access_block" "logging_bucket_pab" {
 }
 
 resource "aws_s3_bucket_versioning" "logging_bucket_versioning" {
-  bucket = aws_s3_bucket.this.id
+  bucket = aws_s3_bucket.logging_bucket.id
   versioning_configuration {
     status = "Enabled"
   }

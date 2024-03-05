@@ -1,3 +1,3 @@
 locals {
-  s3_bucket_name = var.s3_bucket_custom_name == "" ? var.domain_name : var.s3_bucket_custom_name
+  account_id = data.aws_caller_identity.current.account_id
 }

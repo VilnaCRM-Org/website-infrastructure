@@ -8,6 +8,11 @@ variable "environment" {
   type        = string
 }
 
+variable "region" {
+  description = "Region for this project"
+  type        = string
+}
+
 variable "domain_name" {
   type        = string
   description = "Domain name for website, used for all resources"

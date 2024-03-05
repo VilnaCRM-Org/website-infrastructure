@@ -13,7 +13,6 @@ variable "aws_s3_bucket_this_arn" {
   description = "S3 Logging Bucket ARN"
 }
 
-
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)

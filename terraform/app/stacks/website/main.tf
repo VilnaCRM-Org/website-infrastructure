@@ -14,6 +14,10 @@ module "s3_bucket" {
 
   domain_name = var.domain_name
 
+  project_name = var.project_name
+
+  region = var.region
+
   s3_bucket_custom_name         = var.s3_bucket_custom_name
   s3_bucket_versioning          = var.s3_bucket_versioning
   s3_bucket_public_access_block = var.s3_bucket_public_access_block
