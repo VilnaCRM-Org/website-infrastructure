@@ -115,12 +115,12 @@ variable "script_dir" {
   type        = string
 }
 
-variable "slack_workspace_id" {
+variable "SLACK_WORKSPACE_ID" {
   description = "Slack Workspace ID for Notifications"
   type        = string
 }
 
-variable "slack_channel_id" {
+variable "CODEPIPELINE_SLACK_CHANNEL_ID" {
   description = "Slack Channel ID for Notifications"
   type        = string
 }

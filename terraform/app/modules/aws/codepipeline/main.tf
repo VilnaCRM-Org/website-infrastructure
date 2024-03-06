@@ -59,7 +59,7 @@ resource "aws_codepipeline" "terraform_pipeline" {
 }
 
 resource "aws_sns_topic" "codepipeline_notifications" {
-  name = "${var.project_name}-codepipeline-notifications"
+  name = "${var.project_name}-notifications"
 
   kms_master_key_id = aws_kms_key.codepipeline_sns_encryption_key.id
 

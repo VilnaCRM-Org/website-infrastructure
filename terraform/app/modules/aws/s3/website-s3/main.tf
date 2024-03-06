@@ -89,7 +89,6 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   topic {
     topic_arn     = aws_sns_topic.bucket_notifications.arn
     events        = ["s3:ObjectRemoved:*","s3:ObjectAcl:Put"]
-    filter_suffix = ".log"
   }
   depends_on = [aws_sns_topic.bucket_notifications, aws_s3_bucket.this]
 }

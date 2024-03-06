@@ -100,7 +100,18 @@ variable "alias_zone_id" {
   description = "Zone ID for the record alias"
 }
 
+variable "SLACK_WORKSPACE_ID" {
+  description = "Slack Workspace ID for Notifications"
+  type        = string
+}
+
+variable "WEBSITE_SLACK_CHANNEL_ID" {
+  description = "Slack Channel ID for Notifications"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)
 }
+

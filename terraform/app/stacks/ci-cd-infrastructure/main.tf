@@ -68,8 +68,8 @@ module "codebuild_terraform" {
   region      = var.region
   environment = var.environment
 
-  slack_workspace_id = var.slack_workspace_id
-  slack_channel_id   = var.slack_channel_id
+  SLACK_WORKSPACE_ID = var.SLACK_WORKSPACE_ID
+  CODEPIPELINE_SLACK_CHANNEL_ID   = var.CODEPIPELINE_SLACK_CHANNEL_ID
 
   website_url = var.website_url
 
@@ -113,13 +113,12 @@ module "codepipeline_terraform" {
 
 
 module "chatbot" {
-  count = local.create_slack_notification ? 1 : 0
-
   source = "../../modules/aws/chatbot"
 
   project_name  = var.project_name
-  channel_id    = var.slack_channel_id
-  workspace_id  = var.slack_workspace_id
+  channel_id    = var.CODEPIPELINE_SLACK_CHANNEL_ID
+  workspace_id  = var.SLACK_WORKSPACE_ID
+
   sns_topic_arn = module.codepipeline_terraform.sns_topic_arn
 
   tags = var.tags

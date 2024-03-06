@@ -1,5 +1,5 @@
 module "logging_s3_bucket" {
-  source = "../../modules/aws/s3/website-logging-s3"
+  source = "../../modules/aws/s3/logging-s3"
 
   project_name = var.project_name
 
@@ -62,4 +62,17 @@ module "cloudfront" {
   cloudfront_access_control_max_age_sec = var.cloudfront_access_control_max_age_sec
 
   tags = var.tags
+}
+
+module "chatbot" {
+  source = "../../modules/aws/chatbot"
+
+  project_name  = var.project_name
+  channel_id    = var.WEBSITE_SLACK_CHANNEL_ID
+  workspace_id  = var.SLACK_WORKSPACE_ID
+  sns_topic_arn = module.s3_bucket.sns_topic_arn
+
+  tags = var.tags
+
+  depends_on = [module.s3_bucket]
 }

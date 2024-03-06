@@ -1,4 +1,4 @@
-project_name               = "website-test"
+project_name               = "codepipeline-test"
 environment                = "test"
 github_connection_name     = "Github"
 secretsmanager_secret_name = "test/AWS/Website"
