@@ -32,12 +32,6 @@ data "aws_iam_policy_document" "sns_bucket_topic_doc" {
     effect  = "Allow"
     actions = ["sns:Publish"]
     resources = ["${aws_sns_topic.bucket_notifications.arn}"]
-
-    condition {
-      test     = "ArnLike"
-      variable = "AWS:SourceArn"
-      values   = ["${aws_s3_bucket.this.arn}"]
-    }
   }
 }
 data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
@@ -52,11 +46,17 @@ data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
       identifiers = ["arn:aws:iam::${local.account_id}:root"]
     }
   }
+
   statement {
     sid       = "AllowAccessForKeyAdministratorsForS3BucketSNSKMSKey"
     effect    = "Allow"
     actions   = ["kms:*"]
     resources = ["${aws_kms_key.bucket_sns_encryption_key.arn}"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["sns.amazonaws.com"]
+    }
   }
   statement {
     sid    = "AllowUseOfTheKeyForS3BucketSNSKMSKey"
@@ -71,6 +71,10 @@ data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
 
     resources = ["${aws_kms_key.bucket_sns_encryption_key.arn}"]
 
+    principals {
+      type        = "Service"
+      identifiers = ["sns.amazonaws.com"]
+    }
   }
   statement {
     sid    = "AllowUseOfTheKeyForSNSKMSKey"

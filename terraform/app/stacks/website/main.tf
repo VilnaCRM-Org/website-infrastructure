@@ -1,5 +1,5 @@
 module "logging_s3_bucket" {
-  source = "../../modules/aws/s3/logging-s3"
+  source = "../../modules/aws/s3/website-logging-s3"
 
   project_name = var.project_name
 
@@ -73,6 +73,4 @@ module "chatbot" {
   sns_topic_arn = module.s3_bucket.sns_topic_arn
 
   tags = var.tags
-
-  depends_on = [module.s3_bucket]
 }
