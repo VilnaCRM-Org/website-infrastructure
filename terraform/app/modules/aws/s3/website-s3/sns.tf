@@ -33,8 +33,8 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   bucket = aws_s3_bucket.this.id
 
   topic {
-    topic_arn     = aws_sns_topic.bucket_notifications.arn
-    events        = ["s3:ObjectRemoved:*","s3:ObjectAcl:Put"]
+    topic_arn = aws_sns_topic.bucket_notifications.arn
+    events    = ["s3:ObjectRemoved:*", "s3:ObjectAcl:Put"]
   }
   depends_on = [aws_sns_topic.bucket_notifications, aws_s3_bucket.this]
 }

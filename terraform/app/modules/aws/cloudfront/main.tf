@@ -1,9 +1,31 @@
 resource "aws_cloudfront_distribution" "this" {
   provider = aws.us-east-1
+  origin_group {
+    origin_id = "${var.project_name}-groupS3"
+
+    failover_criteria {
+      status_codes = [403, 404, 500, 502]
+    }
+
+    member {
+      origin_id = local.s3_origin_id
+    }
+
+    member {
+      origin_id = local.s3_failover_origin_id
+    }
+  }
+
   origin {
     domain_name              = var.aws_s3_bucket_this_bucket_regional_domain_name
     origin_id                = local.s3_origin_id
     origin_access_control_id = aws_cloudfront_origin_access_control.this.id
+  }
+
+  origin {
+    domain_name              = var.aws_s3_bucket_replication_bucket_regional_domain_name
+    origin_id                = local.s3_failover_origin_id
+    origin_access_control_id = aws_cloudfront_origin_access_control.replication.id
   }
 
   web_acl_id = aws_wafv2_web_acl.waf_web_acl.arn
@@ -85,8 +107,16 @@ resource "aws_cloudfront_origin_access_control" "this" {
   signing_protocol                  = "sigv4"
 }
 
+resource "aws_cloudfront_origin_access_control" "replication" {
+  name                              = "${var.domain_name}-replication"
+  description                       = "${var.domain_name} OAC"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 resource "aws_cloudwatch_log_group" "waf_web_acl_log_group" {
-  provider = aws.us-east-1
+  provider          = aws.us-east-1
   name              = "aws-waf-logs-wafv2-web-acl"
   retention_in_days = 30
 }

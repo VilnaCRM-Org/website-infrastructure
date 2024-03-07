@@ -14,5 +14,5 @@ cloudfront_custom_error_responses = [
     response_page_path    = "/index.html"
   }
 ]
-region                      = "eu-central-1"
+region        = "eu-central-1"
 alias_zone_id = "Z2FDTNDATAQYW2"

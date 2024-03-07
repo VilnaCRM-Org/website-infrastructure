@@ -5,7 +5,7 @@ data "aws_partition" "current" {}
 data "aws_iam_policy_document" "this" {
   statement {
     sid       = "AllowCloudFrontServicePrincipal"
-    effect  = "Allow"
+    effect    = "Allow"
     actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.this.arn}/*"]
 
@@ -29,8 +29,8 @@ data "aws_iam_policy_document" "sns_bucket_topic_doc" {
       type        = "Service"
       identifiers = ["s3.amazonaws.com"]
     }
-    effect  = "Allow"
-    actions = ["sns:Publish"]
+    effect    = "Allow"
+    actions   = ["sns:Publish"]
     resources = ["${aws_sns_topic.bucket_notifications.arn}"]
   }
 }

@@ -19,15 +19,15 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
 
     dynamic "environment_variable" {
       for_each = {
-        "TS_ENV"                    = var.environment,
-        "AWS_DEFAULT_REGION"        = var.region,
-        "SECRET_NAME"               = var.secretsmanager_secret_name,
-        "TF_VAR_SLACK_WORKSPACE_ID" = var.SLACK_WORKSPACE_ID,
-        "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID"   = var.CODEPIPELINE_SLACK_CHANNEL_ID,
-        "WEBSITE_URL"               = var.website_url,
-        "PYTHON_VERSION"            = var.python_version,
-        "RUBY_VERSION"              = var.ruby_version,
-        "SCRIPT_DIR"                = var.script_dir,
+        "TS_ENV"                               = var.environment,
+        "AWS_DEFAULT_REGION"                   = var.region,
+        "SECRET_NAME"                          = var.secretsmanager_secret_name,
+        "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
+        "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID" = var.CODEPIPELINE_SLACK_CHANNEL_ID,
+        "WEBSITE_URL"                          = var.website_url,
+        "PYTHON_VERSION"                       = var.python_version,
+        "RUBY_VERSION"                         = var.ruby_version,
+        "SCRIPT_DIR"                           = var.script_dir,
       }
       content {
         name  = environment_variable.key

@@ -3,9 +3,19 @@ variable "aws_s3_bucket_this_bucket_regional_domain_name" {
   description = "S3 Bucket Regional Domain Name"
 }
 
+variable "aws_s3_bucket_replication_bucket_regional_domain_name" {
+  type        = string
+  description = "S3 Replication Bucket Regional Domain Name"
+}
+
 variable "domain_name" {
   type        = string
   description = "Domain name for website, used for all resources"
+}
+
+variable "project_name" {
+  description = "Unique name for this project"
+  type        = string
 }
 
 variable "tags" {

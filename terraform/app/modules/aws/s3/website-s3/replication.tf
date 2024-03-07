@@ -1,17 +1,26 @@
 // Cross-Region replication
 
 resource "aws_s3_bucket" "replication_bucket" {
-  bucket = "${var.s3_bucket_custom_name}-replication"
+  provider = aws.eu-west-1
+  bucket   = "${var.s3_bucket_custom_name}-replication"
+  #checkov:skip=CKV2_AWS_61: The lifecycle configuration is not needed 
+  #checkov:skip=CKV_AWS_18:The cross-region access logging of logging bucket is not allowed(needs to have separate) 
+  #checkov:skip=CKV2_AWS_62: The event notifications has to have separate endpoint 
+  #checkov:skip=CKV_AWS_145: The KMS encryption is not needed 
 }
 
-resource "aws_s3_bucket_logging" "replication_bucket_logging" {
-  bucket = aws_s3_bucket.replication_bucket.id
-
-  target_bucket = var.s3_logging_bucket_id
-  target_prefix = "s3-replication-logs/"
+resource "aws_s3_bucket_public_access_block" "replication_bucket" {
+  provider = aws.eu-west-1
+  count                   = var.s3_bucket_public_access_block == true ? 1 : 0
+  bucket                  = aws_s3_bucket.replication_bucket.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_versioning" "replication_versioning" {
+  provider = aws.eu-west-1
   bucket = aws_s3_bucket.replication_bucket.id
   versioning_configuration {
     status = "Enabled"

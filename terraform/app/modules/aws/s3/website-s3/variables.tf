@@ -11,7 +11,7 @@ variable "s3_logging_bucket_id" {
 variable "path_to_site_content" {
   type        = string
   description = "ID of the logging bucket"
-  default = "../../../../../.."
+  default     = "../../../../../.."
 }
 
 variable "domain_name" {

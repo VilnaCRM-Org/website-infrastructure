@@ -1,6 +1,6 @@
 resource "aws_cloudfront_response_headers_policy" "response_headers" {
   provider = aws.us-east-1
-  name = "cloudfront-policy"
+  name     = "cloudfront-policy"
 
   security_headers_config {
     strict_transport_security {
