@@ -41,6 +41,8 @@ resource "aws_s3_object" "sample_index_html" {
   source       = "${var.path_to_site_content}/site-content/index.html"
   content_type = "text/html"
   etag         = filemd5("${var.path_to_site_content}/site-content/index.html")
+
+  depends_on = [aws_s3_bucket_replication_configuration.replication]
 }
 
 resource "aws_s3_object" "sample_logo_png" {
@@ -50,4 +52,6 @@ resource "aws_s3_object" "sample_logo_png" {
   source       = "${var.path_to_site_content}/site-content/logo.png"
   content_type = "text/html"
   etag         = filemd5("${var.path_to_site_content}/site-content/logo.png")
+
+  depends_on = [aws_s3_bucket_replication_configuration.replication]
 }

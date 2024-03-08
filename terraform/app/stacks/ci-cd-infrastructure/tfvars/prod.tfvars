@@ -1,4 +1,4 @@
-project_name               = "codepipeline-prod"
+project_name               = "website-prod"
 environment                = "prod"
 github_connection_name     = "Github"
 secretsmanager_secret_name = "prod/AWS/Website"

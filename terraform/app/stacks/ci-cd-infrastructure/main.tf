@@ -115,7 +115,7 @@ module "codepipeline_terraform" {
 module "chatbot" {
   source = "../../modules/aws/chatbot"
 
-  project_name = var.project_name
+  project_name = "${var.project_name}-codepipeline"
   channel_id   = var.CODEPIPELINE_SLACK_CHANNEL_ID
   workspace_id = var.SLACK_WORKSPACE_ID
 

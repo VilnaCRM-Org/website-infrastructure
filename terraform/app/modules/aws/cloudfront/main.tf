@@ -4,7 +4,7 @@ resource "aws_cloudfront_distribution" "this" {
     origin_id = "${var.project_name}-groupS3"
 
     failover_criteria {
-      status_codes = [403, 404, 500, 502]
+      status_codes = [500, 502]
     }
 
     member {
@@ -51,7 +51,7 @@ resource "aws_cloudfront_distribution" "this" {
     ]
     response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers.id
 
-    target_origin_id = local.s3_origin_id
+    target_origin_id = "${var.project_name}-groupS3"
 
     forwarded_values {
       query_string = false
@@ -118,5 +118,5 @@ resource "aws_cloudfront_origin_access_control" "replication" {
 resource "aws_cloudwatch_log_group" "waf_web_acl_log_group" {
   provider          = aws.us-east-1
   name              = "aws-waf-logs-wafv2-web-acl"
-  retention_in_days = 30
+  retention_in_days = 365
 }

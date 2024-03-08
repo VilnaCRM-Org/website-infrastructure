@@ -69,7 +69,7 @@ module "cloudfront" {
 module "chatbot" {
   source = "../../modules/aws/chatbot"
 
-  project_name  = var.project_name
+  project_name  = "${var.project_name}-website"
   channel_id    = var.WEBSITE_SLACK_CHANNEL_ID
   workspace_id  = var.SLACK_WORKSPACE_ID
   sns_topic_arn = module.s3_bucket.sns_topic_arn
