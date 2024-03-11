@@ -89,6 +89,11 @@ variable "CODEPIPELINE_SLACK_CHANNEL_ID" {
   type        = string
 }
 
+variable "WEBSITE_SLACK_CHANNEL_ID" {
+  description = "Slack Channel ID for Notifications"
+  type        = string
+}
+
 variable "secretsmanager_secret_name" {
   description = "Secret ID of Secret Manager"
   type        = string
