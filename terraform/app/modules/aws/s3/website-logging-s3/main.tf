@@ -36,6 +36,7 @@ resource "aws_s3_bucket_ownership_controls" "logging_bucket_ownership" {
 }
 
 resource "aws_s3_bucket_acl" "logging_bucket_acl" {
+  #checkov:skip=CKV2_AWS_65: Needed for CloudFront
   depends_on = [aws_s3_bucket_ownership_controls.logging_bucket_ownership]
 
   bucket = aws_s3_bucket.logging_bucket.id
