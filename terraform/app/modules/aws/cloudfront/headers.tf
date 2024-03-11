@@ -3,6 +3,7 @@ resource "aws_cloudfront_response_headers_policy" "response_headers" {
   name     = "cloudfront-policy"
 
   security_headers_config {
+    #checkov:CKV_AWS_259: Bugged checkov, already added
     strict_transport_security {
       access_control_max_age_sec = var.cloudfront_access_control_max_age_sec
       include_subdomains         = true

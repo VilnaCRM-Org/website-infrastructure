@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "logging_bucket" {
-  bucket_prefix = "${var.project_name}-logging-bucket"
+  bucket = "${var.project_name}-logging-bucket"
   #checkov:skip=CKV_AWS_18:The access logging of logging bucket is not needed 
   #checkov:skip=CKV2_AWS_61:The lifecycle configuration of logging bucket is not needed 
   #checkov:skip=CKV2_AWS_62: The event notifications of logging bucket is not needed 
@@ -26,4 +26,18 @@ resource "aws_s3_bucket_versioning" "logging_bucket_versioning" {
   versioning_configuration {
     status = "Enabled"
   }
+}
+
+resource "aws_s3_bucket_ownership_controls" "logging_bucket_ownership" {
+  bucket = aws_s3_bucket.logging_bucket.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "logging_bucket_acl" {
+  depends_on = [aws_s3_bucket_ownership_controls.logging_bucket_ownership]
+
+  bucket = aws_s3_bucket.logging_bucket.id
+  acl    = "private"
 }

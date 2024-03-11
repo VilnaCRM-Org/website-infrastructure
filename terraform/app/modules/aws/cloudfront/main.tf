@@ -39,6 +39,12 @@ resource "aws_cloudfront_distribution" "this" {
   is_ipv6_enabled     = true
   default_root_object = var.cloudfront_default_root_object
 
+  logging_config {
+    include_cookies = false
+    bucket          = "${var.project_name}-logging-bucket.s3.amazonaws.com"
+    prefix          = "cloudfront-logs/"
+  }
+
   default_cache_behavior {
     allowed_methods = [
       "GET",
@@ -118,5 +124,9 @@ resource "aws_cloudfront_origin_access_control" "replication" {
 resource "aws_cloudwatch_log_group" "waf_web_acl_log_group" {
   provider          = aws.us-east-1
   name              = "aws-waf-logs-wafv2-web-acl"
-  retention_in_days = 365
+  retention_in_days = 60
+  kms_key_id        = aws_kms_key.cloudwatch_encryption_key.arn
+
+  depends_on = [aws_kms_key.cloudwatch_encryption_key]
+  #checkov:CKV_AWS_338: The one year is too much 
 }
