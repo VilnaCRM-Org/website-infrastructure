@@ -28,7 +28,7 @@ phases:
       - 'echo ## VALIDATION : Starting ...'
       - 'mkdir -p ${CODEBUILD_SRC_DIR}/reports'
       - 'cp ${CODEBUILD_SRC_DIR}/task/Taskfile.yml ${CODEBUILD_SRC_DIR}/terraform/Taskfile.yml'
-      - 'task --verbose deploy'
+      - 'task --verbose summary'
       - 'cp checkov.xml ${CODEBUILD_SRC_DIR}/reports/checkov.xml'
       - 'cp tfsec-junit.xml ${CODEBUILD_SRC_DIR}/reports/tfsec-junit.xml'
 
