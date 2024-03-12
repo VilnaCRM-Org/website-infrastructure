@@ -2,7 +2,8 @@ module "logging_s3_bucket" {
   source = "../../modules/aws/s3/website-logging-s3"
 
   project_name = var.project_name
-
+  environment = var.environment
+  
   aws_cloudfront_distribution_arn = module.cloudfront.arn
   aws_s3_bucket_this_arn          = module.s3_bucket.arn
 
@@ -17,6 +18,7 @@ module "s3_bucket" {
   project_name = var.project_name
 
   region = var.region
+  environment = var.environment
 
   s3_bucket_custom_name         = var.s3_bucket_custom_name
   s3_bucket_versioning          = var.s3_bucket_versioning
@@ -70,7 +72,7 @@ module "chatbot" {
   source = "../../modules/aws/chatbot"
 
   project_name  = "website"
-  channel_id    = var.WEBSITE_SLACK_CHANNEL_ID
+  channel_id    = var.ALERTS_SLACK_CHANNEL_ID
   workspace_id  = var.SLACK_WORKSPACE_ID
   sns_topic_arn = module.s3_bucket.sns_topic_arn
 

@@ -3,6 +3,11 @@ variable "project_name" {
   type        = string
 }
 
+variable "environment" {
+  description = "Environment for this project"
+  type        = string
+}
+
 variable "aws_cloudfront_distribution_arn" {
   type        = string
   description = "CloudFront Distribution ARN"

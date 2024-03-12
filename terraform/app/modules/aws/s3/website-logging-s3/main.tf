@@ -6,6 +6,8 @@ resource "aws_s3_bucket" "logging_bucket" {
   #checkov:skip=CKV_AWS_145: The KMS encryption of logging bucket is not needed 
   #checkov:skip=CKV_AWS_144: Replication of logging bucket is not needed 
   tags = var.tags
+
+  force_destroy = local.allow_force_destroy
 }
 
 resource "aws_s3_bucket_policy" "logging_bucket_policy" {

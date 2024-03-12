@@ -3,6 +3,8 @@ resource "aws_s3_bucket" "this" {
   #checkov:skip=CKV2_AWS_61:The lifecycle configuration is not needed 
   #checkov:skip=CKV_AWS_145: The KMS encryption is not needed 
   tags = var.tags
+
+  force_destroy = local.allow_force_destroy
 }
 
 resource "aws_s3_bucket_logging" "bucket_logging" {
@@ -42,7 +44,7 @@ resource "aws_s3_object" "sample_index_html" {
   content_type = "text/html"
   etag         = filemd5("${var.path_to_site_content}/site-content/index.html")
 
-  depends_on = [aws_s3_bucket_replication_configuration.replication]
+  depends_on = [aws_s3_bucket_replication_configuration.replication, aws_s3_bucket.this, aws_s3_bucket.replication_bucket]
 }
 
 resource "aws_s3_object" "sample_logo_png" {
@@ -53,5 +55,5 @@ resource "aws_s3_object" "sample_logo_png" {
   content_type = "text/html"
   etag         = filemd5("${var.path_to_site_content}/site-content/logo.png")
 
-  depends_on = [aws_s3_bucket_replication_configuration.replication]
+  depends_on = [aws_s3_bucket_replication_configuration.replication, aws_s3_bucket.this, aws_s3_bucket.replication_bucket]
 }

@@ -14,6 +14,12 @@ variable "path_to_site_content" {
   default     = "../../../../../.."
 }
 
+variable "path_to_lambdas" {
+  type        = string
+  description = "ID of the logging bucket"
+  default     = "../../../../../../aws/lambda"
+}
+
 variable "domain_name" {
   type        = string
   description = "Domain name for website, used for all resources"
@@ -26,6 +32,11 @@ variable "project_name" {
 
 variable "region" {
   description = "Region for this project"
+  type        = string
+}
+
+variable "environment" {
+  description = "Environment for this project"
   type        = string
 }
 

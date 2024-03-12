@@ -85,12 +85,12 @@ variable "SLACK_WORKSPACE_ID" {
 }
 
 variable "CODEPIPELINE_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Notifications"
+  description = "Codepipeline Slack Channel ID for Notifications"
   type        = string
 }
 
-variable "WEBSITE_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Notifications"
+variable "ALERTS_SLACK_CHANNEL_ID" {
+  description = "Website Slack Channel ID for Notifications"
   type        = string
 }
 

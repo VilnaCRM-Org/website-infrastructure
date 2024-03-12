@@ -6,7 +6,8 @@ resource "aws_s3_bucket" "replication_bucket" {
   #checkov:skip=CKV2_AWS_61: The lifecycle configuration is not needed 
   #checkov:skip=CKV_AWS_18:The cross-region access logging of logging bucket is not allowed(needs to have separate) 
   #checkov:skip=CKV2_AWS_62: The event notifications has to have separate endpoint 
-  #checkov:skip=CKV_AWS_145: The KMS encryption is not needed 
+  #checkov:skip=CKV_AWS_145: The KMS encryption is not needed
+  force_destroy = local.allow_force_destroy
 }
 
 resource "aws_s3_bucket_public_access_block" "replication_bucket" {
