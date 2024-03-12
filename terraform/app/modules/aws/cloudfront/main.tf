@@ -1,7 +1,7 @@
 resource "aws_cloudfront_distribution" "this" {
   provider = aws.us-east-1
 
-   #ts:skip=AC-AW-IS-CD-M-0026 Geo restriction is not needed
+  #ts:skip=AC-AW-IS-CD-M-0026 Geo restriction is not needed
 
   origin_group {
     origin_id = "${var.project_name}-groupS3"

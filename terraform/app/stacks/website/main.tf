@@ -2,8 +2,8 @@ module "logging_s3_bucket" {
   source = "../../modules/aws/s3/website-logging-s3"
 
   project_name = var.project_name
-  environment = var.environment
-  
+  environment  = var.environment
+
   aws_cloudfront_distribution_arn = module.cloudfront.arn
   aws_s3_bucket_this_arn          = module.s3_bucket.arn
 
@@ -17,7 +17,7 @@ module "s3_bucket" {
 
   project_name = var.project_name
 
-  region = var.region
+  region      = var.region
   environment = var.environment
 
   s3_bucket_custom_name         = var.s3_bucket_custom_name

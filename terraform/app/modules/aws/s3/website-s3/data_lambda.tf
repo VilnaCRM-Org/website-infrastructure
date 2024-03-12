@@ -14,9 +14,9 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 data "aws_iam_policy_document" "lambda_allow_sns_policy" {
   statement {
     effect = "Allow"
-    sid = "AllowPublishMessageToSNS"
+    sid    = "AllowPublishMessageToSNS"
 
-    actions = ["sns:Publish"]
+    actions   = ["sns:Publish"]
     resources = [aws_sns_topic.bucket_notifications.arn]
   }
 } 

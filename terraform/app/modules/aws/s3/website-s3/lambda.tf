@@ -43,7 +43,7 @@ resource "aws_lambda_function" "func" {
   handler       = "sns_converter.lambda_handler"
   runtime       = "python3.12"
 
-environment {
+  environment {
     variables = {
       SNS_TOPIC_ARN = "${aws_sns_topic.bucket_notifications.arn}"
     }
