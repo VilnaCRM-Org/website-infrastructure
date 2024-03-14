@@ -37,11 +37,18 @@ resource "aws_lambda_permission" "allow_replication_bucket" {
 }
 
 resource "aws_lambda_function" "func" {
+  #checkov:skip=CKV_AWS_117:AWS VPC is not needed here for sending notifications
+  #checkov:skip=CKV_AWS_50: X-Ray is not needed for such lambda and it takes bonus costs
+  #checkov:skip=CKV_AWS_116: DLQ needs additional topics, to complex for simple redirect lambda function
+  #checkov:skip=CKV_AWS_272: Code-signing is not needed for simple redirect lambda function  
   filename      = "lambda_function_payload.zip"
   function_name = "${var.project_name}-lambda-func"
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = "sns_converter.lambda_handler"
-  runtime       = "python3.12"
+  runtime       = var.lambda_python_version
+  // reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
+
+  kms_key_arn = aws_kms_key.lambda_encryption_key.arn
 
   environment {
     variables = {

@@ -110,6 +110,16 @@ variable "ALERTS_SLACK_CHANNEL_ID" {
   type        = string
 }
 
+variable "lambda_python_version" {
+  description = "Python version for Lambda"
+  type        = string
+}
+
+variable "lambda_reserved_concurrent_executions" {
+  description = "Function-level concurrent execution Limit for Lambda"
+  type        = number
+}
+
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)

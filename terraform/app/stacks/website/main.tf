@@ -20,6 +20,9 @@ module "s3_bucket" {
   region      = var.region
   environment = var.environment
 
+  lambda_python_version = var.lambda_python_version
+  lambda_reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
+
   s3_bucket_custom_name         = var.s3_bucket_custom_name
   s3_bucket_versioning          = var.s3_bucket_versioning
   s3_bucket_public_access_block = var.s3_bucket_public_access_block
