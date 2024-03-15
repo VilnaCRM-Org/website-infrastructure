@@ -22,5 +22,5 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
     lambda_function_arn = aws_lambda_function.func.arn
     events              = ["s3:ObjectRemoved:*", "s3:ObjectAcl:Put"]
   }
-  depends_on = [aws_sns_topic.bucket_notifications, aws_s3_bucket.this, aws_lambda_permission.allow_bucket, aws_lambda_permission.allow_replication_bucket]
+  depends_on = [aws_sns_topic.bucket_notifications, aws_s3_bucket.this, aws_lambda_permission.allow_bucket]
 }

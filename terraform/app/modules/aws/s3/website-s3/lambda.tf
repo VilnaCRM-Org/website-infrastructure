@@ -28,25 +28,19 @@ resource "aws_lambda_permission" "allow_bucket" {
   source_arn    = aws_s3_bucket.this.arn
 }
 
-resource "aws_lambda_permission" "allow_replication_bucket" {
-  statement_id  = "AllowExecutionFromReplicationS3Bucket"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.func.arn
-  principal     = "s3.amazonaws.com"
-  source_arn    = aws_s3_bucket.replication_bucket.arn
-}
-
 resource "aws_lambda_function" "func" {
   #checkov:skip=CKV_AWS_117:AWS VPC is not needed here for sending notifications
   #checkov:skip=CKV_AWS_50: X-Ray is not needed for such lambda and it takes bonus costs
   #checkov:skip=CKV_AWS_116: DLQ needs additional topics, to complex for simple redirect lambda function
-  #checkov:skip=CKV_AWS_272: Code-signing is not needed for simple redirect lambda function  
+  #checkov:skip=CKV_AWS_272: Code-signing is not needed for simple redirect lambda function 
+  #ts:skip=AWS.LambdaFunction.Logging.0472 AWS VPC is not needed here for sending notifications
+  #ts:skip=AWS.LambdaFunction.Logging.0470 X-Ray is not needed for such lambda and it takes bonus costs
   filename      = "lambda_function_payload.zip"
   function_name = "${var.project_name}-lambda-func"
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = "sns_converter.lambda_handler"
   runtime       = var.lambda_python_version
-  // reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
+  reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
 
   kms_key_arn = aws_kms_key.lambda_encryption_key.arn
 
