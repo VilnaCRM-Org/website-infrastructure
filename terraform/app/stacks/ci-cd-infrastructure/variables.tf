@@ -111,7 +111,7 @@ variable "python_version" {
 }
 
 variable "nodejs_version" {
-  description = "Node Version to be used in codebuild stages"
+  description = "Node.js Version to be used in codebuild stages"
   type        = string
 }
 
