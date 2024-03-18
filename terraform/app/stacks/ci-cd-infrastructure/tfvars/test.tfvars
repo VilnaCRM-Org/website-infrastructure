@@ -22,7 +22,7 @@ build_projects = [
   "validate",
   "plan",
   "up",
-  "content",
+  "deploy",
   "healthcheck",
   "down"
 ]
