@@ -35,25 +35,3 @@ resource "aws_s3_bucket_public_access_block" "this" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
-
-resource "aws_s3_object" "sample_index_html" {
-  count        = var.deploy_sample_content == true ? 1 : 0
-  bucket       = aws_s3_bucket.this.id
-  key          = "index.html"
-  source       = "${var.path_to_site_content}/site-content/index.html"
-  content_type = "text/html"
-  etag         = filemd5("${var.path_to_site_content}/site-content/index.html")
-
-  depends_on = [aws_s3_bucket_replication_configuration.replication, aws_s3_bucket.this, aws_s3_bucket.replication_bucket]
-}
-
-resource "aws_s3_object" "sample_logo_png" {
-  count        = var.deploy_sample_content == true ? 1 : 0
-  bucket       = aws_s3_bucket.this.id
-  key          = "logo.png"
-  source       = "${var.path_to_site_content}/site-content/logo.png"
-  content_type = "text/html"
-  etag         = filemd5("${var.path_to_site_content}/site-content/logo.png")
-
-  depends_on = [aws_s3_bucket_replication_configuration.replication, aws_s3_bucket.this, aws_s3_bucket.replication_bucket]
-}
