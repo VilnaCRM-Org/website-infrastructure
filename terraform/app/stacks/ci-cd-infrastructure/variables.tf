@@ -110,6 +110,16 @@ variable "python_version" {
   type        = string
 }
 
+variable "nodejs_version" {
+  description = "Node Version to be used in codebuild stages"
+  type        = string
+}
+
+variable "bucket_name" {
+  description = "S3 Bucket Name for content"
+  type        = string
+}
+
 variable "script_dir" {
   description = "Directory for Scripts of CodeBuild"
   type        = string

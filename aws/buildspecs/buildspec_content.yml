@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  runtime-versions:
+    nodejs: $NODEJS_VERSION
+  install:
+    - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
+    - 'export AWS_PROFILE=terraform'
+    - 'cd ~'
+    - 'git clone https://github.com/VilnaCRM-Org/website.git'
+    - 'cd website/'
+    - 'yum install -y yum-utils'
+    - 'echo #### Install pnpm'
+    - 'npm install -g pnpm'
+    - 'echo #### Install dependencies'
+    - 'pnpm i --frozen-lockfile'
+    - 'echo #### Build Project'
+    - 'pnpm run build'
+    - 'echo #### Build Project'
+    - 'aws s3 sync ./out s3://$BUCKET_NAME'
+  build:
+    commands:
+      - 'echo "Content install succeeded"'
+
+artifacts:
+  files:
+    - '**/*'

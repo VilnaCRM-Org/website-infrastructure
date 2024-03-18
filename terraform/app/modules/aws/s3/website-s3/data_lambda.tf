@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "lambda_allow_sns_policy" {
     actions   = ["sns:Publish"]
     resources = [aws_sns_topic.bucket_notifications.arn]
   }
-} 
+}
 
 data "aws_iam_policy_document" "lambda_kms_key_policy_doc" {
   statement {

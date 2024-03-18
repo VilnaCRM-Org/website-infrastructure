@@ -4,8 +4,8 @@ tags = {
   Project     = "website"
   Environment = "prod"
 }
-domain_name           = "vilnacrm.com"
-s3_bucket_custom_name = "vilnacrm.com"
+domain_name                           = "vilnacrm.com"
+s3_bucket_custom_name                 = "vilnacrm.com"
 s3_bucket_versioning                  = true
 s3_bucket_public_access_block         = true
 deploy_sample_content                 = true

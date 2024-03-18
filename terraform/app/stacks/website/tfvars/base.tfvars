@@ -14,7 +14,7 @@ cloudfront_custom_error_responses = [
     response_page_path    = "/index.html"
   }
 ]
-region        = "eu-central-1"
-alias_zone_id = "Z2FDTNDATAQYW2"
-lambda_python_version = "python3.12"
+region                                = "eu-central-1"
+alias_zone_id                         = "Z2FDTNDATAQYW2"
+lambda_python_version                 = "python3.12"
 lambda_reserved_concurrent_executions = -1
