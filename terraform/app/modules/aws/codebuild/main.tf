@@ -30,7 +30,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
         "RUBY_VERSION"                         = var.ruby_version,
         "NODEJS_VERSION"                       = var.nodejs_version,
         "SCRIPT_DIR"                           = var.script_dir,
-        "BUCKET_NAME"                           = var.bucket_name,
+        "BUCKET_NAME"                          = var.bucket_name,
       }
       content {
         name  = environment_variable.key

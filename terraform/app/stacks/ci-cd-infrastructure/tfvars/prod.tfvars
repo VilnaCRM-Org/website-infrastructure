@@ -3,7 +3,7 @@ environment                = "prod"
 github_connection_name     = "Github"
 secretsmanager_secret_name = "prod/AWS/Website"
 website_url                = "vilnacrm.com"
-bucket_name = "vilnacrm.com"
+bucket_name                = "vilnacrm.com"
 
 tags = {
   Project     = "website-prod"

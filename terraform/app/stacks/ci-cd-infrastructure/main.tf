@@ -64,7 +64,7 @@ module "codebuild_terraform" {
   ruby_version   = var.ruby_version
   python_version = var.python_version
   nodejs_version = var.nodejs_version
-  bucket_name = var.bucket_name
+  bucket_name    = var.bucket_name
   script_dir     = var.script_dir
 
   region      = var.region
