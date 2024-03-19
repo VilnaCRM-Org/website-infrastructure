@@ -41,6 +41,7 @@ resource "aws_lambda_function" "func" {
   environment {
     variables = {
       SNS_TOPIC_ARN = "${aws_sns_topic.bucket_notifications.arn}"
+      PRINCIPAL_ID = "${data.aws_caller_identity.current.user_id}"
     }
   }
 }
