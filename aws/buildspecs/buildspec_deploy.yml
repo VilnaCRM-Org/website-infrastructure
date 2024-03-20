@@ -9,6 +9,7 @@ phases:
       - 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash'
       - 'export NVM_DIR="$HOME/.nvm"'
       - '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+      - '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"'
       - 'nvm install 21'
       - 'node -v'
       - 'npm -v'
@@ -25,7 +26,7 @@ phases:
     commands:
       - 'echo #### Build Project'
       - 'pnpm run build'
-      - 'echo #### Build Project'
+      - 'echo #### Deploy Project'
       - 'aws s3 sync ./out s3://$BUCKET_NAME'
       - 'echo "Content install succeeded"'
 
