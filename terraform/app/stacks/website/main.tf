@@ -74,10 +74,10 @@ module "cloudfront" {
 module "chatbot" {
   source = "../../modules/aws/chatbot"
 
-  project_name  = "website"
+  project_name  = "website-cloudfront-failover-alarm"
   channel_id    = var.ALERTS_SLACK_CHANNEL_ID
   workspace_id  = var.SLACK_WORKSPACE_ID
-  sns_topic_arn = module.s3_bucket.sns_topic_arn
+  sns_topic_arn = module.cloudfront.cloudwatch_sns_topic_arn
 
   tags = var.tags
 }

@@ -7,3 +7,23 @@ resource "aws_cloudwatch_log_group" "waf_web_acl_log_group" {
 
   depends_on = [aws_kms_key.cloudwatch_encryption_key]
 }
+
+resource "aws_cloudwatch_metric_alarm" "cloudfront-500-errors" {
+  provider            = aws.us-east-1
+  alarm_name          = "${var.project_name}-AWS-CloudFront-High-5xx-Error-Rate"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  metric_name         = "5xxErrorRate"
+  namespace           = "AWS/CloudFront"
+  period              = 60
+  statistic           = "Average"
+  threshold           = 5
+  treat_missing_data  = "notBreaching"
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
+  actions_enabled     = true
+
+  dimensions = {
+    DistributionId = aws_cloudfront_distribution.this.id
+    Region         = "Global"
+  }
+}
