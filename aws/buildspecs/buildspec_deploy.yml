@@ -2,15 +2,13 @@ version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      nodejs: $NODEJS_VERSION
     commands:
       - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
       - 'export AWS_PROFILE=terraform'
-      - 'touch ~/.bash_profile'
-      - 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash'
-      - 'export NVM_DIR="$HOME/.nvm"'
-      - '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
-      - '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"'
-      - 'nvm install 21'
+      - 'sudo npm install -g n'
+      - 'sudo n install 21.7.1'
       - 'node -v'
       - 'npm -v'
       - 'cd ~'
