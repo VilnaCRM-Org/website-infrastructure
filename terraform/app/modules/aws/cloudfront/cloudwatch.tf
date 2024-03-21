@@ -5,7 +5,7 @@ resource "aws_cloudwatch_log_group" "waf_web_acl_log_group" {
   retention_in_days = 60
   kms_key_id        = aws_kms_key.cloudwatch_encryption_key.arn
 
-  depends_on = [aws_kms_key.cloudwatch_encryption_key]
+  depends_on = [aws_kms_key_policy.cloudwatch_encryption_key]
 }
 
 resource "aws_cloudwatch_metric_alarm" "cloudfront-500-errors" {

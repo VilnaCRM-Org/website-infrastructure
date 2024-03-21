@@ -4,7 +4,7 @@ data "aws_partition" "current" {}
 
 data "aws_iam_policy_document" "cloudwatch_kms_key_policy_doc" {
   statement {
-    sid     = "EnableRootAccessAndPreventPermissionDelegationForCloudWatchSNSKMSKey"
+    sid     = "EnableRootAccessAndPreventPermissionDelegationForCloudWatchLogsKMSKey"
     effect  = "Allow"
     actions = ["kms:*"]
     #checkov:skip=CKV_AWS_356:Without this statement, KMS key cannot be managed by root
@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "cloudwatch_kms_key_policy_doc" {
   }
 
   statement {
-    sid       = "AllowAccessForKeyAdministratorsForCloudWatchSNSKMSKey"
+    sid       = "AllowAccessForKeyAdministratorsForCloudWatchLogsKMSKey"
     effect    = "Allow"
     actions   = ["kms:*"]
     resources = ["${aws_kms_key.cloudwatch_encryption_key.arn}"]
@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "cloudwatch_kms_key_policy_doc" {
     }
   }
   statement {
-    sid    = "AllowUseOfTheKeyForCloudwatchKMSKey"
+    sid    = "AllowUseOfTheKeyCloudWatchLogsKMSKey"
     effect = "Allow"
     actions = [
       "kms:Encrypt",
