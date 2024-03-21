@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "cloudwatch_kms_key_policy_doc" {
 
     principals {
       type        = "Service"
-      identifiers = ["logs.amazonaws.com"]
+      identifiers = ["logs.us-east-1.amazonaws.com"]
     }
   }
   statement {
@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "cloudwatch_kms_key_policy_doc" {
 
     principals {
       type        = "Service"
-      identifiers = ["logs.amazonaws.com"]
+      identifiers = ["logs.us-east-1.amazonaws.com"]
     }
   }
 }
