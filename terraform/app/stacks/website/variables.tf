@@ -120,6 +120,11 @@ variable "lambda_reserved_concurrent_executions" {
   type        = number
 }
 
+variable "create_slack_notification" {
+  description = "This responsible for creating Slack Notifications"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)

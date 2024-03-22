@@ -140,6 +140,11 @@ variable "ALERTS_SLACK_CHANNEL_ID" {
   type        = string
 }
 
+variable "create_slack_notification" {
+  description = "This responsible for creating Slack Notifications"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)

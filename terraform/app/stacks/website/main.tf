@@ -72,6 +72,8 @@ module "cloudfront" {
 }
 
 module "chatbot" {
+  count = var.create_slack_notification ? 1 : 0
+
   source = "../../modules/aws/chatbot"
 
   project_name  = "website-cloudfront-failover-alarm"
