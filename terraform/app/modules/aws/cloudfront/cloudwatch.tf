@@ -17,7 +17,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront-500-errors" {
   namespace           = "AWS/CloudFront"
   period              = 60
   statistic           = "Average"
-  threshold           = 5
+  threshold           = 1
   treat_missing_data  = "notBreaching"
   alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
   actions_enabled     = true
