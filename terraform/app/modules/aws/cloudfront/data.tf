@@ -25,16 +25,22 @@ data "aws_iam_policy_document" "cloudwatch_kms_key_policy_doc" {
       type        = "Service"
       identifiers = ["logs.us-east-1.amazonaws.com"]
     }
+
+    condition {
+      test     = "ArnLike"
+      variable = "kms:EncryptionContext:aws:logs:arn"
+      values = [
+        "arn:aws:logs:us-east-1:${data.aws_caller_identity.current.account_id}:log-group:aws-waf-logs-wafv2-web-acl"
+      ]
+    }
   }
+
   statement {
     sid    = "AllowUseOfTheKeyCloudWatchLogsKMSKey"
     effect = "Allow"
     actions = [
-      "kms:Encrypt",
       "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
+      "kms:GenerateDataKey*"
     ]
 
     resources = ["${aws_kms_key.cloudwatch_encryption_key.arn}"]
@@ -43,8 +49,17 @@ data "aws_iam_policy_document" "cloudwatch_kms_key_policy_doc" {
       type        = "Service"
       identifiers = ["logs.us-east-1.amazonaws.com"]
     }
+
+    condition {
+      test     = "ArnLike"
+      variable = "kms:EncryptionContext:aws:logs:arn"
+      values = [
+        "arn:aws:logs:us-east-1:${data.aws_caller_identity.current.account_id}:log-group:aws-waf-logs-wafv2-web-acl"
+      ]
+    }
   }
 }
+
 
 data "aws_iam_policy_document" "cloudwatch_alarm_sns_topic_doc" {
   statement {
@@ -58,6 +73,15 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_topic_doc" {
     }
 
     resources = ["${aws_sns_topic.cloudwatch_alarm_notifications.arn}"]
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values = [
+        "${aws_cloudwatch_metric_alarm.cloudfront-500-errors.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront-origin-latency.arn}"
+      ]
+    }
   }
 }
 
@@ -84,16 +108,21 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_kms_key_policy_doc" {
       type        = "Service"
       identifiers = ["sns.amazonaws.com"]
     }
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values = [
+        "${aws_sns_topic.cloudwatch_alarm_notifications.arn}"
+      ]
+    }
   }
   statement {
     sid    = "AllowUseOfTheKeyForCloudWatchAlarmSNSKMSKey"
     effect = "Allow"
     actions = [
-      "kms:Encrypt",
       "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
+      "kms:GenerateDataKey*"
     ]
 
     resources = ["${aws_kms_key.cloudwatch_alarm_sns_encryption_key.arn}"]
@@ -102,6 +131,15 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_kms_key_policy_doc" {
       type        = "Service"
       identifiers = ["sns.amazonaws.com"]
     }
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values = [
+        "${aws_sns_topic.cloudwatch_alarm_notifications.arn}"
+      ]
+    }
+
   }
   statement {
     sid    = "AllowUseOfTheKeyForCloudWatchAlarmKMSKey"
@@ -116,6 +154,15 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_kms_key_policy_doc" {
     principals {
       type        = "Service"
       identifiers = ["cloudwatch.amazonaws.com"]
+    }
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values = [
+        "${aws_cloudwatch_metric_alarm.cloudfront-500-errors.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront-origin-latency.arn}"
+      ]
     }
   }
 }

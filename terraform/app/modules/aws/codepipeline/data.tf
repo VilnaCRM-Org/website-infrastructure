@@ -40,16 +40,21 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
       type        = "Service"
       identifiers = ["sns.amazonaws.com"]
     }
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values = [
+        "${aws_sns_topic.codepipeline_notifications.arn}"
+      ]
+    }
   }
   statement {
     sid    = "AllowUseOfTheKeyForCodePipelineSNSKMSKey"
     effect = "Allow"
     actions = [
-      "kms:Encrypt",
       "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
+      "kms:GenerateDataKey*"
     ]
 
     resources = ["${aws_kms_key.codepipeline_sns_encryption_key.arn}"]
@@ -57,6 +62,14 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
     principals {
       type        = "Service"
       identifiers = ["sns.amazonaws.com"]
+    }
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values = [
+        "${aws_sns_topic.codepipeline_notifications.arn}"
+      ]
     }
   }
   statement {

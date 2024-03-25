@@ -8,10 +8,6 @@ data "aws_iam_role" "existing_codepipeline_role" {
   name  = var.codepipeline_iam_role_name
 }
 
-data "aws_s3_bucket" "aws_s3_bucket_backend" {
-  bucket = "terraform-state-${data.aws_caller_identity.current.account_id}-${var.region}-${var.environment}"
-}
-
 data "aws_secretsmanager_secret" "terraform_secret" {
   name = var.secretsmanager_secret_name
 }
@@ -43,41 +39,15 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     sid    = "AllowS3Actions"
     effect = "Allow"
     actions = [
-      "s3:ListBucket",
       "s3:GetObject",
       "s3:GetObjectVersion",
-      "s3:GetBucketVersioning",
       "s3:PutObjectAcl",
-      "s3:PutObject",
-      "s3:GetBucketObjectLockConfiguration",
-      "s3:GetEncryptionConfiguration",
-      "s3:GetLifecycleConfiguration",
-      "s3:GetReplicationConfiguration"
+      "s3:PutObject"
     ]
     resources = [
       "${var.s3_bucket_arn}/*",
-      "${var.s3_bucket_arn}",
-      "${data.aws_s3_bucket.aws_s3_bucket_backend.arn}",
-      "${data.aws_s3_bucket.aws_s3_bucket_backend.arn}/*"
+      "${var.s3_bucket_arn}"
     ]
-  }
-  statement {
-
-    sid    = "AllowDynamoDB"
-    effect = "Allow"
-    actions = [
-      "dynamodb:PutItem",
-      "dynamodb:GetItem",
-      "dynamodb:UpdateItem",
-      "dynamodb:DeleteItem",
-      "dynamodb:BatchWriteItem",
-      "dynamodb:BatchGetItem",
-      "dynamodb:Query",
-      "dynamodb:Scan",
-      "dynamodb:DescribeTable"
-    ]
-    resources = ["arn:aws:dynamodb:${var.region}:${data.aws_caller_identity.current.account_id}:table/terraform_locks"]
-
   }
 
   statement {
@@ -94,10 +64,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     sid    = "AllowKMSActions"
     effect = "Allow"
     actions = [
-      "kms:DescribeKey",
       "kms:GenerateDataKey*",
-      "kms:Encrypt",
-      "kms:ReEncrypt*",
       "kms:Decrypt"
     ]
     resources = ["${var.kms_key_arn}"]
