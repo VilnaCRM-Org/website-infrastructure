@@ -12,7 +12,6 @@ data "aws_iam_policy_document" "bucket_policy_doc" {
     actions = [
       "s3:Get*",
       "s3:List*",
-      "s3:ReplicateObject",
       "s3:PutObject",
       "s3:RestoreObject",
       "s3:PutObjectVersionTagging",
@@ -28,7 +27,7 @@ data "aws_iam_policy_document" "bucket_policy_doc" {
     condition {
       test     = "StringEquals"
       values   = ["${var.aws_cloudfront_distribution_arn}"]
-      variable = "aws:SourceAccount"
+      variable = "aws:SourceArn"
     }
   }
 
@@ -57,7 +56,7 @@ data "aws_iam_policy_document" "bucket_policy_doc" {
     condition {
       test     = "StringEquals"
       values   = ["${var.aws_s3_bucket_this_arn}"]
-      variable = "aws:SourceAccount"
+      variable = "aws:SourceArn"
     }
   }
 }

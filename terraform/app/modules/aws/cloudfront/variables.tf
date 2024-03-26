@@ -13,6 +13,11 @@ variable "domain_name" {
   description = "Domain name for website, used for all resources"
 }
 
+variable "logging_bucket_domain_name" {
+  type        = string
+  description = "Domain name for logging bucket"
+}
+
 variable "project_name" {
   description = "Unique name for this project"
   type        = string
