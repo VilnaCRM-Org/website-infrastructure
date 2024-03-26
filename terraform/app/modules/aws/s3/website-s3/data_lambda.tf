@@ -44,16 +44,19 @@ data "aws_iam_policy_document" "lambda_kms_key_policy_doc" {
       type        = "Service"
       identifiers = ["lambda.amazonaws.com"]
     }
+    
+    condition {
+      test     = "ArnLike"
+      variable = "AWS:SourceArn"
+      values   = [aws_lambda_function.func.arn]
+    }
   }
   statement {
     sid    = "AllowUseOfTheKeyForLambdaKMSKey"
     effect = "Allow"
     actions = [
-      "kms:Encrypt",
       "kms:Decrypt",
-      "kms:ReEncrypt*",
       "kms:GenerateDataKey*",
-      "kms:DescribeKey"
     ]
 
     resources = ["${aws_kms_key.lambda_encryption_key.arn}"]
@@ -61,6 +64,12 @@ data "aws_iam_policy_document" "lambda_kms_key_policy_doc" {
     principals {
       type        = "Service"
       identifiers = ["lambda.amazonaws.com"]
+    }
+
+    condition {
+      test     = "ArnLike"
+      variable = "AWS:SourceArn"
+      values   = [aws_lambda_function.func.arn]
     }
   }
 }

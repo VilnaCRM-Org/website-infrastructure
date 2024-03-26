@@ -52,7 +52,7 @@ data "aws_iam_policy_document" "replication" {
 
     actions = [
       "s3:GetReplicationConfiguration",
-      "s3:ListBucket",
+      "s3:ListBucket"
     ]
 
     resources = [aws_s3_bucket.this.arn]
@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "replication" {
     actions = [
       "s3:GetObjectVersionForReplication",
       "s3:GetObjectVersionAcl",
-      "s3:GetObjectVersionTagging",
+      "s3:GetObjectVersionTagging"
     ]
 
     resources = ["${aws_s3_bucket.this.arn}/*"]

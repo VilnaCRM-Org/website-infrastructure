@@ -10,18 +10,12 @@ data "aws_iam_policy_document" "bucket_policy_doc" {
     }
 
     actions = [
-      "s3:Get*",
-      "s3:List*",
       "s3:PutObject",
-      "s3:RestoreObject",
-      "s3:PutObjectVersionTagging",
-      "s3:PutObjectTagging",
-      "s3:PutObjectAcl"
     ]
 
     resources = [
       aws_s3_bucket.logging_bucket.arn,
-      "${aws_s3_bucket.logging_bucket.arn}/*",
+      "${aws_s3_bucket.logging_bucket.arn}/*"
     ]
 
     condition {
@@ -34,23 +28,16 @@ data "aws_iam_policy_document" "bucket_policy_doc" {
   statement {
     principals {
       type        = "Service"
-      identifiers = ["s3.amazonaws.com"]
+      identifiers = ["logging.s3.amazonaws.com"]
     }
 
     actions = [
-      "s3:Get*",
-      "s3:List*",
-      "s3:ReplicateObject",
       "s3:PutObject",
-      "s3:RestoreObject",
-      "s3:PutObjectVersionTagging",
-      "s3:PutObjectTagging",
-      "s3:PutObjectAcl"
     ]
 
     resources = [
       aws_s3_bucket.logging_bucket.arn,
-      "${aws_s3_bucket.logging_bucket.arn}/*",
+      "${aws_s3_bucket.logging_bucket.arn}/*"
     ]
 
     condition {

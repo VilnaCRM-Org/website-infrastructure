@@ -8,6 +8,12 @@ data "aws_iam_policy_document" "sns_bucket_topic_doc" {
     effect    = "Allow"
     actions   = ["sns:Publish"]
     resources = ["${aws_sns_topic.bucket_notifications.arn}"]
+
+    condition {
+      test     = "ArnLike"
+      variable = "AWS:SourceArn"
+      values   = [aws_lambda_function.func.arn]
+    }
   }
 }
 data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
@@ -33,16 +39,19 @@ data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
       type        = "Service"
       identifiers = ["sns.amazonaws.com"]
     }
+
+    condition {
+      test     = "ArnLike"
+      variable = "AWS:SourceArn"
+      values   = [aws_sns_topic.bucket_notifications.arn]
+    }
   }
   statement {
     sid    = "AllowUseOfTheKeyForS3BucketSNSKMSKey"
     effect = "Allow"
     actions = [
-      "kms:Encrypt",
       "kms:Decrypt",
-      "kms:ReEncrypt*",
       "kms:GenerateDataKey*",
-      "kms:DescribeKey"
     ]
 
     resources = ["${aws_kms_key.bucket_sns_encryption_key.arn}"]
@@ -51,9 +60,15 @@ data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
       type        = "Service"
       identifiers = ["sns.amazonaws.com"]
     }
+
+    condition {
+      test     = "ArnLike"
+      variable = "AWS:SourceArn"
+      values   = [aws_sns_topic.bucket_notifications.arn]
+    }
   }
   statement {
-    sid    = "AllowUseOfTheKeyForSNSKMSKey"
+    sid    = "AllowUseOfTheKeyForLambdaRoleSNSKMSKey"
     effect = "Allow"
     actions = [
       "kms:GenerateDataKey*",
