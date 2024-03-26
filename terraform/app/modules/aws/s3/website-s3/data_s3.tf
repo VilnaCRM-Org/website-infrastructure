@@ -48,6 +48,11 @@ data "aws_iam_policy_document" "replication" {
     }
   }
   statement {
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+
     effect = "Allow"
 
     actions = [
@@ -59,6 +64,11 @@ data "aws_iam_policy_document" "replication" {
   }
 
   statement {
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+
     effect = "Allow"
 
     actions = [
@@ -71,6 +81,11 @@ data "aws_iam_policy_document" "replication" {
   }
 
   statement {
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+
     effect = "Allow"
 
     actions = [
