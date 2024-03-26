@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "lambda_kms_key_policy_doc" {
       type        = "Service"
       identifiers = ["lambda.amazonaws.com"]
     }
-    
+
     condition {
       test     = "ArnLike"
       variable = "AWS:SourceArn"
