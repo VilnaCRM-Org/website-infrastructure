@@ -1,6 +1,6 @@
 #Artifact Bucket
 resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket_prefix = regex("[a-z0-9.-]+", lower(var.project_name))
+  bucket = "${var.project_name}-artifacts-bucket"
   tags          = var.tags
   force_destroy = true
   #checkov:skip=CKV_AWS_144: No usage of cross-region
