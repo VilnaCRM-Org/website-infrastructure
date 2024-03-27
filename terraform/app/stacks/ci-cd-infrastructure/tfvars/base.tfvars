@@ -1,0 +1,10 @@
+source_repo_owner           = "VilnaCRM-Org"
+source_repo_name            = "website-infrastructure"
+source_repo_branch          = "2-set-up-the-frontend-production-infrastructure"
+kms_condition_account_value = "Account"
+region                      = "eu-central-1"
+ruby_version                = "3.2"
+python_version              = "3.12"
+nodejs_version              = "20"
+script_dir                  = "./aws/scripts"
+create_slack_notification   = true
