@@ -12,3 +12,8 @@ output "arn" {
   value       = aws_s3_bucket.this.arn
   description = "S3 Bucket Regional Domain Name"
 }
+
+output "bucket_notifications_arn" {
+  value       = aws_sns_topic.bucket_notifications.arn
+  description = "S3 Bucket Bucket Notifications Name"
+}

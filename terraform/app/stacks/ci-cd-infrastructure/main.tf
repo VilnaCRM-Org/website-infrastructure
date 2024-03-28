@@ -30,7 +30,7 @@ module "codepipeline_kms" {
 }
 
 module "codepipeline_iam_role" {
-  source = "../../modules/aws/iam-role"
+  source = "../../modules/aws/iam/roles/codepipeline-role"
 
   project_name               = var.project_name
   create_new_role            = var.create_new_role
@@ -124,9 +124,29 @@ module "chatbot" {
   channel_id   = var.CODEPIPELINE_SLACK_CHANNEL_ID
   workspace_id = var.SLACK_WORKSPACE_ID
 
-  sns_topic_arn = module.codepipeline_terraform.sns_topic_arn
+  sns_topic_arns = [module.codepipeline_terraform.sns_topic_arn]
 
   tags = var.tags
 
   depends_on = [module.codepipeline_terraform]
+}
+
+module "codepipeline-user" {
+  source = "../../modules/aws/iam/users/codepipeline-deploy-user"
+
+  project_name = var.project_name
+  region       = var.region
+  environment  = var.environment
+
+  tags = var.tags
+
+  depends_on = [
+    module.codestar_connection,
+    module.s3_artifacts_bucket,
+    module.codepipeline_kms,
+    module.codepipeline_iam_role,
+    module.codebuild_terraform,
+    module.codepipeline_terraform,
+    module.chatbot
+  ]
 }

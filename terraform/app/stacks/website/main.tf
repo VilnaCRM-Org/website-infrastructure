@@ -81,7 +81,25 @@ module "chatbot" {
   project_name  = "website-cloudfront-failover-alarm"
   channel_id    = var.ALERTS_SLACK_CHANNEL_ID
   workspace_id  = var.SLACK_WORKSPACE_ID
-  sns_topic_arn = module.cloudfront.cloudwatch_sns_topic_arn
+  sns_topic_arns = [module.cloudfront.cloudwatch_sns_topic_arn, module.s3_bucket.bucket_notifications_arn]
 
   tags = var.tags
+}
+
+module "website_user" {
+  source = "../../modules/aws/iam/users/website-deploy-user"
+
+  project_name = var.project_name
+  region       = var.region
+  environment  = var.environment
+  domain_name  = var.domain_name
+  tags         = var.tags
+
+  depends_on = [
+    module.logging_s3_bucket,
+    module.s3_bucket,
+    module.dns,
+    module.cloudfront,
+    module.chatbot
+  ]
 }

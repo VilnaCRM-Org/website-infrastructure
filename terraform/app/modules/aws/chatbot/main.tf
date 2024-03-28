@@ -3,7 +3,7 @@ resource "awscc_chatbot_slack_channel_configuration" "slack_channel_configuratio
   iam_role_arn       = awscc_iam_role.chatbot_role.arn
   slack_channel_id   = var.channel_id
   slack_workspace_id = var.workspace_id
-  sns_topic_arns     = [var.sns_topic_arn]
+  sns_topic_arns     = var.sns_topic_arns
 }
 
 resource "awscc_iam_role" "chatbot_role" {
