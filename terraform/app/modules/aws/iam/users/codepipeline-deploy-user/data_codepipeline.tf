@@ -91,6 +91,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "chatbot:CreateSlackChannelConfiguration",
     ]
     #checkov:skip=CKV_AWS_356:Required by AWSCC module
+    #checkov:skip=CKV_AWS_111:Required by AWSCC module
     resources = ["*"]
   }
 }
