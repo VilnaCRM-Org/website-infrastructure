@@ -24,7 +24,8 @@ data "aws_iam_policy_document" "terraform_policy_doc" {
     effect = "Allow"
     actions = [
       "s3:GetObject",
-      "s3:GetObjectVersion"
+      "s3:GetObjectVersion",
+      "s3:PutObject"
     ]
     resources = ["arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}/main/${var.region}/${var.environment}/stacks/ci-cd-infrastructure/terraform.tfstate"]
   }

@@ -5,7 +5,7 @@ resource "aws_iam_group" "codepipeline_users" {
 
 resource "aws_iam_user" "codepipeline_user" {
   #checkov:skip=CKV_AWS_273: SSO is not an option
-  name = "codepipeline-user"
+  name = "codepipelineUser"
   path = "/codepipeline-users/"
 
   tags = var.tags

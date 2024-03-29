@@ -5,7 +5,7 @@ resource "aws_iam_group" "website_users" {
 
 resource "aws_iam_user" "website_user" {
   #checkov:skip=CKV_AWS_273: SSO is not an option
-  name = "website-user"
+  name = "websiteUser"
   path = "/website-users/"
 
   tags = var.tags

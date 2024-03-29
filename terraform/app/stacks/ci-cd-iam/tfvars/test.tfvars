@@ -1,7 +1,7 @@
-project_name = "website-iam-test"
+project_name = "website-test"
 environment  = "test"
 
 tags = {
-  Project     = "website-iam-test"
+  Project     = "website-test"
   Environment = "test"
 }

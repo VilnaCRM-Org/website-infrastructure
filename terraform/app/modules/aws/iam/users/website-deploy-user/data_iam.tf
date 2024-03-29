@@ -11,6 +11,7 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "iam:AttachRolePolicy",
       "iam:DetachRolePolicy",
       "iam:ListInstanceProfilesForRole",
+      "iam:TagRole",
       "iam:DeleteRole"
     ]
     resources = [
@@ -26,6 +27,7 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "iam:GetPolicy",
       "iam:GetPolicyVersion",
       "iam:ListPolicyVersions",
+      "iam:TagPolicy",
       "iam:DeletePolicy"
     ]
     resources = [

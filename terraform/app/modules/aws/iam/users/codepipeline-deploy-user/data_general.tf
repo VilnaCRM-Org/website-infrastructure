@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
     actions = [
       "sts:GetCallerIdentity",
       "kms:CreateKey",
-      "codestar-notifications:DeleteTarget"
+      "codestar-notifications:DeleteTarget",
     ]
     resources = ["*"]
   }

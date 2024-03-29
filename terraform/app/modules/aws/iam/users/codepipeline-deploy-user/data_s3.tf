@@ -7,6 +7,7 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "s3:ListBucket",
       "s3:GetBucketTagging",
       "s3:PutBucketTagging",
+      "s3:PutBucketPolicy",
       "s3:GetBucketPolicy",
       "s3:GetBucketAcl",
       "s3:GetBucketCORS",

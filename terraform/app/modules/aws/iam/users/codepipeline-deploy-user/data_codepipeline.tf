@@ -6,15 +6,22 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "codepipeline:CreatePipeline",
       "codepipeline:GetPipeline",
       "codepipeline:ListTagsForResource",
+      "codepipeline:TagResource",
       "codepipeline:DeletePipeline"
     ]
-    resources = ["arn:aws:codepipeline:${var.region}:${local.account_id}:${var.project_name}-pipeline"]
+    resources = [
+      "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.project_name}-pipeline",
+      "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.project_name}-pipeline/*"
+      ]
   }
   statement {
     sid    = "CodeBuildCreatePolicyForCodePipelineUser"
     effect = "Allow"
     actions = [
-      "codebuild:CreateProject"
+      "codebuild:CreateProject",
+      "codebuild:BatchGetProjects",
+      "codebuild:UpdateProject",
+      "codebuild:DeleteProject"
     ]
     resources = [
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.project_name}-validate",
@@ -22,6 +29,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.project_name}-up",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.project_name}-deploy",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.project_name}-healthcheck",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.project_name}-down"
     ]
   }
   statement {
@@ -37,6 +45,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.project_name}-up",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.project_name}-deploy",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.project_name}-healthcheck",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.project_name}-down",
     ]
   }
   statement {
@@ -44,9 +53,10 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     effect = "Allow"
     actions = [
       "codestar-connections:ListConnections",
-      "codestar-connections:ListTagsForResource"
+      "codestar-connections:ListTagsForResource",
+      "codestar-connections:PassConnection"
     ]
-    resources = ["arn:aws:codestar-connections:${var.region}:${local.account_id}:connection/*"]
+    resources = ["arn:aws:codestar-connections:${var.region}:${local.account_id}:*"]
   }
   statement {
     sid    = "CodeStarNotificationsPolicyForCodePipelineUser"
@@ -57,5 +67,29 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "codestar-notifications:DeleteNotificationRule"
     ]
     resources = ["arn:aws:codestar-notifications:${var.region}:${local.account_id}:notificationrule/*"]
+  }
+  statement {
+    sid = "ChatformationForChatBotPolicyForCodepipelineUser"
+    effect = "Allow"
+    actions = [
+      "cloudformation:CreateResource",
+      "cloudformation:GetResource",
+      "cloudformation:ListTagsForResource",
+      "cloudformation:TagResource",
+      "cloudformation:GetResourceRequestStatus",
+      "cloudformation:DeleteResource"
+    ]
+    resources = ["*"]
+  }
+    statement {
+    sid = "ChatbotGeneralSlackPolicyForCodepipelineUser"
+    effect = "Allow"
+    actions = [
+				"chatbot:DescribeSlackChannelConfigurations",
+        "chatbot:UpdateSlackChannelConfiguration",
+        "chatbot:DeleteSlackChannelConfiguration",
+        "chatbot:CreateSlackChannelConfiguration",
+    ]
+    resources = ["*"]
   }
 } 

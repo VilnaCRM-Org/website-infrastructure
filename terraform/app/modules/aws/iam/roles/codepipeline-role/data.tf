@@ -60,6 +60,19 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
 
   }
 
+    statement {
+    sid    = "AllowCreateAndDeleteKeys"
+    effect = "Allow"
+    actions = [
+      "iam:CreateAccessKey",
+      "iam:DeleteAccessKey"
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:user/websiteUser",
+      "arn:aws:iam::${local.account_id}:user/codepipelineUser"
+    ]
+  }
+
   statement {
     sid    = "AllowKMSActions"
     effect = "Allow"
