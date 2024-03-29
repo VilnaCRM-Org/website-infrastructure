@@ -12,8 +12,7 @@ phases:
       golang: $GOLANG_VERSION
       ruby: $RUBY_VERSION
     commands:
-      - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
-      - 'export AWS_PROFILE=terraform'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
       - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
       - 'yum update -y'
       - 'yum install -y jq yum-utils'
