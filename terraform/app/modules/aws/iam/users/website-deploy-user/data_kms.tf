@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "kms_policy_doc" {
       "kms:GetKeyPolicy",
       "kms:PutKeyPolicy",
       "kms:ScheduleKeyDeletion",
-      "kms:TagResource"      
+      "kms:TagResource"
     ]
     resources = ["arn:aws:kms:${var.region}:${local.account_id}:key/*"]
   }
@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "kms_policy_doc" {
       "kms:GetKeyPolicy",
       "kms:PutKeyPolicy",
       "kms:ScheduleKeyDeletion",
-      "kms:TagResource"      
+      "kms:TagResource"
     ]
     resources = ["arn:aws:kms:us-east-1:${local.account_id}:key/*"]
   }

@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     resources = [
       "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.project_name}-pipeline",
       "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.project_name}-pipeline/*"
-      ]
+    ]
   }
   statement {
     sid    = "CodeBuildCreatePolicyForCodePipelineUser"
@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     resources = ["arn:aws:codestar-notifications:${var.region}:${local.account_id}:notificationrule/*"]
   }
   statement {
-    sid = "ChatformationForChatBotPolicyForCodepipelineUser"
+    sid    = "ChatformationForChatBotPolicyForCodepipelineUser"
     effect = "Allow"
     actions = [
       "cloudformation:CreateResource",
@@ -79,17 +79,18 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "cloudformation:GetResourceRequestStatus",
       "cloudformation:DeleteResource"
     ]
-    resources = ["*"]
+    resources = ["arn:aws:cloudformation:${var.region}:${local.account_id}:resource/*"]
   }
-    statement {
-    sid = "ChatbotGeneralSlackPolicyForCodepipelineUser"
+  statement {
+    sid    = "ChatbotGeneralSlackPolicyForCodepipelineUser"
     effect = "Allow"
     actions = [
-				"chatbot:DescribeSlackChannelConfigurations",
-        "chatbot:UpdateSlackChannelConfiguration",
-        "chatbot:DeleteSlackChannelConfiguration",
-        "chatbot:CreateSlackChannelConfiguration",
+      "chatbot:DescribeSlackChannelConfigurations",
+      "chatbot:UpdateSlackChannelConfiguration",
+      "chatbot:DeleteSlackChannelConfiguration",
+      "chatbot:CreateSlackChannelConfiguration",
     ]
+    #checkov:skip=CKV_AWS_356:Required by AWSCC module
     resources = ["*"]
   }
-} 
+}
