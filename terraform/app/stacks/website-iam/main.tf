@@ -5,6 +5,6 @@ module "website_user" {
   region       = var.region
   environment  = var.environment
   domain_name  = var.domain_name
-  
-  tags         = var.tags
+
+  tags = var.tags
 }

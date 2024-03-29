@@ -5,8 +5,7 @@ phases:
     runtime-versions:
       nodejs: $NODEJS_VERSION
     commands:
-      - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
-      - 'export AWS_PROFILE=terraform'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
       - 'n install 21.7.1'
       - 'cd ~'
       - 'git clone https://github.com/VilnaCRM-Org/website.git'

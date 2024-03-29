@@ -8,3 +8,4 @@ echo "aws_secret_access_key = $(aws secretsmanager get-secret-value --secret-id 
 mkdir ~/.aws/
 mv config ~/.aws/config
 mv credentials ~/.aws/credentials
+export AWS_PROFILE=terraform
