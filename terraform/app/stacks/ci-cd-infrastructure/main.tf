@@ -130,23 +130,3 @@ module "chatbot" {
 
   depends_on = [module.codepipeline_terraform]
 }
-
-module "codepipeline-user" {
-  source = "../../modules/aws/iam/users/codepipeline-deploy-user"
-
-  project_name = var.project_name
-  region       = var.region
-  environment  = var.environment
-
-  tags = var.tags
-
-  depends_on = [
-    module.codestar_connection,
-    module.s3_artifacts_bucket,
-    module.codepipeline_kms,
-    module.codepipeline_iam_role,
-    module.codebuild_terraform,
-    module.codepipeline_terraform,
-    module.chatbot
-  ]
-}

@@ -15,7 +15,7 @@ variable "workspace_id" {
 
 variable "sns_topic_arns" {
   description = "SNS Topic Arns"
-  type        = list(any)
+  type        = list(string)
 }
 
 variable "tags" {
