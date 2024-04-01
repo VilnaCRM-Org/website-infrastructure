@@ -7,6 +7,7 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       "lambda:GetFunction",
       "lambda:ListVersionsByFunction",
       "lambda:GetFunctionCodeSigningConfig",
+      "lambda:UpdateFunctionConfiguration",
       "lambda:AddPermission",
       "lambda:GetPolicy",
       "lambda:RemovePermission",

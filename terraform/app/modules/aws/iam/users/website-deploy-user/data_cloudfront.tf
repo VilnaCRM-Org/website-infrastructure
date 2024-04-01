@@ -19,16 +19,20 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "cloudfront:DeleteOriginAccessControl"
     ]
     resources = [
-      "arn:aws:cloudfront::${local.account_id}:response-headers-policy/*"
+      "arn:aws:cloudfront::${local.account_id}:response-headers-policy/*",
+      "arn:aws:cloudfront::${local.account_id}:origin-access-control/*"
     ]
   }
   statement {
     sid    = "CloudfrontDistributionPolicyForWebsiteUser"
     effect = "Allow"
     actions = [
+      "cloudfront:CreateDistribution",
+      "cloudfront:CreateDistributionWithTags",
       "cloudfront:GetDistribution",
       "cloudfront:ListTagsForResource",
       "cloudfront:UpdateDistribution",
+      "cloudfront:TagResource",
       "cloudfront:DeleteDistribution"
     ]
     resources = [
@@ -36,17 +40,32 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
-    sid    = "WAFV2CreationPolicyForWebsiteUser"
+    sid    = "WAFV2CloudfrontCreationPolicyForWebsiteUser"
     effect = "Allow"
     actions = [
-      "wafv2:CreateWebACL"
+      "wafv2:CreateWebACL",
+      "wafv2:GetWebACL",
+      "wafv2:DeleteWebACL"
     ]
     resources = [
       "arn:aws:wafv2:us-east-1:${local.account_id}:CLOUDFRONT/ipset/wafv2-web-acl/*",
       "arn:aws:wafv2:us-east-1:${local.account_id}:CLOUDFRONT/managedruleset/wafv2-web-acl/*",
       "arn:aws:wafv2:us-east-1:${local.account_id}:CLOUDFRONT/regexpatternset/wafv2-web-acl/*",
       "arn:aws:wafv2:us-east-1:${local.account_id}:CLOUDFRONT/rulegroup/wafv2-web-acl/*",
-      "arn:aws:wafv2:us-east-1:${local.account_id}:CLOUDFRONT/webacl/wafv2-web-acl/*"
+      "arn:aws:wafv2:us-east-1:${local.account_id}:CLOUDFRONT/webacl/wafv2-web-acl/*",
+    ]
+  }
+  statement {
+    sid    = "WAFV2GlobalCreationPolicyForWebsiteUser"
+    effect = "Allow"
+    actions = [
+      "wafv2:CreateWebACL",
+      "wafv2:GetWebACL",
+      "wafv2:DeleteWebACL"
+    ]
+    resources = [
+      "arn:aws:wafv2:us-east-1:${local.account_id}:global/managedruleset/*/*",
+      "arn:aws:wafv2:us-east-1:${local.account_id}:global/webacl/wafv2-web-acl/*"
     ]
   }
   statement {
@@ -64,13 +83,15 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     sid    = "WAFV2LoggingPolicyForWebsiteUser"
     effect = "Allow"
     actions = [
+      "wafv2:AssociateWebACL",
       "wafv2:ListTagsForResource",
       "wafv2:PutLoggingConfiguration",
       "wafv2:GetLoggingConfiguration",
-      "wafv2:DeleteLoggingConfiguration"
+      "wafv2:DeleteLoggingConfiguration",
+      "wafv2:TagResource"
     ]
     resources = [
-      "arn:aws:wafv2:us-east-1:${local.account_id}:global/webacl/wafv2-web-acl/*"
+      "arn:aws:wafv2:us-east-1:${local.account_id}:global/webacl/wafv2-web-acl/*",
     ]
   }
   statement {
@@ -79,6 +100,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     actions = [
       "cloudwatch:PutMetricAlarm",
       "cloudwatch:ListTagsForResource",
+      "cloudwatch:DescribeAlarms",
       "cloudwatch:DeleteAlarms"
     ]
     resources = [
@@ -91,12 +113,18 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     effect = "Allow"
     actions = [
       "logs:CreateLogGroup",
-      "logs:PutRetentionPolicy",
+      "logs:CreateLogDelivery",
+      "logs:DescribeResourcePolicies",
       "logs:ListTagsLogGroup",
-      "logs:DeleteLogGroup"
+      "logs:GetLogEvents",
+      "logs:PutLogEvents",
+      "logs:PutRetentionPolicy",
+      "logs:PutResourcePolicy",
+      "logs:DeleteLogGroup",
+      "logs:DeleteLogDelivery"
     ]
     resources = [
-      "arn:aws:logs:us-east-1:${local.account_id}:log-group:aws-waf-logs-wafv2-web-acl"
+      "arn:aws:logs:us-east-1:${local.account_id}:log-group:aws-waf-logs-wafv2-web-acl:*"
     ]
   }
 } 

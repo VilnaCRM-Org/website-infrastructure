@@ -12,9 +12,11 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "kms:CreateKey",
       "cloudfront:CreateOriginAccessControl",
       "acm:RequestCertificate",
-      "cloudfront:CreateDistributionWithTags",
+      "iam:CreateServiceLinkedRole",
       "logs:DescribeLogGroups",
-      "s3:DeleteBucketOwnershipControls"
+      "logs:CreateLogDelivery",
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
     ]
     resources = ["*"]
   }

@@ -15,4 +15,30 @@ data "aws_iam_policy_document" "sns_policy_doc" {
       "arn:aws:sns:us-east-1:${local.account_id}:${var.project_name}-cloudwatch-alarm-notifications"
     ]
   }
+  statement {
+    sid    = "ChatformationForChatBotPolicyForCodepipelineUser"
+    effect = "Allow"
+    actions = [
+      "cloudformation:CreateResource",
+      "cloudformation:GetResource",
+      "cloudformation:ListTagsForResource",
+      "cloudformation:TagResource",
+      "cloudformation:GetResourceRequestStatus",
+      "cloudformation:DeleteResource"
+    ]
+    resources = ["arn:aws:cloudformation:${var.region}:${local.account_id}:resource/*"]
+  }
+  statement {
+    sid    = "ChatbotGeneralSlackPolicyForCodepipelineUser"
+    effect = "Allow"
+    actions = [
+      "chatbot:DescribeSlackChannelConfigurations",
+      "chatbot:UpdateSlackChannelConfiguration",
+      "chatbot:DeleteSlackChannelConfiguration",
+      "chatbot:CreateSlackChannelConfiguration",
+    ]
+    #checkov:skip=CKV_AWS_356:Required by AWSCC module
+    #checkov:skip=CKV_AWS_111:Required by AWSCC module
+    resources = ["*"]
+  }
 } 

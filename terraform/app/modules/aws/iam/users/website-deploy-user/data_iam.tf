@@ -31,16 +31,24 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "iam:DeletePolicy"
     ]
     resources = [
-      "arn:aws:iam::${local.account_id}:role/${var.project_name}-iam-policy-allow-sns-for-lambda",
-      "arn:aws:iam::${local.account_id}:role/${var.domain_name}-iam-role-policy-replication"
+      "arn:aws:iam::${local.account_id}:policy/${var.project_name}-iam-policy-allow-sns-for-lambda",
+      "arn:aws:iam::${local.account_id}:policy/${var.domain_name}-iam-role-policy-replication"
     ]
   }
   statement {
     sid    = "IAMPassRolePolicyForWebsiteUser"
     effect = "Allow"
     actions = [
+      "iam:CreateRole",
+      "iam:GetRole",
+      "iam:ListRolePolicies",
+      "iam:ListAttachedRolePolicies",
+      "iam:AttachRolePolicy",
       "iam:PassRole",
-      "iam:CreateServiceLinkedRole"
+      "iam:DetachRolePolicy",
+      "iam:ListInstanceProfilesForRole",
+      "iam:TagRole",
+      "iam:DeleteRole"
     ]
     resources = ["arn:aws:iam::${local.account_id}:role/*"]
   }

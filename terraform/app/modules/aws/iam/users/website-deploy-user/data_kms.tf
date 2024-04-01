@@ -7,6 +7,8 @@ data "aws_iam_policy_document" "kms_policy_doc" {
       "kms:GetKeyRotationStatus",
       "kms:ListResourceTags",
       "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:CreateGrant",
       "kms:GetKeyPolicy",
       "kms:PutKeyPolicy",
       "kms:ScheduleKeyDeletion",

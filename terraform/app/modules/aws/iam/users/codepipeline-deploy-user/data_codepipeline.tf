@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     resources = ["arn:aws:codestar-notifications:${var.region}:${local.account_id}:notificationrule/*"]
   }
   statement {
-    sid    = "ChatformationForChatBotPolicyForCodepipelineUser"
+    sid    = "CloudFormationChatBotModulePolicyForCodepipelineUser"
     effect = "Allow"
     actions = [
       "cloudformation:CreateResource",

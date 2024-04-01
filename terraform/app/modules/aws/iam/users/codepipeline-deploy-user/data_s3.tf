@@ -27,17 +27,12 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "s3:PutEncryptionConfiguration",
       "s3:DeleteBucketPolicy",
       "s3:DeleteBucket",
-      "s3:ListBucketVersions"
-    ]
-    resources = ["arn:aws:s3:::${var.environment}-codepipeline-artifacts-bucket"]
-  }
-  statement {
-    sid    = "S3PolicyForAllCodePipelineUser"
-    effect = "Allow"
-    actions = [
+      "s3:ListBucketVersions",
       "s3:DeleteObject",
       "s3:DeleteObjectVersion"
     ]
-    resources = ["arn:aws:s3:::*/*"]
+    resources = ["arn:aws:s3:::${var.environment}-codepipeline-artifacts-bucket",
+      "arn:aws:s3:::${var.environment}-codepipeline-artifacts-bucket/*"
+    ]
   }
 } 
