@@ -18,6 +18,8 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
     ]
+    #checkov:skip=CKV_AWS_356:Required by AWSCC module
+    #checkov:skip=CKV_AWS_111:Required by AWSCC module
     resources = ["*"]
   }
 } 
