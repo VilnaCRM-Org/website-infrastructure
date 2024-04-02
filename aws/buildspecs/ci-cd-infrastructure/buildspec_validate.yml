@@ -1,0 +1,55 @@
+version: 0.2
+
+env:
+  variables:
+    TFSEC_VERSION: 'v1.28.5'
+    GOLANG_VERSION: '1.21'
+
+phases:
+  install:
+    runtime-versions:
+      python: $PYTHON_VERSION
+      golang: $GOLANG_VERSION
+      ruby: $RUBY_VERSION
+    commands:
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
+      - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
+      - 'yum update -y'
+      - 'yum install -y jq yum-utils'
+      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
+      - 'pip3 install checkov'
+      - 'curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash'
+      - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
+      - 'go install github.com/go-task/task/v3/cmd/task@latest'
+  build:
+    commands:
+      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
+      - 'echo ## VALIDATION : Starting ...'
+      - 'mkdir -p ${CODEBUILD_SRC_DIR}/reports'
+      - 'cp ${CODEBUILD_SRC_DIR}/task/Taskfile.yml ${CODEBUILD_SRC_DIR}/terraform/Taskfile.yml'
+      - 'task --verbose summary'
+      - 'cp checkov.xml ${CODEBUILD_SRC_DIR}/reports/checkov.xml'
+      - 'cp tfsec-junit.xml ${CODEBUILD_SRC_DIR}/reports/tfsec-junit.xml'
+
+artifacts:
+  files:
+    - '**/*'
+
+reports:
+  checkov-reports:
+    files:
+      - './reports/checkov.xml'
+    file-format: 'JUNITXML'
+  tfsec-reports:
+    files:
+      - './reports/tfsec-junit.xml'
+    file-format: 'JUNITXML'
+
+cache:
+  paths:
+    - '/bin'
+    - '/usr/local/bin'
+    - '/root/.terraform'
+    - '/root/.cache'
+    - '/root/.gem'
+    - '/usr/local/bundle'

@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: $PYTHON_VERSION
+      ruby: $RUBY_VERSION
+    commands:
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
+      - 'yum install -y yum-utils'
+      - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
+      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
+      - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
+  build:
+    commands:
+      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
+      - 'echo ## TERRASPACE UP : Bringing down the infrastructure'
+      - 'terraspace down website -y'
+
+artifacts:
+  files:
+    - '**/*'
+
+cache:
+  paths:
+    - '/bin'
+    - '/usr/local/bin'
+    - '/root/.terraform'
+    - '/root/.cache'
+    - '/root/.gem'
+    - '/usr/local/bundle'

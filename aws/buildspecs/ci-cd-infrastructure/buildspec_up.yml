@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: $PYTHON_VERSION
+      ruby: $RUBY_VERSION
+    commands:
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
+      - 'yum install -y yum-utils'
+      - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
+      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
+      - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
+  build:
+    commands:
+      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
+      - 'echo ## TERRASPACE UP : Bringing up the infrastructure'
+      - 'terraspace up ci-cd-infrastructure --plan "ci-cd-infrastructure.plan" -y'
+      - 'terraspace up ci-cd-iam --plan "ci-cd-iam.plan" -y'
+      - 'terraspace up website-iam --plan "website-iam.plan" -y'
+
+artifacts:
+  files:
+    - '**/*'
+
+cache:
+  paths:
+    - '/bin'
+    - '/usr/local/bin'
+    - '/root/.terraform'
+    - '/root/.cache'
+    - '/root/.gem'
+    - '/usr/local/bundle'
