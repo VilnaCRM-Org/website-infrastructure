@@ -1,6 +1,6 @@
 #Artifact Bucket
 resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket        = "${var.environment}-codepipeline-artifacts-bucket"
+  bucket        = "${var.project_name}-codepipeline-artifacts-bucket"
   tags          = var.tags
   force_destroy = true
   #checkov:skip=CKV_AWS_144: No usage of cross-region

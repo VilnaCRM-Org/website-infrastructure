@@ -4,7 +4,7 @@ data "aws_partition" "current" {}
 
 data "aws_iam_policy_document" "general_policy_doc" {
   statement {
-    sid    = "GeneralPolicyForCodePipelineUser"
+    sid    = "GeneralPolicy"
     effect = "Allow"
     actions = [
       "sts:GetCallerIdentity",
@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
     resources = ["*"]
   }
   statement {
-    sid    = "GeneralSecretsPolicyForCodePipelineUser" # To remove in new implementation of tokens
+    sid    = "GeneralSecretsPolicy" # To remove in new implementation of tokens
     effect = "Allow"
     actions = [
       "secretsmanager:DescribeSecret",

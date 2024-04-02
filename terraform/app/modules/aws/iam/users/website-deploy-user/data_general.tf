@@ -4,7 +4,7 @@ data "aws_partition" "current" {}
 
 data "aws_iam_policy_document" "general_policy_doc" {
   statement {
-    sid    = "GeneralPolicyForWebsiteUser"
+    sid    = "GeneralPolicy"
     effect = "Allow"
     actions = [
       "sts:GetCallerIdentity",

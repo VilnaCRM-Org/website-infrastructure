@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "codepipeline_policy_doc" {
   statement {
-    sid    = "CodePipelinePolicyForCodePipelineUser"
+    sid    = "CodePipelinePolicy"
     effect = "Allow"
     actions = [
       "codepipeline:CreatePipeline",
@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     ]
   }
   statement {
-    sid    = "CodeBuildCreatePolicyForCodePipelineUser"
+    sid    = "CodeBuildCreatePolicy"
     effect = "Allow"
     actions = [
       "codebuild:CreateProject",
@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     ]
   }
   statement {
-    sid    = "CodeBuildPolicyForCodePipelineUser"
+    sid    = "CodeBuildPolicy"
     effect = "Allow"
     actions = [
       "codebuild:BatchGetProjects",
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     ]
   }
   statement {
-    sid    = "CodeStarConnectionsPolicyForCodePipelineUser"
+    sid    = "CodeStarConnectionsPolicy"
     effect = "Allow"
     actions = [
       "codestar-connections:ListConnections",
@@ -59,7 +59,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     resources = ["arn:aws:codestar-connections:${var.region}:${local.account_id}:*"]
   }
   statement {
-    sid    = "CodeStarNotificationsPolicyForCodePipelineUser"
+    sid    = "CodeStarNotificationsPolicy"
     effect = "Allow"
     actions = [
       "codestar-notifications:CreateNotificationRule",
@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     resources = ["arn:aws:codestar-notifications:${var.region}:${local.account_id}:notificationrule/*"]
   }
   statement {
-    sid    = "CloudFormationChatBotModulePolicyForCodepipelineUser"
+    sid    = "CloudFormationChatBotModulePolicy"
     effect = "Allow"
     actions = [
       "cloudformation:CreateResource",
@@ -82,7 +82,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     resources = ["arn:aws:cloudformation:${var.region}:${local.account_id}:resource/*"]
   }
   statement {
-    sid    = "ChatbotGeneralSlackPolicyForCodepipelineUser"
+    sid    = "ChatbotGeneralSlackPolicy"
     effect = "Allow"
     actions = [
       "chatbot:DescribeSlackChannelConfigurations",

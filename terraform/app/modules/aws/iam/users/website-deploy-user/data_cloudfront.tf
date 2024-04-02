@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "cloudfront_policy_doc" {
   statement {
-    sid    = "CloudfrontHeadersPolicyForWebsiteUser"
+    sid    = "CloudfrontHeadersPolicy"
     effect = "Allow"
     actions = [
       "cloudfront:CreateResponseHeadersPolicy",
@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
-    sid    = "CloudfrontOriginAccessPolicyForWebsiteUser"
+    sid    = "CloudfrontOriginAccessPolicy"
     effect = "Allow"
     actions = [
       "cloudfront:GetOriginAccessControl",
@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
-    sid    = "CloudfrontDistributionPolicyForWebsiteUser"
+    sid    = "CloudfrontDistributionPolicy"
     effect = "Allow"
     actions = [
       "cloudfront:CreateDistribution",
@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
-    sid    = "WAFV2CloudfrontCreationPolicyForWebsiteUser"
+    sid    = "WAFV2CloudfrontCreationPolicy"
     effect = "Allow"
     actions = [
       "wafv2:CreateWebACL",
@@ -56,7 +56,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
-    sid    = "WAFV2GlobalCreationPolicyForWebsiteUser"
+    sid    = "WAFV2GlobalCreationPolicy"
     effect = "Allow"
     actions = [
       "wafv2:CreateWebACL",
@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
-    sid    = "WAFV2GetDeletePolicyForWebsiteUser"
+    sid    = "WAFV2GetDeletePolicy"
     effect = "Allow"
     actions = [
       "wafv2:GetWebACL",
@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
-    sid    = "WAFV2LoggingPolicyForWebsiteUser"
+    sid    = "WAFV2LoggingPolicy"
     effect = "Allow"
     actions = [
       "wafv2:AssociateWebACL",
@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
-    sid    = "CloudwatchPolicyForWebsiteUser"
+    sid    = "CloudwatchPolicy"
     effect = "Allow"
     actions = [
       "cloudwatch:PutMetricAlarm",
@@ -109,7 +109,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
-    sid    = "LogsPolicyForWebsiteUser"
+    sid    = "LogsPolicy"
     effect = "Allow"
     actions = [
       "logs:CreateLogGroup",

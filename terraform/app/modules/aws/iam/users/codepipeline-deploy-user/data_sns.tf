@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "sns_policy_doc" {
   statement {
-    sid    = "SNSPolicyForCodePipelineUser"
+    sid    = "SNSPolicy"
     effect = "Allow"
     actions = [
       "sns:CreateTopic",

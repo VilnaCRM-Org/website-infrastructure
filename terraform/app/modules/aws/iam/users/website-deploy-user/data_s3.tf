@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "s3_policy_doc" {
   statement {
-    sid    = "S3PolicyAllBucketsForWebsiteUser"
+    sid    = "S3PolicyAllBuckets"
     effect = "Allow"
     actions = [
       "s3:CreateBucket",
@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "s3_policy_doc" {
     "arn:aws:s3:::${var.domain_name}-replication/*"]
   }
   statement {
-    sid    = "S3PolicyContentBucketForWebsiteUser"
+    sid    = "S3PolicyContentBucket"
     effect = "Allow"
     actions = [
       "s3:GetBucketNotification",
@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "s3_policy_doc" {
     "arn:aws:s3:::${var.domain_name}/*"]
   }
   statement {
-    sid    = "S3PolicyReplicationBucketForWebsiteUser"
+    sid    = "S3PolicyReplicationBucket"
     effect = "Allow"
     actions = [
       "s3:GetBucketOwnershipControls",

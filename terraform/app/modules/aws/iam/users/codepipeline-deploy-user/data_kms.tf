@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "kms_policy_doc" {
   statement {
-    sid    = "KMSPolicyForCodePipelineUser"
+    sid    = "KMSPolicy"
     effect = "Allow"
     actions = [
       "kms:EnableKeyRotation",

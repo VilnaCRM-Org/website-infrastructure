@@ -1,5 +1,10 @@
-variable "project_name" {
-  description = "Unique name for this project"
+variable "website_project_name" {
+  description = "Unique name for this Website Codepipeline"
+  type        = string
+}
+
+variable "ci_cd_project_name" {
+  description = "Unique name for this CI/CD Codepipeline"
   type        = string
 }
 
@@ -60,13 +65,23 @@ variable "website_url" {
   type        = string
 }
 
-variable "stage_input" {
-  description = "List of Map containing information about the stages of the CodePipeline"
+variable "ci_cd_stage_input" {
+  description = "List of Map containing information about the stages of the CI/CD Infrastructure CodePipeline"
   type        = list(map(any))
 }
 
-variable "build_projects" {
-  description = "Tags to be attached to the CodePipeline"
+variable "website_stage_input" {
+  description = "List of Map containing information about the stages of the Website Infrastructure CodePipeline"
+  type        = list(map(any))
+}
+
+variable "ci_cd_build_projects" {
+  description = "Build Projects Names to the CI/CD Infrastructure CodePipeline"
+  type        = list(string)
+}
+
+variable "website_build_projects" {
+  description = "Build Projects Names to the Website Infrastructure CodePipeline"
   type        = list(string)
 }
 

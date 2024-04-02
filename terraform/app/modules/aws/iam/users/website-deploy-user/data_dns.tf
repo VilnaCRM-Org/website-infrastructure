@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "dns_policy_doc" {
   statement {
-    sid    = "Route53PolicyForWebsiteUser"
+    sid    = "Route53Policy"
     effect = "Allow"
     actions = [
       "route53:ListTagsForResource"
@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "dns_policy_doc" {
     ]
   }
   statement {
-    sid    = "Route53RecordsPolicyForWebsiteUser"
+    sid    = "Route53RecordsPolicy"
     effect = "Allow"
     actions = [
       "route53:ChangeResourceRecordSets",
@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "dns_policy_doc" {
     ]
   }
   statement {
-    sid    = "Route53GetChangePolicyForWebsiteUser"
+    sid    = "Route53GetChangePolicy"
     effect = "Allow"
     actions = [
       "route53:GetChange"
@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "dns_policy_doc" {
     ]
   }
   statement {
-    sid    = "ACMPolicyForWebsiteUser"
+    sid    = "ACMPolicy"
     effect = "Allow"
     actions = [
       "acm:ListTagsForCertificate",

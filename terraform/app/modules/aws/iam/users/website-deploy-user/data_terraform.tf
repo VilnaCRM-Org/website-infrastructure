@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "terraform_policy_doc" {
   statement {
-    sid    = "TerraformStateListS3PolicyForWebsiteUser"
+    sid    = "TerraformStateListS3Policy"
     effect = "Allow"
     actions = [
       "s3:ListBucket",
@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "terraform_policy_doc" {
     resources = ["arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}"]
   }
   statement {
-    sid    = "DynamoDBStatePolicyForWebsiteUser"
+    sid    = "DynamoDBStatePolicy"
     effect = "Allow"
     actions = [
       "dynamodb:DescribeTable",
@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "terraform_policy_doc" {
     resources = ["arn:aws:dynamodb:${var.region}:${local.account_id}:table/terraform_locks"]
   }
   statement {
-    sid    = "TerraformStateGetS3PolicyForWebsiteUser"
+    sid    = "TerraformStateGetS3Policy"
     effect = "Allow"
     actions = [
       "s3:GetObject",

@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "iam_policy_doc" {
   statement {
-    sid    = "IAMWebsiteRolePolicyForWebsiteUser"
+    sid    = "IAMWebsiteRolePolicy"
     effect = "Allow"
     actions = [
       "iam:CreateRole",
@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "iam_policy_doc" {
     ]
   }
   statement {
-    sid    = "IAMWebsitePolicyRolePolicyForWebsiteUser"
+    sid    = "IAMWebsitePolicyRolePolicy"
     effect = "Allow"
     actions = [
       "iam:CreatePolicy",
@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "iam_policy_doc" {
     ]
   }
   statement {
-    sid    = "IAMPassRolePolicyForWebsiteUser"
+    sid    = "IAMPassRolePolicy"
     effect = "Allow"
     actions = [
       "iam:CreateRole",

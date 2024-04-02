@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "lambda_policy_doc" {
   statement {
-    sid    = "LogsPolicyForWebsiteUser"
+    sid    = "LogsPolicy"
     effect = "Allow"
     actions = [
       "lambda:CreateFunction",

@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "kms_policy_doc" {
   statement {
-    sid    = "KMSPolicyForWebsiteUser"
+    sid    = "KMSPolicy"
     effect = "Allow"
     actions = [
       "kms:EnableKeyRotation",
@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "kms_policy_doc" {
     resources = ["arn:aws:kms:${var.region}:${local.account_id}:key/*"]
   }
   statement {
-    sid    = "USKMSPolicyForWebsiteUser"
+    sid    = "USKMSPolicy"
     effect = "Allow"
     actions = [
       "kms:EnableKeyRotation",

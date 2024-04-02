@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "sns_policy_doc" {
   statement {
-    sid    = "SNSPolicyForWebsiteUser"
+    sid    = "SNSPolicy"
     effect = "Allow"
     actions = [
       "sns:CreateTopic",
@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "sns_policy_doc" {
     ]
   }
   statement {
-    sid    = "ChatformationForChatBotPolicyForCodepipelineUser"
+    sid    = "ChatformationForChatBotPolicy"
     effect = "Allow"
     actions = [
       "cloudformation:CreateResource",
@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "sns_policy_doc" {
     resources = ["arn:aws:cloudformation:${var.region}:${local.account_id}:resource/*"]
   }
   statement {
-    sid    = "ChatbotGeneralSlackPolicyForCodepipelineUser"
+    sid    = "ChatbotGeneralSlackPolicy"
     effect = "Allow"
     actions = [
       "chatbot:DescribeSlackChannelConfigurations",
