@@ -1,10 +1,10 @@
-variable "website_project_name" {
-  description = "Unique name for this Website Codepipeline"
+variable "project_name" {
+  description = "Unique name for this project"
   type        = string
 }
 
-variable "ci_cd_project_name" {
-  description = "Unique name for this CI/CD Codepipeline"
+variable "policy_prefix" {
+  description = "Policy Prefix for policies"
   type        = string
 }
 
@@ -18,7 +18,13 @@ variable "region" {
   type        = string
 }
 
+variable "domain_name" {
+  type        = string
+  description = "Domain name for website, used for all resources"
+}
+
 variable "tags" {
   description = "Tags to be attached to the resource"
   type        = map(any)
 }
+

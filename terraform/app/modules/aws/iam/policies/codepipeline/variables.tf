@@ -8,6 +8,11 @@ variable "ci_cd_project_name" {
   type        = string
 }
 
+variable "policy_prefix" {
+  description = "Policy Prefix for policies"
+  type        = string
+}
+
 variable "environment" {
   description = "Environment for this project"
   type        = string

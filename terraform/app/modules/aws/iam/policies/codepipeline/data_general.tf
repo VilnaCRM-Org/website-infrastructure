@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
     resources = ["*"]
   }
   statement {
-    sid    = "GeneralSecretsPolicy" # To remove in new implementation of tokens
+    sid    = "GeneralSecretsPolicy" # TODO: remove in new implementation of tokens
     effect = "Allow"
     actions = [
       "secretsmanager:DescribeSecret",

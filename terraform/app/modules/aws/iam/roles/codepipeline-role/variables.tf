@@ -48,13 +48,12 @@ variable "codestar_connection_arn" {
   type        = string
 }
 
-variable "create_new_role" {
-  type        = bool
-  description = "Flag for deciding if a new role needs to be created"
-  default     = true
-}
-
 variable "secretsmanager_secret_name" {
   description = "Secrets Manager secret name for the codepipeline"
   type        = string
+}
+
+variable "policy_arns" {
+  type        = map(map(string))
+  description = "Set of policies to attach to Role"
 }

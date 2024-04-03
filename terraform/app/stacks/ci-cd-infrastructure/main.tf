@@ -6,6 +6,30 @@ module "codestar_connection" {
   tags = var.tags
 }
 
+module "codepipeline_policies" {
+  source = "../../modules/aws/iam/policies/codepipeline"
+
+  policy_prefix        = "${var.environment}-ci-cd-infra"
+  website_project_name = var.website_project_name
+  ci_cd_project_name   = var.ci_cd_project_name
+  region               = var.region
+  environment          = var.environment
+
+  tags = var.tags
+}
+
+module "website_policies" {
+  source = "../../modules/aws/iam/policies/website"
+
+  project_name  = var.project_name
+  policy_prefix = "${var.environment}-website-infra"
+  region        = var.region
+  environment   = var.environment
+  domain_name   = var.website_url
+
+  tags = var.tags
+}
+
 module "ci_cd_s3_artifacts_bucket" {
   source = "../../modules/aws/s3/codepipeline-s3"
 
@@ -33,9 +57,8 @@ module "ci_cd_codepipeline_iam_role" {
   source = "../../modules/aws/iam/roles/codepipeline-role"
 
   project_name               = var.ci_cd_project_name
-  create_new_role            = var.create_new_role
-  codepipeline_iam_role_name = var.create_new_role == true ? "${var.ci_cd_project_name}-codepipeline-role" : var.codepipeline_iam_role_name
 
+  codepipeline_iam_role_name = "${var.ci_cd_project_name}-codepipeline-role" 
   source_repo_owner          = var.source_repo_owner
   source_repo_name           = var.source_repo_name
   secretsmanager_secret_name = var.secretsmanager_secret_name
@@ -47,7 +70,11 @@ module "ci_cd_codepipeline_iam_role" {
   s3_bucket_arn           = module.ci_cd_s3_artifacts_bucket.arn
   codestar_connection_arn = module.codestar_connection.arn
 
+  policy_arns = module.codepipeline_policies.policy_arns
+
   tags = var.tags
+
+  depends_on = [module.codepipeline_policies]
 }
 
 module "ci_cd_codebuild" {
@@ -141,8 +168,7 @@ module "website_codepipeline_iam_role" {
   source = "../../modules/aws/iam/roles/codepipeline-role"
 
   project_name               = var.website_project_name
-  create_new_role            = var.create_new_role
-  codepipeline_iam_role_name = var.create_new_role == true ? "${var.website_project_name}-codepipeline-role" : var.codepipeline_iam_role_name
+  codepipeline_iam_role_name = "${var.website_project_name}-codepipeline-role"
 
   source_repo_owner          = var.source_repo_owner
   source_repo_name           = var.source_repo_name
@@ -155,7 +181,11 @@ module "website_codepipeline_iam_role" {
   s3_bucket_arn           = module.website_s3_artifacts_bucket.arn
   codestar_connection_arn = module.codestar_connection.arn
 
+  policy_arns = module.website_policies.policy_arns
+
   tags = var.tags
+
+  depends_on = [module.website_policies]
 }
 
 module "website_codebuild" {
@@ -223,12 +253,12 @@ module "website_codepipeline" {
 }
 
 
-module "website_chatbot" {
+module "chatbot" {
   count = var.create_slack_notification ? 1 : 0
 
   source = "../../modules/aws/chatbot"
 
-  project_name = "website"
+  project_name = "codepipeline"
   channel_id   = var.CODEPIPELINE_SLACK_CHANNEL_ID
   workspace_id = var.SLACK_WORKSPACE_ID
 

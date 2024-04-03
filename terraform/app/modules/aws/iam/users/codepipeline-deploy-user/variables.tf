@@ -1,18 +1,7 @@
-variable "project_name" {
-  description = "Unique name for this project"
-  type        = string
+variable "policy_arns" {
+  type        = map(map(string))
+  description = "Set of policies to attach to Role"
 }
-
-variable "environment" {
-  description = "Environment for this project"
-  type        = string
-}
-
-variable "region" {
-  description = "Region for this project"
-  type        = string
-}
-
 
 variable "tags" {
   description = "Tags to be attached to the resource"

@@ -1,3 +1,8 @@
+variable "project_name" {
+  description = "Unique name for the project"
+  type        = string
+}
+
 variable "website_project_name" {
   description = "Unique name for this Website Codepipeline"
   type        = string
@@ -43,12 +48,6 @@ variable "github_connection_name" {
   type        = string
 }
 
-variable "create_new_role" {
-  description = "Whether to create a new IAM Role. Values are true or false. Defaulted to true always."
-  type        = bool
-  default     = true
-}
-
 variable "codepipeline_iam_role_name" {
   description = "Name of the IAM role to be used by the Codepipeline"
   type        = string
@@ -67,12 +66,12 @@ variable "website_url" {
 
 variable "ci_cd_stage_input" {
   description = "List of Map containing information about the stages of the CI/CD Infrastructure CodePipeline"
-  type        = list(map(any))
+  type        = list(map(string))
 }
 
 variable "website_stage_input" {
   description = "List of Map containing information about the stages of the Website Infrastructure CodePipeline"
-  type        = list(map(any))
+  type        = list(map(string))
 }
 
 variable "ci_cd_build_projects" {
@@ -161,6 +160,6 @@ variable "create_slack_notification" {
 }
 
 variable "tags" {
-  description = "Tags to be associated with the S3 bucket"
+  description = "Tags to be associated with the CI/CD Infrastructure"
   type        = map(any)
 }

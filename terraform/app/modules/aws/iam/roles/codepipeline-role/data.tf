@@ -2,12 +2,6 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
-# To be used only in case of an Existing Repository
-data "aws_iam_role" "existing_codepipeline_role" {
-  count = var.create_new_role ? 0 : 1
-  name  = var.codepipeline_iam_role_name
-}
-
 data "aws_secretsmanager_secret" "terraform_secret" {
   name = var.secretsmanager_secret_name
 }
@@ -58,19 +52,6 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["${data.aws_secretsmanager_secret.terraform_secret.arn}"]
 
-  }
-
-  statement {
-    sid    = "AllowCreateAndDeleteKeys"
-    effect = "Allow"
-    actions = [
-      "iam:CreateAccessKey",
-      "iam:DeleteAccessKey"
-    ]
-    resources = [
-      "arn:aws:iam::${local.account_id}:user/websiteUser",
-      "arn:aws:iam::${local.account_id}:user/codepipelineUser"
-    ]
   }
 
   statement {

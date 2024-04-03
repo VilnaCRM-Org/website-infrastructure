@@ -20,3 +20,11 @@ resource "aws_iam_group_membership" "website_group_membership" {
 
   group = aws_iam_group.website_users.name
 }
+
+resource "aws_iam_group_policy_attachment" "policy_attachments" {
+  for_each = var.policy_arns
+
+  group      = aws_iam_group.website_users.name
+  policy_arn = each.value.arn
+  depends_on = [aws_iam_group.website_users]
+}
