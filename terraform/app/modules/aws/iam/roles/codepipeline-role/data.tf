@@ -26,6 +26,17 @@ data "aws_iam_policy_document" "codepipeline_role_document" {
       identifiers = ["codebuild.amazonaws.com"]
     }
   }
+
+  statement {
+    sid     = "AllowAssumeRole"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.account_id}:role/${var.project_name}-codepipeline-role"]
+    }
+  }
+
 }
 
 data "aws_iam_policy_document" "codepipeline_policy_document" {
@@ -77,8 +88,8 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "codebuild:BatchPutTestCases",
     ]
     resources = [
-      "arn:aws:codebuild:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:project/${var.project_name}*",
-      "arn:aws:codebuild:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:report-group/${var.project_name}*"
+      "arn:aws:codebuild:${data.aws_region.current.id}:${local.account_id}:project/${var.project_name}*",
+      "arn:aws:codebuild:${data.aws_region.current.id}:${local.account_id}:report-group/${var.project_name}*"
     ]
   }
 
@@ -105,7 +116,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
-    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"]
+    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${local.account_id}:log-group:*"]
   }
 }
 
