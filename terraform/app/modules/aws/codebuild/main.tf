@@ -31,8 +31,8 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
         "NODEJS_VERSION"                       = var.nodejs_version,
         "SCRIPT_DIR"                           = var.script_dir,
         "BUCKET_NAME"                          = var.bucket_name,
-        "ROLE_ARN" = var.role_arn
-        "SESSION_NAME" = "${var.project_name}-${var.build_projects[count.index]}-session"
+        "ROLE_ARN"                             = var.role_arn
+        "SESSION_NAME"                         = "${var.project_name}-${var.build_projects[count.index]}-session"
       }
       content {
         name  = environment_variable.key

@@ -9,7 +9,7 @@ echo "region = ${AWS_DEFAULT_REGION}" >>config
 echo "[terraform]" >credentials
 echo "aws_access_key_id = $access_key_id" >>credentials
 echo "aws_secret_access_key = $secret_access_key" >>credentials
-echo "aws_secret_access_key = $session_token" >>credentials
+echo "aws_session_token = $session_token" >>credentials
 mkdir ~/.aws/
 mv config ~/.aws/config
 mv credentials ~/.aws/credentials
