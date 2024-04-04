@@ -1,4 +1,4 @@
-project_name = "website-test"
+project_name               = "website-test"
 website_project_name       = "website-infra-test"
 ci_cd_project_name         = "ci-cd-infra-test"
 environment                = "test"

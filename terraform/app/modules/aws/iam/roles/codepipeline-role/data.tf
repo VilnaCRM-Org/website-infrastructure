@@ -108,3 +108,112 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"]
   }
 }
+
+data "aws_iam_policy_document" "users_policy_document" {
+  statement {
+    sid    = "GetCallerIdentityPolicy"
+    effect = "Allow"
+    actions = [
+      "sts:GetCallerIdentity",
+    ]
+    resources = ["*"]
+  }
+  statement {
+    sid    = "TerraformStateListS3Policy"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket",
+      "s3:GetBucketTagging"
+    ]
+    resources = ["arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}"]
+  }
+  statement {
+    sid    = "DynamoDBStatePolicy"
+    effect = "Allow"
+    actions = [
+      "dynamodb:DescribeTable",
+      "dynamodb:PutItem",
+      "dynamodb:GetItem",
+      "dynamodb:DeleteItem"
+    ]
+    resources = ["arn:aws:dynamodb:${var.region}:${local.account_id}:table/terraform_locks"]
+  }
+  statement {
+    sid    = "TerraformStateGetS3Policy"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:GetObjectVersion",
+      "s3:PutObject"
+    ]
+    resources = [
+      "arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}/main/${var.region}/${var.environment}/stacks/ci-cd-iam/terraform.tfstate",
+      "arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}/main/${var.region}/${var.environment}/stacks/website-iam/terraform.tfstate"
+    ]
+  }
+  statement {
+    sid    = "IAMUserPoliciesPolicy"
+    effect = "Allow"
+    actions = [
+      "iam:CreatePolicy",
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:TagPolicy",
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-sns-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-kms-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-s3-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-general-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-terraform-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-iam-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-codepipeline-policy",
+      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-dns-policy",
+      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-iam-policy",
+      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-general-policy",
+      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-cloudfront-policy",
+      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-s3-policy",
+      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-sns-policy",
+      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-terraform-policy",
+      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-lambda-policy",
+      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-kms-policy"
+    ]
+  }
+  statement {
+    sid    = "IAMUserPolicy"
+    effect = "Allow"
+    actions = [
+      "iam:CreateUser",
+      "iam:GetUser"
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:user/codepipeline-users/codepipelineUser",
+      "arn:aws:iam::${local.account_id}:user/website-users/websiteUser"
+    ]
+  }
+  statement {
+    sid    = "IAMGroupAttachPolicy"
+    effect = "Allow"
+    actions = [
+      "iam:GetGroup",
+      "iam:AddUserToGroup",
+      "iam:AttachGroupPolicy",
+      "iam:ListAttachedGroupPolicies"
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:group/website-users",
+      "arn:aws:iam::${local.account_id}:group/codepipeline-users"
+    ]
+  }
+  statement {
+    sid    = "IAMCreateGroupPolicy"
+    effect = "Allow"
+    actions = [
+      "iam:CreateGroup"
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:group/codepipeline-users/codepipeline-users",
+      "arn:aws:iam::${local.account_id}:group/website-users/website-users"
+    ]
+  }
+}

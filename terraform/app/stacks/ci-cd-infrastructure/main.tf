@@ -56,9 +56,9 @@ module "ci_cd_codepipeline_kms" {
 module "ci_cd_codepipeline_iam_role" {
   source = "../../modules/aws/iam/roles/codepipeline-role"
 
-  project_name               = var.ci_cd_project_name
+  project_name = var.ci_cd_project_name
 
-  codepipeline_iam_role_name = "${var.ci_cd_project_name}-codepipeline-role" 
+  codepipeline_iam_role_name = "${var.ci_cd_project_name}-${var.environment}-codepipeline-role"
   source_repo_owner          = var.source_repo_owner
   source_repo_name           = var.source_repo_name
   secretsmanager_secret_name = var.secretsmanager_secret_name
@@ -168,7 +168,7 @@ module "website_codepipeline_iam_role" {
   source = "../../modules/aws/iam/roles/codepipeline-role"
 
   project_name               = var.website_project_name
-  codepipeline_iam_role_name = "${var.website_project_name}-codepipeline-role"
+  codepipeline_iam_role_name = "${var.website_project_name}-${var.environment}-codepipeline-role"
 
   source_repo_owner          = var.source_repo_owner
   source_repo_name           = var.source_repo_name
