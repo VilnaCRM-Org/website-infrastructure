@@ -1,12 +1,3 @@
-resource "aws_iam_policy" "terraform_policy" {
-  name        = "${var.policy_prefix}-terraform-policy"
-  policy      = data.aws_iam_policy_document.terraform_policy_doc.json
-  path        = "/CodePipelinePolicies/"
-  description = "Policy to allow to use Terraform State"
-
-  tags = var.tags
-}
-
 resource "aws_iam_policy" "sns_policy" {
   name        = "${var.policy_prefix}-sns-policy"
   policy      = data.aws_iam_policy_document.sns_policy_doc.json

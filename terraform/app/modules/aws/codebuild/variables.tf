@@ -16,8 +16,13 @@ variable "environment" {
 variable "role_arn" {
   description = "Codepipeline IAM role arn. "
   type        = string
-  default     = ""
 }
+
+variable "terraform_role_arn" {
+  description = "Terraform IAM role arn. "
+  type        = string
+}
+
 
 variable "s3_bucket_name" {
   description = "Name of the S3 bucket used to store the deployment artifacts"
@@ -101,11 +106,6 @@ variable "CODEPIPELINE_SLACK_CHANNEL_ID" {
 
 variable "ALERTS_SLACK_CHANNEL_ID" {
   description = "Website Slack Channel ID for Notifications"
-  type        = string
-}
-
-variable "secretsmanager_secret_name" {
-  description = "Secret ID of Secret Manager"
   type        = string
 }
 

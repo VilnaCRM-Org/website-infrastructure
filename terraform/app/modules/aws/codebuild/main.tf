@@ -21,7 +21,6 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
       for_each = {
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
-        "SECRET_NAME"                          = var.secretsmanager_secret_name,
         "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
         "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID" = var.CODEPIPELINE_SLACK_CHANNEL_ID,
         "TF_VAR_ALERTS_SLACK_CHANNEL_ID"       = var.ALERTS_SLACK_CHANNEL_ID,
@@ -31,7 +30,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
         "NODEJS_VERSION"                       = var.nodejs_version,
         "SCRIPT_DIR"                           = var.script_dir,
         "BUCKET_NAME"                          = var.bucket_name,
-        "ROLE_ARN"                             = var.role_arn
+        "ROLE_ARN"                             = var.terraform_role_arn
         "SESSION_NAME"                         = "${var.project_name}-${var.build_projects[count.index]}-session"
       }
       content {

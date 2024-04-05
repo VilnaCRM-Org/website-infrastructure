@@ -48,11 +48,6 @@ variable "codestar_connection_arn" {
   type        = string
 }
 
-variable "secretsmanager_secret_name" {
-  description = "Secrets Manager secret name for the codepipeline"
-  type        = string
-}
-
 variable "policy_arns" {
   type        = map(map(string))
   description = "Set of policies to attach to Role"

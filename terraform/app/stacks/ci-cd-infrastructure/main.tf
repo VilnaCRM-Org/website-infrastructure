@@ -61,7 +61,6 @@ module "ci_cd_codepipeline_iam_role" {
   codepipeline_iam_role_name = "${var.ci_cd_project_name}-codepipeline-role"
   source_repo_owner          = var.source_repo_owner
   source_repo_name           = var.source_repo_name
-  secretsmanager_secret_name = var.secretsmanager_secret_name
 
   region      = var.region
   environment = var.environment
@@ -70,7 +69,7 @@ module "ci_cd_codepipeline_iam_role" {
   s3_bucket_arn           = module.ci_cd_s3_artifacts_bucket.arn
   codestar_connection_arn = module.codestar_connection.arn
 
-  policy_arns = module.codepipeline_policies.policy_arns
+  policy_arns = merge(module.codepipeline_policies.policy_arns, module.website_policies.policy_arns)
 
   tags = var.tags
 
@@ -103,11 +102,11 @@ module "ci_cd_codebuild" {
 
   website_url = var.website_url
 
-  secretsmanager_secret_name = var.secretsmanager_secret_name
-
   s3_bucket_name = module.ci_cd_s3_artifacts_bucket.bucket
   role_arn       = module.ci_cd_codepipeline_iam_role.role_arn
   kms_key_arn    = module.ci_cd_codepipeline_kms.arn
+
+  terraform_role_arn = module.ci_cd_codepipeline_iam_role.terraform_role_arn
 
   tags = var.tags
 
@@ -170,9 +169,8 @@ module "website_codepipeline_iam_role" {
   project_name               = var.website_project_name
   codepipeline_iam_role_name = "${var.website_project_name}-codepipeline-role"
 
-  source_repo_owner          = var.source_repo_owner
-  source_repo_name           = var.source_repo_name
-  secretsmanager_secret_name = var.secretsmanager_secret_name
+  source_repo_owner = var.source_repo_owner
+  source_repo_name  = var.source_repo_name
 
   region      = var.region
   environment = var.environment
@@ -214,11 +212,11 @@ module "website_codebuild" {
 
   website_url = var.website_url
 
-  secretsmanager_secret_name = var.secretsmanager_secret_name
-
   s3_bucket_name = module.website_s3_artifacts_bucket.bucket
   role_arn       = module.website_codepipeline_iam_role.role_arn
   kms_key_arn    = module.website_codepipeline_kms.arn
+
+  terraform_role_arn = module.ci_cd_codepipeline_iam_role.terraform_role_arn
 
   tags = var.tags
 

@@ -21,6 +21,7 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "s3:GetEncryptionConfiguration",
       "s3:GetBucketObjectLockConfiguration",
       "s3:PutBucketVersioning",
+      "s3:PubObject",
       "s3:PutBucketAcl",
       "s3:PutBucketPublicAccessBlock",
       "s3:PutBucketLogging",
@@ -38,7 +39,8 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "arn:aws:s3:::${var.project_name}-logging-bucket",
       "arn:aws:s3:::${var.project_name}-logging-bucket/*",
       "arn:aws:s3:::${var.domain_name}-replication",
-    "arn:aws:s3:::${var.domain_name}-replication/*"]
+      "arn:aws:s3:::${var.domain_name}-replication/*"
+    ]
   }
   statement {
     sid    = "S3PolicyContentBucket"
@@ -50,7 +52,8 @@ data "aws_iam_policy_document" "s3_policy_doc" {
     ]
     resources = [
       "arn:aws:s3:::${var.domain_name}",
-    "arn:aws:s3:::${var.domain_name}/*"]
+      "arn:aws:s3:::${var.domain_name}/*"
+    ]
   }
   statement {
     sid    = "S3PolicyReplicationBucket"
@@ -61,6 +64,7 @@ data "aws_iam_policy_document" "s3_policy_doc" {
     ]
     resources = [
       "arn:aws:s3:::${var.project_name}-logging-bucket",
-    "arn:aws:s3:::${var.project_name}-logging-bucket/*"]
+      "arn:aws:s3:::${var.project_name}-logging-bucket/*"
+    ]
   }
 } 

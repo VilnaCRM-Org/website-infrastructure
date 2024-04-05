@@ -2,10 +2,6 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
-data "aws_secretsmanager_secret" "terraform_secret" {
-  name = var.secretsmanager_secret_name
-}
-
 data "aws_iam_policy_document" "codepipeline_role_document" {
   statement {
     sid     = "AllowAssumeRoleByCodePipeline"
@@ -26,17 +22,27 @@ data "aws_iam_policy_document" "codepipeline_role_document" {
       identifiers = ["codebuild.amazonaws.com"]
     }
   }
+}
 
+data "aws_iam_policy_document" "terraform_role_document" {
   statement {
-    sid     = "AllowAssumeRole"
+    sid     = "AllowCICDInfraRoleAssumeRole"
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${local.account_id}:role/${var.project_name}-codepipeline-role"]
+      identifiers = ["arn:aws:iam::${local.account_id}:role/ci-cd-infra-${var.environment}-codepipeline-role"]
     }
   }
-
+  statement {
+    sid     = "AllowWesiteInfraRoleAssumeRole"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.account_id}:role/website-infra-${var.environment}-codepipeline-role"]
+    }
+  }
 }
 
 data "aws_iam_policy_document" "codepipeline_policy_document" {
@@ -53,16 +59,6 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "${var.s3_bucket_arn}/*",
       "${var.s3_bucket_arn}"
     ]
-  }
-
-  statement {
-    sid    = "AllowSecretManager"
-    effect = "Allow"
-    actions = [
-      "secretsmanager:GetSecretValue"
-    ]
-    resources = ["${data.aws_secretsmanager_secret.terraform_secret.arn}"]
-
   }
 
   statement {
@@ -120,7 +116,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
   }
 }
 
-data "aws_iam_policy_document" "users_policy_document" {
+data "aws_iam_policy_document" "terraform_policy_document" {
   statement {
     sid    = "GetCallerIdentityPolicy"
     effect = "Allow"
@@ -129,6 +125,7 @@ data "aws_iam_policy_document" "users_policy_document" {
     ]
     resources = ["*"]
   }
+
   statement {
     sid    = "TerraformStateListS3Policy"
     effect = "Allow"
@@ -138,6 +135,7 @@ data "aws_iam_policy_document" "users_policy_document" {
     ]
     resources = ["arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}"]
   }
+
   statement {
     sid    = "DynamoDBStatePolicy"
     effect = "Allow"
@@ -149,6 +147,7 @@ data "aws_iam_policy_document" "users_policy_document" {
     ]
     resources = ["arn:aws:dynamodb:${var.region}:${local.account_id}:table/terraform_locks"]
   }
+
   statement {
     sid    = "TerraformStateGetS3Policy"
     effect = "Allow"
@@ -162,6 +161,7 @@ data "aws_iam_policy_document" "users_policy_document" {
       "arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}/main/${var.region}/${var.environment}/stacks/website-iam/terraform.tfstate"
     ]
   }
+
   statement {
     sid    = "IAMUserPoliciesPolicy"
     effect = "Allow"
@@ -176,7 +176,6 @@ data "aws_iam_policy_document" "users_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-kms-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-s3-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-general-policy",
-      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-terraform-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-iam-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-codepipeline-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-dns-policy",
@@ -185,11 +184,11 @@ data "aws_iam_policy_document" "users_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-cloudfront-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-s3-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-sns-policy",
-      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-terraform-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-lambda-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-kms-policy"
     ]
   }
+
   statement {
     sid    = "IAMUserPolicy"
     effect = "Allow"
@@ -202,6 +201,7 @@ data "aws_iam_policy_document" "users_policy_document" {
       "arn:aws:iam::${local.account_id}:user/website-users/websiteUser"
     ]
   }
+
   statement {
     sid    = "IAMGroupAttachPolicy"
     effect = "Allow"
@@ -225,6 +225,56 @@ data "aws_iam_policy_document" "users_policy_document" {
     resources = [
       "arn:aws:iam::${local.account_id}:group/codepipeline-users/codepipeline-users",
       "arn:aws:iam::${local.account_id}:group/website-users/website-users"
+    ]
+  }
+
+  statement {
+    sid    = "AllowCICDWebsitePoliciesAccessPolicy"
+    effect = "Allow"
+    actions = [
+      "iam:CreatePolicy",
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:ListPolicyVersions",
+      "iam:CreatePolicyVersion",
+      "iam:TagPolicy",
+    ]
+    resources = local.policy_arns
+  }
+
+  statement {
+    sid    = "AllowCodePipelineRolePoliciesAccessPolicy"
+    effect = "Allow"
+    actions = [
+      "iam:CreatePolicy",
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:ListPolicyVersions",
+      "iam:CreatePolicyVersion",
+      "iam:TagPolicy",
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-codepipeline-role-policy",
+      "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-codepipeline-role-policy",
+      "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-terraform-role-ci-cd-policy",
+      "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-terraform-role-ci-cd-policy",
+    ]
+  }
+
+  statement {
+    sid    = "AllowTerraformRoleActionsPolicy"
+    effect = "Allow"
+    actions = [
+      "iam:GetRole",
+      "iam:TagRole",
+      "iam:UpdateRole",
+      "iam:ListAttachedRolePolicies",
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/ci-cd-infra-${var.environment}-codebuild-terraform-role",
+      "arn:aws:iam::${local.account_id}:role/website-infra-${var.environment}-codebuild-terraform-role",
     ]
   }
 }
