@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "s3:GetEncryptionConfiguration",
       "s3:GetBucketObjectLockConfiguration",
       "s3:PutBucketVersioning",
-      "s3:PubObject",
+      "s3:PutObject",
       "s3:PutBucketAcl",
       "s3:PutBucketPublicAccessBlock",
       "s3:PutBucketLogging",
