@@ -194,7 +194,8 @@ data "aws_iam_policy_document" "terraform_policy_document" {
     effect = "Allow"
     actions = [
       "iam:CreateUser",
-      "iam:GetUser"
+      "iam:GetUser",
+      "iam:TagUser"
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:user/codepipeline-users/codepipelineUser",
@@ -220,6 +221,7 @@ data "aws_iam_policy_document" "terraform_policy_document" {
     sid    = "IAMCreateGroupPolicy"
     effect = "Allow"
     actions = [
+      "iam:GetGroup",
       "iam:CreateGroup"
     ]
     resources = [
