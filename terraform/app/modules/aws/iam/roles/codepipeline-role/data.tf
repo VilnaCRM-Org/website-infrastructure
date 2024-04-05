@@ -270,6 +270,7 @@ data "aws_iam_policy_document" "terraform_policy_document" {
       "iam:TagRole",
       "iam:UpdateRole",
       "iam:ListAttachedRolePolicies",
+      "iam:ListRolePolicies"
     ]
 
     resources = [
