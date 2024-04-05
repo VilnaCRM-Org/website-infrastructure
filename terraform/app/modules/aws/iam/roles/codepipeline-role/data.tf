@@ -210,7 +210,8 @@ data "aws_iam_policy_document" "terraform_policy_document" {
       "iam:GetGroup",
       "iam:AddUserToGroup",
       "iam:AttachGroupPolicy",
-      "iam:ListAttachedGroupPolicies"
+      "iam:ListAttachedGroupPolicies",
+      "iam:DeleteGroup"
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:group/website-users",
@@ -222,7 +223,10 @@ data "aws_iam_policy_document" "terraform_policy_document" {
     effect = "Allow"
     actions = [
       "iam:GetGroup",
-      "iam:CreateGroup"
+      "iam:CreateGroup",
+      "iam:AttachGroupPolicy",
+      "iam:ListAttachedGroupPolicies",
+      "iam:DeleteGroup"
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:group/codepipeline-users/codepipeline-users",
