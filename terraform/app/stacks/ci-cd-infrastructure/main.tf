@@ -216,7 +216,7 @@ module "website_codebuild" {
   role_arn       = module.website_codepipeline_iam_role.role_arn
   kms_key_arn    = module.website_codepipeline_kms.arn
 
-  terraform_role_arn = module.ci_cd_codepipeline_iam_role.terraform_role_arn
+  terraform_role_arn = module.website_codepipeline_iam_role.terraform_role_arn
 
   tags = var.tags
 
