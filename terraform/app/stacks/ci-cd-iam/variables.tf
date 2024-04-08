@@ -8,6 +8,16 @@ variable "ci_cd_project_name" {
   type        = string
 }
 
+variable "codepipeline_user_group_name" {
+  description = "Unique name for this CI/CD User Group"
+  type        = string
+}
+
+variable "codepipeline_user_group_path" {
+  description = "Unique path for this CI/CD User Group"
+  type        = string
+}
+
 variable "environment" {
   description = "Environment for this project"
   type        = string

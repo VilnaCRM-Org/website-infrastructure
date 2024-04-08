@@ -1,6 +1,6 @@
-variable "policy_arns" {
-  type        = map(map(string))
-  description = "Set of policies to attach to Role"
+variable "website_user_group_name" {
+  description = "Name of the Users Group"
+  type        = string
 }
 
 variable "tags" {

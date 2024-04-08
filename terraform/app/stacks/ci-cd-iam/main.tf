@@ -10,12 +10,22 @@ module "codepipeline_policies" {
   tags = var.tags
 }
 
+module "codepipeline_user_group" {
+  source = "../../modules/aws/iam/user-groups/template"
+
+  policy_arns = module.codepipeline_policies.policy_arns
+  group_name  = var.codepipeline_user_group_name
+  group_path  = var.codepipeline_user_group_path
+
+  depends_on = [module.codepipeline_policies]
+}
+
 module "codepipeline_user" {
   source = "../../modules/aws/iam/users/codepipeline-deploy-user"
 
-  policy_arns = module.codepipeline_policies.policy_arns
+  codepipeline_user_group_name = module.codepipeline_user_group.name
 
   tags = var.tags
 
-  depends_on = [module.codepipeline_policies]
+  depends_on = [module.codepipeline_user_group]
 }
