@@ -31,13 +31,14 @@ data "aws_iam_policy_document" "cloudwatch_policy_doc" {
       "cloudwatch:ListManagedInsightRules"
     ]
     resources = [
-      "arn:aws:cloudwatch:${var.region}:${local.account_id}:*"
+      "arn:aws:cloudfront::${local.account_id}:distribution/*"
     ]
   }
   statement {
     sid    = "ReadOnlyCloudwatchLogsPolicy"
     effect = "Allow"
     actions = [
+      "logs:DescribeAccountPolicies",
       "logs:DescribeDeliveries",
       "logs:DescribeDeliveryDestinations",
       "logs:DescribeDeliverySources",
@@ -56,6 +57,7 @@ data "aws_iam_policy_document" "cloudwatch_policy_doc" {
       "logs:ListTagsForResource",
       "logs:ListTagsLogGroup",
       "logs:FilterLogEvents",
+      "logs:GetDataProtectionPolicy",
       "logs:GetDelivery",
       "logs:GetDeliveryDestination",
       "logs:GetDeliveryDestinationPolicy",
@@ -70,7 +72,7 @@ data "aws_iam_policy_document" "cloudwatch_policy_doc" {
       "logs:StartQuery",
       "logs:StopLiveTail",
       "logs:StopQuery",
-      "logs:TestMetricFilter"
+      "logs:TestMetricFilter",
     ]
     resources = [
       "arn:aws:logs:us-east-1:${local.account_id}:*",
@@ -105,6 +107,33 @@ data "aws_iam_policy_document" "cloudwatch_policy_doc" {
     ]
     resources = [
       "arn:aws:cloudtrail:${var.region}:${local.account_id}:*"
+    ]
+  }
+  statement {
+    sid    = "SNSPolicy"
+    effect = "Allow"
+    actions = [
+      "sns:ListTagsForResource",
+      "sns:ListSubscriptionsByTopic",
+      "sns:GetTopicAttributes",
+      "sns:ListSMSSandboxPhoneNumbers",
+      "sns:ListTopics",
+      "sns:GetPlatformApplicationAttributes",
+      "sns:GetSubscriptionAttributes",
+      "sns:ListSubscriptions",
+      "sns:CheckIfPhoneNumberIsOptedOut",
+      "sns:GetDataProtectionPolicy",
+      "sns:ListOriginationNumbers",
+      "sns:ListPhoneNumbersOptedOut",
+      "sns:ListEndpointsByPlatformApplication",
+      "sns:GetEndpointAttributes",
+      "sns:GetSMSSandboxAccountStatus",
+      "sns:GetSMSAttributes",
+      "sns:ListPlatformApplications"
+    ]
+    resources = [
+      "arn:aws:sns:${var.region}:${local.account_id}:*",
+      "arn:aws:sns:us-east-1:${local.account_id}:*"
     ]
   }
 }

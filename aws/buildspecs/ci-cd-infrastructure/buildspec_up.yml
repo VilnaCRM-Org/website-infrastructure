@@ -18,6 +18,7 @@ phases:
       - 'terraspace up ci-cd-infrastructure --plan "ci-cd-infrastructure.plan" -y'
       - 'terraspace up ci-cd-iam --plan "ci-cd-iam.plan" -y'
       - 'terraspace up website-iam --plan "website-iam.plan" -y'
+      - 'terraspace up iam-groups --plan "iam-groups.plan" -y'
 
 artifacts:
   files:

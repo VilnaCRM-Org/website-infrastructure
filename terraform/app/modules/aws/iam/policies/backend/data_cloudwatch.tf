@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "cloudwatch_policy_doc" {
       "cloudwatch:ListManagedInsightRules"
     ]
     resources = [
-      "arn:aws:cloudwatch:${var.region}:${local.account_id}:*"
+      "arn:aws:cloudfront::${local.account_id}:distribution/*"
     ]
   }
   statement {

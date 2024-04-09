@@ -8,6 +8,36 @@ variable "frontend_user_group_path" {
   type        = string
 }
 
+variable "devops_user_group_name" {
+  description = "Unique name for this DevOps User Group"
+  type        = string
+}
+
+variable "devops_user_group_path" {
+  description = "Unique path for this DevOps User Group"
+  type        = string
+}
+
+variable "backend_user_group_name" {
+  description = "Unique name for this Backend User Group"
+  type        = string
+}
+
+variable "backend_user_group_path" {
+  description = "Unique path for this Backend User Group"
+  type        = string
+}
+
+variable "qa_user_group_name" {
+  description = "Unique name for this QA User Group"
+  type        = string
+}
+
+variable "qa_user_group_path" {
+  description = "Unique path for this QA User Group"
+  type        = string
+}
+
 variable "environment" {
   description = "Environment for this project"
   type        = string

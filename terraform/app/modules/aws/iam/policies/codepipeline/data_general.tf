@@ -13,15 +13,6 @@ data "aws_iam_policy_document" "general_policy_doc" {
     ]
     resources = ["*"]
   }
-  statement {
-    sid    = "GeneralSecretsPolicy" # TODO: remove in new implementation of tokens
-    effect = "Allow"
-    actions = [
-      "secretsmanager:DescribeSecret",
-      "secretsmanager:GetResourcePolicy"
-    ]
-    resources = ["arn:aws:secretsmanager:${var.region}:${local.account_id}:secret:test/AWS/*"]
-  }
 
   statement {
     sid    = "TerraformStateListS3Policy"
