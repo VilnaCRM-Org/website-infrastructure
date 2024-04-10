@@ -173,7 +173,8 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:user/codepipeline-users/codepipelineUser",
-      "arn:aws:iam::${local.account_id}:user/website-users/websiteUser"
+      "arn:aws:iam::${local.account_id}:user/website-users/websiteUser",
+      "arn:aws:iam::${local.account_id}:user/admin-users/adminUser"
     ]
   }
 
@@ -194,7 +195,8 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
       "arn:aws:iam::${local.account_id}:group/backend-users",
       "arn:aws:iam::${local.account_id}:group/devops-users",
       "arn:aws:iam::${local.account_id}:group/qa-users",
-      "arn:aws:iam::${local.account_id}:group/frontend-users"
+      "arn:aws:iam::${local.account_id}:group/frontend-users",
+      "arn:aws:iam::${local.account_id}:group/admin-users",
     ]
   }
   statement {
@@ -214,7 +216,8 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
       "arn:aws:iam::${local.account_id}:group/backend-users/backend-users",
       "arn:aws:iam::${local.account_id}:group/devops-users/devops-users",
       "arn:aws:iam::${local.account_id}:group/qa-users/qa-users",
-      "arn:aws:iam::${local.account_id}:group/frontend-users/frontend-users"
+      "arn:aws:iam::${local.account_id}:group/frontend-users/frontend-users",
+      "arn:aws:iam::${local.account_id}:group/admin-users/admin-users"
     ]
   }
 
@@ -262,24 +265,25 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-sns-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-lambda-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-kms-policy",
-      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-cloudfront-policy",
-      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-cloudwatch-policy",
-      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-codepipeline-policy",
-      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-iam-policy",
-      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-kms-policy",
-      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-lambda-policy",
-      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-s3-policy",
-      "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-cloudfront-policy",
-      "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-cloudwatch-policy",
-      "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-codepipeline-policy",
-      "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-s3-policy",
-      "arn:aws:iam::${local.account_id}:policy/FrontendPolicies/${var.environment}-frontend-cloudfront-policy",
-      "arn:aws:iam::${local.account_id}:policy/FrontendPolicies/${var.environment}-frontend-cloudwatch-policy",
-      "arn:aws:iam::${local.account_id}:policy/FrontendPolicies/${var.environment}-frontend-codepipeline-policy",
-      "arn:aws:iam::${local.account_id}:policy/FrontendPolicies/${var.environment}-frontend-s3-policy",
-      "arn:aws:iam::${local.account_id}:policy/BackendPolicies/${var.environment}-backend-cloudfront-policy",
-      "arn:aws:iam::${local.account_id}:policy/BackendPolicies/${var.environment}-backend-cloudwatch-policy",
-      "arn:aws:iam::${local.account_id}:policy/BackendPolicies/${var.environment}-backend-s3-policy",
+      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-cloudfront-policy",
+      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-cloudwatch-policy",
+      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-codepipeline-policy",
+      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-iam-policy",
+      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-kms-policy",
+      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-lambda-policy",
+      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-s3-policy",
+      "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-group-cloudfront-policy",
+      "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-group-cloudwatch-policy",
+      "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-group-codepipeline-policy",
+      "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-group-s3-policy",
+      "arn:aws:iam::${local.account_id}:policy/FrontendPolicies/${var.environment}-frontend-group-cloudfront-policy",
+      "arn:aws:iam::${local.account_id}:policy/FrontendPolicies/${var.environment}-frontend-group-cloudwatch-policy",
+      "arn:aws:iam::${local.account_id}:policy/FrontendPolicies/${var.environment}-frontend-group-codepipeline-policy",
+      "arn:aws:iam::${local.account_id}:policy/FrontendPolicies/${var.environment}-frontend-group-s3-policy",
+      "arn:aws:iam::${local.account_id}:policy/BackendPolicies/${var.environment}-backend-group-cloudfront-policy",
+      "arn:aws:iam::${local.account_id}:policy/BackendPolicies/${var.environment}-backend-group-cloudwatch-policy",
+      "arn:aws:iam::${local.account_id}:policy/BackendPolicies/${var.environment}-backend-group-s3-policy",
+      "arn:aws:iam::${local.account_id}:policy/AdminPolicies/${var.environment}-admin-group-iam-policy",
     ]
   }
 

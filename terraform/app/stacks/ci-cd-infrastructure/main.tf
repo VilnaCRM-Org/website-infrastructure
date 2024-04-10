@@ -87,26 +87,14 @@ module "ci_cd_codebuild" {
   builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
   builder_type                        = var.builder_type
 
-  ruby_version   = var.ruby_version
-  python_version = var.python_version
-  nodejs_version = var.nodejs_version
-  bucket_name    = var.bucket_name
-  script_dir     = var.script_dir
-
-  region      = var.region
-  environment = var.environment
-
-  SLACK_WORKSPACE_ID            = var.SLACK_WORKSPACE_ID
-  CODEPIPELINE_SLACK_CHANNEL_ID = var.CODEPIPELINE_SLACK_CHANNEL_ID
-  ALERTS_SLACK_CHANNEL_ID       = var.ALERTS_SLACK_CHANNEL_ID
-
-  website_url = var.website_url
-
   s3_bucket_name = module.ci_cd_s3_artifacts_bucket.bucket
   role_arn       = module.ci_cd_codepipeline_iam_role.role_arn
   kms_key_arn    = module.ci_cd_codepipeline_kms.arn
 
-  terraform_role_arn = module.ci_cd_codepipeline_iam_role.terraform_role_arn
+  region      = var.region
+  environment = var.environment
+
+  environment_variables = local.environment_variables
 
   tags = var.tags
 
@@ -197,26 +185,14 @@ module "website_codebuild" {
   builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
   builder_type                        = var.builder_type
 
-  ruby_version   = var.ruby_version
-  python_version = var.python_version
-  nodejs_version = var.nodejs_version
-  bucket_name    = var.bucket_name
-  script_dir     = var.script_dir
-
   region      = var.region
   environment = var.environment
-
-  SLACK_WORKSPACE_ID            = var.SLACK_WORKSPACE_ID
-  CODEPIPELINE_SLACK_CHANNEL_ID = var.CODEPIPELINE_SLACK_CHANNEL_ID
-  ALERTS_SLACK_CHANNEL_ID       = var.ALERTS_SLACK_CHANNEL_ID
-
-  website_url = var.website_url
 
   s3_bucket_name = module.website_s3_artifacts_bucket.bucket
   role_arn       = module.website_codepipeline_iam_role.role_arn
   kms_key_arn    = module.website_codepipeline_kms.arn
 
-  terraform_role_arn = module.website_codepipeline_iam_role.terraform_role_arn
+  environment_variables = local.environment_variables
 
   tags = var.tags
 

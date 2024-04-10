@@ -21,9 +21,13 @@ module "codepipeline_user_group" {
 }
 
 module "codepipeline_user" {
-  source = "../../modules/aws/iam/users/codepipeline-deploy-user"
+  source = "../../modules/aws/iam/users/template"
 
-  codepipeline_user_group_name = module.codepipeline_user_group.name
+  user_name = "codepipelineUser"
+  user_path = "/codepipeline-users/"
+
+  group_membership_name = "codepipeline-group-membership"
+  user_group_name       = module.codepipeline_user_group.name
 
   tags = var.tags
 

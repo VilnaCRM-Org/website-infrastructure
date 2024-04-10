@@ -21,9 +21,13 @@ module "website_user_group" {
 }
 
 module "website_user" {
-  source = "../../modules/aws/iam/users/website-deploy-user"
+  source = "../../modules/aws/iam/users/template"
 
-  website_user_group_name = module.website_user_group.name
+  user_name = "websiteUser"
+  user_path = "/website-users/"
+
+  group_membership_name = "website-group-membership"
+  user_group_name       = module.website_user_group.name
 
   tags = var.tags
 

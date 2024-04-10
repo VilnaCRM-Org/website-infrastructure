@@ -18,12 +18,6 @@ variable "role_arn" {
   type        = string
 }
 
-variable "terraform_role_arn" {
-  description = "Terraform IAM role arn. "
-  type        = string
-}
-
-
 variable "s3_bucket_name" {
   description = "Name of the S3 bucket used to store the deployment artifacts"
   type        = string
@@ -64,52 +58,12 @@ variable "build_project_source" {
   type        = string
 }
 
-variable "ruby_version" {
-  description = "Ruby Version to be used in codebuild stages"
-  type        = string
-}
-
-variable "python_version" {
-  description = "Python Version to be used in codebuild stages"
-  type        = string
-}
-
-variable "nodejs_version" {
-  description = "Node.js Version to be used in codebuild stages"
-  type        = string
-}
-
-variable "bucket_name" {
-  description = "S3 Bucket Name for content"
-  type        = string
-}
-
-variable "script_dir" {
-  description = "Directory for Scripts of CodeBuild"
-  type        = string
-}
-
 variable "kms_key_arn" {
   description = "ARN of KMS key for encryption"
   type        = string
 }
 
-variable "SLACK_WORKSPACE_ID" {
-  description = "Slack Workspace ID for Notifications"
-  type        = string
-}
-
-variable "CODEPIPELINE_SLACK_CHANNEL_ID" {
-  description = "Codepipeline Slack Channel ID for Notifications"
-  type        = string
-}
-
-variable "ALERTS_SLACK_CHANNEL_ID" {
-  description = "Website Slack Channel ID for Notifications"
-  type        = string
-}
-
-variable "website_url" {
-  description = "URL of website for healthcheck"
-  type        = string
+variable "environment_variables" {
+  description = "Environment variables"
+  type        = map(string)
 }

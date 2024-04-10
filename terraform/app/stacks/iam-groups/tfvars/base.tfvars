@@ -11,3 +11,6 @@ backend_user_group_path = "/backend-users/"
 
 qa_user_group_name = "qa-users"
 qa_user_group_path = "/qa-users/"
+
+admin_user_group_name = "admin-users"
+admin_user_group_path = "/admin-users/"
