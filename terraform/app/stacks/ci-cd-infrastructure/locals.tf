@@ -1,6 +1,6 @@
 locals {
   account_id = data.aws_caller_identity.current.account_id
-  environment_variables = {
+  infra_environment_variables = {
     "TS_ENV"                               = var.environment,
     "AWS_DEFAULT_REGION"                   = var.region,
     "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
@@ -12,6 +12,11 @@ locals {
     "NODEJS_VERSION"                       = var.nodejs_version,
     "SCRIPT_DIR"                           = var.script_dir,
     "BUCKET_NAME"                          = var.bucket_name,
+  }
+  deploy_environment_variables = {
+    "WEBSITE_URL"    = var.website_url,
+    "NODEJS_VERSION" = var.nodejs_version,
+    "BUCKET_NAME"    = var.bucket_name,
   }
 }
 

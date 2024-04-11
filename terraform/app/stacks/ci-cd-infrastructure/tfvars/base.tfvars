@@ -1,12 +1,14 @@
-source_repo_owner         = "VilnaCRM-Org"
-source_repo_name          = "website-infrastructure"
-source_repo_branch        = "2-set-up-the-frontend-production-infrastructure"
-region                    = "eu-central-1"
-ruby_version              = "3.2"
-python_version            = "3.12"
-nodejs_version            = "20"
-script_dir                = "./aws/scripts"
-create_slack_notification = true
+source_repo_owner          = "VilnaCRM-Org"
+infra_source_repo_name     = "website-infrastructure"
+website_source_repo_name   = "website"
+infra_source_repo_branch   = "2-set-up-the-frontend-production-infrastructure"
+website_source_repo_branch = "main"
+region                     = "eu-central-1"
+ruby_version               = "3.2"
+python_version             = "3.12"
+nodejs_version             = "20"
+script_dir                 = "./aws/scripts"
+create_slack_notification  = true
 
 ci_cd_infra_buildspecs = "ci-cd-infrastructure"
 
@@ -41,7 +43,7 @@ website_infra_build_projects = [
   "down"
 ]
 
-website_deploy_buildspecs = "website"
+website_deploy_buildspecs = "website-deploy"
 
 website_deploy_stage_input = [
   { name = "deploy", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "DeployOutput" },

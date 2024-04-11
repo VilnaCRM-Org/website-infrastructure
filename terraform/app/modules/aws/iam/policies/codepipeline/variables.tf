@@ -1,12 +1,18 @@
 variable "website_project_name" {
-  description = "Unique name for this Website Codepipeline"
+  description = "Unique name for the Website Codepipeline"
   type        = string
 }
 
 variable "ci_cd_project_name" {
-  description = "Unique name for this CI/CD Codepipeline"
+  description = "Unique name for the CI/CD Codepipeline"
   type        = string
 }
+
+variable "website_deploy_project_name" {
+  description = "Unique name for this Website Deploy Codepipeline"
+  type        = string
+}
+
 
 variable "policy_prefix" {
   description = "Policy Prefix for policies"
@@ -14,12 +20,12 @@ variable "policy_prefix" {
 }
 
 variable "environment" {
-  description = "Environment for this project"
+  description = "Environment for the project"
   type        = string
 }
 
 variable "region" {
-  description = "Region for this project"
+  description = "Region for the project"
   type        = string
 }
 

@@ -97,21 +97,3 @@ module "admin_user_group" {
 
   depends_on = [module.admin_policies]
 }
-
-module "admin_user" {
-  source = "../../modules/aws/iam/users/admin"
-
-  user_name = "adminUser"
-  user_path = var.admin_user_group_path
-  groups    = local.group_names
-
-  tags = var.tags
-
-  depends_on = [
-    module.frontend_user_group,
-    module.devops_user_group,
-    module.backend_user_group,
-    module.qa_user_group,
-    module.admin_user_group
-  ]
-}
