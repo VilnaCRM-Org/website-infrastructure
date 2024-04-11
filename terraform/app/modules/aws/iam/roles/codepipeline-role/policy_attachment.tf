@@ -5,7 +5,7 @@ resource "aws_iam_role_policy_attachment" "codepipeline_policy_role_attachment" 
 }
 
 resource "aws_iam_role_policy_attachment" "terraform_policy_role_attachments" {
-  for_each = local.is_ci_cd_infra ? local.ci_cd_arns : local.website_arns
+  for_each = local.is_ci_cd_infra ? local.ci_cd_infra_arns : local.website_infra_arns
 
   role       = aws_iam_role.terraform_role.name
   policy_arn = each.value.arn

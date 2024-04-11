@@ -3,12 +3,12 @@ variable "project_name" {
   type        = string
 }
 
-variable "website_project_name" {
+variable "website_infra_project_name" {
   description = "Unique name for this Website Codepipeline"
   type        = string
 }
 
-variable "ci_cd_project_name" {
+variable "ci_cd_infra_project_name" {
   description = "Unique name for this CI/CD Codepipeline"
   type        = string
 }
@@ -23,8 +23,13 @@ variable "region" {
   type        = string
 }
 
-variable "kms_condition_account_value" {
-  description = "Value for sid EnableRootAccessAndPreventPermissionDelegation condition"
+variable "website_infra_buildspecs" {
+  description = "Buildspecs of Website infrastructure"
+  type        = string
+}
+
+variable "ci_cd_infra_buildspecs" {
+  description = "Buildspecs of CI/CD infrastructure"
   type        = string
 }
 
@@ -64,22 +69,22 @@ variable "website_url" {
   type        = string
 }
 
-variable "ci_cd_stage_input" {
+variable "ci_cd_infra_stage_input" {
   description = "List of Map containing information about the stages of the CI/CD Infrastructure CodePipeline"
   type        = list(map(string))
 }
 
-variable "website_stage_input" {
+variable "website_infra_stage_input" {
   description = "List of Map containing information about the stages of the Website Infrastructure CodePipeline"
   type        = list(map(string))
 }
 
-variable "ci_cd_build_projects" {
+variable "ci_cd_infra_build_projects" {
   description = "Build Projects Names to the CI/CD Infrastructure CodePipeline"
   type        = list(string)
 }
 
-variable "website_build_projects" {
+variable "website_infra_build_projects" {
   description = "Build Projects Names to the Website Infrastructure CodePipeline"
   type        = list(string)
 }

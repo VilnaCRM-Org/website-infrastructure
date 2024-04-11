@@ -51,4 +51,5 @@ variable "codestar_connection_arn" {
 variable "policy_arns" {
   type        = map(map(string))
   description = "Set of policies to attach to Role"
+  default = {value = {}}
 }
