@@ -16,7 +16,8 @@ data "aws_iam_policy_document" "iam_policy_doc" {
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:role/${var.website_project_name}-codepipeline-role",
-      "arn:aws:iam::${local.account_id}:role/${var.ci_cd_project_name}-codepipeline-role"
+      "arn:aws:iam::${local.account_id}:role/${var.ci_cd_project_name}-codepipeline-role",
+      "arn:aws:iam::${local.account_id}:role/${var.website_deploy_project_name}-codepipeline-role"
     ]
   }
   statement {
