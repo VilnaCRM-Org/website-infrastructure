@@ -47,7 +47,7 @@ module "ci_cd_infra_s3_artifacts_bucket" {
 module "ci_cd_infra_codepipeline_kms" {
   source = "../../modules/aws/kms"
 
-  codepipeline_role_arn       = module.ci_cd_infra_codepipeline_iam_role.role_arn
+  codepipeline_role_arn = module.ci_cd_infra_codepipeline_iam_role.role_arn
 
   tags = var.tags
 }
@@ -146,7 +146,7 @@ module "website_infra_s3_artifacts_bucket" {
 module "website_infra_codepipeline_kms" {
   source = "../../modules/aws/kms"
 
-  codepipeline_role_arn       = module.website_infra_codepipeline_iam_role.role_arn
+  codepipeline_role_arn = module.website_infra_codepipeline_iam_role.role_arn
 
   tags = var.tags
 }
@@ -206,7 +206,7 @@ module "website_infra_codebuild" {
   ]
 }
 
-module "website_codepipeline" {
+module "website_infra_codepipeline" {
   source = "../../modules/aws/codepipeline"
 
   project_name       = var.website_infra_project_name
@@ -238,9 +238,9 @@ module "chatbot" {
   channel_id   = var.CODEPIPELINE_SLACK_CHANNEL_ID
   workspace_id = var.SLACK_WORKSPACE_ID
 
-  sns_topic_arns = [module.website_codepipeline.sns_topic_arn, module.ci_cd_infra_codepipeline.sns_topic_arn]
+  sns_topic_arns = [module.website_infra_codepipeline.sns_topic_arn, module.ci_cd_infra_codepipeline.sns_topic_arn]
 
   tags = var.tags
 
-  depends_on = [module.website_codepipeline, module.ci_cd_infra_codepipeline]
+  depends_on = [module.website_infra_codepipeline, module.ci_cd_infra_codepipeline]
 }
