@@ -12,7 +12,6 @@ locals {
     "NODEJS_VERSION"                       = var.nodejs_version,
     "SCRIPT_DIR"                           = var.script_dir,
     "BUCKET_NAME"                          = var.bucket_name,
-    "ROLE_ARN"                             = module.ci_cd_codepipeline_iam_role.terraform_role_arn,
   }
 }
 

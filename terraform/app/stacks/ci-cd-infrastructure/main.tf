@@ -94,7 +94,7 @@ module "ci_cd_codebuild" {
   region      = var.region
   environment = var.environment
 
-  environment_variables = local.environment_variables
+  environment_variables = merge(local.environment_variables, { "ROLE_ARN" = module.ci_cd_codepipeline_iam_role.terraform_role_arn })
 
   tags = var.tags
 
@@ -192,7 +192,7 @@ module "website_codebuild" {
   role_arn       = module.website_codepipeline_iam_role.role_arn
   kms_key_arn    = module.website_codepipeline_kms.arn
 
-  environment_variables = local.environment_variables
+  environment_variables = merge(local.environment_variables, { "ROLE_ARN" = module.website_codepipeline_iam_role.terraform_role_arn })
 
   tags = var.tags
 
