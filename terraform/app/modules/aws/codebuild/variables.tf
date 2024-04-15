@@ -23,8 +23,8 @@ variable "s3_bucket_name" {
   type        = string
 }
 
-variable "stack" {
-  description = "Stack Name in Buildpspec"
+variable "codepipeline_buildspecs" {
+  description = "CodePipeline Buildspecs"
   type        = string
 }
 

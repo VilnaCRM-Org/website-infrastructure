@@ -8,6 +8,11 @@ variable "ci_cd_project_name" {
   type        = string
 }
 
+variable "ci_cd_website_project_name" {
+  description = "Unique name for this Website Deploy Codepipeline"
+  type        = string
+}
+
 variable "codepipeline_user_group_name" {
   description = "Unique name for this CI/CD User Group"
   type        = string

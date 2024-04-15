@@ -91,7 +91,7 @@ module "ci_cd_infra_codebuild" {
   role_arn       = module.ci_cd_infra_codepipeline_iam_role.role_arn
   kms_key_arn    = module.ci_cd_infra_codepipeline_kms.arn
 
-  stack = var.ci_cd_infra_buildspecs
+  codepipeline_buildspecs = var.ci_cd_infra_buildspecs
 
   region      = var.region
   environment = var.environment
@@ -190,7 +190,7 @@ module "website_infra_codebuild" {
   region      = var.region
   environment = var.environment
 
-  stack = var.website_infra_buildspecs
+  codepipeline_buildspecs = var.website_infra_buildspecs
 
   s3_bucket_name = module.website_infra_s3_artifacts_bucket.bucket
   role_arn       = module.website_infra_codepipeline_iam_role.role_arn
@@ -288,7 +288,7 @@ module "ci_cd_website_codebuild" {
   region      = var.region
   environment = var.environment
 
-  stack = var.ci_cd_website_buildspecs
+  codepipeline_buildspecs = var.website_infra_buildspecs
 
   s3_bucket_name = module.ci_cd_website_s3_artifacts_bucket.bucket
   role_arn       = module.ci_cd_website_codepipeline_iam_role.role_arn

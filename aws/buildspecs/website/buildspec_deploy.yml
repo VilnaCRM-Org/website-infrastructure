@@ -13,23 +13,16 @@ phases:
       - 'yum install -y yum-utils'
       - 'echo #### Install pnpm'
       - 'npm install -g pnpm'
+      - 'rm .env'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh $WEBSITE_URL'
       - 'echo #### Install dependencies'
       - 'pnpm i --frozen-lockfile'
 
-  test:
+  pre_build:
     commands:
       - 'echo #### Test Project'
-      - 'pnpm run format'
-      - 'pnpm run lint:next'
-      - 'pnpm run lint:tsc'
-      - 'pnpm run lint:md'
-      - 'pnpm run test:e2e'
-      - 'pnpm run test:mutation'
-      - 'pnpm run test:visual'
-      - 'pnpm run test:unit'
-      - 'pnpm run test:memory-leak'
-      - 'pnpm run lighthouse:desktop'
-      - 'pnpm run lighthouse:mobile'
+      - 'cp ${CODEBUILD_SRC_DIR}/task/website_tests.yml ${CODEBUILD_SRC_DIR}/website/Taskfile.yml'
+      - 'task --verbose summary'
 
   build:
     commands:
