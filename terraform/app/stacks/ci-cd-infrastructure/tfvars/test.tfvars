@@ -1,7 +1,7 @@
 project_name                = "website-test"
 website_infra_project_name  = "website-infra-test"
 ci_cd_infra_project_name    = "ci-cd-infra-test"
-website_deploy_project_name = "website-deploy-test"
+ci_cd_website_project_name = "ci-cd-website-test"
 environment                 = "test"
 github_connection_name      = "Github"
 secretsmanager_secret_name  = "test/AWS/Website"
@@ -42,12 +42,12 @@ website_infra_build_projects = [
   "down"
 ]
 
-website_deploy_stage_input = [
+ci_cd_website_stage_input = [
   { name = "deploy", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "DeployOutput" },
   { name = "healthcheck", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "HealthcheckOutput" }
 ]
 
-website_deploy_build_projects = [
+ci_cd_website_build_projects = [
   "deploy",
   "healthcheck",
 ]

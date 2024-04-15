@@ -13,7 +13,7 @@ variable "ci_cd_infra_project_name" {
   type        = string
 }
 
-variable "website_deploy_project_name" {
+variable "ci_cd_website_project_name" {
   description = "Unique name for this Website Deploy Codepipeline"
   type        = string
 }
@@ -38,7 +38,7 @@ variable "ci_cd_infra_buildspecs" {
   type        = string
 }
 
-variable "website_deploy_buildspecs" {
+variable "ci_cd_website_buildspecs" {
   description = "Buildspecs of Website Deploy"
   type        = string
 }
@@ -48,26 +48,20 @@ variable "source_repo_owner" {
   type        = string
 }
 
-variable "infra_source_repo_name" {
+variable "source_repo_name" {
   description = "Infrastructure Source repo name of the repository"
   type        = string
 }
 
-variable "website_source_repo_name" {
-  description = "Website Source repo name of the repository"
+variable "website_content_repo_name" {
+  description = "Infrastructure Source repo name of the Website repository"
   type        = string
 }
 
-variable "infra_source_repo_branch" {
+variable "source_repo_branch" {
   description = "Default branch in the Source repo for which CodePipeline needs to be configured"
   type        = string
 }
-
-variable "website_source_repo_branch" {
-  description = "Default branch in the Source repo for which Website needs to be configured"
-  type        = string
-}
-
 
 variable "github_connection_name" {
   description = "Name of the CodeStar connection"
@@ -100,7 +94,7 @@ variable "website_infra_stage_input" {
   type        = list(map(string))
 }
 
-variable "website_deploy_stage_input" {
+variable "ci_cd_website_stage_input" {
   description = "List of Map containing information about the stages of the Website Infrastructure CodePipeline"
   type        = list(map(string))
 }
@@ -115,7 +109,7 @@ variable "website_infra_build_projects" {
   type        = list(string)
 }
 
-variable "website_deploy_build_projects" {
+variable "ci_cd_website_build_projects" {
   description = "Build Projects Names to the Website Infrastructure CodePipeline"
   type        = list(string)
 }

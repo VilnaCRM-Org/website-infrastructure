@@ -14,8 +14,8 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.website_project_name}-pipeline/*",
       "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.ci_cd_project_name}-pipeline",
       "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.ci_cd_project_name}-pipeline/*",
-      "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.website_deploy_project_name}-pipeline",
-      "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.website_deploy_project_name}-pipeline/*"
+      "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.ci_cd_website_project_name}-pipeline",
+      "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.ci_cd_website_project_name}-pipeline/*"
     ]
   }
   statement {
@@ -37,8 +37,8 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-validate",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-plan",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-up",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_deploy_project_name}-deploy",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_deploy_project_name}-healthcheck",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-deploy",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-healthcheck",
     ]
   }
   statement {
@@ -58,8 +58,8 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-validate",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-plan",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-up",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_deploy_project_name}-deploy",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_deploy_project_name}-healthcheck",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-deploy",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-healthcheck",
     ]
   }
   statement {

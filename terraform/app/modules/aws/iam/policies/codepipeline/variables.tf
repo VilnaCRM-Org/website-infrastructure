@@ -8,7 +8,7 @@ variable "ci_cd_project_name" {
   type        = string
 }
 
-variable "website_deploy_project_name" {
+variable "ci_cd_website_project_name" {
   description = "Unique name for this Website Deploy Codepipeline"
   type        = string
 }

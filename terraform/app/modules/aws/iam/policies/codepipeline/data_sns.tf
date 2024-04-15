@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "sns_policy_doc" {
     resources = [
       "arn:aws:sns:${var.region}:${local.account_id}:${var.website_project_name}-notifications",
       "arn:aws:sns:${var.region}:${local.account_id}:${var.ci_cd_project_name}-notifications",
-      "arn:aws:sns:${var.region}:${local.account_id}:${var.website_deploy_project_name}-notifications",
+      "arn:aws:sns:${var.region}:${local.account_id}:${var.ci_cd_website_project_name}-notifications",
     ]
   }
 } 

@@ -16,6 +16,21 @@ phases:
       - 'echo #### Install dependencies'
       - 'pnpm i --frozen-lockfile'
 
+  test:
+    commands:
+      - 'echo #### Test Project'
+      - 'pnpm run format'
+      - 'pnpm run lint:next'
+      - 'pnpm run lint:tsc'
+      - 'pnpm run lint:md'
+      - 'pnpm run test:e2e'
+      - 'pnpm run test:mutation'
+      - 'pnpm run test:visual'
+      - 'pnpm run test:unit'
+      - 'pnpm run test:memory-leak'
+      - 'pnpm run lighthouse:desktop'
+      - 'pnpm run lighthouse:mobile'
+
   build:
     commands:
       - 'echo #### Build Project'

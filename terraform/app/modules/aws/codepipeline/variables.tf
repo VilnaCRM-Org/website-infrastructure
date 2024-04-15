@@ -43,6 +43,11 @@ variable "codestar_connection_arn" {
   type        = string
 }
 
+variable "detect_changes" {
+  description = "Specyfing changes detection"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to be attached to the CodePipeline"
   type        = map(any)

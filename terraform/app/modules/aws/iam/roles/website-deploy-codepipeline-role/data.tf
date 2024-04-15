@@ -84,4 +84,15 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       values   = ["${var.source_repo_owner}/${var.source_repo_name}"]
     }
   }
+
+  statement {
+    sid    = "AllowLogsActions"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${local.account_id}:log-group:*"]
+  }
 }
