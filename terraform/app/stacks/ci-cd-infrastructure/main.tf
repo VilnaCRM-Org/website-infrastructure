@@ -9,12 +9,12 @@ module "codestar_connection" {
 module "ci_cd_infra_policies" {
   source = "../../modules/aws/iam/policies/codepipeline"
 
-  policy_prefix               = "${var.environment}-ci-cd-infra"
-  website_project_name        = var.website_infra_project_name
-  ci_cd_project_name          = var.ci_cd_infra_project_name
+  policy_prefix              = "${var.environment}-ci-cd-infra"
+  website_project_name       = var.website_infra_project_name
+  ci_cd_project_name         = var.ci_cd_infra_project_name
   ci_cd_website_project_name = var.ci_cd_website_project_name
-  region                      = var.region
-  environment                 = var.environment
+  region                     = var.region
+  environment                = var.environment
 
   tags = var.tags
 }
@@ -334,7 +334,7 @@ module "oidc_role" {
 
   project_name      = var.ci_cd_website_project_name
   source_repo_owner = var.source_repo_owner
-  source_repo_name  = var.website_content_repo_name
+  source_repo_name  = var.source_repo_name
 
   ci_cd_website_codepipeline_arn = module.ci_cd_website_codepipeline.arn
 
