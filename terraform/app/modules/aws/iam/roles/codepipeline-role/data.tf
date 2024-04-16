@@ -317,7 +317,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
     resources = [
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-codepipeline-role-policy",
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-codepipeline-role-policy",
-      "arn:aws:iam::${local.account_id}:policy/website-deploy-${var.environment}-codepipeline-role-policy",
+      "arn:aws:iam::${local.account_id}:policy/ci-cd-website-${var.environment}-codepipeline-role-policy",
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-terraform-role-ci-cd-policy",
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-terraform-role-ci-cd-policy",
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-terraform-role-iam-policy",

@@ -17,6 +17,7 @@ locals {
     "WEBSITE_URL"    = var.website_url,
     "NODEJS_VERSION" = var.nodejs_version,
     "BUCKET_NAME"    = var.bucket_name,
+    "SCRIPT_DIR"     = var.script_dir,
   }
 }
 
