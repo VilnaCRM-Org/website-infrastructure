@@ -18,6 +18,11 @@ variable "ci_cd_website_codepipeline_arn" {
   type        = string
 }
 
+variable "ci_cd_website_codepipeline_name" {
+  description = "CodePipeline Name of CI/CD Website pipeline"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to be attached to the resource"
   type        = map(any)

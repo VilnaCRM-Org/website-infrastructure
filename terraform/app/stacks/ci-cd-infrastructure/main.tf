@@ -254,7 +254,7 @@ module "ci_cd_website_codepipeline_kms" {
 }
 
 module "ci_cd_website_codepipeline_iam_role" {
-  source = "../../modules/aws/iam/roles/website-deploy-codepipeline-role"
+  source = "../../modules/aws/iam/roles/ci-cd-website-codepipeline-role"
 
   project_name               = var.ci_cd_website_project_name
   codepipeline_iam_role_name = "${var.ci_cd_website_project_name}-codepipeline-role"
@@ -336,7 +336,8 @@ module "oidc_role" {
   source_repo_owner = var.source_repo_owner
   source_repo_name  = var.source_repo_name
 
-  ci_cd_website_codepipeline_arn = module.ci_cd_website_codepipeline.arn
+  ci_cd_website_codepipeline_arn  = module.ci_cd_website_codepipeline.arn
+  ci_cd_website_codepipeline_name = module.ci_cd_website_codepipeline.name
 
   tags = var.tags
 

@@ -17,9 +17,9 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
-          role-to-assume: ${{ secrets.CODEPIPELINE_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_CODEPIPELINE_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
       - name: Start Pipeline Execution
         run: |
-          aws codepipeline start-pipeline-execution --name ${{ secrets.CODEPIPELINE_NAME }}
+          aws codepipeline start-pipeline-execution --name ${{ secrets.AWS_CODEPIPELINE_NAME }}

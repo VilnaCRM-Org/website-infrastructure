@@ -11,3 +11,6 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
   }
 }
 
+data "github_actions_public_key" "public_key" {
+  repository = var.source_repo_name
+}

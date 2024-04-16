@@ -198,6 +198,7 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
       "arn:aws:iam::${local.account_id}:group/admin-users",
     ]
   }
+
   statement {
     sid    = "IAMCreateGroupPolicy"
     effect = "Allow"
@@ -230,10 +231,10 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
       "iam:ListAttachedRolePolicies",
       "iam:ListRolePolicies"
     ]
-
     resources = [
       "arn:aws:iam::${local.account_id}:role/ci-cd-infra-${var.environment}-codebuild-terraform-role",
       "arn:aws:iam::${local.account_id}:role/website-infra-${var.environment}-codebuild-terraform-role",
+      "arn:aws:iam::${local.account_id}:role/ci-cd-website-${var.environment}-github-oidc-codepipeline-role",
     ]
   }
 }
@@ -256,6 +257,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-general-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-iam-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-codepipeline-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/ci-cd-website-${var.environment}-oidc-codepipeline-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-dns-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-iam-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-general-policy",
@@ -286,6 +288,18 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
     ]
   }
 
+  statement {
+    sid    = "AllowOpenIDConnectProviderAccessPolicy"
+    effect = "Allow"
+    actions = [
+      "iam:CreateOpenIDConnectProvider",
+      "iam:UpdateOpenIDConnectProviderThumbprint",
+      "iam:TagOpenIDConnectProvider",
+      "iam:ListOpenIDConnectProviderTags",
+      "iam:GetOpenIDConnectProvider"
+    ]
+    resources = ["arn:aws:iam::${local.account_id}:oidc-provider/token.actions.githubusercontent.com"]
+  }
 
   statement {
     sid    = "AllowCICDWebsitePoliciesAccessPolicy"
@@ -311,9 +325,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:ListPolicyVersions",
       "iam:CreatePolicyVersion",
       "iam:TagPolicy",
-
     ]
-
     resources = [
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-codepipeline-role-policy",
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-codepipeline-role-policy",
