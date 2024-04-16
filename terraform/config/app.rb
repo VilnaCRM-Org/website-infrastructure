@@ -1,7 +1,7 @@
 # Docs: https://terraspace.cloud/docs/config/reference/
 Terraspace.configure do |config|
   # config.logger.level = :info
-  config.all.concurrency = 20
+  # config.all.concurrency = 20
   config.build.copy_modules = true
   # To enable Terraspace Cloud set config.cloud.org
   # config.cloud.org = "ORG"          # required: replace with your org. only letters, numbers, underscore and dashes allowed
