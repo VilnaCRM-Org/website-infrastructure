@@ -26,17 +26,8 @@ phases:
   pre_build:
     commands:
       - 'echo #### Test Project'
-      - 'pnpm run format'
-      - 'pnpm run lint:next'
-      - 'pnpm run lint:tsc'
-      - 'pnpm run lint:md'
-      - 'pnpm run test:e2e'
-      - 'pnpm run test:mutation'
-      - 'pnpm run test:visual'
-      - 'pnpm run test:unit'
-      - 'pnpm run test:memory-leak'
-      - 'pnpm run lighthouse:desktop'
-      - 'pnpm run lighthouse:mobile'
+      - 'cp ${CODEBUILD_SRC_DIR}/task/website_tests.yml ./Taskfile.yml'
+      - 'task --verbose summary'
 
   build:
     commands:

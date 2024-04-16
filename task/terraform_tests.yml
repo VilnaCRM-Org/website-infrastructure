@@ -23,7 +23,7 @@ tasks:
   checkov:
     desc: 'Run checkov'
     cmds:
-      - checkov -o junitxml --framework terraform -d ./ > checkov.xml
+      - checkov -o junitxml --framework terraform -d ./ > checkov.xml --download-external-modules
     silent: false
 
   tfsec:
