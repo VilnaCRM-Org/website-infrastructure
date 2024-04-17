@@ -10,7 +10,7 @@ phases:
       nodejs: $NODEJS_VERSION
       golang: $GOLANG_VERSION
     commands:
-      - 'yum install -y libgbm1'
+      - 'yum install -y mesa-libgbm-devel'
       - 'n install 21.7.1'
       - 'go install github.com/go-task/task/v3/cmd/task@latest'
       - 'cd ~'
