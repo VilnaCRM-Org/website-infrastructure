@@ -20,7 +20,7 @@ phases:
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
-      - 'tofu login registry.opentofu.org/integrations/github'
+      - 'tofu login integrations/github'
       - 'echo ## TERRASPACE Init : Initialize all providers and modules'
       - 'terraspace all init'
       - 'echo ## TERRASPACE UP : Bringing up the infrastructure'
