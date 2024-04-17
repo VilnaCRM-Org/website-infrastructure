@@ -12,14 +12,20 @@ phases:
       golang: $GOLANG_VERSION
       ruby: $RUBY_VERSION
     commands:
+      - 'echo ## Install OpenTofu'
+      - 'curl --proto "=https" --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh'
+      - 'chmod +x install-opentofu.sh'
+      - './install-opentofu.sh --install-method rpm'
+      - 'rm install-opentofu.sh'
+      - 'echo ## Install Terraspace'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
-      - '/bin/bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
+      - 'yum install -y yum-utils'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
+      - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
       - 'yum update -y'
-      - 'yum install -y jq yum-utils'
-      - 'export PATH="$HOME/.tfenv/bin:$PATH"'
+      - 'echo ## Install Validation Software'
       - 'pip3 install checkov'
       - 'curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash'
-      - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
       - 'go install github.com/go-task/task/v3/cmd/task@latest'
   build:
     commands:
