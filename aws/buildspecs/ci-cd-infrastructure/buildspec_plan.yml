@@ -6,11 +6,6 @@ phases:
       python: $PYTHON_VERSION
       ruby: $RUBY_VERSION
     commands:
-      - 'echo ## Install OpenTofu'
-      - 'curl --proto "=https" --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh'
-      - 'chmod +x install-opentofu.sh'
-      - './install-opentofu.sh --install-method rpm'
-      - 'rm install-opentofu.sh'
       - 'echo ## Install Terraspace'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
       - 'yum install -y yum-utils'
