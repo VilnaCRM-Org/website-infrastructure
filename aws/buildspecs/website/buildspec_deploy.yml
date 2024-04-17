@@ -13,7 +13,7 @@ phases:
       - 'echo #### Install Software'
       - 'yum install -y mesa-libgbm-devel yum-utils'
       - 'wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm'
-      - 'yum install ./google-chrome-stable_current_*.rpm'
+      - 'yum install -y ./google-chrome-stable_current_*.rpm'
       - 'n install 21.7.1'
       - 'go install github.com/go-task/task/v3/cmd/task@latest'
       - 'cd ~'

@@ -26,7 +26,6 @@ phases:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## VALIDATION : Starting ...'
       - 'mkdir -p ${CODEBUILD_SRC_DIR}/reports'
-      - 'terraform state replace-provider hashicorp/github integrations/github'
       - 'cp ${CODEBUILD_SRC_DIR}/task/terraform_tests.yml ${CODEBUILD_SRC_DIR}/terraform/Taskfile.yml'
       - 'task --verbose summary'
       - 'cp checkov.xml ${CODEBUILD_SRC_DIR}/reports/checkov.xml'
