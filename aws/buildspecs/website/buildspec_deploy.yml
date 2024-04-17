@@ -19,8 +19,6 @@ phases:
       - 'yum install -y yum-utils'
       - 'echo #### Install pnpm'
       - 'npm install -g pnpm'
-      - 'rm .env'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh $WEBSITE_URL'
       - 'echo #### Install dependencies'
       - 'pnpm i --frozen-lockfile'
 
