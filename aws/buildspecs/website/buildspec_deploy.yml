@@ -11,7 +11,7 @@ phases:
       golang: $GOLANG_VERSION
     commands:
       - 'echo #### Install Software'
-      - 'yum install -y xorg-x11-server-Xvfb gtk2-devel gtk3-devel libnotify-devel GConf2 nss libXScrnSaver alsa-lib'
+      - 'yum install -y mesa-libgbm-devel yum-utils'
       - 'wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm'
       - 'yum install ./google-chrome-stable_current_*.rpm'
       - 'n install 21.7.1'
