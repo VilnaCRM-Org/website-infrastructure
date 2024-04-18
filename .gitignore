@@ -36,3 +36,8 @@ terraform/.terraformrc
 terraform/terraform.rc
 
 .env
+
+# Ignore local CodeBuild
+
+codebuild_build.sh
+codebuild_artifacts/

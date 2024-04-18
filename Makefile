@@ -1,5 +1,6 @@
 # Executables: local only
 DOCKER_COMPOSE = docker compose -f docker/docker-compose.yml run --rm
+DOCKER         = docker
 
 # Misc
 .DEFAULT_GOAL = help
@@ -18,3 +19,12 @@ terraform-compliance: ## Terraform compliance is a security and compliance focus
 
 terraspace: ## Terraspace is a terraform framework.
 	${DOCKER_COMPOSE} --build terraspace
+
+codebuild-local-set-up: ## Setting up CodeBuild Agent for testing buildspecs locally
+	$(DOCKER) pull public.ecr.aws/codebuild/amazonlinux2-x86_64-standard:5.0
+	$(DOCKER) pull public.ecr.aws/codebuild/local-builds:latest
+	curl -O https://raw.githubusercontent.com/aws/aws-codebuild-docker-images/master/local_builds/codebuild_build.sh
+	chmod +x codebuild_build.sh
+
+codebuild-run: ## Runnig CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'
+	./codebuild_build.sh -i public.ecr.aws/codebuild/amazonlinux2-x86_64-standard:5.0 -a codebuild_artifacts -b $(buildspec) -e .env
