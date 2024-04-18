@@ -11,9 +11,12 @@ phases:
       golang: $GOLANG_VERSION
     commands:
       - 'echo #### Install Software'
-      - 'yum install -y mesa-libgbm-devel yum-utils'
+      - 'dnf install -y mesa-libgbm-devel yum-utils'
+      - 'dnf update -y'
+      - 'dnf install -y nginx'
+      - 'curl http://localhost'
       - 'wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm'
-      - 'yum install -y ./google-chrome-stable_current_*.rpm'
+      - 'dnf install -y ./google-chrome-stable_current_*.rpm'
       - 'n install 21.7.1'
       - 'go install github.com/go-task/task/v3/cmd/task@latest'
       - 'cd ~'
@@ -26,9 +29,20 @@ phases:
 
   pre_build:
     commands:
+      - 'rm .env'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh localhost'
+      - 'echo #### Build Project'
+      - 'pnpm run build'
+      - 'rm -r /usr/share/nginx/html/*'
+      - 'cp -r ./out/. /usr/share/nginx/html/'
       - 'echo #### Test Project'
-      - 'cp ${CODEBUILD_SRC_DIR}/task/website_tests.yml ./Taskfile.yml'
-      - 'task --verbose summary'
+      - 'pnpm run test:e2e'
+      - 'pnpm run test:mutation'
+      - 'pnpm run test:visual'
+      - 'pnpm run test:unit'
+      - 'pnpm run test:memory-leak'
+      # - 'cp ${CODEBUILD_SRC_DIR}/task/website_tests.yml ./Taskfile.yml'
+      # - 'task --verbose summary'
 
   build:
     commands:

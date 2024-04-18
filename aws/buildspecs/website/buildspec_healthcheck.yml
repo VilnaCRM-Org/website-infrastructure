@@ -9,7 +9,7 @@ env:
 phases:
   install:
     commands:
-      - 'yum install -y pkg-config gcc openssl-devel libxml2-devel'
+      - 'dnf install -y pkg-config gcc openssl-devel libxml2-devel'
       - 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
       - 'source $HOME/.cargo/env'
       - 'rustc --version'
