@@ -74,11 +74,6 @@ variable "codepipeline_iam_role_name" {
   default     = "codepipeline-role"
 }
 
-variable "secretsmanager_secret_name" {
-  description = "Secrets Manager secret name for the codepipeline iam role"
-  type        = string
-}
-
 variable "website_url" {
   description = "URL of website for healthcheck"
   type        = string
@@ -99,49 +94,34 @@ variable "ci_cd_website_stage_input" {
   type        = list(map(string))
 }
 
-variable "ci_cd_infra_build_projects" {
-  description = "Build Projects Names to the CI/CD Infrastructure CodePipeline"
-  type        = list(string)
+variable "ubuntu_builder_image" {
+  description = "Docker Image to be used by CodeBuild"
+  type        = string
 }
 
-variable "website_infra_build_projects" {
-  description = "Build Projects Names to the Website Infrastructure CodePipeline"
-  type        = list(string)
+variable "amazonlinux2_builder_image" {
+  description = "Docker Image to be used by CodeBuild"
+  type        = string
 }
 
-variable "ci_cd_website_build_projects" {
-  description = "Build Projects Names to the Website Infrastructure CodePipeline"
-  type        = list(string)
-}
-
-variable "builder_compute_type" {
+variable "default_builder_compute_type" {
   description = "Relative path to the Apply and Destroy build spec file"
   type        = string
-  default     = "BUILD_GENERAL1_SMALL"
 }
 
-variable "builder_image" {
-  description = "Docker Image to be used by codebuild"
-  type        = string
-  default     = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
-}
-
-variable "builder_type" {
+variable "default_builder_type" {
   description = "Type of codebuild run environment"
   type        = string
-  default     = "LINUX_CONTAINER"
 }
 
-variable "builder_image_pull_credentials_type" {
+variable "default_builder_image_pull_credentials_type" {
   description = "Image pull credentials type used by codebuild project"
   type        = string
-  default     = "CODEBUILD"
 }
 
-variable "build_project_source" {
+variable "default_build_project_source" {
   description = "Source for build project"
   type        = string
-  default     = "CODEPIPELINE"
 }
 
 variable "ruby_version" {

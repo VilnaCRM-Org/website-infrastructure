@@ -1,18 +1,17 @@
 version: 0.2
 
-env:
-  variables:
-    GOLANG_VERSION: '1.21'
-
 phases:
   install:
     runtime-versions:
       nodejs: $NODEJS_VERSION
-      golang: $GOLANG_VERSION
+
     commands:
       - 'echo #### Install Software'
+      - 'apt update -y'
+      - 'apt install -y libxss1 libappindicator3-1 libindicator7 fonts-liberation libdbus-1-3'
+      - 'wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
+      - 'apt install -y ./google-chrome*.deb'
       - 'n install 21.7.1'
-      - 'go install github.com/go-task/task/v3/cmd/task@latest'
       - 'cd ~'
       - 'git clone -b 5-make-website-layout https://github.com/VilnaCRM-Org/website.git'
       - 'cd website/'
@@ -25,10 +24,20 @@ phases:
     commands:
       - 'echo #### Build Project'
       - 'pnpm run build'
-      - 'echo #### Deploy Project'
-      - 'aws s3 sync ./out s3://$BUCKET_NAME'
-      - 'echo "Content install succeeded"'
+      - 'ls -l'
+      - 'echo #### Test LightHouse'
+      - 'pnpm run lighthouse:desktop'
+      - 'pnpm run lighthouse:mobile'
 
 artifacts:
   files:
     - '**/*'
+
+cache:
+  paths:
+    - '/bin'
+    - '/usr/local/bin'
+    - '/root/.terraform'
+    - '/root/.cache'
+    - '/root/.gem'
+    - '/usr/local/bundle'

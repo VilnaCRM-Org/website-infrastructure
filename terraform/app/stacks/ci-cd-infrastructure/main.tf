@@ -79,13 +79,8 @@ module "ci_cd_infra_codepipeline_iam_role" {
 module "ci_cd_infra_codebuild" {
   source = "../../modules/aws/codebuild"
 
-  project_name                        = var.ci_cd_infra_project_name
-  build_projects                      = var.ci_cd_infra_build_projects
-  build_project_source                = var.build_project_source
-  builder_compute_type                = var.builder_compute_type
-  builder_image                       = var.builder_image
-  builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
-  builder_type                        = var.builder_type
+  project_name   = var.ci_cd_infra_project_name
+  build_projects = local.ci_cd_infra_build_projects
 
   s3_bucket_name = module.ci_cd_infra_s3_artifacts_bucket.bucket
   role_arn       = module.ci_cd_infra_codepipeline_iam_role.role_arn
@@ -179,13 +174,8 @@ module "website_infra_codepipeline_iam_role" {
 module "website_infra_codebuild" {
   source = "../../modules/aws/codebuild"
 
-  project_name                        = var.website_infra_project_name
-  build_projects                      = var.website_infra_build_projects
-  build_project_source                = var.build_project_source
-  builder_compute_type                = var.builder_compute_type
-  builder_image                       = var.builder_image
-  builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
-  builder_type                        = var.builder_type
+  project_name   = var.website_infra_project_name
+  build_projects = local.website_infra_build_projects
 
   region      = var.region
   environment = var.environment
@@ -277,13 +267,8 @@ module "ci_cd_website_codepipeline_iam_role" {
 module "ci_cd_website_codebuild" {
   source = "../../modules/aws/codebuild"
 
-  project_name                        = var.ci_cd_website_project_name
-  build_projects                      = var.ci_cd_website_build_projects
-  build_project_source                = var.build_project_source
-  builder_compute_type                = var.builder_compute_type
-  builder_image                       = var.builder_image
-  builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
-  builder_type                        = var.builder_type
+  project_name   = var.ci_cd_website_project_name
+  build_projects = local.ci_cd_website_build_projects
 
   region      = var.region
   environment = var.environment

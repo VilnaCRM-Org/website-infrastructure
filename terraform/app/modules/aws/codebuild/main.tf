@@ -1,25 +1,25 @@
 resource "aws_codebuild_project" "terraform_codebuild_project" {
 
-  count = length(var.build_projects)
+  for_each = var.build_projects
 
-  name           = "${var.project_name}-${var.build_projects[count.index]}"
+  name           = "${var.project_name}-${each.key}"
   service_role   = var.role_arn
   encryption_key = var.kms_key_arn
   tags           = var.tags
 
   artifacts {
-    type = var.build_project_source
+    type = each.value.build_project_source
   }
   environment {
-    compute_type                = var.builder_compute_type
-    image                       = var.builder_image
-    type                        = var.builder_type
-    privileged_mode             = false
-    image_pull_credentials_type = var.builder_image_pull_credentials_type
+    compute_type                = each.value.builder_compute_type
+    image                       = each.value.builder_image
+    type                        = each.value.builder_type
+    privileged_mode             = each.value.privileged_mode
+    image_pull_credentials_type = each.value.builder_image_pull_credentials_type
 
     environment_variable {
       name  = "SESSION_NAME"
-      value = "${var.project_name}-${var.build_projects[count.index]}-session"
+      value = "${var.project_name}-${each.key}-session"
     }
 
     dynamic "environment_variable" {
@@ -38,8 +38,8 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
     }
   }
   source {
-    type            = var.build_project_source
-    buildspec       = "./aws/buildspecs/${var.codepipeline_buildspecs}/buildspec_${var.build_projects[count.index]}.yml"
+    type            = each.value.build_project_source
+    buildspec       = "./aws/buildspecs/${var.codepipeline_buildspecs}/buildspec_${each.key}.yml"
     git_clone_depth = 1
   }
 }

@@ -1,18 +1,13 @@
 version: 0.2
 
-env:
-  variables:
-    GOLANG_VERSION: '1.21'
-
 phases:
   install:
     runtime-versions:
       nodejs: $NODEJS_VERSION
-      golang: $GOLANG_VERSION
+
     commands:
       - 'echo #### Install Software'
       - 'n install 21.7.1'
-      - 'go install github.com/go-task/task/v3/cmd/task@latest'
       - 'cd ~'
       - 'git clone -b 5-make-website-layout https://github.com/VilnaCRM-Org/website.git'
       - 'cd website/'
@@ -20,15 +15,26 @@ phases:
       - 'npm install -g pnpm'
       - 'echo #### Install dependencies'
       - 'pnpm i --frozen-lockfile'
+      - 'npx playwright install'
+      - 'npx playwright install-deps'
 
   build:
     commands:
-      - 'echo #### Build Project'
-      - 'pnpm run build'
-      - 'echo #### Deploy Project'
-      - 'aws s3 sync ./out s3://$BUCKET_NAME'
-      - 'echo "Content install succeeded"'
+      - pnpm run test:e2e
+      - pnpm run test:mutation
+      - pnpm run test:visual
+      - pnpm run test:unit
+      - pnpm run test:memory-leak
 
 artifacts:
   files:
     - '**/*'
+
+cache:
+  paths:
+    - '/bin'
+    - '/usr/local/bin'
+    - '/root/.terraform'
+    - '/root/.cache'
+    - '/root/.gem'
+    - '/usr/local/bundle'
