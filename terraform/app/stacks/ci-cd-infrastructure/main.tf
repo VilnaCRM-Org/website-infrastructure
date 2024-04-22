@@ -104,7 +104,7 @@ module "ci_cd_infra_codebuild" {
 }
 
 module "ci_cd_infra_codepipeline" {
-  source = "../../modules/aws/codepipeline"
+  source = "../../modules/aws/codepipeline/infrastructure"
 
   project_name       = var.ci_cd_infra_project_name
   source_repo_owner  = var.source_repo_owner
@@ -199,7 +199,7 @@ module "website_infra_codebuild" {
 }
 
 module "website_infra_codepipeline" {
-  source = "../../modules/aws/codepipeline"
+  source = "../../modules/aws/codepipeline/infrastructure"
 
   project_name       = var.website_infra_project_name
   source_repo_owner  = var.source_repo_owner
@@ -292,13 +292,16 @@ module "ci_cd_website_codebuild" {
 }
 
 module "ci_cd_website_codepipeline" {
-  source = "../../modules/aws/codepipeline"
+  source = "../../modules/aws/codepipeline/website"
 
   project_name       = var.ci_cd_website_project_name
   source_repo_owner  = var.source_repo_owner
   source_repo_name   = var.source_repo_name
   source_repo_branch = var.source_repo_branch
   detect_changes     = "false"
+
+  lambda_python_version                 = var.lambda_python_version
+  lambda_reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
 
   stages = var.ci_cd_website_stage_input
 
@@ -341,7 +344,8 @@ module "chatbot" {
   sns_topic_arns = [
     module.website_infra_codepipeline.sns_topic_arn,
     module.ci_cd_infra_codepipeline.sns_topic_arn,
-    module.ci_cd_website_codepipeline.sns_topic_arn
+    module.ci_cd_website_codepipeline.codepipeline_sns_topic_arn,
+    module.ci_cd_website_codepipeline.lhci_reports_sns_topic_arn
   ]
 
   tags = var.tags

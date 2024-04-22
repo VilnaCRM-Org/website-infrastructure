@@ -16,18 +16,17 @@ phases:
       - 'git clone -b 5-make-website-layout https://github.com/VilnaCRM-Org/website.git'
       - 'cd website/'
       - 'echo #### Install pnpm'
-      - 'npm install -g pnpm'
+      - 'npm install -g pnpm @lhci/cli@0.13.x'
       - 'echo #### Install dependencies'
       - 'pnpm i --frozen-lockfile'
 
   build:
     commands:
       - 'echo #### Build Project'
-      - 'pnpm run build'
       - 'ls -l'
       - 'echo #### Test LightHouse'
-      - 'pnpm run lighthouse:desktop'
-      - 'pnpm run lighthouse:mobile'
+      - 'lhci collect --url=$WEBSITE_URL --settings.preset=desktop'
+      - 'lhci upload --target=filesystem --outputDir=lhci-reports'
 
 artifacts:
   files:

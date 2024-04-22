@@ -16,6 +16,7 @@ data "aws_iam_policy_document" "sns_bucket_topic_doc" {
     }
   }
 }
+
 data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
   statement {
     sid     = "EnableRootAccessAndPreventPermissionDelegationForS3BucketSNSKMSKey"

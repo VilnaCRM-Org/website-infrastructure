@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
       "lambda:DeleteFunction"
     ]
     resources = [
-      "arn:aws:lambda:${var.region}:${local.account_id}:function:${var.project_name}-lambda-func"
+      "arn:aws:lambda:${var.region}:${local.account_id}:function:${var.project_name}-website-infra-s3-notifications"
     ]
   }
 } 

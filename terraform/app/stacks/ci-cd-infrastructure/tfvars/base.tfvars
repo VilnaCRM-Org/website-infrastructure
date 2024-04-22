@@ -9,6 +9,9 @@ nodejs_version            = "20"
 script_dir                = "./aws/scripts"
 create_slack_notification = true
 
+lambda_python_version                 = "python3.12"
+lambda_reserved_concurrent_executions = -1
+
 default_build_project_source                = "CODEPIPELINE"
 default_builder_compute_type                = "BUILD_GENERAL1_SMALL"
 default_builder_type                        = "LINUX_CONTAINER"

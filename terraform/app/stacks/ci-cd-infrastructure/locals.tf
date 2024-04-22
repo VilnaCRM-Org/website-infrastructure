@@ -19,8 +19,6 @@ locals {
 }
 
 locals {
-  account_id = data.aws_caller_identity.current.account_id
-
   infra_environment_variables = {
     "TS_ENV"                               = var.environment,
     "AWS_DEFAULT_REGION"                   = var.region,
@@ -58,11 +56,11 @@ locals {
   }
 
   ci_cd_website_build_projects = {
-    deploy      = local.ubuntu_based_build
-    lighthouse  = local.ubuntu_based_build
-    lint        = local.ubuntu_based_build
     test        = local.ubuntu_based_build
+    lint        = local.ubuntu_based_build
+    deploy      = local.ubuntu_based_build
     healthcheck = local.amazonlinux2_based_build
+    lighthouse  = local.ubuntu_based_build
   }
 }
 
