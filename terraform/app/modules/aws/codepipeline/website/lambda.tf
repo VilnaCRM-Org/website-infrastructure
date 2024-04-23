@@ -14,12 +14,20 @@ resource "aws_iam_role_policy_attachment" "lambda_allow_sns_policy_attachment" {
   policy_arn = aws_iam_policy.lambda_allow_sns_policy.arn
 }
 
-resource "aws_lambda_permission" "allow_codestar" {
-  statement_id  = "AllowExecutionFromCodeStar"
+resource "aws_lambda_permission" "allow_codepipeline" {
+  statement_id  = "AllowExecutionFromCodePipeline"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.func.arn
-  principal     = "codestar-notifications.amazonaws.com"
-  source_arn    = aws_codestarnotifications_notification_rule.lhci_reports_rule.arn
+  principal     = "codepipeline.amazonaws.com"
+  source_arn    = var.codepipeline_role_arn
+}
+
+resource "aws_lambda_permission" "allow_codebuild" {
+  statement_id  = "AllowExecutionFromCodeBuild"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.func.arn
+  principal     = "codebuild.amazonaws.com"
+  source_arn    = var.codepipeline_role_arn
 }
 
 resource "aws_lambda_function" "func" {

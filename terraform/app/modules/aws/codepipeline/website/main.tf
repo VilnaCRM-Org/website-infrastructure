@@ -77,20 +77,3 @@ resource "aws_codestarnotifications_notification_rule" "codepipeline_rule" {
 
   tags = var.tags
 }
-
-
-resource "aws_codestarnotifications_notification_rule" "lhci_reports_rule" {
-  detail_type = "BASIC"
-  event_type_ids = [
-    "codepipeline-pipeline-pipeline-execution-succeeded",
-  ]
-
-  name     = "${var.project_name}-succeeded-codepipeline-notification"
-  resource = aws_codepipeline.terraform_pipeline.arn
-
-  target {
-    address = aws_lambda_function.func.arn
-  }
-
-  tags = var.tags
-}

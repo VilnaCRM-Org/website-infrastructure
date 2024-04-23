@@ -38,6 +38,7 @@ locals {
     "NODEJS_VERSION" = var.nodejs_version,
     "BUCKET_NAME"    = var.bucket_name,
     "SCRIPT_DIR"     = var.script_dir,
+    "PW_TEST_HTML_REPORT_OPEN" = "never"
   }
 
   ci_cd_infra_build_projects = {

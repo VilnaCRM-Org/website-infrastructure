@@ -15,16 +15,24 @@ phases:
       - 'npm install -g pnpm'
       - 'echo #### Install dependencies'
       - 'pnpm i --frozen-lockfile'
-      - 'npx playwright install'
-      - 'npx playwright install-deps'
+      - 'pnpm exec playwright install'
+      - 'pnpm exec playwright install-deps'
 
   build:
     commands:
-      - pnpm run test:e2e
-      - pnpm run test:mutation
-      - pnpm run test:visual
-      - pnpm run test:unit
-      - pnpm run test:memory-leak
+      - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
+      - 'pnpm run test:mutation'
+      - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
+      - 'pnpm run test:unit'
+      - 'echo #### Running Server'
+      - 'nohup pnpm run dev & echo $! > pidfile'
+      - 'echo #### Running Visual Test' # Reports folder: playwright-report/
+      - 'pnpm run test:visual'
+      - 'echo #### Running E2E Test' # Reports folder: playwright-report/
+      - 'pnpm exec playwright test'
+      - 'echo #### Running Memory Leak Test' # No Reports folder
+      - 'pnpm run test:memory-leak'
+      - 'kill $(cat pidfile)'
 
 artifacts:
   files:

@@ -332,27 +332,27 @@ module "oidc_role" {
   depends_on = [module.ci_cd_website_codepipeline]
 }
 
-module "chatbot" {
-  count = var.create_slack_notification ? 1 : 0
+# module "chatbot" {
+#   count = var.create_slack_notification ? 1 : 0
 
-  source = "../../modules/aws/chatbot"
+#   source = "../../modules/aws/chatbot"
 
-  project_name = "codepipeline"
-  channel_id   = var.CODEPIPELINE_SLACK_CHANNEL_ID
-  workspace_id = var.SLACK_WORKSPACE_ID
+#   project_name = "codepipeline"
+#   channel_id   = var.CODEPIPELINE_SLACK_CHANNEL_ID
+#   workspace_id = var.SLACK_WORKSPACE_ID
 
-  sns_topic_arns = [
-    module.website_infra_codepipeline.sns_topic_arn,
-    module.ci_cd_infra_codepipeline.sns_topic_arn,
-    module.ci_cd_website_codepipeline.codepipeline_sns_topic_arn,
-    module.ci_cd_website_codepipeline.lhci_reports_sns_topic_arn
-  ]
+#   sns_topic_arns = [
+#     module.website_infra_codepipeline.sns_topic_arn,
+#     module.ci_cd_infra_codepipeline.sns_topic_arn,
+#     # module.ci_cd_website_codepipeline.codepipeline_sns_topic_arn,
+#     # module.ci_cd_website_codepipeline.lhci_reports_sns_topic_arn
+#   ]
 
-  tags = var.tags
+#   tags = var.tags
 
-  depends_on = [
-    module.website_infra_codepipeline,
-    module.ci_cd_infra_codepipeline,
-    module.ci_cd_website_codepipeline
-  ]
-}
+#   depends_on = [
+#     module.website_infra_codepipeline,
+#     module.ci_cd_infra_codepipeline,
+#     module.ci_cd_website_codepipeline
+#   ]
+# }
