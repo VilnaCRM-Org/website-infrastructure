@@ -20,10 +20,6 @@ phases:
 
   build:
     commands:
-      - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
-      - 'pnpm run test:mutation'
-      - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
-      - 'pnpm run test:unit'
       - 'echo #### Running Server'
       - 'nohup pnpm run dev & echo $! > pidfile'
       - 'echo #### Running E2E Test' # Reports folder: playwright-report/
@@ -32,6 +28,10 @@ phases:
       - 'pnpm run test:visual'
       - 'echo #### Running Memory Leak Test' # No Reports folder
       - 'pnpm run test:memory-leak'
+      - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
+      - 'pnpm run test:mutation'
+      - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
+      - 'pnpm run test:unit'
       - 'kill $(cat pidfile)'
 
 artifacts:
