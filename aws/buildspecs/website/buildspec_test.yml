@@ -26,10 +26,10 @@ phases:
       - 'pnpm run test:unit'
       - 'echo #### Running Server'
       - 'nohup pnpm run dev & echo $! > pidfile'
-      - 'echo #### Running Visual Test' # Reports folder: playwright-report/
-      - 'pnpm run test:visual'
       - 'echo #### Running E2E Test' # Reports folder: playwright-report/
       - 'pnpm exec playwright test'
+      - 'echo #### Running Visual Test' # Reports folder: playwright-report/
+      - 'pnpm run test:visual'
       - 'echo #### Running Memory Leak Test' # No Reports folder
       - 'pnpm run test:memory-leak'
       - 'kill $(cat pidfile)'
