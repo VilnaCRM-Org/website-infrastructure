@@ -344,10 +344,10 @@ module "chatbot" {
   sns_topic_arns = [
     module.website_infra_codepipeline.sns_topic_arn,
     module.ci_cd_infra_codepipeline.sns_topic_arn,
-    # module.ci_cd_website_codepipeline.codepipeline_sns_topic_arn,
-    # module.ci_cd_website_codepipeline.lhci_reports_sns_topic_arn
+    module.ci_cd_website_codepipeline.codepipeline_sns_topic_arn,
+    module.ci_cd_website_codepipeline.lhci_reports_sns_topic_arn
   ]
-
+  
   tags = var.tags
 
   depends_on = [

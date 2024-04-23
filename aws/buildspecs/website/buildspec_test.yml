@@ -37,6 +37,7 @@ phases:
 artifacts:
   files:
     - '**/*'
+  name: builds/$CODEBUILD_BUILD_NUMBER
 
 cache:
   paths:

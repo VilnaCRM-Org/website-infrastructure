@@ -95,4 +95,13 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${local.account_id}:log-group:*"]
   }
+
+  statement {
+    sid    = "AllowInvokeLambda"
+    effect = "Allow"
+    actions = [
+      "lambda:InvokeFunction"
+    ]
+    resources = ["arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:ci-cd-website-${var.environment}-lhci-report-notification"]
+  }
 }
