@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "lambda_allow_sns_policy" {
     sid    = "AllowPublishMessageToSNS"
 
     actions   = ["sns:Publish"]
-    resources = [aws_sns_topic.lhci_reports_notifications.arn]
+    resources = [aws_sns_topic.reports_notifications.arn]
   }
 }
 

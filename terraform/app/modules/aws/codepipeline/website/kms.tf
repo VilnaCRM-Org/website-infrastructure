@@ -26,16 +26,16 @@ resource "aws_kms_key_policy" "lambda_kms_key_policy_doc" {
   depends_on = [aws_kms_key.lambda_encryption_key]
 }
 
-resource "aws_kms_key" "lhci_reports_sns_encryption_key" {
+resource "aws_kms_key" "reports_sns_encryption_key" {
   description             = "This key is used to encrypt SNS"
   deletion_window_in_days = 10
   enable_key_rotation     = true
   tags                    = var.tags
 }
 
-resource "aws_kms_key_policy" "lhci_reports_sns_encryption_key" {
-  key_id = aws_kms_key.lhci_reports_sns_encryption_key.key_id
-  policy = data.aws_iam_policy_document.lhci_reports_sns_kms_key_policy_doc.json
+resource "aws_kms_key_policy" "reports_sns_encryption_key" {
+  key_id = aws_kms_key.reports_sns_encryption_key.key_id
+  policy = data.aws_iam_policy_document.reports_sns_kms_key_policy_doc.json
 
-  depends_on = [aws_kms_key.lhci_reports_sns_encryption_key]
+  depends_on = [aws_kms_key.reports_sns_encryption_key]
 }

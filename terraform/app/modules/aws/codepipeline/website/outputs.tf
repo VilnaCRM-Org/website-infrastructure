@@ -19,7 +19,7 @@ output "codepipeline_sns_topic_arn" {
 }
 
 
-output "lhci_reports_sns_topic_arn" {
-  value       = aws_sns_topic.lhci_reports_notifications.arn
+output "reports_sns_topic_arn" {
+  value       = aws_sns_topic.reports_notifications.arn
   description = "The SNS Topic Arn of the CodePipeline"
 }

@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "lhci_reports_sns_topic_doc" {
+data "aws_iam_policy_document" "reports_sns_topic_doc" {
   statement {
     sid = "AllowSNSServicePrincipal"
     principals {
@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "lhci_reports_sns_topic_doc" {
     }
     effect    = "Allow"
     actions   = ["sns:Publish"]
-    resources = ["${aws_sns_topic.lhci_reports_notifications.arn}"]
+    resources = ["${aws_sns_topic.reports_notifications.arn}"]
 
     condition {
       test     = "ArnLike"

@@ -81,13 +81,13 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
   }
 }
 
-data "aws_iam_policy_document" "lhci_reports_sns_kms_key_policy_doc" {
+data "aws_iam_policy_document" "reports_sns_kms_key_policy_doc" {
   statement {
     sid     = "EnableRootAccessAndPreventPermissionDelegationForS3BucketSNSKMSKey"
     effect  = "Allow"
     actions = ["kms:*"]
     #checkov:skip=CKV_AWS_356:Without this statement, KMS key cannot be managed by root
-    resources = ["${aws_kms_key.lhci_reports_sns_encryption_key.arn}"]
+    resources = ["${aws_kms_key.reports_sns_encryption_key.arn}"]
     principals {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${local.account_id}:root"]
@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "lhci_reports_sns_kms_key_policy_doc" {
     sid       = "AllowAccessForKeyAdministratorsForS3BucketSNSKMSKey"
     effect    = "Allow"
     actions   = ["kms:*"]
-    resources = ["${aws_kms_key.lhci_reports_sns_encryption_key.arn}"]
+    resources = ["${aws_kms_key.reports_sns_encryption_key.arn}"]
 
     principals {
       type        = "Service"
@@ -108,7 +108,7 @@ data "aws_iam_policy_document" "lhci_reports_sns_kms_key_policy_doc" {
     condition {
       test     = "ArnLike"
       variable = "AWS:SourceArn"
-      values   = [aws_sns_topic.lhci_reports_notifications.arn]
+      values   = [aws_sns_topic.reports_notifications.arn]
     }
   }
   statement {
@@ -119,7 +119,7 @@ data "aws_iam_policy_document" "lhci_reports_sns_kms_key_policy_doc" {
       "kms:GenerateDataKey*",
     ]
 
-    resources = ["${aws_kms_key.lhci_reports_sns_encryption_key.arn}"]
+    resources = ["${aws_kms_key.reports_sns_encryption_key.arn}"]
 
     principals {
       type        = "Service"
@@ -129,7 +129,7 @@ data "aws_iam_policy_document" "lhci_reports_sns_kms_key_policy_doc" {
     condition {
       test     = "ArnLike"
       variable = "AWS:SourceArn"
-      values   = [aws_sns_topic.lhci_reports_notifications.arn]
+      values   = [aws_sns_topic.reports_notifications.arn]
     }
   }
   statement {
@@ -140,7 +140,7 @@ data "aws_iam_policy_document" "lhci_reports_sns_kms_key_policy_doc" {
       "kms:Decrypt"
     ]
 
-    resources = ["${aws_kms_key.lhci_reports_sns_encryption_key.arn}"]
+    resources = ["${aws_kms_key.reports_sns_encryption_key.arn}"]
 
     principals {
       type        = "AWS"
