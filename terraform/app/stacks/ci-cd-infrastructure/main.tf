@@ -347,7 +347,7 @@ module "chatbot" {
     module.ci_cd_website_codepipeline.codepipeline_sns_topic_arn,
     module.ci_cd_website_codepipeline.lhci_reports_sns_topic_arn
   ]
-  
+
   tags = var.tags
 
   depends_on = [

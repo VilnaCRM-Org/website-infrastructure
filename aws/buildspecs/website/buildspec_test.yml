@@ -17,10 +17,9 @@ phases:
       - 'pnpm i --frozen-lockfile'
       - 'pnpm exec playwright install'
       - 'pnpm exec playwright install-deps'
-      - 'mkdir ~/reports'
-
   build:
     commands:
+      - 'mkdir ~/reports'
       - 'echo #### Running E2E Test' # Reports folder: playwright-report/
       - 'NEXT_PUBLIC_WEBSITE_URL=https://$WEBSITE_URL pnpm exec playwright test src/test/e2e'
       - 'cp -r ~/website/playwright-report ~/reports/e2e-reports'
@@ -39,7 +38,7 @@ phases:
 artifacts:
   files:
     - '**/*'
-  base-directory: '~/reports'
+  base-directory: '/root/reports'
 
 cache:
   paths:

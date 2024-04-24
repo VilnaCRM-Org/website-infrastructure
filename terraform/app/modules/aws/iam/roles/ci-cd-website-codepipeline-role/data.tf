@@ -29,6 +29,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     sid    = "AllowS3Actions"
     effect = "Allow"
     actions = [
+      "s3:ListBucket",
       "s3:GetObject",
       "s3:GetObjectVersion",
       "s3:PutObjectAcl",

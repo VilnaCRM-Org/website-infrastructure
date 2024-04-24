@@ -27,7 +27,7 @@ resource "aws_cloudfront_response_headers_policy" "response_headers" {
       override   = true
     }
     content_security_policy {
-      content_security_policy = "frame-ancestors 'none'; default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'"
+      content_security_policy = "frame-ancestors 'none'; default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'"
       override                = true
     }
   }
