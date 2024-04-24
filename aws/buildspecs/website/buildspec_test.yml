@@ -17,27 +17,29 @@ phases:
       - 'pnpm i --frozen-lockfile'
       - 'pnpm exec playwright install'
       - 'pnpm exec playwright install-deps'
+      - 'mkdir ~/reports'
 
   build:
     commands:
-      - 'echo #### Running Server'
-      - 'nohup pnpm run dev & echo $! > pidfile'
       - 'echo #### Running E2E Test' # Reports folder: playwright-report/
-      - 'pnpm exec playwright test'
+      - 'NEXT_PUBLIC_WEBSITE_URL=https://$WEBSITE_URL pnpm exec playwright test src/test/e2e'
+      - 'cp -r ~/website/playwright-report ~/reports/e2e-reports'
       - 'echo #### Running Visual Test' # Reports folder: playwright-report/
-      - 'pnpm run test:visual'
+      - 'NEXT_PUBLIC_WEBSITE_URL=https://$WEBSITE_URL pnpm run test:visual'
+      - 'cp -r ~/website/playwright-report ~/reports/visual-reports'
       - 'echo #### Running Memory Leak Test' # No Reports folder
-      - 'pnpm run test:memory-leak'
+      - 'MEMLAB_WEBSITE_URL=https://$WEBSITE_URL pnpm run test:memory-leak'
       - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
       - 'pnpm run test:mutation'
+      - 'cp -r ~/website/reports/mutation ~/reports/mutation-reports'
       - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
       - 'pnpm run test:unit'
-      - 'kill $(cat pidfile)'
+      - 'cp -r ~/website/coverage/lcov-report ~/reports/unit-reports'
 
 artifacts:
   files:
     - '**/*'
-  name: builds/$CODEBUILD_BUILD_NUMBER
+  base-directory: '~/reports'
 
 cache:
   paths:

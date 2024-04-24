@@ -22,15 +22,23 @@ phases:
 
   build:
     commands:
-      - 'echo #### Build Project'
-      - 'ls -l'
-      - 'echo #### Test LightHouse'
-      - 'lhci collect --url=$WEBSITE_URL --settings.preset=desktop'
-      - 'lhci upload --target=filesystem --outputDir=lhci-reports'
+      - 'echo #### Test LightHouse Desktop'
+      - 'lhci collect --url=https://$WEBSITE_URL --settings.preset=desktop --settings.chromeFlags="--no-sandbox" --psiStrategy=desktop'
+      - 'lhci upload --target=filesystem --outputDir=lhci-reports-desktop'
+      - 'echo #### Test LightHouse Mobile'
+      - 'lhci collect --url=https://$WEBSITE_URL --settings.chromeFlags="--no-sandbox" --psiStrategy=mobile'
+      - 'lhci upload --target=filesystem --outputDir=lhci-reports-mobile'
+
+  post_build:
+    commands:
+      - 'mkdir ~/reports'
+      - 'cp -r ~/website/lhci-reports-desktop ~/reports'
+      - 'cp -r ~/website/lhci-reports-mobile ~/reports'
 
 artifacts:
   files:
     - '**/*'
+  base-directory: '~/reports'
 
 cache:
   paths:
