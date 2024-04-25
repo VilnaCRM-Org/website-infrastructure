@@ -3,6 +3,6 @@ LINK="https://$AWS_REGION.console.aws.amazon.com/s3/buckets/ci-cd-website-$ENVIR
 JSON_STRING=$(jq -n \
     --arg link "$LINK" \
     --arg codebuild_build_id "$CODEBUILD_BUILD_ID" \
-    '{link: $bn, codebuild_build_id: $codebuild_build_id}')
+    '{link: $link, codebuild_build_id: $codebuild_build_id}')
 
-export $JSON_STRING
+echo $JSON_STRING >payload.json

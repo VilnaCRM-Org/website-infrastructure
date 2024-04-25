@@ -32,7 +32,7 @@ phases:
       - 'pnpm run test:unit'
     finally:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/reports.sh'
-      - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --payload $JSON_STRING'
+      - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
       - 'cp -r ~/website/playwright-e2e-reports ~/reports/playwright-e2e-reports'
       - 'cp -r ~/website/playwright-visual-reports ~/reports/playwright-visual-reports'
       - 'cp -r ~/website/reports/mutation ~/reports/mutation-reports'

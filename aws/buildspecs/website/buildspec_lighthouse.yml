@@ -33,7 +33,7 @@ phases:
       - 'cp -r ~/website/lhci-reports-mobile ~/reports'
     finally:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/reports.sh'
-      - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --payload $JSON_STRING'
+      - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
 artifacts:
   files:
     - '**/*'

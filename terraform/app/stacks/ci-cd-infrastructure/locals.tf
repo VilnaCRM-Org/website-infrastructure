@@ -29,6 +29,7 @@ locals {
         "AWS_DEFAULT_REGION"             = var.region,
         "PYTHON_VERSION"                 = var.python_version,
         "RUBY_VERSION"                   = var.ruby_version,
+        "GOLANG_VERSION"                 = var.golang_version
         "SCRIPT_DIR"                     = var.script_dir,
         }
     })
@@ -96,6 +97,7 @@ locals {
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
         "PYTHON_VERSION"                       = var.python_version,
+        "GOLANG_VERSION"                       = var.golang_version
         "RUBY_VERSION"                         = var.ruby_version,
         "SCRIPT_DIR"                           = var.script_dir,
         }
