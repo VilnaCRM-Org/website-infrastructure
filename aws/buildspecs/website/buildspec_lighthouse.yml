@@ -32,7 +32,7 @@ phases:
       - 'lhci upload --target=filesystem --outputDir=lhci-reports-mobile'
       - 'cp -r ~/website/lhci-reports-mobile ~/reports'
     finally:
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/reports.sh'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --payload $JSON_STRING'
 artifacts:
   files:
