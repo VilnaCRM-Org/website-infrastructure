@@ -164,6 +164,11 @@ variable "ALERTS_SLACK_CHANNEL_ID" {
   type        = string
 }
 
+variable "REPORT_SLACK_CHANNEL_ID" {
+  description = "Slack Channel ID for Reports"
+  type        = string
+}
+
 variable "lambda_python_version" {
   description = "Python version for Lambda"
   type        = string

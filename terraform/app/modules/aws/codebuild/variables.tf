@@ -35,15 +35,10 @@ variable "tags" {
 
 variable "build_projects" {
   description = "List of Names of the CodeBuild projects to be created"
-  type        = map(map(string))
+  type        = map(any)
 }
 
 variable "kms_key_arn" {
   description = "ARN of KMS key for encryption"
   type        = string
-}
-
-variable "environment_variables" {
-  description = "Environment variables"
-  type        = map(string)
 }

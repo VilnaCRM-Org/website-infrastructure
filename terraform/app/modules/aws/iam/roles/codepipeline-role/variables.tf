@@ -33,6 +33,11 @@ variable "tags" {
   type        = map(any)
 }
 
+variable "website_bucket_name" {
+  description = "The Name of the domain S3 Bucket "
+  type        = string
+}
+
 variable "kms_key_arn" {
   description = "ARN of KMS key for encryption"
   type        = string

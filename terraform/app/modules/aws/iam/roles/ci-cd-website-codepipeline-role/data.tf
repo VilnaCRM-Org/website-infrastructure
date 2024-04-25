@@ -103,6 +103,6 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     actions = [
       "lambda:InvokeFunction"
     ]
-    resources = ["arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:ci-cd-website-${var.environment}-lhci-report-notification"]
+    resources = ["arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:ci-cd-website-${var.environment}-reports-notification"]
   }
 }

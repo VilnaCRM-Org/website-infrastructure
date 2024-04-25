@@ -65,6 +65,8 @@ module "ci_cd_infra_codepipeline_iam_role" {
   region      = var.region
   environment = var.environment
 
+  website_bucket_name = var.bucket_name
+
   kms_key_arn             = module.ci_cd_infra_codepipeline_kms.arn
   s3_bucket_arn           = module.ci_cd_infra_s3_artifacts_bucket.arn
   codestar_connection_arn = module.codestar_connection.arn
@@ -90,8 +92,6 @@ module "ci_cd_infra_codebuild" {
 
   region      = var.region
   environment = var.environment
-
-  environment_variables = merge(local.infra_environment_variables, { "ROLE_ARN" = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn })
 
   tags = var.tags
 
@@ -160,6 +160,8 @@ module "website_infra_codepipeline_iam_role" {
   region      = var.region
   environment = var.environment
 
+  website_bucket_name = var.bucket_name
+
   kms_key_arn             = module.website_infra_codepipeline_kms.arn
   s3_bucket_arn           = module.website_infra_s3_artifacts_bucket.arn
   codestar_connection_arn = module.codestar_connection.arn
@@ -185,8 +187,6 @@ module "website_infra_codebuild" {
   s3_bucket_name = module.website_infra_s3_artifacts_bucket.bucket
   role_arn       = module.website_infra_codepipeline_iam_role.role_arn
   kms_key_arn    = module.website_infra_codepipeline_kms.arn
-
-  environment_variables = merge(local.infra_environment_variables, { "ROLE_ARN" = module.website_infra_codepipeline_iam_role.terraform_role_arn })
 
   tags = var.tags
 
@@ -279,7 +279,6 @@ module "ci_cd_website_codebuild" {
   role_arn       = module.ci_cd_website_codepipeline_iam_role.role_arn
   kms_key_arn    = module.ci_cd_website_codepipeline_kms.arn
 
-  environment_variables = local.deploy_environment_variables
 
   tags = var.tags
 
@@ -332,7 +331,7 @@ module "oidc_role" {
   depends_on = [module.ci_cd_website_codepipeline]
 }
 
-module "chatbot" {
+module "chatbot_codepipelines" {
   count = var.create_slack_notification ? 1 : 0
 
   source = "../../modules/aws/chatbot"
@@ -345,7 +344,6 @@ module "chatbot" {
     module.website_infra_codepipeline.sns_topic_arn,
     module.ci_cd_infra_codepipeline.sns_topic_arn,
     module.ci_cd_website_codepipeline.codepipeline_sns_topic_arn,
-    module.ci_cd_website_codepipeline.lhci_reports_sns_topic_arn
   ]
 
   tags = var.tags
@@ -353,6 +351,26 @@ module "chatbot" {
   depends_on = [
     module.website_infra_codepipeline,
     module.ci_cd_infra_codepipeline,
+    module.ci_cd_website_codepipeline
+  ]
+}
+
+module "chatbot_reports" {
+  count = var.create_slack_notification ? 1 : 0
+
+  source = "../../modules/aws/chatbot"
+
+  project_name = "reports"
+  channel_id   = var.REPORT_SLACK_CHANNEL_ID
+  workspace_id = var.SLACK_WORKSPACE_ID
+
+  sns_topic_arns = [
+    module.ci_cd_website_codepipeline.reports_sns_topic_arn
+  ]
+
+  tags = var.tags
+
+  depends_on = [
     module.ci_cd_website_codepipeline
   ]
 }

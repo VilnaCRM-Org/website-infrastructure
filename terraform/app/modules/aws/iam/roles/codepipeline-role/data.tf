@@ -50,15 +50,13 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     sid    = "AllowS3Actions"
     effect = "Allow"
     actions = [
+      "s3:ListBucket",
       "s3:GetObject",
       "s3:GetObjectVersion",
       "s3:PutObjectAcl",
-      "s3:PutObject"
+      "s3:PutObject",
     ]
-    resources = [
-      "${var.s3_bucket_arn}/*",
-      "${var.s3_bucket_arn}"
-    ]
+    resources = local.is_website_infra ? local.website_infra_codepipeline_policy_bucket_access : local.ci_cd_infra_codepipeline_policy_bucket_access
   }
 
   statement {

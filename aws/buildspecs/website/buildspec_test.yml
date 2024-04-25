@@ -21,18 +21,21 @@ phases:
     commands:
       - 'mkdir ~/reports'
       - 'echo #### Running E2E Test' # Reports folder: playwright-report/
-      - 'NEXT_PUBLIC_WEBSITE_URL=https://$WEBSITE_URL pnpm exec playwright test src/test/e2e'
-      - 'cp -r ~/website/playwright-report ~/reports/e2e-reports'
+      - 'NEXT_PUBLIC_WEBSITE_URL=https://$WEBSITE_URL PLAYWRIGHT_HTML_REPORT=playwright-e2e-reports pnpm exec playwright test src/test/e2e'
       - 'echo #### Running Visual Test' # Reports folder: playwright-report/
-      - 'NEXT_PUBLIC_WEBSITE_URL=https://$WEBSITE_URL pnpm run test:visual'
-      - 'cp -r ~/website/playwright-report ~/reports/visual-reports'
+      - 'NEXT_PUBLIC_WEBSITE_URL=https://$WEBSITE_URL PLAYWRIGHT_HTML_REPORT=playwright-visual-reports pnpm run test:visual'
       - 'echo #### Running Memory Leak Test' # No Reports folder
       - 'MEMLAB_WEBSITE_URL=https://$WEBSITE_URL pnpm run test:memory-leak'
       - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
       - 'pnpm run test:mutation'
-      - 'cp -r ~/website/reports/mutation ~/reports/mutation-reports'
       - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
       - 'pnpm run test:unit'
+    finally:
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
+      - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --payload $JSON_STRING'
+      - 'cp -r ~/website/playwright-e2e-reports ~/reports/playwright-e2e-reports'
+      - 'cp -r ~/website/playwright-visual-reports ~/reports/playwright-visual-reports'
+      - 'cp -r ~/website/reports/mutation ~/reports/mutation-reports'
       - 'cp -r ~/website/coverage/lcov-report ~/reports/unit-reports'
 
 artifacts:
