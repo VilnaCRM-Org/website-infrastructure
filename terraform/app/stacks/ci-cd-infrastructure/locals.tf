@@ -19,7 +19,6 @@ locals {
 }
 
 locals {
-
   website_infra_build_projects = {
     validate = merge(local.amazonlinux2_based_build,
       { env_variables = {
@@ -93,7 +92,7 @@ locals {
         "ROLE_ARN"                             = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
         "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID" = var.CODEPIPELINE_SLACK_CHANNEL_ID,
-        "TF_VAR_REPORT_SLACK_CHANNEL_ID" = var.REPORT_SLACK_CHANNEL_ID,
+        "TF_VAR_REPORT_SLACK_CHANNEL_ID"       = var.REPORT_SLACK_CHANNEL_ID,
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
         "PYTHON_VERSION"                       = var.python_version,
@@ -107,7 +106,7 @@ locals {
         "ROLE_ARN"                             = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
         "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID" = var.CODEPIPELINE_SLACK_CHANNEL_ID,
-        "TF_VAR_REPORT_SLACK_CHANNEL_ID" = var.REPORT_SLACK_CHANNEL_ID,
+        "TF_VAR_REPORT_SLACK_CHANNEL_ID"       = var.REPORT_SLACK_CHANNEL_ID,
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
         "PYTHON_VERSION"                       = var.python_version,
@@ -142,34 +141,34 @@ locals {
     deploy = merge(local.ubuntu_based_build,
       { env_variables = {
         "NODEJS_VERSION" = var.nodejs_version,
-        "BUCKET_NAME"    = var.bucket_name,
+        "BUCKET_NAME"    = var.bucket_name
         }
     })
 
     test = merge(local.ubuntu_based_build,
       { env_variables = {
         "NODEJS_VERSION"           = var.nodejs_version,
-        "PW_TEST_HTML_REPORT_OPEN" = "never"
+        "PW_TEST_HTML_REPORT_OPEN" = "never",
         "WEBSITE_URL"              = var.website_url,
-        "ENVIRONMENT"                         = var.environment,
-        "ARTIFACTS_OUTPUT_DIR" = "TestOutput"
-        "SCRIPT_DIR"                     = var.script_dir,
+        "ENVIRONMENT"              = var.environment,
+        "ARTIFACTS_OUTPUT_DIR"     = "TestOutput",
+        "SCRIPT_DIR"               = var.script_dir,
         }
     })
 
     healthcheck = merge(local.amazonlinux2_based_build,
       { env_variables = {
-        "WEBSITE_URL" = var.website_url,
+        "WEBSITE_URL" = var.website_url
         }
     })
 
     lighthouse = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION" = var.nodejs_version,
-        "WEBSITE_URL"    = var.website_url,
-        "ENVIRONMENT"                         = var.environment,
-        "ARTIFACTS_OUTPUT_DIR" = "LHCIOutput"
-        "SCRIPT_DIR"                     = var.script_dir,
+        "NODEJS_VERSION"       = var.nodejs_version,
+        "WEBSITE_URL"          = var.website_url,
+        "ENVIRONMENT"          = var.environment,
+        "ARTIFACTS_OUTPUT_DIR" = "LHCIOutput",
+        "SCRIPT_DIR"           = var.script_dir,
         }
     })
   }

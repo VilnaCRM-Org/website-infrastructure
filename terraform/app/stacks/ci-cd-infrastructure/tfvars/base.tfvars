@@ -6,6 +6,7 @@ region                    = "eu-central-1"
 ruby_version              = "3.2"
 python_version            = "3.12"
 nodejs_version            = "20"
+golang_version            = "1.21"
 script_dir                = "./aws/scripts"
 create_slack_notification = true
 
