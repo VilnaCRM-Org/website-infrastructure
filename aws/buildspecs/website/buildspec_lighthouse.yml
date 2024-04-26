@@ -20,7 +20,7 @@ phases:
       - 'npm install -g pnpm @lhci/cli@0.13.x'
       - 'echo #### Install dependencies'
       - 'pnpm i --frozen-lockfile'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh $WEBSITE_URL'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh'
 
   build:
     commands:

@@ -1,6 +1,6 @@
 locals {
-  account_id               = data.aws_caller_identity.current.account_id
-  
+  account_id = data.aws_caller_identity.current.account_id
+
   ubuntu_based_build = {
     builder_compute_type                = var.default_builder_compute_type
     builder_image                       = var.ubuntu_builder_image
@@ -162,7 +162,7 @@ locals {
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
         "ARTIFACTS_OUTPUT_DIR"          = "TestOutput",
-        "ACCOUNT_ID" = local.account_id
+        "ACCOUNT_ID"                    = local.account_id
         "SCRIPT_DIR"                    = var.script_dir,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
@@ -181,7 +181,7 @@ locals {
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
         "ARTIFACTS_OUTPUT_DIR"          = "LHCIOutput",
-        "ACCOUNT_ID" = local.account_id
+        "ACCOUNT_ID"                    = local.account_id
         "SCRIPT_DIR"                    = var.script_dir,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
