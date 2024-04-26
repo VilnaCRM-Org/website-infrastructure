@@ -1,4 +1,6 @@
 locals {
+  account_id               = data.aws_caller_identity.current.account_id
+  
   ubuntu_based_build = {
     builder_compute_type                = var.default_builder_compute_type
     builder_image                       = var.ubuntu_builder_image
@@ -62,8 +64,10 @@ locals {
 
     deploy = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION" = var.nodejs_version,
-        "BUCKET_NAME"    = var.bucket_name,
+        "NODEJS_VERSION"                = var.nodejs_version,
+        "BUCKET_NAME"                   = var.bucket_name,
+        "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
         }
     })
 
@@ -136,25 +140,32 @@ locals {
 
     lint = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION" = var.nodejs_version,
+        "NODEJS_VERSION"                = var.nodejs_version,
+        "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
     })
 
     deploy = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION" = var.nodejs_version,
-        "BUCKET_NAME"    = var.bucket_name
+        "NODEJS_VERSION"                = var.nodejs_version,
+        "BUCKET_NAME"                   = var.bucket_name
+        "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
     })
 
     test = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION"           = var.nodejs_version,
-        "PW_TEST_HTML_REPORT_OPEN" = "never",
-        "WEBSITE_URL"              = var.website_url,
-        "ENVIRONMENT"              = var.environment,
-        "ARTIFACTS_OUTPUT_DIR"     = "TestOutput",
-        "SCRIPT_DIR"               = var.script_dir,
+        "NODEJS_VERSION"                = var.nodejs_version,
+        "PW_TEST_HTML_REPORT_OPEN"      = "never",
+        "WEBSITE_URL"                   = var.website_url,
+        "ENVIRONMENT"                   = var.environment,
+        "ARTIFACTS_OUTPUT_DIR"          = "TestOutput",
+        "ACCOUNT_ID" = local.account_id
+        "SCRIPT_DIR"                    = var.script_dir,
+        "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
     })
 
@@ -166,11 +177,14 @@ locals {
 
     lighthouse = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION"       = var.nodejs_version,
-        "WEBSITE_URL"          = var.website_url,
-        "ENVIRONMENT"          = var.environment,
-        "ARTIFACTS_OUTPUT_DIR" = "LHCIOutput",
-        "SCRIPT_DIR"           = var.script_dir,
+        "NODEJS_VERSION"                = var.nodejs_version,
+        "WEBSITE_URL"                   = var.website_url,
+        "ENVIRONMENT"                   = var.environment,
+        "ARTIFACTS_OUTPUT_DIR"          = "LHCIOutput",
+        "ACCOUNT_ID" = local.account_id
+        "SCRIPT_DIR"                    = var.script_dir,
+        "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
     })
   }

@@ -13,27 +13,28 @@ phases:
       - 'apt install -y ./google-chrome*.deb'
       - 'n install 21.7.1'
       - 'cd ~'
-      - 'git clone -b 5-make-website-layout https://github.com/VilnaCRM-Org/website.git'
+      - 'git clone -b $WEBSITE_GIT_REPOSITORY_BRANCH "$WEBSITE_GIT_REPOSITORY_LINK.git"'
       - 'cd website/'
+      - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA=`git rev-parse HEAD`'
       - 'echo #### Install pnpm'
       - 'npm install -g pnpm @lhci/cli@0.13.x'
       - 'echo #### Install dependencies'
       - 'pnpm i --frozen-lockfile'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh $WEBSITE_URL'
 
   build:
     commands:
       - 'mkdir ~/reports'
       - 'echo #### Test LightHouse Desktop'
-      - 'lhci collect --url=https://$WEBSITE_URL --settings.preset=desktop --settings.chromeFlags="--no-sandbox" --psiStrategy=desktop'
-      - 'lhci upload --target=filesystem --outputDir=lhci-reports-desktop'
-      - 'cp -r ~/website/lhci-reports-desktop ~/reports'
+      - 'lhci autorun --config=lighthouserc.desktop.js'
       - 'echo #### Test LightHouse Mobile'
-      - 'lhci collect --url=https://$WEBSITE_URL --settings.chromeFlags="--no-sandbox" --psiStrategy=mobile'
-      - 'lhci upload --target=filesystem --outputDir=lhci-reports-mobile'
-      - 'cp -r ~/website/lhci-reports-mobile ~/reports'
+      - 'lhci autorun --config=lighthouserc.mobile.js'
     finally:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/reports.sh'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
+      - 'cp -r ~/website/lhci-reports-desktop ~/reports'
+      - 'cp -r ~/website/lhci-reports-mobile ~/reports'
+
 artifacts:
   files:
     - '**/*'
@@ -43,7 +44,5 @@ cache:
   paths:
     - '/bin'
     - '/usr/local/bin'
-    - '/root/.terraform'
     - '/root/.cache'
-    - '/root/.gem'
     - '/usr/local/bundle'

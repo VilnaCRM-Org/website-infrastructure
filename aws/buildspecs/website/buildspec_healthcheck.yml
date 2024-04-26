@@ -19,7 +19,3 @@ phases:
     commands:
       - 'echo ## Test Website Connection...'
       - 'hurl --test --verbose --variable website_url=$WEBSITE_URL ${CODEBUILD_SRC_DIR}/${HURL_DIR}/healthcheck.hurl'
-
-artifacts:
-  files:
-    - '**/*'

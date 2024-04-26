@@ -63,6 +63,11 @@ variable "source_repo_branch" {
   type        = string
 }
 
+variable "website_repo_branch" {
+  description = "Branch to be pulled from the website contents repository"
+  type        = string
+}
+
 variable "github_connection_name" {
   description = "Name of the CodeStar connection"
   type        = string
@@ -125,17 +130,21 @@ variable "default_build_project_source" {
 }
 
 variable "ruby_version" {
-  description = "Ruby Version to be used in codebuild stages"
+  description = "Ruby Version to be used in CodeBuild stages"
   type        = string
 }
 
 variable "python_version" {
-  description = "Python Version to be used in codebuild stages"
+  description = "Python Version to be used in CodeBuild stages"
   type        = string
 }
 
+variable "golang_version" {
+  description = "Golang Version to be used in CodeBuild stages"
+  type        = string
+}
 variable "nodejs_version" {
-  description = "Node.js Version to be used in codebuild stages"
+  description = "Node.js Version to be used in CodeBuild stages"
   type        = string
 }
 

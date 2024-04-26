@@ -9,7 +9,7 @@ phases:
       - 'echo #### Install Software'
       - 'n install 21.7.1'
       - 'cd ~'
-      - 'git clone -b 5-make-website-layout https://github.com/VilnaCRM-Org/website.git'
+      - 'git clone -b $WEBSITE_GIT_REPOSITORY_BRANCH "$WEBSITE_GIT_REPOSITORY_LINK.git"'
       - 'cd website/'
       - 'echo #### Install pnpm'
       - 'npm install -g pnpm'
@@ -24,15 +24,9 @@ phases:
       - 'pnpm run lint:tsc'
       - 'pnpm run lint:md'
 
-artifacts:
-  files:
-    - '**/*'
-
 cache:
   paths:
     - '/bin'
     - '/usr/local/bin'
-    - '/root/.terraform'
     - '/root/.cache'
-    - '/root/.gem'
     - '/usr/local/bundle'

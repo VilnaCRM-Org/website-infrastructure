@@ -9,23 +9,26 @@ phases:
       - 'echo #### Install Software'
       - 'n install 21.7.1'
       - 'cd ~'
-      - 'git clone -b 5-make-website-layout https://github.com/VilnaCRM-Org/website.git'
+      - 'git clone -b $WEBSITE_GIT_REPOSITORY_BRANCH "$WEBSITE_GIT_REPOSITORY_LINK.git"'
       - 'cd website/'
+      - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA=`git rev-parse HEAD`'
       - 'echo #### Install pnpm'
       - 'npm install -g pnpm'
       - 'echo #### Install dependencies'
       - 'pnpm i --frozen-lockfile'
       - 'pnpm exec playwright install'
       - 'pnpm exec playwright install-deps'
+      - 'echo #### Set up environment'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh $WEBSITE_URL'
   build:
     commands:
       - 'mkdir ~/reports'
       - 'echo #### Running E2E Test' # Reports folder: playwright-report/
-      - 'NEXT_PUBLIC_WEBSITE_URL=https://$WEBSITE_URL PLAYWRIGHT_HTML_REPORT=playwright-e2e-reports pnpm exec playwright test src/test/e2e'
+      - 'PLAYWRIGHT_HTML_REPORT=playwright-e2e-reports pnpm exec playwright test src/test/e2e'
       - 'echo #### Running Visual Test' # Reports folder: playwright-report/
-      - 'NEXT_PUBLIC_WEBSITE_URL=https://$WEBSITE_URL PLAYWRIGHT_HTML_REPORT=playwright-visual-reports pnpm run test:visual'
+      - 'PLAYWRIGHT_HTML_REPORT=playwright-visual-reports pnpm exec playwright test src/test/visual'
       - 'echo #### Running Memory Leak Test' # No Reports folder
-      - 'MEMLAB_WEBSITE_URL=https://$WEBSITE_URL pnpm run test:memory-leak'
+      - 'pnpm run test:memory-leak'
       - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
       - 'pnpm run test:mutation'
       - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
@@ -47,7 +50,5 @@ cache:
   paths:
     - '/bin'
     - '/usr/local/bin'
-    - '/root/.terraform'
     - '/root/.cache'
-    - '/root/.gem'
     - '/usr/local/bundle'

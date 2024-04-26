@@ -8,8 +8,9 @@ phases:
       - 'echo #### Install Software'
       - 'n install 21.7.1'
       - 'cd ~'
-      - 'git clone -b 5-make-website-layout https://github.com/VilnaCRM-Org/website.git'
+      - 'git clone -b $WEBSITE_GIT_REPOSITORY_BRANCH "$WEBSITE_GIT_REPOSITORY_LINK.git"'
       - 'cd website/'
+      - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA=`git rev-parse HEAD`'
       - 'echo #### Install pnpm'
       - 'npm install -g pnpm'
       - 'echo #### Install dependencies'
@@ -21,7 +22,3 @@ phases:
       - 'pnpm run build'
       - 'echo #### Deploy Project'
       - 'aws s3 sync ./out s3://$BUCKET_NAME'
-
-artifacts:
-  files:
-    - '**/*'
