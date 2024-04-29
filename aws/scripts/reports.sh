@@ -8,6 +8,9 @@ JSON_STRING=$(jq -n \
     --arg s3_link "$S3_LINK" \
     --arg gh_link "$GITHUB_COMMIT_LINK" \
     --arg codebuild_link "$CODEBUILD_LINK" \
-    '{s3_link: $s3_link, codebuild_link: $codebuild_link, gh_link: $gh_link}')
+    --arg sha "$WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA" \
+    --arg author "$WEBSITE_GIT_REPOSITORY_LAST_COMMIT_AUTHOR" \
+    --arg name "$WEBSITE_GIT_REPOSITORY_LAST_COMMIT_NAME" \
+    '{s3_link: $s3_link, codebuild_link: $codebuild_link, github: {gh_link: $gh_link, sha: $sha, author: $author, name: $name} }')
 
 echo $JSON_STRING >payload.json

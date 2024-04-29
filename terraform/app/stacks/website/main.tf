@@ -1,5 +1,5 @@
 module "logging_s3_bucket" {
-  source = "../../modules/aws/s3/website-logging-s3"
+  source = "../../modules/aws/s3/website-logging"
 
   project_name = var.project_name
   environment  = var.environment
@@ -7,11 +7,13 @@ module "logging_s3_bucket" {
   aws_cloudfront_distribution_arn = module.cloudfront.arn
   aws_s3_bucket_this_arn          = module.s3_bucket.arn
 
+  s3_bucket_files_deletion_days = var.s3_bucket_files_deletion_days
+
   tags = var.tags
 }
 
 module "s3_bucket" {
-  source = "../../modules/aws/s3/website-s3"
+  source = "../../modules/aws/s3/website"
 
   domain_name = var.domain_name
 

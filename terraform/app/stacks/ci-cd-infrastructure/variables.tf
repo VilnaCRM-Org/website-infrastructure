@@ -158,24 +158,9 @@ variable "script_dir" {
   type        = string
 }
 
-variable "SLACK_WORKSPACE_ID" {
-  description = "Slack Workspace ID for Notifications"
-  type        = string
-}
-
-variable "CODEPIPELINE_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Notifications"
-  type        = string
-}
-
-variable "ALERTS_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Notifications"
-  type        = string
-}
-
-variable "REPORT_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Reports"
-  type        = string
+variable "s3_bucket_files_deletion_days" {
+  description = "Expiring time of files in buckets for lifecycle configuration rule"
+  type        = number
 }
 
 variable "lambda_python_version" {
@@ -197,3 +182,24 @@ variable "tags" {
   description = "Tags to be associated with the CI/CD Infrastructure"
   type        = map(any)
 }
+
+variable "SLACK_WORKSPACE_ID" {
+  description = "Slack Workspace ID for Notifications"
+  type        = string
+}
+
+variable "CODEPIPELINE_SLACK_CHANNEL_ID" {
+  description = "Slack Channel ID for Notifications"
+  type        = string
+}
+
+variable "ALERTS_SLACK_CHANNEL_ID" {
+  description = "Slack Channel ID for Notifications"
+  type        = string
+}
+
+variable "REPORT_SLACK_CHANNEL_ID" {
+  description = "Slack Channel ID for Reports"
+  type        = string
+}
+

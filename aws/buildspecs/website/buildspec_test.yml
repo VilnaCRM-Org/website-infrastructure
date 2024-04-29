@@ -12,6 +12,8 @@ phases:
       - 'git clone -b $WEBSITE_GIT_REPOSITORY_BRANCH "$WEBSITE_GIT_REPOSITORY_LINK.git"'
       - 'cd website/'
       - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA=`git rev-parse HEAD`'
+      - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_NAME=`git log --format=%B -n 1`'
+      - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_AUTHOR=`git log -1 --pretty=format:"%an"`'
       - 'echo #### Install pnpm'
       - 'npm install -g pnpm'
       - 'echo #### Install dependencies'
@@ -19,7 +21,8 @@ phases:
       - 'pnpm exec playwright install'
       - 'pnpm exec playwright install-deps'
       - 'echo #### Set up environment'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh $WEBSITE_URL'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh'
+      
   build:
     commands:
       - 'mkdir ~/reports'

@@ -14,6 +14,8 @@ create_slack_notification = true
 lambda_python_version                 = "python3.12"
 lambda_reserved_concurrent_executions = -1
 
+s3_bucket_files_deletion_days = 7
+
 default_build_project_source                = "CODEPIPELINE"
 default_builder_compute_type                = "BUILD_GENERAL1_SMALL"
 default_builder_type                        = "LINUX_CONTAINER"

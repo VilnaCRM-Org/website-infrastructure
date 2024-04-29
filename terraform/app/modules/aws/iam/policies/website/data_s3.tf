@@ -27,6 +27,7 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "s3:PutBucketLogging",
       "s3:GetBucketPublicAccessBlock",
       "s3:PutEncryptionConfiguration",
+      "s3:PutLifecycleConfiguration",
       "s3:DeleteBucketPolicy",
       "s3:DeleteBucket",
       "s3:ListBucketVersions",

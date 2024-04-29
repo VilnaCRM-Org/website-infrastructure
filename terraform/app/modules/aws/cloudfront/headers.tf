@@ -1,6 +1,6 @@
 resource "aws_cloudfront_response_headers_policy" "response_headers" {
   provider = aws.us-east-1
-  name     = "cloudfront-policy"
+  name     = "${var.project_name}-cloudfront-policy"
   #checkov:skip=CKV_AWS_259: Bugged checkov, already added
 
   security_headers_config {
@@ -46,6 +46,11 @@ resource "aws_cloudfront_response_headers_policy" "response_headers" {
       header   = "Cross-Origin-Embedder-Policy"
       override = true
       value    = "require-corp"
+    }
+    items {
+      header   = "Cache-Control"
+      override = true
+      value    = "max-age=3600, public"
     }
   }
 }

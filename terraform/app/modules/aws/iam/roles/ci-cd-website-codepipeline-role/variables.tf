@@ -48,6 +48,16 @@ variable "s3_bucket_arn" {
   type        = string
 }
 
+variable "lhci_reports_bucket_arn" {
+  description = "The ARN of the Lighthouse Reports S3 Bucket "
+  type        = string
+}
+
+variable "playwright_reports_bucket_arn" {
+  description = "The ARN of the Playwright Reports S3 Bucket "
+  type        = string
+}
+
 variable "codestar_connection_arn" {
   description = "The ARN of the CodeStar connection"
   type        = string

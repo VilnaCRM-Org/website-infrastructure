@@ -32,12 +32,14 @@ module "website_infra_policies" {
 }
 
 module "ci_cd_infra_s3_artifacts_bucket" {
-  source = "../../modules/aws/s3/codepipeline-s3"
+  source = "../../modules/aws/s3/codepipeline"
 
   project_name = var.ci_cd_infra_project_name
 
   region      = var.region
   environment = var.environment
+
+  s3_bucket_files_deletion_days = var.s3_bucket_files_deletion_days
 
   kms_key_arn           = module.ci_cd_infra_codepipeline_kms.arn
   codepipeline_role_arn = module.ci_cd_infra_codepipeline_iam_role.role_arn
@@ -127,12 +129,14 @@ module "ci_cd_infra_codepipeline" {
 }
 
 module "website_infra_s3_artifacts_bucket" {
-  source = "../../modules/aws/s3/codepipeline-s3"
+  source = "../../modules/aws/s3/codepipeline"
 
   project_name = var.website_infra_project_name
 
   region      = var.region
   environment = var.environment
+
+  s3_bucket_files_deletion_days = var.s3_bucket_files_deletion_days
 
   kms_key_arn           = module.website_infra_codepipeline_kms.arn
   codepipeline_role_arn = module.website_infra_codepipeline_iam_role.role_arn
@@ -221,13 +225,35 @@ module "website_infra_codepipeline" {
   depends_on = [module.website_infra_codebuild, module.website_infra_s3_artifacts_bucket]
 }
 
+module "lhci_reports_bucket" {
+  source = "../../modules/aws/s3/reports"
+
+  project_name = "${var.ci_cd_website_project_name}-lhci"
+
+  s3_bucket_files_deletion_days = var.s3_bucket_files_deletion_days
+
+  tags = var.tags
+}
+
+module "playwright_reports_bucket" {
+  source = "../../modules/aws/s3/reports"
+
+  project_name = "${var.ci_cd_website_project_name}-playwright"
+
+  s3_bucket_files_deletion_days = var.s3_bucket_files_deletion_days
+
+  tags = var.tags
+}
+
 module "ci_cd_website_s3_artifacts_bucket" {
-  source = "../../modules/aws/s3/codepipeline-s3"
+  source = "../../modules/aws/s3/codepipeline"
 
   project_name = var.ci_cd_website_project_name
 
   region      = var.region
   environment = var.environment
+
+  s3_bucket_files_deletion_days = var.s3_bucket_files_deletion_days
 
   kms_key_arn           = module.ci_cd_website_codepipeline_kms.arn
   codepipeline_role_arn = module.ci_cd_website_codepipeline_iam_role.role_arn
@@ -257,9 +283,11 @@ module "ci_cd_website_codepipeline_iam_role" {
   region      = var.region
   environment = var.environment
 
-  kms_key_arn             = module.ci_cd_website_codepipeline_kms.arn
-  s3_bucket_arn           = module.ci_cd_website_s3_artifacts_bucket.arn
-  codestar_connection_arn = module.codestar_connection.arn
+  kms_key_arn                   = module.ci_cd_website_codepipeline_kms.arn
+  s3_bucket_arn                 = module.ci_cd_website_s3_artifacts_bucket.arn
+  codestar_connection_arn       = module.codestar_connection.arn
+  lhci_reports_bucket_arn       = module.lhci_reports_bucket.arn
+  playwright_reports_bucket_arn = module.playwright_reports_bucket.arn
 
   tags = var.tags
 }

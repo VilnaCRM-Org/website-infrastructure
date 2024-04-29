@@ -44,3 +44,20 @@ resource "aws_s3_bucket_logging" "codepipeline_bucket_logging" {
   target_bucket = aws_s3_bucket.codepipeline_bucket.id
   target_prefix = "log/"
 }
+
+
+resource "aws_s3_bucket_lifecycle_configuration" "codepipeline_bucket_lifecycle_configuration" {
+  depends_on = [aws_s3_bucket_versioning.codepipeline_bucket_versioning]
+
+  bucket = aws_s3_bucket.codepipeline_bucket.id
+
+  rule {
+    id = "files-deletion"
+
+    expiration {
+      days = var.s3_bucket_files_deletion_days
+    }
+
+    status = "Enabled"
+  }
+}
