@@ -18,7 +18,6 @@ phases:
       - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA=`git rev-parse HEAD`'
       - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_NAME=`git log --format=%B -n 1`'
       - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_AUTHOR=`git log -1 --pretty=format:"%an"`'
-      - 'cat payload.json'
       - 'echo #### Install pnpm'
       - 'npm install -g pnpm @lhci/cli@0.13.x'
       - 'echo #### Install dependencies'
@@ -34,7 +33,6 @@ phases:
       - 'lhci autorun --config=lighthouserc.mobile.js'
     finally:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/reports.sh'
-      - 'cat payload.json'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
       - 'cp -r ~/website/lhci-reports-desktop ~/reports'
       - 'cp -r ~/website/lhci-reports-mobile ~/reports'
