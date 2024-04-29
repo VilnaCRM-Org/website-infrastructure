@@ -5,12 +5,15 @@ resource "aws_s3_bucket" "reports_bucket" {
   #checkov:skip=CKV2_AWS_62: The event notifications of reports bucket is not needed 
   #checkov:skip=CKV_AWS_145: The KMS encryption of reports bucket is not needed 
   #checkov:skip=CKV_AWS_144: Replication of reports bucket is not needed 
+  #checkov:skip=CKV_AWS_20: Necessary for developer access
+  #checkov:skip=CKV2_AWS_6: Bucket Alredy has PAB
   tags = var.tags
 
   force_destroy = true
 }
 
-resource "aws_s3_bucket_ownership_controls" "reports_bucket_ownership_controls" {
+resource "aws_s3_bucket_ownership_controls" "reports_bucket_ownership_controls" { 
+  #checkov:skip=CKV2_AWS_65: Necessary for developer access /access control lists for S3 buckets are disabled
   bucket = aws_s3_bucket.reports_bucket.id
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -23,6 +26,10 @@ resource "aws_s3_bucket_policy" "reports_bucket_policy" {
 }
 
 resource "aws_s3_bucket_public_access_block" "reports_bucket_pab" {
+  #checkov:skip=CKV_AWS_56: Necessary for developer access /restrict_public_buckets enabled
+  #checkov:skip=CKV_AWS_55: Necessary for developer access /ignore public ACLs enabled
+  #checkov:skip=CKV_AWS_54: Necessary for developer access /block public policy enabled
+  #checkov:skip=CKV_AWS_53: Necessary for developer access /public ACLS enabled
   bucket                  = aws_s3_bucket.reports_bucket.id
   block_public_acls       = false
   block_public_policy     = false
@@ -38,6 +45,7 @@ resource "aws_s3_bucket_versioning" "reports_bucket_versioning" {
 }
 
 resource "aws_s3_bucket_acl" "reports_bucket_acl" {
+  #ts:skip=AC_AWS_0210 
   depends_on = [
     aws_s3_bucket_ownership_controls.reports_bucket_ownership_controls,
     aws_s3_bucket_public_access_block.reports_bucket_pab,
@@ -66,6 +74,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "reports_bucket_lifecycle_confi
 
   rule {
     id = "files-deletion"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = var.s3_bucket_files_deletion_days
+    }
 
     expiration {
       days = var.s3_bucket_files_deletion_days

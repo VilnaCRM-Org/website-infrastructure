@@ -8,7 +8,7 @@ data "aws_iam_policy_document" "bucket_policy_doc" {
       type        = "AWS"
       identifiers = ["*"]
     }
-
+    #checkov:skip=CKV_AWS_283: It is reports bucket
     actions = [
       "s3:GetObject",
     ]

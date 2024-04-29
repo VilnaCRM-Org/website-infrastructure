@@ -54,6 +54,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "codepipeline_bucket_lifecycle_
   rule {
     id = "files-deletion"
 
+    abort_incomplete_multipart_upload {
+      days_after_initiation = var.s3_bucket_files_deletion_days
+    }
+    
     expiration {
       days = var.s3_bucket_files_deletion_days
     }
