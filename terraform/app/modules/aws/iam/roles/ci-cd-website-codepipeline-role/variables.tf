@@ -53,8 +53,8 @@ variable "lhci_reports_bucket_arn" {
   type        = string
 }
 
-variable "playwright_reports_bucket_arn" {
-  description = "The ARN of the Playwright Reports S3 Bucket "
+variable "test_reports_bucket_bucket_arn" {
+  description = "The ARN of the Test Reports S3 Bucket "
   type        = string
 }
 

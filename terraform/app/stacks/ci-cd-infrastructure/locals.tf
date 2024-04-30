@@ -164,6 +164,7 @@ locals {
         "ARTIFACTS_OUTPUT_DIR"          = "TestOutput",
         "ACCOUNT_ID"                    = local.account_id
         "SCRIPT_DIR"                    = var.script_dir,
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
@@ -183,6 +184,7 @@ locals {
         "ARTIFACTS_OUTPUT_DIR"          = "LHCIOutput",
         "ACCOUNT_ID"                    = local.account_id
         "SCRIPT_DIR"                    = var.script_dir,
+        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.name
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }

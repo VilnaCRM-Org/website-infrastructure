@@ -27,7 +27,7 @@ resource "aws_cloudfront_response_headers_policy" "response_headers" {
       override   = true
     }
     content_security_policy {
-      content_security_policy = "frame-ancestors 'none'; default-src 'self'; img-src 'self'; connect-src 'self' https://www.google-analytics.com; script-src 'self' https://www.googletagmanager.com 'sha256-wrP1y/XyBiQiNtWvqeo56CoSUTnjHRpOzs4kag+stYs='; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'"
+      content_security_policy = "frame-ancestors 'none'; default-src 'self'; img-src 'self'; connect-src 'self' https://www.google-analytics.com; script-src 'self' https://www.googletagmanager.com 'sha256-wrP1y/XyBiQiNtWvqeo56CoSUTnjHRpOzs4kag+stYs='; style-src 'self' 'unsafe-inline'; font-src 'self' https://${var.domain_name}/; object-src 'none'"
       override                = true
     }
   }

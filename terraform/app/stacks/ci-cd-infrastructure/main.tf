@@ -235,10 +235,10 @@ module "lhci_reports_bucket" {
   tags = var.tags
 }
 
-module "playwright_reports_bucket" {
+module "test_reports_bucket" {
   source = "../../modules/aws/s3/reports"
 
-  project_name = "${var.ci_cd_website_project_name}-playwright"
+  project_name = "${var.ci_cd_website_project_name}-test"
 
   s3_bucket_files_deletion_days = var.s3_bucket_files_deletion_days
 
@@ -287,7 +287,7 @@ module "ci_cd_website_codepipeline_iam_role" {
   s3_bucket_arn                 = module.ci_cd_website_s3_artifacts_bucket.arn
   codestar_connection_arn       = module.codestar_connection.arn
   lhci_reports_bucket_arn       = module.lhci_reports_bucket.arn
-  playwright_reports_bucket_arn = module.playwright_reports_bucket.arn
+  test_reports_bucket_bucket_arn = module.test_reports_bucket.arn
 
   tags = var.tags
 }

@@ -11,9 +11,6 @@ phases:
       - 'cd ~'
       - 'git clone -b $WEBSITE_GIT_REPOSITORY_BRANCH "$WEBSITE_GIT_REPOSITORY_LINK.git"'
       - 'cd website/'
-      - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA=`git rev-parse HEAD`'
-      - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_NAME=`git log --format=%B -n 1`'
-      - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_AUTHOR=`git log -1 --pretty=format:"%an"`'
       - 'echo #### Install pnpm'
       - 'npm install -g pnpm'
       - 'echo #### Install dependencies'
@@ -22,27 +19,23 @@ phases:
       - 'pnpm exec playwright install-deps'
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh'
-      
+
   build:
     commands:
       - 'mkdir ~/reports'
       - 'echo #### Running E2E Test' # Reports folder: playwright-report/
-      - 'PLAYWRIGHT_HTML_REPORT=playwright-e2e-reports pnpm exec playwright test src/test/e2e'
+      - 'export PW_E2E_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-e2e-reports pnpm exec playwright test src/test/e2e'
       - 'echo #### Running Visual Test' # Reports folder: playwright-report/
-      - 'PLAYWRIGHT_HTML_REPORT=playwright-visual-reports pnpm exec playwright test src/test/visual'
+      - 'export PW_VISUAL_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-visual-reports pnpm exec playwright test src/test/visual'
       - 'echo #### Running Memory Leak Test' # No Reports folder
       - 'pnpm run test:memory-leak'
       - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
-      - 'pnpm run test:mutation'
+      - 'export MUTATION_RUN=true && pnpm run test:mutation'
       - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
-      - 'pnpm run test:unit'
+      - 'export UNIT_RUN=true && pnpm run test:unit'
     finally:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/reports.sh'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
-      - 'cp -r ~/website/playwright-e2e-reports ~/reports/playwright-e2e-reports'
-      - 'cp -r ~/website/playwright-visual-reports ~/reports/playwright-visual-reports'
-      - 'cp -r ~/website/reports/mutation ~/reports/mutation-reports'
-      - 'cp -r ~/website/coverage/lcov-report ~/reports/unit-reports'
 
 artifacts:
   files:

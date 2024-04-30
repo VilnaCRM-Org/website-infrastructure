@@ -42,8 +42,8 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "arn:aws:s3:::${var.website_bucket_name}/*",
       "${var.lhci_reports_bucket_arn}",
       "${var.lhci_reports_bucket_arn}/*",
-      "${var.playwright_reports_bucket_arn}",
-      "${var.playwright_reports_bucket_arn}/*"
+      "${var.test_reports_bucket_bucket_arn}",
+      "${var.test_reports_bucket_bucket_arn}/*"
     ]
   }
 

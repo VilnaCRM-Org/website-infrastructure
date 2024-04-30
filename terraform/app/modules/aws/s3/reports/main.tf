@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "reports_bucket" {
   force_destroy = true
 }
 
-resource "aws_s3_bucket_ownership_controls" "reports_bucket_ownership_controls" { 
+resource "aws_s3_bucket_ownership_controls" "reports_bucket_ownership_controls" {
   #checkov:skip=CKV2_AWS_65: Necessary for developer access /access control lists for S3 buckets are disabled
   bucket = aws_s3_bucket.reports_bucket.id
   rule {
