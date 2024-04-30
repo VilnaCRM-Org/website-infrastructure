@@ -283,10 +283,10 @@ module "ci_cd_website_codepipeline_iam_role" {
   region      = var.region
   environment = var.environment
 
-  kms_key_arn                   = module.ci_cd_website_codepipeline_kms.arn
-  s3_bucket_arn                 = module.ci_cd_website_s3_artifacts_bucket.arn
-  codestar_connection_arn       = module.codestar_connection.arn
-  lhci_reports_bucket_arn       = module.lhci_reports_bucket.arn
+  kms_key_arn                    = module.ci_cd_website_codepipeline_kms.arn
+  s3_bucket_arn                  = module.ci_cd_website_s3_artifacts_bucket.arn
+  codestar_connection_arn        = module.codestar_connection.arn
+  lhci_reports_bucket_arn        = module.lhci_reports_bucket.arn
   test_reports_bucket_bucket_arn = module.test_reports_bucket.arn
 
   tags = var.tags

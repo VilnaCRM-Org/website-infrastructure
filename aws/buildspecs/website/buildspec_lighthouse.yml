@@ -25,7 +25,7 @@ phases:
     commands:
       - 'mkdir ~/reports'
       - 'echo #### Test LightHouse Desktop'
-      - 'export LHCI_DESKTOP_RUN=true lhci autorun --config=lighthouserc.desktop.js'
+      - 'export LHCI_DESKTOP_RUN=true && lhci autorun --config=lighthouserc.desktop.js'
       - 'echo #### Test LightHouse Mobile'
       - 'export LHCI_MOBILE_RUN=true && lhci autorun --config=lighthouserc.mobile.js'
     finally:
