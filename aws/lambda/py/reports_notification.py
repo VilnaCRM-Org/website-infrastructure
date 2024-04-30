@@ -28,10 +28,10 @@ def lambda_handler(event, context):
                 lighthouse_reports = [report.strip() for report in lighthouse_reports if report]
                 count = 1
                 for report in lighthouse_reports:
-                    reports += f"\n[{name}-#{count}](<{report}*Link*>)"
+                    reports += f"\n[{name}-#{count}](<{report}|*Link*>)"
                     count += 1
             else:
-                reports += f"\n[{report['name']}](<{report['link']}*Link*>)"
+                reports += f"\n[{report['name']}](<{report['link']}|*Link*>)"
 
     description = f":white_check_mark: Reports Ready! \n Commit info: \n Author: {github_commit_author} \n Name: {github_commit_name} \n SHA: {github_commit_sha} \n {github_commit_link} \n CodeBuild Logs: {codebuild_logs_link} \n Reports: {reports}"
 

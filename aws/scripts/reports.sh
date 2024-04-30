@@ -4,7 +4,7 @@ GITHUB_COMMIT_LINK="$WEBSITE_GIT_REPOSITORY_LINK/commit/$WEBSITE_GIT_REPOSITORY_
 
 if [ "$LHCI_DESKTOP_RUN" = true ]; then
     LHCI_DESKTOP_RUN_NAME="Lighthouse Desktop Reports"
-    directory="./.lighthouseci"
+    directory="root/website/lhci-reports-desktop"
     LHCI_DESKTOP_RUN_LINKS=""
     for filepath in $(find "$directory" -type f -name "*.html"); do
         filename=$(basename "$filepath")
@@ -52,7 +52,6 @@ if [ "$UNIT_RUN" = true ]; then
 fi
 
 JSON_STRING=$(jq -n \
-    --arg s3_link "$S3_LINK" \
     --arg gh_link "$GITHUB_COMMIT_LINK" \
     --arg codebuild_link "$CODEBUILD_LINK" \
     --arg sha "$WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA" \
@@ -70,6 +69,6 @@ JSON_STRING=$(jq -n \
     --arg mutation_run_link "$MUTATION_RUN_LINK" \
     --arg unit_run_name "$UNIT_RUN_NAME" \
     --arg unit_run_link "$UNIT_RUN_LINK" \
-    '{s3_link: $s3_link, codebuild_link: $codebuild_link, github: {gh_link: $gh_link, sha: $sha, author: $author, name: $name}, reports: [{name: $lhci_desktop_run_name, link: $lhci_desktop_run_links}, {name: $lhci_mobile_run_name, link: $lhci_mobile_run_links}, {name: $pw_e2e_run_name, link: $pw_e2e_run_link}, {name: $pw_visual_run_name, link: $pw_visual_run_link}, {name: $mutation_run_name, link: $mutation_run_link}, {name: $unit_run_name, link: $unit_run_link}] }')
+    '{codebuild_link: $codebuild_link, github: {gh_link: $gh_link, sha: $sha, author: $author, name: $name}, reports: [{name: $lhci_desktop_run_name, link: $lhci_desktop_run_links}, {name: $lhci_mobile_run_name, link: $lhci_mobile_run_links}, {name: $pw_e2e_run_name, link: $pw_e2e_run_link}, {name: $pw_visual_run_name, link: $pw_visual_run_link}, {name: $mutation_run_name, link: $mutation_run_link}, {name: $unit_run_name, link: $unit_run_link}] }')
 
 echo $JSON_STRING >payload.json
