@@ -4,7 +4,7 @@ GITHUB_COMMIT_LINK="$WEBSITE_GIT_REPOSITORY_LINK/commit/$WEBSITE_GIT_REPOSITORY_
 
 if [ "$LHCI_DESKTOP_RUN" = true ]; then
     LHCI_DESKTOP_RUN_NAME="Lighthouse Desktop Reports"
-    directory="root/website/lhci-reports-desktop"
+    directory="/root/website/lhci-reports-desktop"
     LHCI_DESKTOP_RUN_LINKS=""
     for filepath in $(find "$directory" -type f -name "*.html"); do
         filename=$(basename "$filepath")
