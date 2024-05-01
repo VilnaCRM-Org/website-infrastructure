@@ -1,16 +1,10 @@
 version: '3'
 
 tasks:
-  init:
-    desc: 'Initialize Terraspace'
-    cmds:
-      - terraspace all init
-    silent: false
-
   validate:
-    deps: [init]
     desc: 'Validate Terraform code'
     cmds:
+      - terraspace all init
       - terraspace all validate
     silent: false
 
