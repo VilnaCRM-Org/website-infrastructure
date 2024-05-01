@@ -7,9 +7,9 @@ phases:
       ruby: $RUBY_VERSION
     commands:
       - 'echo ## Install Terraspace'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
       - 'dnf install -y yum-utils'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
       - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
       - 'dnf update -y'
   build:
@@ -26,6 +26,7 @@ phases:
 artifacts:
   files:
     - '**/*'
+  base-directory: '${CODEBUILD_SRC_DIR}/website-infrastructure/terraform/log'
 
 cache:
   paths:

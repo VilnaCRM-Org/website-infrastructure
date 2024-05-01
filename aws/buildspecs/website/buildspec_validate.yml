@@ -11,8 +11,8 @@ phases:
       golang: $GOLANG_VERSION
       ruby: $RUBY_VERSION
     commands:
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/credentials.sh'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/terraform_installation.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
       - 'dnf update -y'
       - 'dnf install -y jq yum-utils'
       - 'pip3 install checkov'

@@ -160,6 +160,7 @@ locals {
     test = merge(local.ubuntu_based_build,
       { env_variables = {
         "NODEJS_VERSION"                = var.nodejs_version,
+        "PYTHON_VERSION"                = var.python_version,
         "PW_TEST_HTML_REPORT_OPEN"      = "never",
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
@@ -181,6 +182,7 @@ locals {
     lighthouse = merge(local.ubuntu_based_build,
       { env_variables = {
         "NODEJS_VERSION"                = var.nodejs_version,
+        "PYTHON_VERSION"                = var.python_version,
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
         "ARTIFACTS_OUTPUT_DIR"          = "LHCIOutput",

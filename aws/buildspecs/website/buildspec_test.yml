@@ -4,6 +4,7 @@ phases:
   install:
     runtime-versions:
       nodejs: $NODEJS_VERSION
+      python: $PYTHON_VERSION
 
     commands:
       - 'echo #### Install Software'
@@ -18,7 +19,7 @@ phases:
       - 'pnpm exec playwright install'
       - 'pnpm exec playwright install-deps'
       - 'echo #### Set up environment'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/createEnv.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
 
   build:
     commands:
@@ -34,7 +35,7 @@ phases:
       - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
       - 'export UNIT_RUN=true && pnpm run test:unit'
     finally:
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/reports.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
 
 cache:
