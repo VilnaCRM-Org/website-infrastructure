@@ -45,7 +45,7 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "arn:aws:s3:::${var.ci_cd_website_project_name}-test-reports-bucket/*"
     ]
   }
-    statement {
+  statement {
     sid    = "S3PolicyReportsBuckets"
     effect = "Allow"
     actions = [
