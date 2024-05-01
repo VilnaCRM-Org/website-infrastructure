@@ -243,7 +243,6 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
     effect = "Allow"
     actions = [
       "iam:CreatePolicy",
-      "iam:CreatePolicy",
       "iam:GetPolicy",
       "iam:GetPolicyVersion",
       "iam:TagPolicy",
@@ -252,6 +251,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-sns-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-kms-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-s3-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-lambda-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-general-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-iam-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-codepipeline-policy",
@@ -325,12 +325,12 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:TagPolicy",
     ]
     resources = [
-      "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-codepipeline-role-policy",
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-codepipeline-role-policy",
-      "arn:aws:iam::${local.account_id}:policy/ci-cd-website-${var.environment}-codepipeline-role-policy",
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-terraform-role-ci-cd-policy",
-      "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-terraform-role-ci-cd-policy",
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-terraform-role-iam-policy",
+      "arn:aws:iam::${local.account_id}:policy/ci-cd-website-${var.environment}-codepipeline-role-policy",
+      "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-codepipeline-role-policy",
+      "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-terraform-role-ci-cd-policy",
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-terraform-role-iam-policy",
     ]
   }

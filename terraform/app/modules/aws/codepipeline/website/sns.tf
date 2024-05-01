@@ -16,7 +16,7 @@ resource "aws_sns_topic_policy" "codepipeline_notifications" {
 }
 
 resource "aws_sns_topic" "reports_notifications" {
-  name = "${var.project_name}-lhci-reports-notifications"
+  name = "${var.project_name}-reports-notifications"
 
   kms_master_key_id = aws_kms_key.reports_sns_encryption_key.id
 

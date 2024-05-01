@@ -16,6 +16,15 @@ resource "aws_iam_policy" "s3_policy" {
   tags = var.tags
 }
 
+resource "aws_iam_policy" "lambda_policy" {
+  name        = "${var.policy_prefix}-lambda-policy"
+  policy      = data.aws_iam_policy_document.lambda_policy_doc.json
+  path        = "/CodePipelinePolicies/"
+  description = "Policy to allow to use Lambda"
+
+  tags = var.tags
+}
+
 resource "aws_iam_policy" "kms_policy" {
   name        = "${var.policy_prefix}-kms-policy"
   policy      = data.aws_iam_policy_document.kms_policy_doc.json

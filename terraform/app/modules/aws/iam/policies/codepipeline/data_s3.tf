@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "s3_policy_doc" {
   statement {
-    sid    = "S3PolicyArtifactBucketForCodePipelineUser"
+    sid    = "S3PolicyArtifactBucket"
     effect = "Allow"
     actions = [
       "s3:CreateBucket",
@@ -38,7 +38,27 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "arn:aws:s3:::${var.ci_cd_project_name}-codepipeline-artifacts-bucket",
       "arn:aws:s3:::${var.ci_cd_project_name}-codepipeline-artifacts-bucket/*",
       "arn:aws:s3:::${var.ci_cd_website_project_name}-codepipeline-artifacts-bucket",
-      "arn:aws:s3:::${var.ci_cd_website_project_name}-codepipeline-artifacts-bucket/*"
+      "arn:aws:s3:::${var.ci_cd_website_project_name}-codepipeline-artifacts-bucket/*",
+      "arn:aws:s3:::${var.ci_cd_website_project_name}-lhci-reports-bucket",
+      "arn:aws:s3:::${var.ci_cd_website_project_name}-lhci-reports-bucket/*",
+      "arn:aws:s3:::${var.ci_cd_website_project_name}-test-reports-bucket",
+      "arn:aws:s3:::${var.ci_cd_website_project_name}-test-reports-bucket/*"
+    ]
+  }
+    statement {
+    sid    = "S3PolicyReportsBuckets"
+    effect = "Allow"
+    actions = [
+      "s3:GetBucketOwnershipControls",
+      "s3:GetBucketLocation",
+      "s3:PutBucketOwnershipControls"
+    ]
+    resources = [
+
+      "arn:aws:s3:::${var.ci_cd_website_project_name}-lhci-reports-bucket",
+      "arn:aws:s3:::${var.ci_cd_website_project_name}-lhci-reports-bucket/*",
+      "arn:aws:s3:::${var.ci_cd_website_project_name}-test-reports-bucket",
+      "arn:aws:s3:::${var.ci_cd_website_project_name}-test-reports-bucket/*"
     ]
   }
 } 

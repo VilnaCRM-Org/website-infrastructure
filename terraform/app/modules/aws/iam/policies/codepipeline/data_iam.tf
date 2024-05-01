@@ -17,7 +17,9 @@ data "aws_iam_policy_document" "iam_policy_doc" {
     resources = [
       "arn:aws:iam::${local.account_id}:role/${var.website_project_name}-codepipeline-role",
       "arn:aws:iam::${local.account_id}:role/${var.ci_cd_project_name}-codepipeline-role",
-      "arn:aws:iam::${local.account_id}:role/${var.ci_cd_website_project_name}-codepipeline-role"
+      "arn:aws:iam::${local.account_id}:role/${var.ci_cd_website_project_name}-codepipeline-role",
+      "arn:aws:iam::${local.account_id}:role/${var.ci_cd_website_project_name}-iam-for-lambda",
+      "arn:aws:iam::${local.account_id}:role/reports-chatbot-channel-role"
     ]
   }
   statement {
@@ -36,7 +38,8 @@ data "aws_iam_policy_document" "iam_policy_doc" {
     resources = [
       "arn:aws:iam::${local.account_id}:policy/${var.website_project_name}-codepipeline-policy",
       "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_project_name}-codepipeline-policy",
-      "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-codepipeline-policy"
+      "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-codepipeline-policy",
+      "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-iam-policy-allow-sns-for-lambda"
     ]
   }
   statement {

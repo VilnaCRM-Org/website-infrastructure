@@ -10,7 +10,6 @@ phases:
       - 'cd ~'
       - 'git clone -b $WEBSITE_GIT_REPOSITORY_BRANCH "$WEBSITE_GIT_REPOSITORY_LINK.git"'
       - 'cd website/'
-      - 'export WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA=`git rev-parse HEAD`'
       - 'echo #### Install pnpm'
       - 'npm install -g pnpm'
       - 'echo #### Install dependencies'

@@ -32,6 +32,7 @@ phases:
 artifacts:
   files:
     - '**/*'
+  base-directory: '/root/website-infrastructure/terraform/log'
 
 reports:
   checkov-reports:
