@@ -43,4 +43,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
     buildspec       = "./aws/buildspecs/${var.codepipeline_buildspecs}/buildspec_${each.key}.yml"
     git_clone_depth = 1
   }
+  build_batch_config {
+    service_role = var.role_arn
+  }
 }

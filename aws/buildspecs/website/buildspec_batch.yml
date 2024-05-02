@@ -1,12 +1,8 @@
-version: 0.2
-
 batch:
-  fast-fail: false
   build-matrix:
-    - identifier: lighthouse
-      buildspec: buildspec_lighthouse.yml
+    static:
       ignore-failure: false
-
-    - identifier: playwright
-      buildspec: buildspec_playwright.yml
-      ignore-failure: false
+    dynamic:
+      buildspec:
+        - ./aws/buildspecs/website/buildspec_playwright.yml
+        - ./aws/buildspecs/website/buildspec_lighthouse.yml

@@ -7,7 +7,6 @@ phases:
       python: $PYTHON_VERSION
 
     commands:
-      - 'pwd'
       - 'echo #### Install Software'
       - 'apt update -y'
       - 'apt install -y libxss1 libappindicator3-1 libindicator7 fonts-liberation libdbus-1-3'
