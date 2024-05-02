@@ -63,6 +63,10 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     actions = [
       "codebuild:BatchGetBuilds",
       "codebuild:StartBuild",
+      "codebuild:StartBuildBatch",
+      "codebuild:BatchGetBuildBatches",
+      "codebuild:StopBuild",
+      "codebuild:RetryBuild",
       "codebuild:BatchGetProjects",
       "codebuild:CreateReportGroup",
       "codebuild:CreateReport",

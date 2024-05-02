@@ -1,8 +1,10 @@
 batch:
-  build-matrix:
-    static:
+  fast-fail: false
+  build-list:
+    - identifier: lighthouse
+      buildspec: './aws/buildspecs/website/buildspec_lighthouse.yml'
       ignore-failure: false
-    dynamic:
-      buildspec:
-        - ./aws/buildspecs/website/buildspec_playwright.yml
-        - ./aws/buildspecs/website/buildspec_lighthouse.yml
+
+    - identifier: playwright
+      buildspec: './aws/buildspecs/website/buildspec_playwright.yml'
+      ignore-failure: false
