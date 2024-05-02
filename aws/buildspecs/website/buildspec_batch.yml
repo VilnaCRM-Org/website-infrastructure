@@ -1,0 +1,10 @@
+batch:
+  fast-fail: false
+  build-list:
+    - identifier: lighthouse
+      buildspec: buildspec_lighthouse.yml
+      ignore-failure: false
+
+    - identifier: playwright
+      buildspec: buildspec_playwright.yml
+      ignore-failure: false

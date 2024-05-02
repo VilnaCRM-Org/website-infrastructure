@@ -24,10 +24,12 @@ phases:
   build:
     commands:
       - 'mkdir ~/reports'
-      - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
-      - 'export UNIT_RUN=true && pnpm run test:unit'
-      - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
-      - 'export MUTATION_RUN=true && pnpm run test:mutation'
+      - 'echo #### Running E2E Test' # Reports folder: playwright-report/
+      - 'export PW_E2E_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-e2e-reports pnpm exec playwright test src/test/e2e'
+      - 'echo #### Running Visual Test' # Reports folder: playwright-report/
+      - 'export PW_VISUAL_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-visual-reports pnpm exec playwright test src/test/visual'
+      - 'echo #### Running Memory Leak Test' # No Reports folder
+      - 'pnpm run test:memory-leak'
 
     finally:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
