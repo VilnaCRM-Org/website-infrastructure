@@ -2,7 +2,7 @@ version: 0.2
 
 batch:
   fast-fail: false
-  build-list:
+  build-matrix:
     - identifier: lighthouse
       buildspec: buildspec_lighthouse.yml
       ignore-failure: false
