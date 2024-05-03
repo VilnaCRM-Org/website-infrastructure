@@ -17,7 +17,6 @@ phases:
       - 'dnf install -y jq yum-utils'
       - 'pip3 install checkov'
       - 'curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash'
-      - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
       - 'go install github.com/go-task/task/v3/cmd/task@latest'
   build:
     commands:
@@ -28,11 +27,6 @@ phases:
       - 'task --verbose summary'
       - 'cp checkov.xml ${CODEBUILD_SRC_DIR}/reports/checkov.xml'
       - 'cp tfsec-junit.xml ${CODEBUILD_SRC_DIR}/reports/tfsec-junit.xml'
-
-artifacts:
-  files:
-    - '**/*'
-  base-directory: '${CODEBUILD_SRC_DIR}/website-infrastructure/terraform/log'
 
 reports:
   checkov-reports:

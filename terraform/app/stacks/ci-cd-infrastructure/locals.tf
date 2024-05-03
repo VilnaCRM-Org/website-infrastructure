@@ -138,26 +138,9 @@ locals {
     })
   }
 
-  ci_cd_website_build_projects = {
+  ci_cd_website_build_projects = { 
 
-    lint = merge(local.ubuntu_based_build,
-      { env_variables = {
-        "NODEJS_VERSION"                = var.nodejs_version,
-        "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
-        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
-        }
-    })
-
-    deploy = merge(local.ubuntu_based_build,
-      { env_variables = {
-        "NODEJS_VERSION"                = var.nodejs_version,
-        "BUCKET_NAME"                   = var.bucket_name
-        "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
-        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
-        }
-    })
-
-    test = merge(local.ubuntu_based_build,
+    batch_unit_mutation_lint = merge(local.ubuntu_based_build,
       { env_variables = {
         "NODEJS_VERSION"                = var.nodejs_version,
         "PYTHON_VERSION"                = var.python_version,
@@ -167,6 +150,14 @@ locals {
         "ACCOUNT_ID"                    = local.account_id
         "SCRIPT_DIR"                    = var.script_dir,
         "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
+        "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
+        }
+    })
+    deploy = merge(local.ubuntu_based_build,
+      { env_variables = {
+        "NODEJS_VERSION"                = var.nodejs_version,
+        "BUCKET_NAME"                   = var.bucket_name
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
@@ -178,7 +169,7 @@ locals {
         }
     })
 
-    batch = merge(local.ubuntu_based_build,
+    batch_pw_lhci = merge(local.ubuntu_based_build,
       { env_variables = {
         "NODEJS_VERSION"                = var.nodejs_version,
         "PYTHON_VERSION"                = var.python_version,
@@ -189,20 +180,6 @@ locals {
         "PW_TEST_HTML_REPORT_OPEN"      = "never",
         "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.name
         "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
-        "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
-        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
-        }
-    })
-
-    lighthouse = merge(local.ubuntu_based_build,
-      { env_variables = {
-        "NODEJS_VERSION"                = var.nodejs_version,
-        "PYTHON_VERSION"                = var.python_version,
-        "WEBSITE_URL"                   = var.website_url,
-        "ENVIRONMENT"                   = var.environment,
-        "ACCOUNT_ID"                    = local.account_id
-        "SCRIPT_DIR"                    = var.script_dir,
-        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.name
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }

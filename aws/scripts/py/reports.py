@@ -13,7 +13,8 @@ def get_environment_variables():
         "git_author": os.environ['WEBSITE_GIT_REPOSITORY_LAST_COMMIT_AUTHOR'],
         "git_name": os.environ['WEBSITE_GIT_REPOSITORY_LAST_COMMIT_NAME'],
         "lhci_reports_bucket_name": os.environ.get('LHCI_REPORTS_BUCKET'),
-        "test_reports_bucket_name": os.environ.get('TEST_REPORTS_BUCKET')
+        "test_reports_bucket_name": os.environ.get('TEST_REPORTS_BUCKET'),
+        "build_succeeding": os.environ['CODEBUILD_BUILD_SUCCEEDING']
     }
 
 def get_html_files(directory):
@@ -47,6 +48,7 @@ def main():
     git_repository_link = env_variables["git_repository_link"]
     lhci_reports_bucket_name = env_variables["lhci_reports_bucket_name"]
     test_reports_bucket_name = env_variables["test_reports_bucket_name"]
+    build_succeeding = env_variables["build_succeeding"]
 
     codebuild_link = generate_codebuild_link(region, account_id, build_id)
     git_commit_link = generate_git_commit_link(git_repository_link, git_repository_last_commit_sha)
@@ -113,6 +115,7 @@ def main():
         copy_to_s3(f"{repository_dir}/{reports_dir}", test_reports_bucket_name, build_id, reports_dir)
 
     data = {
+        "build_succeeding" : build_succeeding,
         "codebuild_link": codebuild_link,
         "github": {
             "gh_link": git_commit_link,

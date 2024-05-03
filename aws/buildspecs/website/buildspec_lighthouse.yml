@@ -7,24 +7,17 @@ phases:
       python: $PYTHON_VERSION
 
     commands:
-      - 'echo #### Install Software'
       - 'apt update -y'
       - 'apt install -y libxss1 libappindicator3-1 libindicator7 fonts-liberation libdbus-1-3'
       - 'wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
       - 'apt install -y ./google-chrome*.deb'
-      - 'n install 21.7.1'
-      - 'cd ~'
-      - 'git clone -b $WEBSITE_GIT_REPOSITORY_BRANCH "$WEBSITE_GIT_REPOSITORY_LINK.git"'
-      - 'cd website/'
-      - 'echo #### Install pnpm'
-      - 'npm install -g pnpm @lhci/cli@0.13.x'
-      - 'echo #### Install dependencies'
-      - 'pnpm i --frozen-lockfile'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
+      - 'cd ~/website'
+      - 'npm install -g @lhci/cli@0.13.x'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
 
   build:
     commands:
-      - 'mkdir ~/reports'
       - 'echo #### Test LightHouse Desktop'
       - 'export LHCI_DESKTOP_RUN=true && lhci autorun --config=lighthouserc.desktop.js'
       - 'echo #### Test LightHouse Mobile'
@@ -37,5 +30,6 @@ cache:
   paths:
     - '/bin'
     - '/usr/local/bin'
+    - '/root/website/node_modules'
     - '/root/.cache'
     - '/usr/local/bundle'

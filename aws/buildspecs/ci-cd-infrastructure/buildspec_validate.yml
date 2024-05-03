@@ -15,7 +15,6 @@ phases:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
       - 'dnf install -y yum-utils'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
-      - 'bundle install --gemfile ${CODEBUILD_SRC_DIR}/terraform/Gemfile'
       - 'dnf update -y'
       - 'echo ## Install Validation Software'
       - 'pip3 install checkov'
@@ -30,11 +29,6 @@ phases:
       - 'task --verbose summary'
       - 'cp checkov.xml ${CODEBUILD_SRC_DIR}/reports/checkov.xml'
       - 'cp tfsec-junit.xml ${CODEBUILD_SRC_DIR}/reports/tfsec-junit.xml'
-
-artifacts:
-  files:
-    - '**/*'
-  base-directory: '${CODEBUILD_SRC_DIR}/website-infrastructure/terraform/log'
 
 reports:
   checkov-reports:

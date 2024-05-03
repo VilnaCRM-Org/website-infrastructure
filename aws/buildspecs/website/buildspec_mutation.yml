@@ -7,25 +7,13 @@ phases:
       python: $PYTHON_VERSION
 
     commands:
-      - 'echo #### Install Software'
-      - 'n install 21.7.1'
-      - 'cd ~'
-      - 'git clone -b $WEBSITE_GIT_REPOSITORY_BRANCH "$WEBSITE_GIT_REPOSITORY_LINK.git"'
-      - 'cd website/'
-      - 'echo #### Install pnpm'
-      - 'npm install -g pnpm'
-      - 'echo #### Install dependencies'
-      - 'pnpm i --frozen-lockfile'
-      - 'pnpm exec playwright install'
-      - 'pnpm exec playwright install-deps'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
+      - 'cd ~/website'
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
 
   build:
     commands:
-      - 'mkdir ~/reports'
-      - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
-      - 'export UNIT_RUN=true && pnpm run test:unit'
       - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
       - 'export MUTATION_RUN=true && pnpm run test:mutation'
 
@@ -37,5 +25,6 @@ cache:
   paths:
     - '/bin'
     - '/usr/local/bin'
+    - '/root/website/node_modules'
     - '/root/.cache'
     - '/usr/local/bundle'
