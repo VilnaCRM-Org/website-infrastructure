@@ -8,14 +8,19 @@ phases:
     commands:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
       - 'cd ~/website'
+      - 'mkdir lint-logs'
 
   build:
     commands:
       - 'echo #### Test LightHouse'
-      - 'pnpm run format'
-      - 'pnpm run lint:next'
-      - 'pnpm run lint:tsc'
-      - 'pnpm run lint:md'
+      - 'pnpm run format 2>&1 | tee lint-logs/format.log'
+      - 'pnpm run lint:next 2>&1 | tee lint-logs/next.log'
+      - 'pnpm run lint:tsc | tee lint-logs/tsc.log'
+      - 'pnpm run lint:md | tee lint-logs/md.log'
+
+artifacts:
+  files:
+    - '/root/website/lint-logs/**/*'
 
 cache:
   paths:

@@ -66,6 +66,7 @@ locals {
       { env_variables = {
         "NODEJS_VERSION"                = var.nodejs_version,
         "BUCKET_NAME"                   = var.bucket_name,
+        "SCRIPT_DIR"                    = var.script_dir,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
         }
@@ -158,6 +159,7 @@ locals {
       { env_variables = {
         "NODEJS_VERSION"                = var.nodejs_version,
         "BUCKET_NAME"                   = var.bucket_name
+        "SCRIPT_DIR"                    = var.script_dir,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
