@@ -23,7 +23,7 @@ phases:
 
 artifacts:
   files:
-    - '/root/website/**/*'
+    - '/root/website/coverage/**/*'
 
 cache:
   paths:

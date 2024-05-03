@@ -16,7 +16,7 @@ phases:
     commands:
       - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
       - 'export MUTATION_RUN=true && pnpm run test:mutation'
-      - 'mv /reports/mutation/mutation.html /reports/mutation/index.html'
+      - 'mv /root/website/reports/mutation/mutation.html /root/website/reports/mutation/index.html'
 
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
@@ -24,7 +24,7 @@ phases:
 
 artifacts:
   files:
-    - '/root/website/**/*'
+    - '/root/website/reports/**/*'
 
 cache:
   paths:

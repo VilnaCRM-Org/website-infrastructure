@@ -28,7 +28,8 @@ phases:
 
 artifacts:
   files:
-    - '/root/website/**/*'
+    - '/root/website/lhci-reports-desktop/**/*'
+    - '/root/website/lhci-reports-mobile/**/*'
 
 cache:
   paths:
