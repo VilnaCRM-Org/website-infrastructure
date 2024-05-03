@@ -8,9 +8,9 @@ client = boto3.client('sns')
 
 def generate_build_succeeding_message(build_succeeding, tests):
     if build_succeeding == "0":
-        return f":x: {tests.join(", ")} Failed!"
+        return f":x: {", ".join(tests)} Failed!"
     else:
-        return f":white_check_mark: {tests.join(", ")} Success!"
+        return f":white_check_mark: {", ".join(tests)} Success!"
 
 def generate_reports_messages(reports):
     links = ""

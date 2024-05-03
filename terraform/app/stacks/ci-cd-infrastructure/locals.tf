@@ -138,7 +138,7 @@ locals {
     })
   }
 
-  ci_cd_website_build_projects = { 
+  ci_cd_website_build_projects = {
 
     batch_unit_mutation_lint = merge(local.ubuntu_based_build,
       { env_variables = {

@@ -16,10 +16,15 @@ phases:
     commands:
       - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
       - 'export MUTATION_RUN=true && pnpm run test:mutation'
+      - 'mv /reports/mutation/mutation.html /reports/mutation/index.html'
 
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
+
+artifacts:
+  files:
+    - '/root/website/**/*'
 
 cache:
   paths:
