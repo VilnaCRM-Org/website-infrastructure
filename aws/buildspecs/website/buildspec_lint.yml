@@ -17,10 +17,6 @@ phases:
       - 'pnpm run lint:tsc'
       - 'pnpm run lint:md'
 
-artifacts:
-  files:
-    - '/root/website/**/*'
-
 cache:
   paths:
     - '/bin'
