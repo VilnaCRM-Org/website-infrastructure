@@ -8,6 +8,8 @@ phases:
     commands:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
       - 'cd /codebuild-user/website'
+      - 'echo #### Owner Change'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuildUserOwnerChange.sh'
 
   build:
     run-as: 'codebuild-user'

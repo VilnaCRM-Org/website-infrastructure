@@ -14,12 +14,15 @@ phases:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
       - 'cd /codebuild-user/website'
       - 'npm install -g @lhci/cli@0.13.x'
+      - 'echo #### Owner Change'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuildUserOwnerChange.sh'
 
   build:
     run-as: 'codebuild-user'
     commands:
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
+      - 'env'
       - 'echo #### Test LightHouse Mobile'
       - 'export LHCI_MOBILE_RUN=true && lhci autorun --config=lighthouserc.mobile.js'
     finally:

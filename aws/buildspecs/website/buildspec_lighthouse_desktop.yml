@@ -14,6 +14,8 @@ phases:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
       - 'cd /codebuild-user/website'
       - 'npm install -g @lhci/cli@0.13.x'
+      - 'echo #### Owner Change'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuildUserOwnerChange.sh'
 
   build:
     run-as: 'codebuild-user'
