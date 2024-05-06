@@ -171,7 +171,7 @@ locals {
         }
     })
 
-    batch_pw_lhci_leak = merge(local.ubuntu_based_build,
+    batch_pw = merge(local.ubuntu_based_build,
       { env_variables = {
         "NODEJS_VERSION"                = var.nodejs_version,
         "PYTHON_VERSION"                = var.python_version,

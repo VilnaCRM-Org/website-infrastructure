@@ -56,7 +56,7 @@ def main():
     reports = []
     tests = []
 
-    repository_dir = "/root/website"
+    repository_dir = "/codebuild-user/website"
 
     if "LHCI_DESKTOP_RUN" in os.environ:
         tests.append("Lighthouse Desktop Test")
