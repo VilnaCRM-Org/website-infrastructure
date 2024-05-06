@@ -24,7 +24,6 @@ phases:
       - 'export LHCI_DESKTOP_RUN=true && lhci autorun --config=lighthouserc.desktop.js'
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
-      - 'cat payload.json'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
 
 artifacts:

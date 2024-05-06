@@ -12,7 +12,6 @@ phases:
       - 'pnpm exec playwright install-deps'
 
   build:
-    run-as: 'codebuild-user'
     commands:
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
