@@ -10,11 +10,11 @@ phases:
       - 'cd /codebuild-user/website'
       - 'pnpm exec playwright install'
       - 'pnpm exec playwright install-deps'
+      - 'echo #### Set up environment'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
 
   build:
     commands:
-      - 'echo #### Set up environment'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
       - 'echo #### Running Visual Test' # Reports folder: playwright-visual-reports/
       - 'export PW_VISUAL_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-visual-reports pnpm exec playwright test src/test/visual'
     finally:
