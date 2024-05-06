@@ -5,19 +5,19 @@ phases:
     runtime-versions:
       nodejs: $NODEJS_VERSION
       python: $PYTHON_VERSION
-
     commands:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
       - 'cd /codebuild-user/website'
+      - 'pnpm exec playwright install'
+      - 'pnpm exec playwright install-deps'
 
   build:
     run-as: 'codebuild-user'
     commands:
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
-      - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
-      - 'export MUTATION_RUN=true && pnpm run test:mutation'
-      - 'mv /codebuild-user/website/reports/mutation/mutation.html /codebuild-user/website/reports/mutation/index.html'
+      - 'echo #### Running Visual Test' # Reports folder: playwright-visual-reports/
+      - 'export PW_VISUAL_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-visual-reports pnpm exec playwright test src/test/visual'
 
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
@@ -25,12 +25,12 @@ phases:
 
 artifacts:
   files:
-    - '/codebuild-user/website/reports/**/*'
+    - '/codebuild-user/website/playwright-visual-reports/**/*'
 
 cache:
   paths:
     - '/bin'
     - '/usr/local/bin'
-    - '/codebuild-user/website/node_modules'
     - '/root/.cache'
+    - '/codebuild-user/website/node_modules'
     - '/usr/local/bundle'

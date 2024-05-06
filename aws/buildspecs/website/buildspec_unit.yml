@@ -2,18 +2,20 @@ version: 0.2
 
 phases:
   install:
+    run-as: 'codebuild-user'
     runtime-versions:
       nodejs: $NODEJS_VERSION
       python: $PYTHON_VERSION
 
     commands:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
-      - 'cd ~/website'
-      - 'echo #### Set up environment'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
+      - 'cd /codebuild-user/website'
 
   build:
+    run-as: 'codebuild-user'
     commands:
+      - 'echo #### Set up environment'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
       - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
       - 'export UNIT_RUN=true && pnpm run test:unit'
 
@@ -23,12 +25,12 @@ phases:
 
 artifacts:
   files:
-    - '/root/website/coverage/**/*'
+    - '/codebuild-user/website/coverage/**/*'
 
 cache:
   paths:
     - '/bin'
     - '/usr/local/bin'
-    - '/root/website/node_modules'
+    - '/codebuild-user/website/node_modules'
     - '/root/.cache'
     - '/usr/local/bundle'

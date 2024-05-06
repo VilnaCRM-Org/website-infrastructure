@@ -6,7 +6,7 @@ phases:
       nodejs: $NODEJS_VERSION
     commands:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
-      - 'cd ~/website'
+      - 'cd /codebuild-user/website'
 
   build:
     commands:

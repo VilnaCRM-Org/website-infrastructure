@@ -12,14 +12,14 @@ phases:
       - 'wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
       - 'apt install -y ./google-chrome*.deb'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
-      - 'cd ~/website'
+      - 'cd /codebuild-user/website'
       - 'npm install -g @lhci/cli@0.13.x'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
 
   build:
+    run-as: 'codebuild-user'
     commands:
-      - 'echo #### Test LightHouse Desktop'
-      - 'export LHCI_DESKTOP_RUN=true && lhci autorun --config=lighthouserc.desktop.js'
+      - 'echo #### Set up environment'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
       - 'echo #### Test LightHouse Mobile'
       - 'export LHCI_MOBILE_RUN=true && lhci autorun --config=lighthouserc.mobile.js'
     finally:
@@ -28,13 +28,12 @@ phases:
 
 artifacts:
   files:
-    - '/root/website/lhci-reports-desktop/**/*'
-    - '/root/website/lhci-reports-mobile/**/*'
+    - '/codebuild-user/website/lhci-reports-mobile/**/*'
 
 cache:
   paths:
     - '/bin'
     - '/usr/local/bin'
-    - '/root/website/node_modules'
+    - '/codebuild-user/website/node_modules'
     - '/root/.cache'
     - '/usr/local/bundle'

@@ -54,10 +54,13 @@ def main():
     git_commit_link = generate_git_commit_link(git_repository_link, git_repository_last_commit_sha)
 
     reports = []
+    tests = []
 
     repository_dir = "/root/website"
 
     if "LHCI_DESKTOP_RUN" in os.environ:
+        tests.append("Lighthouse Desktop Test")
+
         reports_dir = "lhci-reports-desktop"
 
         html_files = get_html_files(f"{repository_dir}/{reports_dir}")
@@ -72,6 +75,8 @@ def main():
         copy_to_s3(f"{repository_dir}/{reports_dir}", lhci_reports_bucket_name, build_id, reports_dir)
 
     if "LHCI_MOBILE_RUN" in os.environ:
+        tests.append("Lighthouse Mobile Test"
+)
         reports_dir = "lhci-reports-mobile"
 
         html_files = get_html_files(f"{repository_dir}/{reports_dir}")
@@ -87,6 +92,8 @@ def main():
 
 
     if "PW_E2E_RUN" in os.environ:
+        tests.append("Playwright E2E Test")
+
         reports_dir = "playwright-e2e-reports"
 
         reports.append(generate_report("Playwright E2E",[ generate_report_link(test_reports_bucket_name, region, build_id, reports_dir) ]))
@@ -94,6 +101,8 @@ def main():
         copy_to_s3(f"{repository_dir}/{reports_dir}", test_reports_bucket_name, build_id, reports_dir)
 
     if "PW_VISUAL_RUN" in os.environ:
+        tests.append("Playwright Visual Test")
+
         reports_dir = "playwright-visual-reports"
 
         reports.append(generate_report("Playwright Visual", [ generate_report_link(test_reports_bucket_name, region, build_id, reports_dir) ]))
@@ -101,6 +110,8 @@ def main():
         copy_to_s3(f"{repository_dir}/{reports_dir}", test_reports_bucket_name, build_id, reports_dir)
 
     if "MUTATION_RUN" in os.environ:
+        tests.append("Mutation Test")
+
         reports_dir = "reports/mutation"
 
         reports.append(generate_report("Mutation Test",[ generate_report_link(test_reports_bucket_name, region, build_id, reports_dir) ]))
@@ -108,11 +119,19 @@ def main():
         copy_to_s3(f"{repository_dir}/{reports_dir}", test_reports_bucket_name, build_id, reports_dir)
 
     if "UNIT_RUN" in os.environ:
+        tests.append("Unit Test")
+
         reports_dir = "coverage/lcov-report"
 
         reports.append(generate_report("Unit Test",[ generate_report_link(test_reports_bucket_name, region, build_id, reports_dir) ]))
         
         copy_to_s3(f"{repository_dir}/{reports_dir}", test_reports_bucket_name, build_id, reports_dir)
+    
+    if "MEMORY_LEAK_RUN" in os.environ:
+        tests.append("Memory Leak Test")
+
+    if "LINT_RUN" in os.environ:
+        tests.append("Lint Test")
 
     data = {
         "build_succeeding" : build_succeeding,
@@ -123,8 +142,11 @@ def main():
             "author": env_variables["git_author"],
             "name": env_variables["git_name"]
         },
-        "reports": reports
+        "tests" : tests
     }
+
+    if len(reports) != 0:
+        data["reports"] = reports
 
     json_string = json.dumps(data)
 

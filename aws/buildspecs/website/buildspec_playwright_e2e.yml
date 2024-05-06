@@ -5,38 +5,31 @@ phases:
     runtime-versions:
       nodejs: $NODEJS_VERSION
       python: $PYTHON_VERSION
-
     commands:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
-      - 'cd ~/website'
+      - 'cd /codebuild-user/website'
       - 'pnpm exec playwright install'
       - 'pnpm exec playwright install-deps'
-      - 'echo #### Set up environment'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
 
   build:
+    run-as: 'codebuild-user'
     commands:
+      - 'echo #### Set up environment'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
       - 'echo #### Running E2E Test' # Reports folder: playwright-e2e-reports/
       - 'export PW_E2E_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-e2e-reports pnpm exec playwright test src/test/e2e'
-      - 'echo #### Running Visual Test' # Reports folder: playwright-visual-reports/
-      - 'export PW_VISUAL_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-visual-reports pnpm exec playwright test src/test/visual'
-      - 'echo #### Running Memory Leak Test' # No Reports folder
-      - 'pnpm run test:memory-leak'
-
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
-      - 'cat payload.json'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
 
 artifacts:
   files:
-    - '/root/website/playwright-e2e-reports/**/*'
-    - '/root/website/playwright-visual-reports/**/*'
+    - '/codebuild-user/website/playwright-e2e-reports/**/*'
 
 cache:
   paths:
     - '/bin'
     - '/usr/local/bin'
     - '/root/.cache'
-    - '/root/website/node_modules'
+    - '/codebuild-user/website/node_modules'
     - '/usr/local/bundle'

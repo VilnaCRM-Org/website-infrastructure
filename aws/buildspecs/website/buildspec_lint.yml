@@ -4,28 +4,28 @@ phases:
   install:
     runtime-versions:
       nodejs: $NODEJS_VERSION
-
     commands:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
-      - 'cd ~/website'
-      - 'mkdir lint-logs'
+      - 'cd /codebuild-user/website'
 
   build:
+    run-as: 'codebuild-user'
     commands:
+      - 'mkdir /codebuild-user/website/lint-logs'
       - 'echo #### Test LightHouse'
-      - 'pnpm run format 2>&1 | tee lint-logs/format.log'
+      - 'export LINT_RUN=true && pnpm run format 2>&1 | tee lint-logs/format.log'
       - 'pnpm run lint:next 2>&1 | tee lint-logs/next.log'
       - 'pnpm run lint:tsc | tee lint-logs/tsc.log'
       - 'pnpm run lint:md | tee lint-logs/md.log'
 
 artifacts:
   files:
-    - '/root/website/lint-logs/**/*'
+    - '/codebuild-user/website/lint-logs/**/*'
 
 cache:
   paths:
     - '/bin'
     - '/usr/local/bin'
-    - '/root/website/node_modules'
+    - '/codebuild-user/website/node_modules'
     - '/root/.cache'
     - '/usr/local/bundle'

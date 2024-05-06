@@ -28,6 +28,10 @@ phases:
       - 'cp checkov.xml ${CODEBUILD_SRC_DIR}/reports/checkov.xml'
       - 'cp tfsec-junit.xml ${CODEBUILD_SRC_DIR}/reports/tfsec-junit.xml'
 
+artifacts:
+  files:
+    - '**/*'
+
 reports:
   checkov-reports:
     files:

@@ -6,11 +6,8 @@ import datetime
 sns_topic_arn = os.environ["SNS_TOPIC_ARN"]
 client = boto3.client('sns')
 
-def generate_build_succeeding_message(build_succeeding, tests):
-    if build_succeeding == "0":
-        return f":x: {", ".join(tests)} Failed!"
-    else:
-        return f":white_check_mark: {", ".join(tests)} Success!"
+def generate_build_succeeding_message(tests):
+    return f":x: {", ".join(tests)} Failed!"
 
 def generate_reports_messages(reports):
     links = ""
@@ -44,11 +41,20 @@ def lambda_handler(event, context):
 
     build_succeeding = data['build_succeeding']
 
-    reports = generate_reports_messages(data["reports"])
+    if build_succeeding == "1":
+        return
 
-    build_succeeding_message = generate_build_succeeding_message(build_succeeding, reports["names"])
+    tests = data['tests']
+    
+    reports_message = ""
+    
+    if "reports" in data:
+        reports = generate_reports_messages(data["reports"])
+        reports_message = f'\n Reports: {reports["links"]} \n :warning: Reports will be deleted on {in_week.strftime("%m/%d/%Y at %H:%M")}!'
+    
+    build_succeeding_message = generate_build_succeeding_message(tests)
 
-    description = f"{build_succeeding_message} \n Commit info: \n Author: {github_commit_author} \n Name: {github_commit_name} \n SHA: {github_commit_link} \n {codebuild_logs_link} \n Reports: {reports["links"]} \n :warning: Reports will be deleted on {in_week.strftime("%m/%d/%Y at %H:%M")}!"
+    description = f"{build_succeeding_message} \n Commit info: \n Author: {github_commit_author} \n Name: {github_commit_name} \n SHA: {github_commit_link} \n {codebuild_logs_link} {reports_message}"
 
     message_to_sns = {
         "version": "1.0",

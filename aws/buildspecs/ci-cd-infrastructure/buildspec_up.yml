@@ -24,7 +24,7 @@ phases:
 
 artifacts:
   files:
-    - '${CODEBUILD_SRC_DIR}/terraform/log/**/*'
+    - '**/*'
 
 cache:
   paths:

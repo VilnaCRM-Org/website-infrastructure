@@ -7,25 +7,29 @@ phases:
       python: $PYTHON_VERSION
 
     commands:
+      - 'apt update -y'
+      - 'apt install -y libxss1 libappindicator3-1 libindicator7 fonts-liberation libdbus-1-3'
+      - 'wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
+      - 'apt install -y ./google-chrome*.deb'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
       - 'cd /codebuild-user/website'
+      - 'npm install -g @lhci/cli@0.13.x'
 
   build:
     run-as: 'codebuild-user'
     commands:
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
-      - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
-      - 'export MUTATION_RUN=true && pnpm run test:mutation'
-      - 'mv /codebuild-user/website/reports/mutation/mutation.html /codebuild-user/website/reports/mutation/index.html'
-
+      - 'echo #### Test LightHouse Desktop'
+      - 'export LHCI_DESKTOP_RUN=true && lhci autorun --config=lighthouserc.desktop.js'
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
+      - 'cat payload.json'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
 
 artifacts:
   files:
-    - '/codebuild-user/website/reports/**/*'
+    - '/codebuild-user/website/lhci-reports-desktop/**/*'
 
 cache:
   paths:
