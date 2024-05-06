@@ -5,7 +5,6 @@ phases:
     runtime-versions:
       nodejs: $NODEJS_VERSION
       python: $PYTHON_VERSION
-
     commands:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
       - 'cd /codebuild-user/website'
