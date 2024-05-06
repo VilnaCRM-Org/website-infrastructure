@@ -1,26 +1,22 @@
 batch:
   fast-fail: false
   build-list:
-    - identifier: lighthouse-desktop
+    - identifier: lighthouseDesktop
       buildspec: './aws/buildspecs/website/buildspec_lighthouse_desktop.yml'
       ignore-failure: false
 
-    - identifier: lighthouse-mobile
+    - identifier: lighthouseMobile
       buildspec: './aws/buildspecs/website/buildspec_lighthouse_mobile.yml'
       ignore-failure: false
 
-    - identifier: playwright-e2e
+    - identifier: playwrightE2E
       buildspec: './aws/buildspecs/website/buildspec_playwright_e2e.yml'
       ignore-failure: false
 
-    - identifier: playwright-visual
+    - identifier: playwrightVisual
       buildspec: './aws/buildspecs/website/buildspec_playwright_visual.yml'
       ignore-failure: false
 
-    - identifier: memory-leak
-      buildspec: './aws/buildspecs/website/buildspec_memory_leak.yml'
-      ignore-failure: false
-
-    - identifier: load
+    - identifier: memoryLeak
       buildspec: './aws/buildspecs/website/buildspec_memory_leak.yml'
       ignore-failure: false
