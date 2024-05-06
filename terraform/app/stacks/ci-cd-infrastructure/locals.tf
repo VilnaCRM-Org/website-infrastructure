@@ -186,6 +186,20 @@ locals {
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
     })
+    batch_lhci_leak = merge(local.ubuntu_based_build,
+      { env_variables = {
+        "NODEJS_VERSION"                = var.nodejs_version,
+        "PYTHON_VERSION"                = var.python_version,
+        "WEBSITE_URL"                   = var.website_url,
+        "ENVIRONMENT"                   = var.environment,
+        "ACCOUNT_ID"                    = local.account_id
+        "SCRIPT_DIR"                    = var.script_dir,
+        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.name
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
+        "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
+        }
+    })
   }
 }
 
