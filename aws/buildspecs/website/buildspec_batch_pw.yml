@@ -8,3 +8,15 @@ batch:
     - identifier: playwrightVisual
       buildspec: './aws/buildspecs/website/buildspec_playwright_visual.yml'
       ignore-failure: false
+
+    - identifier: lighthouseDesktop
+      buildspec: './aws/buildspecs/website/buildspec_lighthouse_desktop.yml'
+      ignore-failure: false
+
+    - identifier: lighthouseMobile
+      buildspec: './aws/buildspecs/website/buildspec_lighthouse_mobile.yml'
+      ignore-failure: false
+
+    - identifier: memoryLeak
+      buildspec: './aws/buildspecs/website/buildspec_memory_leak.yml'
+      ignore-failure: false
