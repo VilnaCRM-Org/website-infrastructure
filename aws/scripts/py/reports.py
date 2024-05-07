@@ -3,6 +3,7 @@ import subprocess
 import glob
 import json
 
+
 def get_environment_variables():
     return {
         "region": os.environ['AWS_REGION'],
@@ -17,140 +18,117 @@ def get_environment_variables():
         "build_succeeding": os.environ['CODEBUILD_BUILD_SUCCEEDING']
     }
 
+
 def get_html_files(directory):
     html_files = glob.glob(directory + "/*.html")
     return [file.split("/")[-1] for file in html_files]
+
 
 def generate_codebuild_link(region, account_id, build_id):
     build_name = build_id.split(':')[0]
     return f"https://{region}.console.aws.amazon.com/codesuite/codebuild/{account_id}/projects/{build_name}/build/{build_id}?region={region}"
 
+
 def generate_git_commit_link(git_repository_link, git_repository_last_commit_sha):
     return f"{git_repository_link}/commit/{git_repository_last_commit_sha}"
+
 
 def generate_report(name, links):
     return {"name": name, "links": links}
 
+
 def generate_report_link(bucket_name, region, build_id, directory, file='.'):
     return f"http://{bucket_name}.s3-website.{region}.amazonaws.com/{build_id}/{directory}/{file}"
 
+
 def copy_to_s3(source_dir, bucket_name, build_id, destination_dir):
-    subprocess.run(['aws', 's3', 'cp', f'{source_dir}/.', f's3://{bucket_name}/{build_id}/{destination_dir}', '--recursive'])
+    subprocess.run(['aws', 's3', 'cp', f'{source_dir}/.',
+                   f's3://{bucket_name}/{build_id}/{destination_dir}', '--recursive'])
+
+
+def process_test(run, config, repository_dir, region, build_id):
+    test_name = config[0]
+    reports_dir = config[1]
+    bucket_name = config[2]
+
+    if run == "LHCI_DESKTOP_RUN" or run == "LHCI_MOBILE_RUN":
+        html_files = get_html_files(f"{repository_dir}/{reports_dir}")
+
+        links = []
+
+        for file in html_files:
+            links.append(generate_report_link(
+                bucket_name, region, build_id, reports_dir, file))
+
+        copy_to_s3(f"{repository_dir}/{reports_dir}",
+                   bucket_name, build_id, reports_dir)
+
+        return test_name, generate_report(test_name.rsplit(' ', 1)[0], links)
+
+    if run == "LINT_RUN" or run == "MEMORY_RUN":
+        return test_name, ""
+    else:
+        copy_to_s3(f"{repository_dir}/{reports_dir}",
+                   bucket_name, build_id, reports_dir)
+        return test_name, generate_report(test_name.rsplit(' ', 1)[0], [generate_report_link(bucket_name, region, build_id, reports_dir)])
+
+
+def compile_data(build_succeeding, codebuild_link, git_info, tests, reports):
+    data = {
+        "build_succeeding": build_succeeding,
+        "codebuild_link": codebuild_link,
+        "github": git_info,
+        "tests": tests
+    }
+
+    if len(reports) != 0 and reports[0] != "":
+        data["reports"] = reports
+
+    return data
+
+
+def write_to_file(data):
+    json_string = json.dumps(data)
+    open('payload.json', 'w').write(json_string)
 
 
 def main():
     env_variables = get_environment_variables()
 
-    region = env_variables["region"]
-    account_id = env_variables["account_id"]
-    build_id = env_variables["build_id"]
-    git_repository_last_commit_sha = env_variables["git_repository_last_commit_sha"]
-    git_repository_link = env_variables["git_repository_link"]
-    lhci_reports_bucket_name = env_variables["lhci_reports_bucket_name"]
-    test_reports_bucket_name = env_variables["test_reports_bucket_name"]
-    build_succeeding = env_variables["build_succeeding"]
+    git_info = {"gh_link": generate_git_commit_link(env_variables["git_repository_link"], env_variables["git_repository_last_commit_sha"]),
+                "sha": env_variables["git_repository_last_commit_sha"],
+                "author": env_variables["git_author"],
+                "name": env_variables["git_name"]
+                }
 
-    codebuild_link = generate_codebuild_link(region, account_id, build_id)
-    git_commit_link = generate_git_commit_link(git_repository_link, git_repository_last_commit_sha)
-
-    reports = []
     tests = []
+    reports = []
 
     repository_dir = "/codebuild-user/website"
 
-    if "LHCI_DESKTOP_RUN" in os.environ:
-        tests.append("Lighthouse Desktop Test")
+    test_configs = {"LHCI_DESKTOP_RUN": ("Lighthouse Desktop Test", "lhci-reports-desktop", env_variables["lhci_reports_bucket_name"]),
+                    "LHCI_MOBILE_RUN": ("Lighthouse Mobile Test", "lhci-reports-mobile", env_variables["lhci_reports_bucket_name"]),
+                    "PW_E2E_RUN": ("Playwright E2E Test", "playwright-e2e-reports", env_variables["test_reports_bucket_name"]),
+                    "PW_VISUAL_RUN": ("Playwright Visual Test", "playwright-visual-reports", env_variables["test_reports_bucket_name"]),
+                    "MUTATION_RUN": ("Mutation Test", "reports/mutation", env_variables["test_reports_bucket_name"]),
+                    "UNIT_RUN": ("Unit Test", "coverage/lcov-report", env_variables["test_reports_bucket_name"]),
+                    "MEMORY_LEAK_RUN": ("Memory Leak Test", "", ""),
+                    "LINT_RUN": ("Lint Test", "", "")}
 
-        reports_dir = "lhci-reports-desktop"
+    for key, config in test_configs.items():
+        if key in os.environ:
+            test_result, report = process_test(
+                key, config, repository_dir, env_variables["region"], env_variables["build_id"])
+            tests.append(test_result)
+            reports.append(report)
 
-        html_files = get_html_files(f"{repository_dir}/{reports_dir}")
+    data = compile_data(env_variables["build_succeeding"],
+                        generate_codebuild_link(
+                            env_variables["region"], env_variables["account_id"], env_variables["build_id"]),
+                        git_info, tests, reports)
 
-        links = []
+    write_to_file(data)
 
-        for file in html_files:
-            links.append(generate_report_link(lhci_reports_bucket_name, region, build_id, reports_dir, file))
-        
-        reports.append(generate_report("Lighthouse Desktop",links))
-
-        copy_to_s3(f"{repository_dir}/{reports_dir}", lhci_reports_bucket_name, build_id, reports_dir)
-
-    if "LHCI_MOBILE_RUN" in os.environ:
-        tests.append("Lighthouse Mobile Test"
-)
-        reports_dir = "lhci-reports-mobile"
-
-        html_files = get_html_files(f"{repository_dir}/{reports_dir}")
-
-        links = []
-
-        for file in html_files:
-            links.append(generate_report_link(lhci_reports_bucket_name, region, build_id, reports_dir, file))
-        
-        reports.append(generate_report("Lighthouse Mobile",links))
-
-        copy_to_s3(f"{repository_dir}/{reports_dir}", lhci_reports_bucket_name, build_id, reports_dir)
-
-
-    if "PW_E2E_RUN" in os.environ:
-        tests.append("Playwright E2E Test")
-
-        reports_dir = "playwright-e2e-reports"
-
-        reports.append(generate_report("Playwright E2E",[ generate_report_link(test_reports_bucket_name, region, build_id, reports_dir) ]))
-        
-        copy_to_s3(f"{repository_dir}/{reports_dir}", test_reports_bucket_name, build_id, reports_dir)
-
-    if "PW_VISUAL_RUN" in os.environ:
-        tests.append("Playwright Visual Test")
-
-        reports_dir = "playwright-visual-reports"
-
-        reports.append(generate_report("Playwright Visual", [ generate_report_link(test_reports_bucket_name, region, build_id, reports_dir) ]))
-        
-        copy_to_s3(f"{repository_dir}/{reports_dir}", test_reports_bucket_name, build_id, reports_dir)
-
-    if "MUTATION_RUN" in os.environ:
-        tests.append("Mutation Test")
-
-        reports_dir = "reports/mutation"
-
-        reports.append(generate_report("Mutation Test",[ generate_report_link(test_reports_bucket_name, region, build_id, reports_dir) ]))
-        
-        copy_to_s3(f"{repository_dir}/{reports_dir}", test_reports_bucket_name, build_id, reports_dir)
-
-    if "UNIT_RUN" in os.environ:
-        tests.append("Unit Test")
-
-        reports_dir = "coverage/lcov-report"
-
-        reports.append(generate_report("Unit Test",[ generate_report_link(test_reports_bucket_name, region, build_id, reports_dir) ]))
-        
-        copy_to_s3(f"{repository_dir}/{reports_dir}", test_reports_bucket_name, build_id, reports_dir)
-    
-    if "MEMORY_LEAK_RUN" in os.environ:
-        tests.append("Memory Leak Test")
-
-    if "LINT_RUN" in os.environ:
-        tests.append("Lint Test")
-
-    data = {
-        "build_succeeding" : build_succeeding,
-        "codebuild_link": codebuild_link,
-        "github": {
-            "gh_link": git_commit_link,
-            "sha": git_repository_last_commit_sha,
-            "author": env_variables["git_author"],
-            "name": env_variables["git_name"]
-        },
-        "tests" : tests
-    }
-
-    if len(reports) != 0:
-        data["reports"] = reports
-
-    json_string = json.dumps(data)
-
-    open('payload.json', 'w').write(json_string)
 
 if __name__ == "__main__":
     main()
