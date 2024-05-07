@@ -40,7 +40,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
   }
   source {
     type            = each.value.build_project_source
-    buildspec       = "./aws/buildspecs/${var.codepipeline_buildspecs}/buildspec_${each.key}.yml"
+    buildspec       = "./aws/buildspecs/${var.codepipeline_buildspecs}/${each.key}.yml"
     git_clone_depth = 1
   }
   build_batch_config {

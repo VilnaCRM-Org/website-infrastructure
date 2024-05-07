@@ -1,0 +1,10 @@
+batch:
+  fast-fail: false
+  build-list:
+    - identifier: playwrightE2E
+      buildspec: './aws/buildspecs/website/buildspec_playwright_e2e.yml'
+      ignore-failure: false
+
+    - identifier: playwrightVisual
+      buildspec: './aws/buildspecs/website/buildspec_playwright_visual.yml'
+      ignore-failure: false
