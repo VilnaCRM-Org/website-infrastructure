@@ -46,4 +46,24 @@ data "aws_iam_policy_document" "general_policy_doc" {
     ]
     resources = ["arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}/main/${var.region}/${var.environment}/stacks/ci-cd-infrastructure/terraform.tfstate"]
   }
+
+  statement {
+    sid    = "LogsPolicy"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogDelivery",
+      "logs:DescribeResourcePolicies",
+      "logs:ListTagsLogGroup",
+      "logs:GetLogEvents",
+      "logs:PutLogEvents",
+      "logs:PutRetentionPolicy",
+      "logs:PutResourcePolicy",
+      "logs:DeleteLogGroup",
+      "logs:DeleteLogDelivery"
+    ]
+    resources = [
+      "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:${var.ci_cd_website_project_name}-aws-reports-notification-group:*"
+    ]
+  }
 } 

@@ -124,7 +124,8 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "logs:DeleteLogDelivery"
     ]
     resources = [
-      "arn:aws:logs:us-east-1:${local.account_id}:log-group:aws-waf-logs-wafv2-web-acl:*"
+      "arn:aws:logs:us-east-1:${local.account_id}:log-group:aws-waf-logs-wafv2-web-acl:*",
+      "arn:aws:logs:${var.region}:${local.account_id}:log-group:${var.project_name}-aws-s3-lambda-notification-group:*"
     ]
   }
 } 

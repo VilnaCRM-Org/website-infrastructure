@@ -349,7 +349,7 @@ module "oidc_role" {
 
   project_name      = var.ci_cd_website_project_name
   source_repo_owner = var.source_repo_owner
-  source_repo_name  = var.source_repo_name
+  source_repo_name  = var.website_content_repo_name
 
   ci_cd_website_codepipeline_arn  = module.ci_cd_website_codepipeline.arn
   ci_cd_website_codepipeline_name = module.ci_cd_website_codepipeline.name
