@@ -24,6 +24,7 @@ module "s3_bucket" {
 
   lambda_python_version                 = var.lambda_python_version
   lambda_reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
+  cloudwatch_log_group_retention_days   = var.cloudwatch_log_group_retention_days
 
   s3_bucket_custom_name         = var.s3_bucket_custom_name
   s3_bucket_versioning          = var.s3_bucket_versioning

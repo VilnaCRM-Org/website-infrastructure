@@ -73,3 +73,8 @@ variable "stages" {
   description = "List of Map containing information about the stages of the CodePipeline"
   type        = list(map(any))
 }
+
+variable "cloudwatch_log_group_retention_days" {
+  description = "Retention time of Cloudwatch log group logs"
+  type        = number
+}

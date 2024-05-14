@@ -163,6 +163,11 @@ variable "s3_bucket_files_deletion_days" {
   type        = number
 }
 
+variable "cloudwatch_log_group_retention_days" {
+  description = "Retention time of Cloudwatch log group logs"
+  type        = number
+}
+
 variable "lambda_python_version" {
   description = "Python version for Lambda"
   type        = string
@@ -171,6 +176,11 @@ variable "lambda_python_version" {
 variable "lambda_reserved_concurrent_executions" {
   description = "Function-level concurrent execution Limit for Lambda"
   type        = number
+}
+
+variable "dynamodb_table_name" {
+  description = "Dynamodb Table Name for Logs"
+  type        = string
 }
 
 variable "create_slack_notification" {

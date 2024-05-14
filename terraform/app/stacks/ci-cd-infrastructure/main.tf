@@ -6,6 +6,18 @@ module "codestar_connection" {
   tags = var.tags
 }
 
+module "dynamodb_logging" {
+  source = "../../modules/aws/cloudwatch/dynamodb"
+
+  project_name = var.ci_cd_infra_project_name
+  region       = var.region
+
+  cloudwatch_log_group_retention_days = var.cloudwatch_log_group_retention_days
+  dynamodb_table_name                 = var.dynamodb_table_name
+
+  tags = var.tags
+}
+
 module "ci_cd_infra_policies" {
   source = "../../modules/aws/iam/policies/codepipeline"
 
@@ -329,6 +341,7 @@ module "ci_cd_website_codepipeline" {
 
   lambda_python_version                 = var.lambda_python_version
   lambda_reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
+  cloudwatch_log_group_retention_days   = var.cloudwatch_log_group_retention_days
 
   stages = var.ci_cd_website_stage_input
 

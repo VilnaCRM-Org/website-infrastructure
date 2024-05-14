@@ -105,6 +105,11 @@ variable "alias_zone_id" {
   description = "Zone ID for the record alias"
 }
 
+variable "cloudwatch_log_group_retention_days" {
+  description = "Retention time of Cloudwatch log group logs"
+  type        = number
+}
+
 variable "SLACK_WORKSPACE_ID" {
   description = "Slack Workspace ID for Notifications"
   type        = string

@@ -19,6 +19,8 @@ alias_zone_id = "Z2FDTNDATAQYW2"
 
 s3_bucket_files_deletion_days = 7
 
+cloudwatch_log_group_retention_days = 7
+
 lambda_python_version                 = "python3.12"
 lambda_reserved_concurrent_executions = -1
 create_slack_notification             = true

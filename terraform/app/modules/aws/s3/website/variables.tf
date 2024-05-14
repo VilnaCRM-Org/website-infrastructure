@@ -70,6 +70,11 @@ variable "lambda_reserved_concurrent_executions" {
   type        = number
 }
 
+variable "cloudwatch_log_group_retention_days" {
+  description = "Retention time of Cloudwatch log group logs"
+  type        = number
+}
+
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)
