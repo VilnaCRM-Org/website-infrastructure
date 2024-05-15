@@ -55,9 +55,9 @@ variable "cloudfront_default_root_object" {
   description = "Default root object for cloudfront. Need to also provide custom error response if changing from default"
 }
 
-variable "s3_bucket_files_deletion_days" {
+variable "s3_logs_lifecycle_configuration" {
   description = "Expiring time of files in buckets for lifecycle configuration rule"
-  type        = number
+  type        = map(number)
 }
 
 variable "s3_bucket_custom_name" {

@@ -13,7 +13,7 @@ variable "environment" {
   type        = string
 }
 
-variable "s3_bucket_files_deletion_days" {
+variable "s3_artifacts_bucket_files_deletion_days" {
   description = "Expiring time of files in buckets for lifecycle configuration rule"
   type        = number
 }

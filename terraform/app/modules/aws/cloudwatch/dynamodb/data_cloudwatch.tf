@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "cloudwatch_kms_key_policy_doc" {
       test     = "ArnLike"
       variable = "kms:EncryptionContext:aws:logs:arn"
       values = [
-        "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:${var.project_name}-aws-dynamodb-terraform-group"
+        "arn:aws:logs:${var.region}:${local.account_id}:log-group:${var.project_name}-aws-dynamodb-terraform-group"
       ]
     }
   }
@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "cloudwatch_kms_key_policy_doc" {
       test     = "ArnLike"
       variable = "kms:EncryptionContext:aws:logs:arn"
       values = [
-        "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:${var.project_name}-aws-dynamodb-terraform-group"
+        "arn:aws:logs:${var.region}:${local.account_id}:log-group:${var.project_name}-aws-dynamodb-terraform-group"
       ]
     }
   }

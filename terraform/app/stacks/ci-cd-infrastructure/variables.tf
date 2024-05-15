@@ -158,9 +158,14 @@ variable "script_dir" {
   type        = string
 }
 
-variable "s3_bucket_files_deletion_days" {
+variable "s3_artifacts_bucket_files_deletion_days" {
   description = "Expiring time of files in buckets for lifecycle configuration rule"
   type        = number
+}
+
+variable "s3_logs_lifecycle_configuration" {
+  description = "Expiring time of files in buckets for lifecycle configuration rule"
+  type        = map(number)
 }
 
 variable "cloudwatch_log_group_retention_days" {

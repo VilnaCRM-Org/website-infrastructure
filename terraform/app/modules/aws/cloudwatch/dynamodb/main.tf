@@ -9,7 +9,7 @@ resource "aws_cloudwatch_log_group" "dynamodb_terraform_group" {
 
 resource "aws_cloudtrail" "dynamodb_cloudtrail" {
   name                          = "${var.project_name}-dynamodb-cloudtrail"
-  s3_bucket_name                = aws_s3_bucket.cloudtrail_bucket.id
+  s3_bucket_name                = var.logging_bucket_id
   s3_key_prefix                 = "dynamodb-cloudtrail"
   include_global_service_events = false
   advanced_event_selector {
@@ -43,7 +43,7 @@ resource "aws_cloudtrail" "dynamodb_cloudtrail" {
   }
 
   cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.dynamodb_terraform_group.arn}:*" # CloudTrail requires the Log Stream wildcard
-  cloud_watch_logs_role_arn = aws_iam_role.iam_for_cloudtrail.arn
+  cloud_watch_logs_role_arn  = aws_iam_role.iam_for_cloudtrail.arn
 
-  depends_on = [aws_s3_bucket_policy.cloudtrail_bucket_policy, aws_iam_role_policy_attachment.cloudtrail_allow_logging_policy_attachment]
+  depends_on = [aws_iam_role_policy_attachment.cloudtrail_allow_logging_policy_attachment]
 }

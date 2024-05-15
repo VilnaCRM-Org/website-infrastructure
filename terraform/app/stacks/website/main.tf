@@ -7,7 +7,7 @@ module "logging_s3_bucket" {
   aws_cloudfront_distribution_arn = module.cloudfront.arn
   aws_s3_bucket_this_arn          = module.s3_bucket.arn
 
-  s3_bucket_files_deletion_days = var.s3_bucket_files_deletion_days
+  s3_logs_lifecycle_configuration = var.s3_logs_lifecycle_configuration
 
   tags = var.tags
 }

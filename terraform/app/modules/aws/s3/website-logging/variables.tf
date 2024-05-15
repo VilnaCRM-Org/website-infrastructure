@@ -18,11 +18,10 @@ variable "aws_s3_bucket_this_arn" {
   description = "S3 Logging Bucket ARN"
 }
 
-variable "s3_bucket_files_deletion_days" {
+variable "s3_logs_lifecycle_configuration" {
   description = "Expiring time of files in buckets for lifecycle configuration rule"
-  type        = number
+  type        = map(number)
 }
-
 
 variable "tags" {
   description = "Tags to be associated with the S3 bucket"

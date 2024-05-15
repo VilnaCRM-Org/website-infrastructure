@@ -13,6 +13,11 @@ variable "dynamodb_table_name" {
   type        = string
 }
 
+variable "logging_bucket_id" {
+  description = "Dynamodb Table Name for Logs"
+  type        = string
+}
+
 variable "cloudwatch_log_group_retention_days" {
   description = "Retention time of Cloudwatch log group logs"
   type        = number

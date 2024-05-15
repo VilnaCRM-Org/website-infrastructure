@@ -14,9 +14,16 @@ dynamodb_table_name                   = "terraform_locks"
 lambda_python_version                 = "python3.12"
 lambda_reserved_concurrent_executions = -1
 
-s3_bucket_files_deletion_days = 7
+s3_artifacts_bucket_files_deletion_days = 7
 
 cloudwatch_log_group_retention_days = 7
+
+s3_logs_lifecycle_configuration = {
+    standard_ia_transition_days = 30
+    glacier_transition_days = 60
+    deep_archive_transition_days = 150
+    deletion_days = 365
+}
 
 default_build_project_source                = "CODEPIPELINE"
 default_builder_compute_type                = "BUILD_GENERAL1_SMALL"
