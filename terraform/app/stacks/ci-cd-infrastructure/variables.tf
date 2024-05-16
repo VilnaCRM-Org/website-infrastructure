@@ -99,53 +99,14 @@ variable "ci_cd_website_stage_input" {
   type        = list(map(string))
 }
 
-variable "ubuntu_builder_image" {
-  description = "Docker Image to be used by CodeBuild"
-  type        = string
+variable "codebuild_environment" {
+  description = "Settings for the CodeBuild"
+  type        = map(string)
 }
 
-variable "amazonlinux2_builder_image" {
-  description = "Docker Image to be used by CodeBuild"
-  type        = string
-}
-
-variable "default_builder_compute_type" {
-  description = "Relative path to the Apply and Destroy build spec file"
-  type        = string
-}
-
-variable "default_builder_type" {
-  description = "Type of codebuild run environment"
-  type        = string
-}
-
-variable "default_builder_image_pull_credentials_type" {
-  description = "Image pull credentials type used by codebuild project"
-  type        = string
-}
-
-variable "default_build_project_source" {
-  description = "Source for build project"
-  type        = string
-}
-
-variable "ruby_version" {
-  description = "Ruby Version to be used in CodeBuild stages"
-  type        = string
-}
-
-variable "python_version" {
-  description = "Python Version to be used in CodeBuild stages"
-  type        = string
-}
-
-variable "golang_version" {
-  description = "Golang Version to be used in CodeBuild stages"
-  type        = string
-}
-variable "nodejs_version" {
-  description = "Node.js Version to be used in CodeBuild stages"
-  type        = string
+variable "runtime_versions" {
+  description = "Runtime Versions to be used in CodeBuild stages"
+  type        = map(string)
 }
 
 variable "bucket_name" {

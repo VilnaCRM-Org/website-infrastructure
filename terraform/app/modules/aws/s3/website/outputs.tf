@@ -5,11 +5,16 @@ output "bucket_regional_domain_name" {
 
 output "replication_bucket_regional_domain_name" {
   value       = aws_s3_bucket.replication_bucket.bucket_regional_domain_name
-  description = "S3 Bucket Regional Domain Name"
+  description = "Replication S3 Bucket Regional Domain Name"
 }
 
 output "arn" {
   value       = aws_s3_bucket.this.arn
+  description = "S3 Bucket ARN"
+}
+
+output "replication_arn" {
+  value       = aws_s3_bucket.replication_bucket.arn
   description = "S3 Bucket Regional Domain Name"
 }
 

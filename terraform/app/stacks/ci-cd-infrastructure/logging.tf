@@ -10,6 +10,7 @@ module "infrastructure_logging_bucket" {
 }
 
 module "dynamodb_logging" {
+
   source = "../../modules/aws/cloudwatch/dynamodb"
 
   project_name = var.ci_cd_infra_project_name

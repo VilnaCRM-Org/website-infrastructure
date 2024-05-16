@@ -6,6 +6,7 @@ module "logging_s3_bucket" {
 
   aws_cloudfront_distribution_arn = module.cloudfront.arn
   aws_s3_bucket_this_arn          = module.s3_bucket.arn
+  aws_replication_s3_bucket_arn   = module.s3_bucket.replication_arn
 
   s3_logs_lifecycle_configuration = var.s3_logs_lifecycle_configuration
 
@@ -31,7 +32,8 @@ module "s3_bucket" {
   s3_bucket_public_access_block = var.s3_bucket_public_access_block
   deploy_sample_content         = var.deploy_sample_content
 
-  s3_logging_bucket_id = module.logging_s3_bucket.id
+  s3_logging_bucket_id             = module.logging_s3_bucket.id
+  replication_s3_logging_bucket_id = module.logging_s3_bucket.replication_id
 
   aws_cloudfront_distribution_arn = module.cloudfront.arn
 

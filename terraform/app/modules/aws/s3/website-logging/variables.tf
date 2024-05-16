@@ -15,7 +15,12 @@ variable "aws_cloudfront_distribution_arn" {
 
 variable "aws_s3_bucket_this_arn" {
   type        = string
-  description = "S3 Logging Bucket ARN"
+  description = "S3 Bucket ARN of Website"
+}
+
+variable "aws_replication_s3_bucket_arn" {
+  type        = string
+  description = "Replication S3 Bucket ARN of Website"
 }
 
 variable "s3_logs_lifecycle_configuration" {

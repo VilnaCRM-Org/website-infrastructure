@@ -28,6 +28,14 @@ resource "aws_s3_bucket_versioning" "replication_versioning" {
   }
 }
 
+resource "aws_s3_bucket_logging" "replication_bucket_logging" {
+  provider = aws.eu-west-1
+  bucket   = aws_s3_bucket.replication_bucket.id
+
+  target_bucket = var.replication_s3_logging_bucket_id
+  target_prefix = "s3-logs/"
+}
+
 resource "aws_iam_role" "replication" {
   name               = "${var.s3_bucket_custom_name}-iam-role-replication"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
@@ -61,3 +69,4 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
     }
   }
 }
+

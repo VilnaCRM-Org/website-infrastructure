@@ -8,6 +8,11 @@ variable "s3_logging_bucket_id" {
   description = "ID of the logging bucket"
 }
 
+variable "replication_s3_logging_bucket_id" {
+  type        = string
+  description = "ID of the logging bucket for the replication"
+}
+
 variable "path_to_site_content" {
   type        = string
   description = "ID of the logging bucket"

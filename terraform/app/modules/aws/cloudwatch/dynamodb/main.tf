@@ -8,10 +8,16 @@ resource "aws_cloudwatch_log_group" "dynamodb_terraform_group" {
 }
 
 resource "aws_cloudtrail" "dynamodb_cloudtrail" {
+  #checkov:skip=CKV_AWS_67: All Regions is not needed, only for DynamoDB
+  #checkov:skip=CKV_AWS_252: SNS is not needed here
+  #ts:skip=AC_AWS_0448 All Regions is not needed, only for DynamoDB
   name                          = "${var.project_name}-dynamodb-cloudtrail"
   s3_bucket_name                = var.logging_bucket_id
   s3_key_prefix                 = "dynamodb-cloudtrail"
   include_global_service_events = false
+
+  enable_log_file_validation = true
+
   advanced_event_selector {
     name = "Log all DynamoDB Item actions for a terraform-locks DynamoDB table"
 
@@ -41,6 +47,8 @@ resource "aws_cloudtrail" "dynamodb_cloudtrail" {
       ]
     }
   }
+
+  kms_key_id = aws_kms_key.cloudtrail_encryption_key.arn
 
   cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.dynamodb_terraform_group.arn}:*" # CloudTrail requires the Log Stream wildcard
   cloud_watch_logs_role_arn  = aws_iam_role.iam_for_cloudtrail.arn
