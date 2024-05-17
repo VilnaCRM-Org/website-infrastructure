@@ -19,10 +19,10 @@ cloudwatch_log_group_retention_days = 7
 create_slack_notification = true
 
 runtime_versions = {
-  ruby_version   = "3.2"
-  python_version = "3.12"
-  nodejs_version = "20"
-  golang_version = "1.21"
+  ruby   = "3.2"
+  python = "3.12"
+  nodejs = "20"
+  golang = "1.21"
 }
 
 s3_logs_lifecycle_configuration = {

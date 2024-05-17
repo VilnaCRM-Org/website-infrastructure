@@ -29,8 +29,8 @@ locals {
         "TF_VAR_ALERTS_SLACK_CHANNEL_ID" = var.ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                         = var.environment,
         "AWS_DEFAULT_REGION"             = var.region,
-        "PYTHON_VERSION"                 = var.runtime_versions.python_version,
-        "RUBY_VERSION"                   = var.runtime_versions.ruby_version,
+        "PYTHON_VERSION"                 = var.runtime_versions.python,
+        "RUBY_VERSION"                   = var.runtime_versions.ruby,
         "GOLANG_VERSION"                 = var.runtime_versions.golang_version
         "SCRIPT_DIR"                     = var.script_dir,
         }
@@ -43,8 +43,8 @@ locals {
         "TF_VAR_ALERTS_SLACK_CHANNEL_ID" = var.ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                         = var.environment,
         "AWS_DEFAULT_REGION"             = var.region,
-        "PYTHON_VERSION"                 = var.runtime_versions.python_version,
-        "RUBY_VERSION"                   = var.runtime_versions.ruby_version,
+        "PYTHON_VERSION"                 = var.runtime_versions.python,
+        "RUBY_VERSION"                   = var.runtime_versions.ruby,
         "SCRIPT_DIR"                     = var.script_dir,
         }
     })
@@ -56,15 +56,15 @@ locals {
         "TF_VAR_ALERTS_SLACK_CHANNEL_ID" = var.ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                         = var.environment,
         "AWS_DEFAULT_REGION"             = var.region,
-        "PYTHON_VERSION"                 = var.runtime_versions.python_version,
-        "RUBY_VERSION"                   = var.runtime_versions.ruby_version,
+        "PYTHON_VERSION"                 = var.runtime_versions.python,
+        "RUBY_VERSION"                   = var.runtime_versions.ruby,
         "SCRIPT_DIR"                     = var.script_dir,
         }
     })
 
     deploy = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION"                = var.runtime_versions.nodejs_version,
+        "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "BUCKET_NAME"                   = var.bucket_name,
         "SCRIPT_DIR"                    = var.script_dir,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
@@ -85,8 +85,8 @@ locals {
         "TF_VAR_ALERTS_SLACK_CHANNEL_ID" = var.ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                         = var.environment,
         "AWS_DEFAULT_REGION"             = var.region,
-        "PYTHON_VERSION"                 = var.runtime_versions.python_version,
-        "RUBY_VERSION"                   = var.runtime_versions.ruby_version,
+        "PYTHON_VERSION"                 = var.runtime_versions.python,
+        "RUBY_VERSION"                   = var.runtime_versions.ruby,
         "SCRIPT_DIR"                     = var.script_dir,
         }
     })
@@ -102,9 +102,9 @@ locals {
         "TF_VAR_ALERTS_SLACK_CHANNEL_ID"       = var.ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
-        "PYTHON_VERSION"                       = var.runtime_versions.python_version,
+        "PYTHON_VERSION"                       = var.runtime_versions.python,
         "GOLANG_VERSION"                       = var.runtime_versions.golang_version
-        "RUBY_VERSION"                         = var.runtime_versions.ruby_version,
+        "RUBY_VERSION"                         = var.runtime_versions.ruby,
         "SCRIPT_DIR"                           = var.script_dir,
         }
     })
@@ -118,8 +118,8 @@ locals {
         "TF_VAR_ALERTS_SLACK_CHANNEL_ID"       = var.ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
-        "PYTHON_VERSION"                       = var.runtime_versions.python_version,
-        "RUBY_VERSION"                         = var.runtime_versions.ruby_version,
+        "PYTHON_VERSION"                       = var.runtime_versions.python,
+        "RUBY_VERSION"                         = var.runtime_versions.ruby,
         "SCRIPT_DIR"                           = var.script_dir,
         }
     })
@@ -132,8 +132,8 @@ locals {
         "TF_VAR_ALERTS_SLACK_CHANNEL_ID" = var.ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                         = var.environment,
         "AWS_DEFAULT_REGION"             = var.region,
-        "PYTHON_VERSION"                 = var.runtime_versions.python_version,
-        "RUBY_VERSION"                   = var.runtime_versions.ruby_version,
+        "PYTHON_VERSION"                 = var.runtime_versions.python,
+        "RUBY_VERSION"                   = var.runtime_versions.ruby,
         "SCRIPT_DIR"                     = var.script_dir,
         }
     })
@@ -143,8 +143,8 @@ locals {
 
     batch_unit_mutation_lint = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION"                = var.runtime_versions.nodejs_version,
-        "PYTHON_VERSION"                = var.runtime_versions.python_version,
+        "NODEJS_VERSION"                = var.runtime_versions.nodejs,
+        "PYTHON_VERSION"                = var.runtime_versions.python,
         "PW_TEST_HTML_REPORT_OPEN"      = "never",
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
@@ -157,7 +157,7 @@ locals {
     })
     deploy = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION"                = var.runtime_versions.nodejs_version,
+        "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "BUCKET_NAME"                   = var.bucket_name
         "SCRIPT_DIR"                    = var.script_dir,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
@@ -173,8 +173,8 @@ locals {
 
     batch_pw = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION"                = var.runtime_versions.nodejs_version,
-        "PYTHON_VERSION"                = var.runtime_versions.python_version,
+        "NODEJS_VERSION"                = var.runtime_versions.nodejs,
+        "PYTHON_VERSION"                = var.runtime_versions.python,
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
         "ACCOUNT_ID"                    = local.account_id
@@ -188,8 +188,8 @@ locals {
     })
     batch_lhci_leak = merge(local.ubuntu_based_build,
       { env_variables = {
-        "NODEJS_VERSION"                = var.runtime_versions.nodejs_version,
-        "PYTHON_VERSION"                = var.runtime_versions.python_version,
+        "NODEJS_VERSION"                = var.runtime_versions.nodejs,
+        "PYTHON_VERSION"                = var.runtime_versions.python,
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
         "ACCOUNT_ID"                    = local.account_id
