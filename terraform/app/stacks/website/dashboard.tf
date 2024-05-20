@@ -7,5 +7,6 @@ module "website_dashboard" {
 
   web_acl_name       = module.cloudfront.waf_web_acl_name
   waf_log_group_name = module.cloudfront.waf_log_group_name
+
   depends_on = [module.cloudfront]
 }

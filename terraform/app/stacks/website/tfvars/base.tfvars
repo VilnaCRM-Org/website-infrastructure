@@ -24,6 +24,16 @@ s3_logs_lifecycle_configuration = {
   deletion_days                = 365
 }
 
+canary_configuration = {
+  runtime_version          = "syn-python-selenium-3.0"
+  frequency                = 5
+  take_screenshot          = false
+  success_retention_period = 2
+  failure_retention_period = 14
+}
+
+s3_artifacts_bucket_files_deletion_days = 7
+
 cloudwatch_log_group_retention_days = 7
 
 lambda_python_version                 = "python3.12"

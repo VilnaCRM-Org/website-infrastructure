@@ -55,6 +55,11 @@ variable "cloudfront_default_root_object" {
   description = "Default root object for cloudfront. Need to also provide custom error response if changing from default"
 }
 
+variable "s3_artifacts_bucket_files_deletion_days" {
+  description = "Expiring time of files in buckets for lifecycle configuration rule"
+  type        = number
+}
+
 variable "s3_logs_lifecycle_configuration" {
   description = "Expiring time of files in buckets for lifecycle configuration rule"
   type        = map(number)
@@ -68,6 +73,11 @@ variable "s3_bucket_custom_name" {
 variable "s3_bucket_versioning" {
   type        = bool
   description = "Apply versioning to S3 bucket?"
+}
+
+variable "canary_configuration" {
+  type        = map(any)
+  description = "Apply public access block to S3 bucket?"
 }
 
 variable "s3_bucket_public_access_block" {
