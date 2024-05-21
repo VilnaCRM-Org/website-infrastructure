@@ -5,7 +5,7 @@ resource "aws_cloudfront_response_headers_policy" "response_headers" {
 
   security_headers_config {
     strict_transport_security {
-      access_control_max_age_sec = var.cloudfront_access_control_max_age_sec
+      access_control_max_age_sec = var.cloudfront_configuration.access_control_max_age_sec
       include_subdomains         = true
       override                   = true
       preload                    = true

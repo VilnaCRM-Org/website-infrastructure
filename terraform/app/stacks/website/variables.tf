@@ -18,26 +18,6 @@ variable "domain_name" {
   description = "Domain name for website, used for all resources"
 }
 
-variable "cloudfront_price_class" {
-  type        = string
-  description = "CloudFront distribution price class"
-}
-variable "cloudfront_min_ttl" {
-  type        = number
-  description = "The minimum TTL for the cloudfront cache"
-}
-
-variable "cloudfront_default_ttl" {
-  type        = number
-  description = "The default TTL for the cloudfront cache"
-}
-
-variable "cloudfront_max_ttl" {
-  type        = number
-  default     = 31536000
-  description = "The maximum TTL for the cloudfront cache"
-}
-
 variable "cloudfront_minimum_protocol_version" {
   type        = string
   description = "The minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections."
@@ -77,7 +57,12 @@ variable "s3_bucket_versioning" {
 
 variable "canary_configuration" {
   type        = map(any)
-  description = "Apply public access block to S3 bucket?"
+  description = "Canary Configuration"
+}
+
+variable "cloudfront_configuration" {
+  type        = map(any)
+  description = "CloudFront Configuration"
 }
 
 variable "s3_bucket_public_access_block" {
@@ -95,10 +80,6 @@ variable "cloudfront_custom_error_responses" {
   description = "See https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GeneratingCustomErrorResponses.html"
 }
 
-variable "cloudfront_access_control_max_age_sec" {
-  type        = number
-  description = "Value of Policy Access Control Max Age Sec"
-}
 
 variable "ttl_validation" {
   type        = number

@@ -15,11 +15,8 @@ module "cloudfront" {
   cloudfront_default_root_object        = var.cloudfront_default_root_object
   cloudfront_minimum_protocol_version   = var.cloudfront_minimum_protocol_version
   cloudfront_custom_error_responses     = var.cloudfront_custom_error_responses
-  cloudfront_price_class                = var.cloudfront_price_class
-  cloudfront_min_ttl                    = var.cloudfront_min_ttl
-  cloudfront_default_ttl                = var.cloudfront_default_ttl
-  cloudfront_max_ttl                    = var.cloudfront_max_ttl
-  cloudfront_access_control_max_age_sec = var.cloudfront_access_control_max_age_sec
+
+  cloudfront_configuration = var.cloudfront_configuration
 
   tags = var.tags
 }

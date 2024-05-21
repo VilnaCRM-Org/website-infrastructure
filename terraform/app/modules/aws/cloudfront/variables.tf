@@ -38,24 +38,9 @@ variable "aws_acm_certificate_arn" {
   description = "ARN of ACM Certificate"
 }
 
-variable "cloudfront_price_class" {
-  type        = string
-  description = "CloudFront distribution price class"
-}
-variable "cloudfront_min_ttl" {
-  type        = number
-  description = "The minimum TTL for the cloudfront cache"
-}
-
-variable "cloudfront_default_ttl" {
-  type        = number
-  description = "The default TTL for the cloudfront cache"
-}
-
-variable "cloudfront_max_ttl" {
-  type        = number
-  default     = 31536000
-  description = "The maximum TTL for the cloudfront cache"
+variable "cloudfront_configuration" {
+  type        = map(any)
+  description = "CloudFront Configuration"
 }
 
 variable "cloudfront_minimum_protocol_version" {
@@ -78,9 +63,4 @@ variable "cloudfront_custom_error_responses" {
     response_page_path    = string
   }))
   description = "See https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GeneratingCustomErrorResponses.html"
-}
-
-variable "cloudfront_access_control_max_age_sec" {
-  type        = number
-  description = "Value of Policy Access Control Max Age Sec"
 }

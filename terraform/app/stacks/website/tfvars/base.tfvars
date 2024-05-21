@@ -26,7 +26,7 @@ s3_logs_lifecycle_configuration = {
 
 canary_configuration = {
   runtime_version          = "syn-python-selenium-3.0"
-  frequency                = 5
+  frequency                = 480
   take_screenshot          = false
   success_retention_period = 2
   failure_retention_period = 14

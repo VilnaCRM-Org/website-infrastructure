@@ -12,7 +12,7 @@ resource "aws_synthetics_canary" "canary_api_calls" {
   failure_retention_period = var.canary_configuration.failure_retention_period
 
   schedule {
-    expression          = "rate(${var.canary_configuration.frequency} minutes)"
+    expression          = "cron(0 */8 * * ? *)"
     duration_in_seconds = 0
   }
 
