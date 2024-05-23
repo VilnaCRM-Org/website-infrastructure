@@ -37,6 +37,10 @@ def generate_report(name, links):
     return {"name": name, "links": links}
 
 
+def does_reports_exists(path):
+    return os.path.exists(path)
+
+
 def generate_report_link(bucket_name, region, build_id, directory, file='.'):
     return f"http://{bucket_name}.s3-website.{region}.amazonaws.com/{build_id}/{directory}/{file}"
 
@@ -51,26 +55,28 @@ def process_test(run, config, repository_dir, region, build_id):
     reports_dir = config[1]
     bucket_name = config[2]
 
-    if run == "LHCI_DESKTOP_RUN" or run == "LHCI_MOBILE_RUN":
-        html_files = get_html_files(f"{repository_dir}/{reports_dir}")
+    if does_reports_exists(f"{repository_dir}/{reports_dir}"):
+        if run == "LHCI_DESKTOP_RUN" or run == "LHCI_MOBILE_RUN":
+            html_files = get_html_files(f"{repository_dir}/{reports_dir}")
 
-        links = []
+            links = []
 
-        for file in html_files:
-            links.append(generate_report_link(
-                bucket_name, region, build_id, reports_dir, file))
+            for file in html_files:
+                links.append(generate_report_link(
+                    bucket_name, region, build_id, reports_dir, file))
 
-        copy_to_s3(f"{repository_dir}/{reports_dir}",
-                   bucket_name, build_id, reports_dir)
+            copy_to_s3(f"{repository_dir}/{reports_dir}",
+                       bucket_name, build_id, reports_dir)
 
-        return test_name, generate_report(test_name.rsplit(' ', 1)[0], links)
+            return test_name, generate_report(test_name.rsplit(' ', 1)[0], links)
 
-    if run == "LINT_RUN" or run == "MEMORY_RUN":
-        return test_name, ""
-    else:
-        copy_to_s3(f"{repository_dir}/{reports_dir}",
-                   bucket_name, build_id, reports_dir)
-        return test_name, generate_report(test_name.rsplit(' ', 1)[0], [generate_report_link(bucket_name, region, build_id, reports_dir)])
+        if run == "LINT_RUN" or run == "MEMORY_RUN":
+            return test_name, ""
+        else:
+            copy_to_s3(f"{repository_dir}/{reports_dir}",
+                       bucket_name, build_id, reports_dir)
+            return test_name, generate_report(test_name.rsplit(' ', 1)[0], [generate_report_link(bucket_name, region, build_id, reports_dir)])
+    return test_name, ""
 
 
 def compile_data(build_succeeding, codebuild_link, git_info, tests, reports):

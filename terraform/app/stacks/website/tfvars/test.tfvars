@@ -4,11 +4,11 @@ tags = {
   Project     = "website"
   Environment = "test"
 }
-domain_name                           = "vilnacrmtest.com"
-s3_bucket_custom_name                 = "vilnacrmtest.com"
-s3_bucket_versioning                  = true
-s3_bucket_public_access_block         = true
-deploy_sample_content                 = true
+domain_name                   = "vilnacrmtest.com"
+s3_bucket_custom_name         = "vilnacrmtest.com"
+s3_bucket_versioning          = true
+s3_bucket_public_access_block = true
+deploy_sample_content         = true
 
 cloudfront_configuration = {
   price_class                = "PriceClass_100"
@@ -18,5 +18,5 @@ cloudfront_configuration = {
   access_control_max_age_sec = 31536000
 }
 
-ttl_validation                        = 60
-ttl_route53_record                    = "300"
+ttl_validation     = 60
+ttl_route53_record = "300"
