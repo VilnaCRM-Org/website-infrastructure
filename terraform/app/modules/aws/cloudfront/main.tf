@@ -62,13 +62,7 @@ resource "aws_cloudfront_distribution" "this" {
 
     target_origin_id = "${var.project_name}-groupS3"
 
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
+    cache_policy_id = aws_cloudfront_cache_policy.cloudfront_cache_policy.id
 
     viewer_protocol_policy = "redirect-to-https"
 
@@ -78,6 +72,7 @@ resource "aws_cloudfront_distribution" "this" {
     max_ttl     = var.cloudfront_configuration.max_ttl
 
     compress = true
+
   }
 
   price_class = var.cloudfront_configuration.price_class
