@@ -33,8 +33,7 @@ resource "aws_cloudwatch_metric_alarm" "s3_objects_anomaly_detection" {
       unit        = "Count"
 
       dimensions = {
-        BucketName  = aws_s3_bucket.this.id
-        StorageType = "StandardStorage"
+        BucketName = aws_s3_bucket.this.id
       }
     }
   }
@@ -66,8 +65,8 @@ resource "aws_cloudwatch_metric_alarm" "s3_requests_anomaly_detection" {
       unit        = "Count"
 
       dimensions = {
-        BucketName  = aws_s3_bucket.this.id
-        StorageType = "StandardStorage"
+        BucketName = aws_s3_bucket.this.id
+        FilterId   = "AllObjects"
       }
     }
   }
@@ -99,8 +98,137 @@ resource "aws_cloudwatch_metric_alarm" "s3_4xx_errors_anomaly_detection" {
       unit        = "Count"
 
       dimensions = {
-        BucketName  = aws_s3_bucket.this.id
-        StorageType = "StandardStorage"
+        BucketName = aws_s3_bucket.this.id
+        FilterId   = "AllObjects"
+      }
+    }
+  }
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "lambda_invocations_anomaly_detection" {
+  alarm_name          = "${var.project_name}-lambda-s3-invocations-anomaly-detection"
+  comparison_operator = "GreaterThanUpperThreshold"
+  evaluation_periods  = 1
+  threshold_metric_id = "e1"
+  alarm_description   = "This metric monitors Anomaly Lambda Invocations"
+  alarm_actions       = [aws_sns_topic.bucket_notifications.arn]
+
+  metric_query {
+    id          = "e1"
+    expression  = "ANOMALY_DETECTION_BAND(m1)"
+    label       = "Invocations (Expected)"
+    return_data = "true"
+  }
+
+  metric_query {
+    id          = "m1"
+    return_data = "true"
+    metric {
+      metric_name = "Invocations"
+      namespace   = "AWS/Lambda"
+      period      = 60
+      stat        = "Sum"
+      unit        = "Count"
+
+      dimensions = {
+        FunctionName = local.lambda_s3_notifications_function_name
+      }
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "lambda_errors_anomaly_detection" {
+  alarm_name          = "${var.project_name}-lambda-s3-errors-anomaly-detection"
+  comparison_operator = "GreaterThanUpperThreshold"
+  evaluation_periods  = 1
+  threshold_metric_id = "e1"
+  alarm_description   = "This metric monitors Anomaly Lambda Errors"
+  alarm_actions       = [aws_sns_topic.bucket_notifications.arn]
+
+  metric_query {
+    id          = "e1"
+    expression  = "ANOMALY_DETECTION_BAND(m1)"
+    label       = "Errors (Expected)"
+    return_data = "true"
+  }
+
+  metric_query {
+    id          = "m1"
+    return_data = "true"
+    metric {
+      metric_name = "Errors"
+      namespace   = "AWS/Lambda"
+      period      = 60
+      stat        = "Sum"
+      unit        = "Count"
+
+      dimensions = {
+        FunctionName = local.lambda_s3_notifications_function_name
+      }
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "lambda_throttles_anomaly_detection" {
+  alarm_name          = "${var.project_name}-lambda-s3-throttles-anomaly-detection"
+  comparison_operator = "GreaterThanUpperThreshold"
+  evaluation_periods  = 1
+  threshold_metric_id = "e1"
+  alarm_description   = "This metric monitors Anomaly Lambda Throttles"
+  alarm_actions       = [aws_sns_topic.bucket_notifications.arn]
+
+  metric_query {
+    id          = "e1"
+    expression  = "ANOMALY_DETECTION_BAND(m1)"
+    label       = "Throttles (Expected)"
+    return_data = "true"
+  }
+
+  metric_query {
+    id          = "m1"
+    return_data = "true"
+    metric {
+      metric_name = "Throttles"
+      namespace   = "AWS/Lambda"
+      period      = 60
+      stat        = "Sum"
+      unit        = "Count"
+
+      dimensions = {
+        FunctionName = local.lambda_s3_notifications_function_name
+      }
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "lambda_duration_anomaly_detection" {
+  alarm_name          = "${var.project_name}-lambda-s3-duration-anomaly-detection"
+  comparison_operator = "GreaterThanUpperThreshold"
+  evaluation_periods  = 1
+  threshold_metric_id = "e1"
+  alarm_description   = "This metric monitors Anomaly Lambda Duration"
+  alarm_actions       = [aws_sns_topic.bucket_notifications.arn]
+
+  metric_query {
+    id          = "e1"
+    expression  = "ANOMALY_DETECTION_BAND(m1)"
+    label       = "Duration (Expected)"
+    return_data = "true"
+  }
+
+  metric_query {
+    id          = "m1"
+    return_data = "true"
+    metric {
+      metric_name = "Duration"
+      namespace   = "AWS/Lambda"
+      period      = 60
+      stat        = "Average"
+      unit        = "Milliseconds"
+
+      dimensions = {
+        FunctionName = local.lambda_s3_notifications_function_name
       }
     }
   }

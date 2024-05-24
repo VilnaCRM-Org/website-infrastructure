@@ -31,7 +31,7 @@ locals {
         "AWS_DEFAULT_REGION"             = var.region,
         "PYTHON_VERSION"                 = var.runtime_versions.python,
         "RUBY_VERSION"                   = var.runtime_versions.ruby,
-        "GOLANG_VERSION"                 = var.runtime_versions.golang_version
+        "GOLANG_VERSION"                 = var.runtime_versions.golang
         "SCRIPT_DIR"                     = var.script_dir,
         }
     })
@@ -103,7 +103,7 @@ locals {
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
         "PYTHON_VERSION"                       = var.runtime_versions.python,
-        "GOLANG_VERSION"                       = var.runtime_versions.golang_version
+        "GOLANG_VERSION"                       = var.runtime_versions.golang
         "RUBY_VERSION"                         = var.runtime_versions.ruby,
         "SCRIPT_DIR"                           = var.script_dir,
         }

@@ -49,7 +49,7 @@ resource "aws_lambda_function" "func" {
   #ts:skip=AWS.LambdaFunction.Logging.0472 AWS VPC is not needed here for sending notifications
   #ts:skip=AWS.LambdaFunction.Logging.0470 X-Ray is not needed for such lambda and it takes bonus costs
   filename                       = "${var.path_to_lambdas}/zip/reports_notification_function_payload.zip"
-  function_name                  = "${var.project_name}-reports-notification"
+  function_name                  = local.lambda_reports_notifications_function_name
   role                           = aws_iam_role.iam_for_lambda.arn
   handler                        = "reports_notification.lambda_handler"
   runtime                        = var.lambda_python_version
