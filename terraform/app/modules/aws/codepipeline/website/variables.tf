@@ -74,6 +74,11 @@ variable "stages" {
   type        = list(map(any))
 }
 
+variable "cloudwatch_alerts_sns_topic_arn" {
+  description = "ARN of Alerts SNS Topic"
+  type        = string
+}
+
 variable "cloudwatch_log_group_retention_days" {
   description = "Retention time of Cloudwatch log group logs"
   type        = number

@@ -23,6 +23,11 @@ variable "cloudwatch_log_group_retention_days" {
   type        = number
 }
 
+variable "cloudwatch_alerts_sns_topic_arn" {
+  description = "ARN of Alerts SNS Topic"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to be attached to the CodePipeline"
   type        = map(any)

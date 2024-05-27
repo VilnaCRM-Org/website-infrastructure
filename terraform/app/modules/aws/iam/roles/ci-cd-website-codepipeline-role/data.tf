@@ -113,4 +113,13 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:ci-cd-website-${var.environment}-reports-notification"]
   }
+  statement {
+    sid    = "AllowChangeAlarmState"
+    effect = "Allow"
+    actions = [
+      "cloudwatch:EnableAlarmActions",
+      "cloudwatch:DisableAlarmActions"
+    ]
+    resources = ["arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:website-${var.environment}-s3-objects-anomaly-detection"]
+  }
 }

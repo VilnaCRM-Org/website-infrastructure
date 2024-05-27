@@ -18,13 +18,16 @@ output "codepipeline_sns_topic_arn" {
   description = "The SNS Topic Arn of the CodePipeline"
 }
 
-
 output "reports_sns_topic_arn" {
   value       = aws_sns_topic.reports_notifications.arn
   description = "The SNS Topic Arn of the CodePipeline"
 }
 
-output "cloudwatch_reports_sns_topic_arn" {
-  value       = aws_sns_topic.cloudwatch_reports_notifications.arn
-  description = "The SNS Topic Arn of the CodePipeline"
+output "cloudwatch_alarms_arns" {
+  value = [
+    aws_cloudwatch_metric_alarm.lambda_invocations_anomaly_detection.arn,
+    aws_cloudwatch_metric_alarm.lambda_errors_detection.arn,
+    aws_cloudwatch_metric_alarm.lambda_throttles_anomaly_detection.arn,
+    aws_cloudwatch_metric_alarm.lambda_duration_anomaly_detection.arn,
+  ]
 }

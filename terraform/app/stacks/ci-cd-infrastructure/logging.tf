@@ -21,6 +21,8 @@ module "dynamodb_logging" {
 
   logging_bucket_id = module.infrastructure_logging_bucket.id
 
+  cloudwatch_alerts_sns_topic_arn = module.cloudwatch_alerts_sns.cloudwatch_alerts_sns_topic_arn
+
   tags = var.tags
 
   depends_on = [module.infrastructure_logging_bucket]

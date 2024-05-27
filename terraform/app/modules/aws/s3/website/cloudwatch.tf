@@ -138,36 +138,23 @@ resource "aws_cloudwatch_metric_alarm" "lambda_invocations_anomaly_detection" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "lambda_errors_anomaly_detection" {
-  alarm_name          = "${var.project_name}-lambda-s3-errors-anomaly-detection"
-  comparison_operator = "GreaterThanUpperThreshold"
+resource "aws_cloudwatch_metric_alarm" "lambda_errors_detection" {
+  alarm_name          = "${var.project_name}-lambda-s3-errors-detection"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 1
-  threshold_metric_id = "e1"
+  metric_name         = "Errors"
+  namespace           = "AWS/Lambda"
+  period              = 60
+  statistic           = "Sum"
+  unit                = "Count"
+  threshold           = 1
   alarm_description   = "This metric monitors Anomaly Lambda Errors"
   alarm_actions       = [aws_sns_topic.bucket_notifications.arn]
 
-  metric_query {
-    id          = "e1"
-    expression  = "ANOMALY_DETECTION_BAND(m1)"
-    label       = "Errors (Expected)"
-    return_data = "true"
+  dimensions = {
+    FunctionName = local.lambda_s3_notifications_function_name
   }
 
-  metric_query {
-    id          = "m1"
-    return_data = "true"
-    metric {
-      metric_name = "Errors"
-      namespace   = "AWS/Lambda"
-      period      = 60
-      stat        = "Sum"
-      unit        = "Count"
-
-      dimensions = {
-        FunctionName = local.lambda_s3_notifications_function_name
-      }
-    }
-  }
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_throttles_anomaly_detection" {

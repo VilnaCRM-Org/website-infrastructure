@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "sns_bucket_topic_doc" {
         "${aws_cloudwatch_metric_alarm.s3_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.s3_4xx_errors_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.lambda_invocations_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.lambda_errors_anomaly_detection.arn}",
+        "${aws_cloudwatch_metric_alarm.lambda_errors_detection.arn}",
         "${aws_cloudwatch_metric_alarm.lambda_throttles_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.lambda_duration_anomaly_detection.arn}",
       ]
@@ -133,7 +133,7 @@ data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
         "${aws_cloudwatch_metric_alarm.s3_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.s3_4xx_errors_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.lambda_invocations_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.lambda_errors_anomaly_detection.arn}",
+        "${aws_cloudwatch_metric_alarm.lambda_errors_detection.arn}",
         "${aws_cloudwatch_metric_alarm.lambda_throttles_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.lambda_duration_anomaly_detection.arn}",
       ]

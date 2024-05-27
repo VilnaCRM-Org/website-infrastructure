@@ -13,4 +13,8 @@ phases:
       - 'echo #### Build Project'
       - 'pnpm run build'
       - 'echo #### Deploy Project'
+      - 'echo #### Turn Of Alarm Actions'
+      - 'aws cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME'
       - 'aws s3 sync ./out s3://$BUCKET_NAME'
+      - 'echo #### Turn On Alarm Actions'
+      - 'aws cloudwatch enable-alarm-actions --alarm-names $ALARM_NAME'

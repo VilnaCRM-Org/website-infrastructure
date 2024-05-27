@@ -1,5 +1,5 @@
 resource "aws_synthetics_canary" "canary_api_calls" {
-  name                 = "${var.project_name}-hearbeat"
+  name                 = local.canary_name
   artifact_s3_location = "s3://${var.canaries_reports_bucket_id}/"
   execution_role_arn   = var.canaries_iam_role_arn
   runtime_version      = var.canary_configuration.runtime_version

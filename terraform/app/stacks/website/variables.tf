@@ -106,7 +106,7 @@ variable "SLACK_WORKSPACE_ID" {
   type        = string
 }
 
-variable "ALERTS_SLACK_CHANNEL_ID" {
+variable "WEBSITE_ALERTS_SLACK_CHANNEL_ID" {
   description = "Slack Channel ID for Notifications"
   type        = string
 }

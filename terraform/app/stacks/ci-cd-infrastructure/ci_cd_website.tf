@@ -88,10 +88,11 @@ module "ci_cd_website_codepipeline" {
 
   region = var.region
 
-  s3_bucket_name          = module.ci_cd_website_s3_artifacts_bucket.bucket
-  codepipeline_role_arn   = module.ci_cd_website_codepipeline_iam_role.role_arn
-  kms_key_arn             = module.ci_cd_website_codepipeline_kms.arn
-  codestar_connection_arn = module.codestar_connection.arn
+  s3_bucket_name                  = module.ci_cd_website_s3_artifacts_bucket.bucket
+  codepipeline_role_arn           = module.ci_cd_website_codepipeline_iam_role.role_arn
+  kms_key_arn                     = module.ci_cd_website_codepipeline_kms.arn
+  codestar_connection_arn         = module.codestar_connection.arn
+  cloudwatch_alerts_sns_topic_arn = module.cloudwatch_alerts_sns.cloudwatch_alerts_sns_topic_arn
 
   tags = var.tags
 
