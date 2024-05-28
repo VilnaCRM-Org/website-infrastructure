@@ -130,6 +130,7 @@ def main():
                     "PW_VISUAL_RUN": ("Playwright Visual Test", "playwright-visual-reports", env_variables["test_reports_bucket_name"]),
                     "MUTATION_RUN": ("Mutation Test", "reports/mutation", env_variables["test_reports_bucket_name"]),
                     "UNIT_RUN": ("Unit Test", "coverage/lcov-report", env_variables["test_reports_bucket_name"]),
+                    "LOAD_RUN": ("Load Test", "src/test/load/results", env_variables["test_reports_bucket_name"]),
                     "MEMORY_LEAK_RUN": ("Memory Leak Test", "", ""),
                     "LINT_RUN": ("Lint Test", "", "")}
 

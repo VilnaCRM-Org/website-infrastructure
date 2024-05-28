@@ -8,3 +8,7 @@ batch:
     - identifier: playwrightVisual
       buildspec: './aws/buildspecs/website/batches/playwright_visual.yml'
       ignore-failure: false
+
+    - identifier: loadTests
+      buildspec: './aws/buildspecs/website/batches/load_test.yml'
+      ignore-failure: false

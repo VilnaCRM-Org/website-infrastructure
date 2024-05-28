@@ -172,7 +172,7 @@ locals {
         }
     })
 
-    batch_pw = merge(local.ubuntu_based_build,
+    batch_pw_load = merge(local.ubuntu_based_build,
       { env_variables = {
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "PYTHON_VERSION"                = var.runtime_versions.python,
@@ -181,6 +181,7 @@ locals {
         "ACCOUNT_ID"                    = local.account_id
         "SCRIPT_DIR"                    = var.script_dir,
         "PW_TEST_HTML_REPORT_OPEN"      = "never",
+        "GOLANG_VERSION"                       = var.runtime_versions.golang
         "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.name
         "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,

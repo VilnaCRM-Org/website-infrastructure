@@ -8,13 +8,13 @@ phases:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
       - 'cd /codebuild-user/website'
       - 'echo #### Owner Change'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuildUserOwnerChange.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh'
 
   build:
     run-as: 'codebuild-user'
     commands:
       - 'mkdir /codebuild-user/website/lint-logs'
-      - 'echo #### Test LightHouse'
+      - 'echo #### Running Lint'
       - 'export LINT_RUN=true && pnpm run format 2>&1 | tee lint-logs/format.log'
       - 'pnpm run lint:next 2>&1 | tee lint-logs/next.log'
       - 'pnpm run lint:tsc | tee lint-logs/tsc.log'

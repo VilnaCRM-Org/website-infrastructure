@@ -9,13 +9,13 @@ phases:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
       - 'cd /codebuild-user/website'
       - 'echo #### Owner Change'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuildUserOwnerChange.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh'
 
   build:
     run-as: 'codebuild-user'
     commands:
       - 'echo #### Set up environment'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/createEnv.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh'
       - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
       - 'export MUTATION_RUN=true && pnpm run test:mutation'
       - 'mv /codebuild-user/website/reports/mutation/mutation.html /codebuild-user/website/reports/mutation/index.html'

@@ -5,25 +5,27 @@ phases:
     runtime-versions:
       nodejs: $NODEJS_VERSION
       python: $PYTHON_VERSION
+      golang: $GOLANG_VERSION
     commands:
+      - 'apt update -y'
+      - 'apt install tree -y'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/k6_installation.sh'
       - 'cd /codebuild-user/website'
-      - 'pnpm exec playwright install'
-      - 'pnpm exec playwright install-deps'
 
   build:
     commands:
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh'
-      - 'echo #### Running Visual Test' # Reports folder: playwright-visual-reports/
-      - 'export PW_VISUAL_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-visual-reports pnpm exec playwright test src/test/visual'
+      - 'echo #### Running Load Test' # Reports folder: src/test/load/results/
+      - 'export LOAD_RUN=true && ./k6 run --summary-trend-stats="avg,min,med,max,p(95),p(99)" --out "web-dashboard=period=1s&export=./src/test/load/results/index.html" ./src/test/load/homepage.js'
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
 
 artifacts:
   files:
-    - '/codebuild-user/website/playwright-visual-reports/**/*'
+    - '/codebuild-user/website/src/test/load/results/**/*'
 
 cache:
   paths:
