@@ -78,12 +78,15 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_topic_doc" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
       values = [
-        "${aws_cloudwatch_metric_alarm.cloudfront-500-errors.arn}",
-        "${aws_cloudwatch_metric_alarm.cloudfront-origin-latency.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_500_errors.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_origin_latency.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_bytes_downloaded_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_allowed_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_blocked_requests_anomaly_detection.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_sql_injection_alarm.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_country_blocked_requests.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_requests_flood.arn}",
       ]
     }
   }
@@ -164,12 +167,15 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_kms_key_policy_doc" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
       values = [
-        "${aws_cloudwatch_metric_alarm.cloudfront-500-errors.arn}",
-        "${aws_cloudwatch_metric_alarm.cloudfront-origin-latency.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_500_errors.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_origin_latency.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_bytes_downloaded_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_allowed_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_blocked_requests_anomaly_detection.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_sql_injection_alarm.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_country_blocked_requests.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_requests_flood.arn}",
       ]
     }
   }

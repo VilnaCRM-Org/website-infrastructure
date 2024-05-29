@@ -119,8 +119,28 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
   }
 
   rule {
-    name     = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+    name     = "AWS-AWSManagedRulesSQLiRuleSet"
     priority = 4
+    override_action {
+      none {
+      }
+    }
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesSQLiRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      sampled_requests_enabled   = true
+      cloudwatch_metrics_enabled = true
+      metric_name                = "SQLInjectionRule"
+    }
+  }
+
+  rule {
+    name     = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+    priority = 5
     override_action {
       none {
       }
@@ -140,7 +160,7 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
 
   rule {
     name     = "AWS-AWSManagedRulesUnixRuleSet"
-    priority = 5
+    priority = 6
     override_action {
       none {
       }
@@ -161,7 +181,7 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
 
   rule {
     name     = "AWS-AWSManagedRulesWindowsRuleSet"
-    priority = 6
+    priority = 7
     override_action {
       none {
       }
@@ -188,7 +208,7 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
 
   rule {
     name     = "RateLimit"
-    priority = 7
+    priority = 8
 
     action {
       block {}
