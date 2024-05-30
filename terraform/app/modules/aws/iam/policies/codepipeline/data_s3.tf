@@ -33,6 +33,8 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "s3:DeleteObjectVersion"
     ]
     resources = [
+      "arn:aws:s3:::${var.ci_cd_project_name}-logging-bucket",
+      "arn:aws:s3:::${var.ci_cd_project_name}-logging-bucket/*",
       "arn:aws:s3:::${var.website_project_name}-codepipeline-artifacts-bucket",
       "arn:aws:s3:::${var.website_project_name}-codepipeline-artifacts-bucket/*",
       "arn:aws:s3:::${var.ci_cd_project_name}-codepipeline-artifacts-bucket",

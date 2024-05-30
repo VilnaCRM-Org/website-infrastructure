@@ -86,7 +86,11 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_topic_doc" {
         "${aws_cloudwatch_metric_alarm.wafv2_blocked_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_sql_injection_alarm.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_country_blocked_requests.arn}",
-        "${aws_cloudwatch_metric_alarm.cloudfront_requests_flood.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_requests_flood_alarm.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_high_rate_blocked_requests.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_anonymous_alarm.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_scanning_alarm.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_bots_alarm.arn}",
       ]
     }
   }
@@ -175,7 +179,11 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_kms_key_policy_doc" {
         "${aws_cloudwatch_metric_alarm.wafv2_blocked_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_sql_injection_alarm.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_country_blocked_requests.arn}",
-        "${aws_cloudwatch_metric_alarm.cloudfront_requests_flood.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_requests_flood_alarm.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_high_rate_blocked_requests.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_anonymous_alarm.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_scanning_alarm.arn}",
+        "${aws_cloudwatch_metric_alarm.wafv2_bots_alarm.arn}",
       ]
     }
   }

@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-healthcheck",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-lhci-leak",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-unit-mutation-lint",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-pw",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-pw-load",
     ]
   }
   statement {

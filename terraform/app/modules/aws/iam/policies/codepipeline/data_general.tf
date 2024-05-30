@@ -66,4 +66,17 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:${var.ci_cd_website_project_name}-aws-reports-notification-group:*"
     ]
   }
+
+  statement {
+    sid    = "CloudWatchDashboardPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudwatch:ListDashboards",
+      "cloudwatch:GetDashboard",
+      "cloudwatch:PutDashboard"
+    ]
+    resources = [
+      "arn:aws:cloudwatch::${local.account_id}:dashboard/codebuild-dashboard"
+    ]
+  }
 } 
