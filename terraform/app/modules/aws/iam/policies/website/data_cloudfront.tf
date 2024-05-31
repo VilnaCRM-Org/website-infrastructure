@@ -12,6 +12,20 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
+    sid    = "CloudfrontCachePolicy"
+    effect = "Allow"
+    actions = [
+      "cloudfront:ListCachePolicies",
+      "cloudfront:GetCachePolicy",
+      "cloudfront:UpdateCachePolicy",
+      "cloudfront:CreateCachePolicy",
+    ]
+    resources = [
+      "arn:aws:cloudfront::${local.account_id}:cache-policy/*"
+    ]
+  }
+
+  statement {
     sid    = "CloudfrontOriginAccessPolicy"
     effect = "Allow"
     actions = [
@@ -104,8 +118,28 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "cloudwatch:DeleteAlarms"
     ]
     resources = [
-      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:website-test-AWS-CloudFront-High-5xx-Error-Rate",
-      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:website-test-AWS-CloudFront-Origin-Latency"
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-allowed-requests-anomaly-detection",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-blocked-requests-anomaly-detection",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-country-blocked-requests",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-high-rate-blocked-requests",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-sql-injection-alarm",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-scanning-alarm",  
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-anonymous-alarm",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-bots-alarm",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-requests-anomaly-detection",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-bytes-downloaded-anomaly-detection",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-5xx-errors-alarm",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-origin-latency-alarm",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-requests-flood-alarm",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-heartbeat-canary-2xx",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-s3-objects-anomaly-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-s3-requests-anomaly-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-s3-4xx-errors-anomaly-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-lambda-s3-invocations-anomaly-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-lambda-s3-errors-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-lambda-s3-throttles-anomaly-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-lambda-s3-duration-anomaly-detection",
+
     ]
   }
   statement {
@@ -124,8 +158,8 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "logs:DeleteLogDelivery"
     ]
     resources = [
-      "arn:aws:logs:us-east-1:${local.account_id}:log-group:aws-waf-logs-wafv2-web-acl:*",
-      "arn:aws:logs:${var.region}:${local.account_id}:log-group:${var.project_name}-aws-s3-lambda-notification-group:*"
+      "arn:aws:logs:us-east-1:${local.account_id}:log-group:*",
+      "arn:aws:logs:${var.region}:${local.account_id}:log-group:*"
     ]
   }
 } 

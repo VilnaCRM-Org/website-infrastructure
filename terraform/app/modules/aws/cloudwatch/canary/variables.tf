@@ -31,6 +31,6 @@ variable "domain_name" {
 variable "path_to_canary" {
   type        = string
   description = "Path to Canary Content"
-  default     = "../../../../../../aws/canary/py"
+  default     = "../../../../../../aws/canary"
 }
 

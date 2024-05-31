@@ -20,6 +20,7 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "s3:GetReplicationConfiguration",
       "s3:GetEncryptionConfiguration",
       "s3:GetBucketObjectLockConfiguration",
+      "s3:GetBucketOwnershipControls",
       "s3:PutBucketVersioning",
       "s3:PutObject",
       "s3:PutBucketAcl",
@@ -28,6 +29,7 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "s3:GetBucketPublicAccessBlock",
       "s3:PutEncryptionConfiguration",
       "s3:PutLifecycleConfiguration",
+      "s3:PutBucketOwnershipControls",
       "s3:DeleteBucketPolicy",
       "s3:DeleteBucket",
       "s3:ListBucketVersions",
@@ -40,7 +42,12 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "arn:aws:s3:::${var.project_name}-logging-bucket",
       "arn:aws:s3:::${var.project_name}-logging-bucket/*",
       "arn:aws:s3:::${var.domain_name}-replication",
-      "arn:aws:s3:::${var.domain_name}-replication/*"
+      "arn:aws:s3:::${var.domain_name}-replication/*",
+      "arn:aws:s3:::${var.project_name}-replication-logging-bucket",
+      "arn:aws:s3:::${var.project_name}-replication-logging-bucket/*",
+      "arn:aws:s3:::${var.project_name}-canaries-reports-bucket",
+      "arn:aws:s3:::${var.project_name}-canaries-reports-bucket/*",
+
     ]
   }
   statement {

@@ -174,6 +174,11 @@ variable "CI_CD_ALERTS_SLACK_CHANNEL_ID" {
   type        = string
 }
 
+variable "WEBSITE_ALERTS_SLACK_CHANNEL_ID" {
+  description = "Slack Channel ID for Notifications"
+  type        = string
+}
+
 variable "REPORT_SLACK_CHANNEL_ID" {
   description = "Slack Channel ID for Reports"
   type        = string

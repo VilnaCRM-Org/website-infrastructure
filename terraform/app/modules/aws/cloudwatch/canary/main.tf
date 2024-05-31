@@ -4,10 +4,9 @@ resource "aws_synthetics_canary" "canary_api_calls" {
   execution_role_arn   = var.canaries_iam_role_arn
   runtime_version      = var.canary_configuration.runtime_version
   handler              = "canary.handler"
-  zip_file             = local.zip
+  zip_file             = "${var.path_to_canary}/heartbeat/zip/canary.zip"
   start_canary         = true
   delete_lambda        = true
-
   success_retention_period = var.canary_configuration.success_retention_period
   failure_retention_period = var.canary_configuration.failure_retention_period
 
@@ -25,11 +24,5 @@ resource "aws_synthetics_canary" "canary_api_calls" {
     }
   }
 
-
   tags = var.tags
-
-  depends_on = [
-    data.archive_file.lambda_canary_zip,
-  ]
-
 }

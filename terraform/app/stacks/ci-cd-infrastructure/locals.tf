@@ -26,7 +26,7 @@ locals {
       { env_variables = {
         "ROLE_ARN"                             = module.website_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
-        "TF_VAR_CI_CD_ALERTS_SLACK_CHANNEL_ID" = var.CI_CD_ALERTS_SLACK_CHANNEL_ID,
+        "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
         "PYTHON_VERSION"                       = var.runtime_versions.python,
@@ -40,7 +40,7 @@ locals {
       { env_variables = {
         "ROLE_ARN"                             = module.website_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
-        "TF_VAR_CI_CD_ALERTS_SLACK_CHANNEL_ID" = var.CI_CD_ALERTS_SLACK_CHANNEL_ID,
+        "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
         "PYTHON_VERSION"                       = var.runtime_versions.python,
@@ -53,7 +53,7 @@ locals {
       { env_variables = {
         "ROLE_ARN"                             = module.website_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
-        "TF_VAR_CI_CD_ALERTS_SLACK_CHANNEL_ID" = var.CI_CD_ALERTS_SLACK_CHANNEL_ID,
+        "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
         "PYTHON_VERSION"                       = var.runtime_versions.python,
@@ -82,7 +82,7 @@ locals {
       { env_variables = {
         "ROLE_ARN"                             = module.website_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
-        "TF_VAR_CI_CD_ALERTS_SLACK_CHANNEL_ID" = var.CI_CD_ALERTS_SLACK_CHANNEL_ID,
+        "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                               = var.environment,
         "AWS_DEFAULT_REGION"                   = var.region,
         "PYTHON_VERSION"                       = var.runtime_versions.python,

@@ -33,10 +33,25 @@ data "aws_iam_policy_document" "general_policy_doc" {
     resources = ["arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}"]
   }
   statement {
+    sid    = "CloudWatchDashboardPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudwatch:ListDashboards",
+      "cloudwatch:GetDashboard",
+      "cloudwatch:PutDashboard"
+    ]
+    resources = [
+      "arn:aws:cloudwatch::${local.account_id}:dashboard/${var.project_name}-dashboard"
+    ]
+  }
+  statement {
     sid    = "DynamoDBStatePolicy"
     effect = "Allow"
     actions = [
       "dynamodb:DescribeTable",
+      "dynamodb:DescribeContinuousBackups",
+      "dynamodb:DescribeTimeToLive",
+      "dynamodb:ListTagsOfResource",
       "dynamodb:PutItem",
       "dynamodb:GetItem",
       "dynamodb:DeleteItem"

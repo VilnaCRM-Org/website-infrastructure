@@ -1,3 +1,8 @@
+variable "project_name" {
+  description = "Unique name for this project"
+  type        = string
+}
+
 variable "website_project_name" {
   description = "Unique name for the Website Codepipeline"
   type        = string
@@ -12,7 +17,6 @@ variable "ci_cd_website_project_name" {
   description = "Unique name for this Website Deploy Codepipeline"
   type        = string
 }
-
 
 variable "policy_prefix" {
   description = "Policy Prefix for policies"

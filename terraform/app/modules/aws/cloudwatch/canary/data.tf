@@ -2,15 +2,6 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
-data "archive_file" "lambda_canary_zip" {
-  type        = "zip"
-  output_path = local.zip
-  source {
-    content  = file("${var.path_to_canary}/heartbeat.py")
-    filename = "python/canary.py"
-  }
-}
-
 
 data "aws_iam_policy_document" "cloudwatch_alarm_sns_topic_doc" {
   statement {

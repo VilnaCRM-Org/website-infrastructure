@@ -12,6 +12,7 @@ data "aws_iam_policy_document" "sns_policy_doc" {
     ]
     resources = [
       "arn:aws:sns:${var.region}:${local.account_id}:${var.project_name}-bucket-notifications",
+      "arn:aws:sns:${var.region}:${local.account_id}:${var.project_name}-cloudwatch-alarm-notifications",
       "arn:aws:sns:us-east-1:${local.account_id}:${var.project_name}-cloudwatch-alarm-notifications"
     ]
   }

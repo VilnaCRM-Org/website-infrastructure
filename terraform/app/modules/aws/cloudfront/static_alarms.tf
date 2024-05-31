@@ -71,7 +71,7 @@ resource "aws_cloudwatch_metric_alarm" "wafv2_high_rate_blocked_requests" {
   actions_enabled     = true
   treat_missing_data  = "notBreaching"
   dimensions = {
-    WebACL  = "wafv2-web-acl"
+    WebACL = "wafv2-web-acl"
   }
 }
 
@@ -88,7 +88,7 @@ resource "aws_cloudwatch_metric_alarm" "wafv2_sql_injection_alarm" {
   alarm_description   = "Alert on SQL injection attempts"
   treat_missing_data  = "notBreaching"
   actions_enabled     = true
-  alarm_actions = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
   dimensions = {
     Rule   = "AWS-AWSManagedRulesSQLiRuleSet"
     WebACL = "wafv2-web-acl"
@@ -108,7 +108,7 @@ resource "aws_cloudwatch_metric_alarm" "wafv2_scanning_alarm" {
   alarm_description   = "Alert on Scanning attempts"
   treat_missing_data  = "notBreaching"
   actions_enabled     = true
-  alarm_actions = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
   dimensions = {
     Rule   = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
     WebACL = "wafv2-web-acl"
@@ -128,7 +128,7 @@ resource "aws_cloudwatch_metric_alarm" "wafv2_anonymous_alarm" {
   alarm_description   = "Alert on Anonymous attempts to access Website"
   treat_missing_data  = "notBreaching"
   actions_enabled     = true
-  alarm_actions = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
   dimensions = {
     Rule   = "AWS-AWSManagedRulesAnonymousIpList"
     WebACL = "wafv2-web-acl"
@@ -140,19 +140,19 @@ resource "aws_cloudwatch_metric_alarm" "wafv2_bots_alarm" {
   alarm_name          = "${var.project_name}-wafv2-bots-alarm"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 3
-  threshold = 50
+  threshold           = 50
 
-  alarm_description   = "Alert on Bots attempts"
+  alarm_description = "Alert on Bots attempts"
 
   metric_query {
     id          = "e1"
     expression  = "m1+m2"
-    label       = "WAFV2 Bot requests (Expected)"
+    label       = "WAFV2 Bot requests"
     return_data = "true"
   }
 
   metric_query {
-    id          = "m1"
+    id = "m1"
     metric {
       metric_name = "SampleBlockedRequest"
       namespace   = "AWS/WAFV2"
@@ -160,14 +160,14 @@ resource "aws_cloudwatch_metric_alarm" "wafv2_bots_alarm" {
       stat        = "Average"
       dimensions = {
         VerificationStatus = "bot:unverified"
-        WebACL = "wafv2-web-acl"
-        BotCategory = "ALL_BOTS"
+        WebACL             = "wafv2-web-acl"
+        BotCategory        = "ALL_BOTS"
       }
     }
   }
 
-    metric_query {
-    id          = "m2"
+  metric_query {
+    id = "m2"
     metric {
       metric_name = "SampleBlockedRequest"
       namespace   = "AWS/WAFV2"
@@ -175,8 +175,8 @@ resource "aws_cloudwatch_metric_alarm" "wafv2_bots_alarm" {
       stat        = "Average"
       dimensions = {
         VerificationStatus = "bot:verified"
-        WebACL = "wafv2-web-acl"
-        BotCategory = "ALL_BOTS"
+        WebACL             = "wafv2-web-acl"
+        BotCategory        = "ALL_BOTS"
       }
     }
   }
@@ -197,7 +197,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_requests_flood_alarm" {
   alarm_description   = "Alerts on HTTP Flood"
   treat_missing_data  = "notBreaching"
   actions_enabled     = true
-  alarm_actions = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
   dimensions = {
     DistributionId = aws_cloudfront_distribution.this.id
     Region         = "Global"

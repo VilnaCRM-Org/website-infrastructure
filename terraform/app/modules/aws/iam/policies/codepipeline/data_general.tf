@@ -10,6 +10,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "sts:GetCallerIdentity",
       "kms:CreateKey",
       "codestar-notifications:DeleteTarget",
+      "cloudtrail:DescribeTrails"
     ]
     resources = ["*"]
   }
@@ -29,13 +30,30 @@ data "aws_iam_policy_document" "general_policy_doc" {
     effect = "Allow"
     actions = [
       "dynamodb:DescribeTable",
+      "dynamodb:DescribeContinuousBackups",
+      "dynamodb:DescribeTimeToLive",
+      "dynamodb:ListTagsOfResource",
       "dynamodb:PutItem",
       "dynamodb:GetItem",
       "dynamodb:DeleteItem"
     ]
     resources = ["arn:aws:dynamodb:${var.region}:${local.account_id}:table/terraform_locks"]
   }
-
+  statement {
+    sid    = "CloudTrailPolicy"
+    effect = "Allow"
+    actions = [
+				"cloudtrail:GetResourcePolicy",
+        "cloudtrail:GetEventSelectors",
+				"cloudtrail:GetTrail",
+        "cloudtrail:ListTags",
+				"cloudtrail:CreateTrail",
+				"cloudtrail:GetTrailStatus",
+    ]   
+    resources = [
+      "arn:aws:cloudtrail:${var.region}:${local.account_id}:*",
+    ]
+  }
   statement {
     sid    = "TerraformStateGetS3Policy"
     effect = "Allow"
@@ -54,6 +72,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "logs:CreateLogGroup",
       "logs:CreateLogDelivery",
       "logs:DescribeResourcePolicies",
+      "logs:DescribeLogGroups",
       "logs:ListTagsLogGroup",
       "logs:GetLogEvents",
       "logs:PutLogEvents",
@@ -63,7 +82,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "logs:DeleteLogDelivery"
     ]
     resources = [
-      "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:${var.ci_cd_website_project_name}-aws-reports-notification-group:*"
+      "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:*",
     ]
   }
 
@@ -77,6 +96,25 @@ data "aws_iam_policy_document" "general_policy_doc" {
     ]
     resources = [
       "arn:aws:cloudwatch::${local.account_id}:dashboard/codebuild-dashboard"
+    ]
+  }
+  statement {
+    sid    = "CloudwatchAlarmsPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudwatch:PutMetricAlarm",
+      "cloudwatch:ListTagsForResource",
+      "cloudwatch:DescribeAlarms",
+      "cloudwatch:DeleteAlarms"
+    ]
+    resources = [
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_project_name}-dynamodb-read-capacity-anomaly-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_project_name}-dynamodb-write-capacity-anomaly-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_project_name}-dynamodb-system-errors",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_website_project_name}-lambda-reports-errors",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_website_project_name}-lambda-reports-invocations-anomaly-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_website_project_name}-lambda-reports-throttles-anomaly-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_website_project_name}-lambda-reports-duration-anomaly-detection",  
     ]
   }
 } 
