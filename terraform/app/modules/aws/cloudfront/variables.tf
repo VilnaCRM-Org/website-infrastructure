@@ -8,6 +8,16 @@ variable "aws_s3_bucket_replication_bucket_regional_domain_name" {
   description = "S3 Replication Bucket Regional Domain Name"
 }
 
+variable "aws_s3_bucket_staging_bucket_regional_domain_name" {
+  type        = string
+  description = "Staging S3 Bucket Regional Domain Name"
+}
+
+variable "aws_s3_bucket_staging_replication_bucket_regional_domain_name" {
+  type        = string
+  description = "Staging S3 Replication Bucket Regional Domain Name"
+}
+
 variable "domain_name" {
   type        = string
   description = "Domain name for website, used for all resources"
@@ -41,18 +51,6 @@ variable "aws_acm_certificate_arn" {
 variable "cloudfront_configuration" {
   type        = map(any)
   description = "CloudFront Configuration"
-}
-
-variable "cloudfront_minimum_protocol_version" {
-  type        = string
-  description = "The minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections."
-  default     = "TLSv1.2_2019"
-}
-
-variable "cloudfront_default_root_object" {
-  type        = string
-  description = "Default root object for cloudfront. Need to also provide custom error response if changing from default"
-  default     = "index.html"
 }
 
 variable "cloudfront_custom_error_responses" {

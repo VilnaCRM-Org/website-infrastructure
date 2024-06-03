@@ -1,8 +1,7 @@
 resource "aws_cloudfront_distribution" "this" {
   provider = aws.us-east-1
-
   #ts:skip=AC-AW-IS-CD-M-0026 Geo restriction is not needed
-
+  enabled             = true
   origin_group {
     origin_id = "${var.project_name}-groupS3"
 
@@ -38,9 +37,9 @@ resource "aws_cloudfront_distribution" "this" {
     "www.${var.domain_name}"
   ]
 
-  enabled             = true
+
   is_ipv6_enabled     = true
-  default_root_object = var.cloudfront_default_root_object
+  default_root_object = var.cloudfront_configuration.default_root_object
 
   logging_config {
     include_cookies = false
@@ -89,7 +88,7 @@ resource "aws_cloudfront_distribution" "this" {
     content {
       acm_certificate_arn      = var.aws_acm_certificate_arn
       ssl_support_method       = "sni-only"
-      minimum_protocol_version = var.cloudfront_minimum_protocol_version
+      minimum_protocol_version = var.cloudfront_configuration.minimum_protocol_version
     }
   }
 
@@ -103,7 +102,10 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
+  continuous_deployment_policy_id = aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy.id
+
   wait_for_deployment = false
+
 }
 
 resource "aws_cloudfront_origin_access_control" "this" {
@@ -120,4 +122,124 @@ resource "aws_cloudfront_origin_access_control" "replication" {
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
+}
+
+resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
+  provider = aws.us-east-1
+  staging = true
+  enabled             = true
+  #ts:skip=AC-AW-IS-CD-M-0026 Geo restriction is not needed
+
+  origin_group {
+    origin_id = "${var.project_name}-groupS3"
+
+    failover_criteria {
+      status_codes = [500, 502]
+    }
+
+    member {
+      origin_id = local.s3_origin_id
+    }
+
+    member {
+      origin_id = local.s3_failover_origin_id
+    }
+  }
+
+  origin {
+    domain_name              = var.aws_s3_bucket_staging_bucket_regional_domain_name
+    origin_id                = local.s3_origin_id
+    origin_access_control_id = aws_cloudfront_origin_access_control.this.id
+  }
+
+  origin {
+    domain_name              = var.aws_s3_bucket_staging_replication_bucket_regional_domain_name
+    origin_id                = local.s3_failover_origin_id
+    origin_access_control_id = aws_cloudfront_origin_access_control.replication.id
+  }
+
+  web_acl_id = aws_wafv2_web_acl.waf_web_acl.arn
+
+
+  is_ipv6_enabled     = true
+  default_root_object = var.cloudfront_configuration.default_root_object
+
+  logging_config {
+    include_cookies = false
+    bucket          = var.logging_bucket_domain_name
+    prefix          = "cloudfront-logs/"
+  }
+
+  default_cache_behavior {
+    allowed_methods = [
+      "GET",
+      "HEAD",
+    ]
+
+    cached_methods = [
+      "GET",
+      "HEAD",
+    ]
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers.id
+
+    target_origin_id = "${var.project_name}-groupS3"
+
+    cache_policy_id = aws_cloudfront_cache_policy.cloudfront_cache_policy.id
+
+    viewer_protocol_policy = "redirect-to-https"
+
+    # https://stackoverflow.com/questions/67845341/cloudfront-s3-etag-possible-for-cloudfront-to-send-updated-s3-object-before-t
+    min_ttl     = var.cloudfront_configuration.min_ttl
+    default_ttl = var.cloudfront_configuration.default_ttl
+    max_ttl     = var.cloudfront_configuration.max_ttl
+
+    compress = true
+
+  }
+
+  price_class = var.cloudfront_configuration.price_class
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "blacklist"
+      locations        = ["RU"]
+    }
+  }
+
+  dynamic "viewer_certificate" {
+    for_each = [var.aws_acm_certificate_id]
+    content {
+      acm_certificate_arn      = var.aws_acm_certificate_arn
+      ssl_support_method       = "sni-only"
+      minimum_protocol_version = var.cloudfront_configuration.minimum_protocol_version
+    }
+  }
+
+  dynamic "custom_error_response" {
+    for_each = var.cloudfront_custom_error_responses
+    content {
+      error_code            = custom_error_response.value.error_code
+      response_code         = custom_error_response.value.response_code
+      error_caching_min_ttl = custom_error_response.value.error_caching_min_ttl
+      response_page_path    = custom_error_response.value.response_page_path
+    }
+  }
+
+  wait_for_deployment = false
+}
+
+resource "aws_cloudfront_continuous_deployment_policy" "continuous_deployment_policy" {
+  enabled = true
+
+  staging_distribution_dns_names {
+    items    = [aws_cloudfront_distribution.staging_cloudfront_distribution.domain_name]
+    quantity = 1
+  }
+
+  traffic_config {
+    type = "SingleWeight"
+    single_weight_config {
+      weight = "0.15"
+    }
+  }
 }

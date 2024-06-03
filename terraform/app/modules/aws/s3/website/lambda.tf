@@ -44,8 +44,8 @@ resource "aws_lambda_function" "func" {
   function_name                  = local.lambda_s3_notifications_function_name
   role                           = aws_iam_role.iam_for_lambda.arn
   handler                        = "sns_converter.lambda_handler"
-  runtime                        = var.lambda_python_version
-  reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
+  runtime                        = var.lambda_configuration.python_version
+  reserved_concurrent_executions = var.lambda_configuration.reserved_concurrent_executions
 
   logging_config {
     log_format = "JSON"

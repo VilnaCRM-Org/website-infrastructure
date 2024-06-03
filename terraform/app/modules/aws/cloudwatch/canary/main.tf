@@ -1,12 +1,12 @@
 resource "aws_synthetics_canary" "canary_api_calls" {
-  name                 = local.canary_name
-  artifact_s3_location = "s3://${var.canaries_reports_bucket_id}/"
-  execution_role_arn   = var.canaries_iam_role_arn
-  runtime_version      = var.canary_configuration.runtime_version
-  handler              = "canary.handler"
-  zip_file             = "${var.path_to_canary}/heartbeat/zip/canary.zip"
-  start_canary         = true
-  delete_lambda        = true
+  name                     = local.canary_name
+  artifact_s3_location     = "s3://${var.canaries_reports_bucket_id}/"
+  execution_role_arn       = var.canaries_iam_role_arn
+  runtime_version          = var.canary_configuration.runtime_version
+  handler                  = "canary.handler"
+  zip_file                 = "${var.path_to_canary}/heartbeat/zip/canary.zip"
+  start_canary             = true
+  delete_lambda            = true
   success_retention_period = var.canary_configuration.success_retention_period
   failure_retention_period = var.canary_configuration.failure_retention_period
 
@@ -19,8 +19,7 @@ resource "aws_synthetics_canary" "canary_api_calls" {
     timeout_in_seconds = 15
     active_tracing     = false
     environment_variables = {
-      URL             = "https://${var.domain_name}"
-      TAKE_SCREENSHOT = var.canary_configuration.take_screenshot
+      URL = "https://${var.domain_name}"
     }
   }
 

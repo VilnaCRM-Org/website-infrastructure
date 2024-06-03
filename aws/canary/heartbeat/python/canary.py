@@ -8,7 +8,7 @@ import os
 def main():
     url = os.environ["URL"]
 
-    takeScreenshot = os.environ["TAKE_SCREENSHOT"]
+    takeScreenshot = True
 
     browser = syn_webdriver.Chrome()
     browser.get(url)

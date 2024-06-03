@@ -123,7 +123,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-country-blocked-requests",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-high-rate-blocked-requests",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-sql-injection-alarm",
-      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-scanning-alarm",  
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-scanning-alarm",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-anonymous-alarm",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-bots-alarm",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-requests-anomaly-detection",

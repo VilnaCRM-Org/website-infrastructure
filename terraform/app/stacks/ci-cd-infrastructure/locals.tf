@@ -24,41 +24,41 @@ locals {
   website_infra_build_projects = {
     validate = merge(local.amazonlinux2_based_build,
       { env_variables = {
-        "ROLE_ARN"                             = module.website_infra_codepipeline_iam_role.terraform_role_arn,
-        "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
+        "ROLE_ARN"                               = module.website_infra_codepipeline_iam_role.terraform_role_arn,
+        "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
-        "TS_ENV"                               = var.environment,
-        "AWS_DEFAULT_REGION"                   = var.region,
-        "PYTHON_VERSION"                       = var.runtime_versions.python,
-        "RUBY_VERSION"                         = var.runtime_versions.ruby,
-        "GOLANG_VERSION"                       = var.runtime_versions.golang
-        "SCRIPT_DIR"                           = var.script_dir,
+        "TS_ENV"                                 = var.environment,
+        "AWS_DEFAULT_REGION"                     = var.region,
+        "PYTHON_VERSION"                         = var.runtime_versions.python,
+        "RUBY_VERSION"                           = var.runtime_versions.ruby,
+        "GOLANG_VERSION"                         = var.runtime_versions.golang
+        "SCRIPT_DIR"                             = var.script_dir,
         }
     })
 
     plan = merge(local.amazonlinux2_based_build,
       { env_variables = {
-        "ROLE_ARN"                             = module.website_infra_codepipeline_iam_role.terraform_role_arn,
-        "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
+        "ROLE_ARN"                               = module.website_infra_codepipeline_iam_role.terraform_role_arn,
+        "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
-        "TS_ENV"                               = var.environment,
-        "AWS_DEFAULT_REGION"                   = var.region,
-        "PYTHON_VERSION"                       = var.runtime_versions.python,
-        "RUBY_VERSION"                         = var.runtime_versions.ruby,
-        "SCRIPT_DIR"                           = var.script_dir,
+        "TS_ENV"                                 = var.environment,
+        "AWS_DEFAULT_REGION"                     = var.region,
+        "PYTHON_VERSION"                         = var.runtime_versions.python,
+        "RUBY_VERSION"                           = var.runtime_versions.ruby,
+        "SCRIPT_DIR"                             = var.script_dir,
         }
     })
 
     up = merge(local.amazonlinux2_based_build,
       { env_variables = {
-        "ROLE_ARN"                             = module.website_infra_codepipeline_iam_role.terraform_role_arn,
-        "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
+        "ROLE_ARN"                               = module.website_infra_codepipeline_iam_role.terraform_role_arn,
+        "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
-        "TS_ENV"                               = var.environment,
-        "AWS_DEFAULT_REGION"                   = var.region,
-        "PYTHON_VERSION"                       = var.runtime_versions.python,
-        "RUBY_VERSION"                         = var.runtime_versions.ruby,
-        "SCRIPT_DIR"                           = var.script_dir,
+        "TS_ENV"                                 = var.environment,
+        "AWS_DEFAULT_REGION"                     = var.region,
+        "PYTHON_VERSION"                         = var.runtime_versions.python,
+        "RUBY_VERSION"                           = var.runtime_versions.ruby,
+        "SCRIPT_DIR"                             = var.script_dir,
         }
     })
 
@@ -80,14 +80,14 @@ locals {
 
     down = merge(local.amazonlinux2_based_build,
       { env_variables = {
-        "ROLE_ARN"                             = module.website_infra_codepipeline_iam_role.terraform_role_arn,
-        "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
+        "ROLE_ARN"                               = module.website_infra_codepipeline_iam_role.terraform_role_arn,
+        "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
-        "TS_ENV"                               = var.environment,
-        "AWS_DEFAULT_REGION"                   = var.region,
-        "PYTHON_VERSION"                       = var.runtime_versions.python,
-        "RUBY_VERSION"                         = var.runtime_versions.ruby,
-        "SCRIPT_DIR"                           = var.script_dir,
+        "TS_ENV"                                 = var.environment,
+        "AWS_DEFAULT_REGION"                     = var.region,
+        "PYTHON_VERSION"                         = var.runtime_versions.python,
+        "RUBY_VERSION"                           = var.runtime_versions.ruby,
+        "SCRIPT_DIR"                             = var.script_dir,
         }
     })
   }

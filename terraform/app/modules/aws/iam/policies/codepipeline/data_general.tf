@@ -43,13 +43,13 @@ data "aws_iam_policy_document" "general_policy_doc" {
     sid    = "CloudTrailPolicy"
     effect = "Allow"
     actions = [
-				"cloudtrail:GetResourcePolicy",
-        "cloudtrail:GetEventSelectors",
-				"cloudtrail:GetTrail",
-        "cloudtrail:ListTags",
-				"cloudtrail:CreateTrail",
-				"cloudtrail:GetTrailStatus",
-    ]   
+      "cloudtrail:GetResourcePolicy",
+      "cloudtrail:GetEventSelectors",
+      "cloudtrail:GetTrail",
+      "cloudtrail:ListTags",
+      "cloudtrail:CreateTrail",
+      "cloudtrail:GetTrailStatus",
+    ]
     resources = [
       "arn:aws:cloudtrail:${var.region}:${local.account_id}:*",
     ]
@@ -114,7 +114,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_website_project_name}-lambda-reports-errors",
       "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_website_project_name}-lambda-reports-invocations-anomaly-detection",
       "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_website_project_name}-lambda-reports-throttles-anomaly-detection",
-      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_website_project_name}-lambda-reports-duration-anomaly-detection",  
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_website_project_name}-lambda-reports-duration-anomaly-detection",
     ]
   }
 } 

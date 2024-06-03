@@ -18,21 +18,10 @@ variable "domain_name" {
   description = "Domain name for website, used for all resources"
 }
 
-variable "cloudfront_minimum_protocol_version" {
-  type        = string
-  description = "The minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections."
-  default     = "TLSv1.2_2019"
-}
-
 variable "deploy_sample_content" {
   type        = bool
   default     = false
   description = "Deploy sample content to show website working?"
-}
-
-variable "cloudfront_default_root_object" {
-  type        = string
-  description = "Default root object for cloudfront. Need to also provide custom error response if changing from default"
 }
 
 variable "s3_artifacts_bucket_files_deletion_days" {
@@ -65,11 +54,6 @@ variable "cloudfront_configuration" {
   description = "CloudFront Configuration"
 }
 
-variable "s3_bucket_public_access_block" {
-  type        = bool
-  description = "Apply public access block to S3 bucket?"
-}
-
 variable "cloudfront_custom_error_responses" {
   type = list(object({
     error_code            = number
@@ -80,6 +64,10 @@ variable "cloudfront_custom_error_responses" {
   description = "See https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GeneratingCustomErrorResponses.html"
 }
 
+variable "s3_bucket_public_access_block" {
+  type        = bool
+  description = "Apply public access block to S3 bucket?"
+}
 
 variable "ttl_validation" {
   type        = number
@@ -111,14 +99,9 @@ variable "WEBSITE_ALERTS_SLACK_CHANNEL_ID" {
   type        = string
 }
 
-variable "lambda_python_version" {
-  description = "Python version for Lambda"
-  type        = string
-}
-
-variable "lambda_reserved_concurrent_executions" {
-  description = "Function-level concurrent execution Limit for Lambda"
-  type        = number
+variable "lambda_configuration" {
+  description = "Lambda Configuration Variables"
+  type        = map(any)
 }
 
 variable "create_slack_notification" {

@@ -65,14 +65,9 @@ variable "deploy_sample_content" {
   description = "Deploy sample content to show website working?"
 }
 
-variable "lambda_python_version" {
-  description = "Python version for Lambda"
-  type        = string
-}
-
-variable "lambda_reserved_concurrent_executions" {
-  description = "Function-level concurrent execution Limit for Lambda"
-  type        = number
+variable "lambda_configuration" {
+  description = "Lambda Configuration Variables"
+  type        = map(any)
 }
 
 variable "cloudwatch_log_group_retention_days" {
