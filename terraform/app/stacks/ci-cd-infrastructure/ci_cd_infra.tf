@@ -48,7 +48,7 @@ module "ci_cd_infra_codepipeline_iam_role" {
 }
 
 module "ci_cd_infra_codebuild" {
-  source = "../../modules/aws/codebuild"
+  source = "../../modules/aws/codebuild/stages"
 
   project_name   = var.ci_cd_infra_project_name
   build_projects = local.ci_cd_infra_build_projects

@@ -95,46 +95,49 @@ locals {
   ci_cd_infra_build_projects = {
     validate = merge(local.amazonlinux2_based_build,
       { env_variables = {
-        "ROLE_ARN"                             = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
-        "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
-        "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID" = var.CODEPIPELINE_SLACK_CHANNEL_ID,
-        "TF_VAR_REPORT_SLACK_CHANNEL_ID"       = var.REPORT_SLACK_CHANNEL_ID,
-        "TF_VAR_CI_CD_ALERTS_SLACK_CHANNEL_ID" = var.CI_CD_ALERTS_SLACK_CHANNEL_ID,
-        "TS_ENV"                               = var.environment,
-        "AWS_DEFAULT_REGION"                   = var.region,
-        "PYTHON_VERSION"                       = var.runtime_versions.python,
-        "GOLANG_VERSION"                       = var.runtime_versions.golang
-        "RUBY_VERSION"                         = var.runtime_versions.ruby,
-        "SCRIPT_DIR"                           = var.script_dir,
+        "ROLE_ARN"                               = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
+        "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
+        "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID"   = var.CODEPIPELINE_SLACK_CHANNEL_ID,
+        "TF_VAR_REPORT_SLACK_CHANNEL_ID"         = var.REPORT_SLACK_CHANNEL_ID,
+        "TF_VAR_CI_CD_ALERTS_SLACK_CHANNEL_ID"   = var.CI_CD_ALERTS_SLACK_CHANNEL_ID,
+        "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
+        "TS_ENV"                                 = var.environment,
+        "AWS_DEFAULT_REGION"                     = var.region,
+        "PYTHON_VERSION"                         = var.runtime_versions.python,
+        "GOLANG_VERSION"                         = var.runtime_versions.golang
+        "RUBY_VERSION"                           = var.runtime_versions.ruby,
+        "SCRIPT_DIR"                             = var.script_dir,
         }
     })
 
     plan = merge(local.amazonlinux2_based_build,
       { env_variables = {
-        "ROLE_ARN"                             = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
-        "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
-        "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID" = var.CODEPIPELINE_SLACK_CHANNEL_ID,
-        "TF_VAR_REPORT_SLACK_CHANNEL_ID"       = var.REPORT_SLACK_CHANNEL_ID,
-        "TF_VAR_CI_CD_ALERTS_SLACK_CHANNEL_ID" = var.CI_CD_ALERTS_SLACK_CHANNEL_ID,
-        "TS_ENV"                               = var.environment,
-        "AWS_DEFAULT_REGION"                   = var.region,
-        "PYTHON_VERSION"                       = var.runtime_versions.python,
-        "RUBY_VERSION"                         = var.runtime_versions.ruby,
-        "SCRIPT_DIR"                           = var.script_dir,
+        "ROLE_ARN"                               = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
+        "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
+        "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID"   = var.CODEPIPELINE_SLACK_CHANNEL_ID,
+        "TF_VAR_REPORT_SLACK_CHANNEL_ID"         = var.REPORT_SLACK_CHANNEL_ID,
+        "TF_VAR_CI_CD_ALERTS_SLACK_CHANNEL_ID"   = var.CI_CD_ALERTS_SLACK_CHANNEL_ID,
+        "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
+        "TS_ENV"                                 = var.environment,
+        "AWS_DEFAULT_REGION"                     = var.region,
+        "PYTHON_VERSION"                         = var.runtime_versions.python,
+        "RUBY_VERSION"                           = var.runtime_versions.ruby,
+        "SCRIPT_DIR"                             = var.script_dir,
         }
     })
 
     up = merge(local.amazonlinux2_based_build,
       { env_variables = {
-        "ROLE_ARN"                             = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
-        "TF_VAR_SLACK_WORKSPACE_ID"            = var.SLACK_WORKSPACE_ID,
-        "TF_VAR_REPORT_SLACK_CHANNEL_ID"       = var.REPORT_SLACK_CHANNEL_ID,
-        "TF_VAR_CI_CD_ALERTS_SLACK_CHANNEL_ID" = var.CI_CD_ALERTS_SLACK_CHANNEL_ID,
-        "TS_ENV"                               = var.environment,
-        "AWS_DEFAULT_REGION"                   = var.region,
-        "PYTHON_VERSION"                       = var.runtime_versions.python,
-        "RUBY_VERSION"                         = var.runtime_versions.ruby,
-        "SCRIPT_DIR"                           = var.script_dir,
+        "ROLE_ARN"                               = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
+        "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
+        "TF_VAR_REPORT_SLACK_CHANNEL_ID"         = var.REPORT_SLACK_CHANNEL_ID,
+        "TF_VAR_CI_CD_ALERTS_SLACK_CHANNEL_ID"   = var.CI_CD_ALERTS_SLACK_CHANNEL_ID,
+        "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
+        "TS_ENV"                                 = var.environment,
+        "AWS_DEFAULT_REGION"                     = var.region,
+        "PYTHON_VERSION"                         = var.runtime_versions.python,
+        "RUBY_VERSION"                           = var.runtime_versions.ruby,
+        "SCRIPT_DIR"                             = var.script_dir,
         }
     })
   }
@@ -188,6 +191,7 @@ locals {
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
     })
+
     batch_lhci_leak = merge(local.ubuntu_based_build,
       { env_variables = {
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
@@ -202,6 +206,16 @@ locals {
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
     })
+  }
+  website_infra_build_project_down_env_variables = {
+    "ROLE_ARN"                               = module.website_infra_codepipeline_iam_role.terraform_role_arn,
+    "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
+    "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
+    "TS_ENV"                                 = var.environment,
+    "AWS_DEFAULT_REGION"                     = var.region,
+    "PYTHON_VERSION"                         = var.runtime_versions.python,
+    "RUBY_VERSION"                           = var.runtime_versions.ruby,
+    "SCRIPT_DIR"                             = var.script_dir,
   }
 }
 

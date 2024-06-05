@@ -38,6 +38,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
       status = "ENABLED"
     }
   }
+
   source {
     type            = each.value.build_project_source
     buildspec       = "./aws/buildspecs/${var.codepipeline_buildspecs}/${each.key}.yml"

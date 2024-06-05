@@ -48,7 +48,7 @@ module "website_infra_codepipeline_iam_role" {
 }
 
 module "website_infra_codebuild" {
-  source = "../../modules/aws/codebuild"
+  source = "../../modules/aws/codebuild/stages"
 
   project_name   = var.website_infra_project_name
   build_projects = local.website_infra_build_projects
@@ -61,6 +61,30 @@ module "website_infra_codebuild" {
   s3_bucket_name = module.website_infra_s3_artifacts_bucket.bucket
   role_arn       = module.website_infra_codepipeline_iam_role.role_arn
   kms_key_arn    = module.website_infra_codepipeline_kms.arn
+
+  tags = var.tags
+
+  depends_on = [
+    module.website_infra_s3_artifacts_bucket,
+    module.website_infra_codepipeline_iam_role,
+    module.website_infra_codepipeline_kms,
+    module.codestar_connection
+  ]
+}
+
+module "website_infra_codebuild_down" {
+  source = "../../modules/aws/codebuild/project"
+
+  project_name = "website-down"
+
+  region      = var.region
+  environment = var.environment
+
+  build_configuration = local.amazonlinux2_based_build
+  env_variables = local.website_infra_build_project_down_env_variables
+  
+  role_arn    = module.website_infra_codepipeline_iam_role.role_arn
+  kms_key_arn = module.website_infra_codepipeline_kms.arn
 
   tags = var.tags
 

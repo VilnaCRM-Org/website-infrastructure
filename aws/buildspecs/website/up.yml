@@ -14,7 +14,6 @@ phases:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## TERRASPACE UP : Bringing up the infrastructure'
       - 'terraspace up website --plan "website.plan" -y'
-      - 'terraspace up website --plan "website_staging.plan" -y'
 
 artifacts:
   files:
