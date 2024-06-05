@@ -104,9 +104,14 @@ variable "lambda_configuration" {
   type        = map(any)
 }
 
+variable "enable_cloudfront_staging" {
+  description = "This responsible for enabling Staging for Cloudfront"
+  type        = bool
+}
+
 variable "create_slack_notification" {
   description = "This responsible for creating Slack Notifications"
-  type        = string
+  type        = bool
 }
 
 variable "tags" {

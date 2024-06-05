@@ -203,3 +203,43 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_requests_flood_alarm" {
     Region         = "Global"
   }
 }
+
+resource "aws_cloudwatch_metric_alarm" "cloudfront_staging_500_errors" {
+  provider            = aws.us-east-1
+  alarm_name          = "${var.project_name}-cloudfront-staging-5xx-errors-alarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  metric_name         = "5xxErrorRate"
+  namespace           = "AWS/CloudFront"
+  period              = 60
+  statistic           = "Average"
+  threshold           = 1
+  treat_missing_data  = "notBreaching"
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
+  actions_enabled     = true
+
+  dimensions = {
+    DistributionId = aws_cloudfront_distribution.staging_cloudfront_distribution.id
+    Region         = "Global"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "cloudfront_staging_origin_latency" {
+  provider            = aws.us-east-1
+  alarm_name          = "${var.project_name}-cloudfront-staging-origin-latency-alarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 5
+  metric_name         = "OriginLatency"
+  namespace           = "AWS/CloudFront"
+  period              = 180
+  statistic           = "Average"
+  threshold           = 200
+  treat_missing_data  = "notBreaching"
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
+  actions_enabled     = true
+
+  dimensions = {
+    DistributionId = aws_cloudfront_distribution.staging_cloudfront_distribution.id
+    Region         = "Global"
+  }
+}

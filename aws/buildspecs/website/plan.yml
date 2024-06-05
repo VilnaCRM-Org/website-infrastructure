@@ -13,8 +13,10 @@ phases:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
+      - 'sed -i "s/continuous_deployment_policy_id = aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy.id/#continuous_deployment_policy_id = aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy.id/" terraform/app/modules/aws/cloudfront/main.tf'
       - 'terraspace plan website --out "website.plan"'
-
+      - 'sed -i "s/#continuous_deployment_policy_id = aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy.id/continuous_deployment_policy_id = aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy.id/" terraform/app/modules/aws/cloudfront/main.tf'
+      - 'terraspace plan website --out "website_staging.plan"'
 artifacts:
   files:
     - '**/*'

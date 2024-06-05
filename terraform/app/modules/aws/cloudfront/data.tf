@@ -80,6 +80,8 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_topic_doc" {
       values = [
         "${aws_cloudwatch_metric_alarm.cloudfront_500_errors.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_origin_latency.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_staging_500_errors.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_staging_origin_latency.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_bytes_downloaded_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_allowed_requests_anomaly_detection.arn}",
@@ -173,6 +175,8 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_kms_key_policy_doc" {
       values = [
         "${aws_cloudwatch_metric_alarm.cloudfront_500_errors.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_origin_latency.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_staging_500_errors.arn}",
+        "${aws_cloudwatch_metric_alarm.cloudfront_staging_origin_latency.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_bytes_downloaded_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_allowed_requests_anomaly_detection.arn}",

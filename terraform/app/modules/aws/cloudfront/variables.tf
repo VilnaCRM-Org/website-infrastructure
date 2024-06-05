@@ -8,16 +8,6 @@ variable "aws_s3_bucket_replication_bucket_regional_domain_name" {
   description = "S3 Replication Bucket Regional Domain Name"
 }
 
-variable "aws_s3_bucket_staging_bucket_regional_domain_name" {
-  type        = string
-  description = "Staging S3 Bucket Regional Domain Name"
-}
-
-variable "aws_s3_bucket_staging_replication_bucket_regional_domain_name" {
-  type        = string
-  description = "Staging S3 Replication Bucket Regional Domain Name"
-}
-
 variable "domain_name" {
   type        = string
   description = "Domain name for website, used for all resources"
@@ -46,6 +36,11 @@ variable "aws_acm_certificate_id" {
 variable "aws_acm_certificate_arn" {
   type        = string
   description = "ARN of ACM Certificate"
+}
+
+variable "enable_cloudfront_staging" {
+  description = "This responsible for enabling Staging for Cloudfront"
+  type        = bool
 }
 
 variable "cloudfront_configuration" {

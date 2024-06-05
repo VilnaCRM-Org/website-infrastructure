@@ -15,7 +15,7 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
   }
 
   rule {
-    name     = "AWS-AWSManagedRulesCommonRuleSet"
+    name     = local.waf_rules.common_rule
     priority = 0
     override_action {
       none {
@@ -45,13 +45,13 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-AWSManagedRulesCommonRuleSet"
+      metric_name                = local.waf_rules.common_rule
       sampled_requests_enabled   = true
     }
   }
 
   rule {
-    name     = "AWS-AWSManagedRulesLinuxRuleSet"
+    name     = local.waf_rules.linux_rule
     priority = 1
     override_action {
       none {
@@ -65,13 +65,13 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-AWSManagedRulesLinuxRuleSet"
+      metric_name                = local.waf_rules.linux_rule
       sampled_requests_enabled   = true
     }
   }
 
   rule {
-    name     = "AWS-AWSManagedRulesAmazonIpReputationList"
+    name     = local.waf_rules.amazon_ip_reputation_rule
     priority = 2
     override_action {
       none {
@@ -85,13 +85,13 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-AWSManagedRulesAmazonIpReputationList"
+      metric_name                = local.waf_rules.amazon_ip_reputation_rule
       sampled_requests_enabled   = true
     }
   }
 
   rule {
-    name     = "AWS-AWSManagedRulesAnonymousIpList"
+    name     = local.waf_rules.anonymous_rule
     priority = 3
     override_action {
       none {
@@ -113,13 +113,13 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-AWSManagedRulesAnonymousIpList"
+      metric_name                = local.waf_rules.anonymous_rule
       sampled_requests_enabled   = true
     }
   }
 
   rule {
-    name     = "AWS-AWSManagedRulesSQLiRuleSet"
+    name     = local.waf_rules.sql_rule
     priority = 4
     override_action {
       none {
@@ -134,12 +134,12 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     visibility_config {
       sampled_requests_enabled   = true
       cloudwatch_metrics_enabled = true
-      metric_name                = "SQLInjectionRule"
+      metric_name                = local.waf_rules.sql_rule
     }
   }
 
   rule {
-    name     = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+    name     = local.waf_rules.bad_inputs_rule
     priority = 5
     override_action {
       none {
@@ -153,13 +153,13 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+      metric_name                = local.waf_rules.bad_inputs_rule
       sampled_requests_enabled   = true
     }
   }
 
   rule {
-    name     = "AWS-AWSManagedRulesUnixRuleSet"
+    name     = local.waf_rules.unix_rule
     priority = 6
     override_action {
       none {
@@ -174,13 +174,13 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-AWSManagedRulesUnixRuleSet"
+      metric_name                = local.waf_rules.unix_rule
       sampled_requests_enabled   = true
     }
   }
 
   rule {
-    name     = "AWS-AWSManagedRulesWindowsRuleSet"
+    name     = local.waf_rules.windows_rule
     priority = 7
     override_action {
       none {
@@ -201,13 +201,13 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-AWSManagedRulesWindowsRuleSet"
+      metric_name                = local.waf_rules.windows_rule
       sampled_requests_enabled   = true
     }
   }
 
   rule {
-    name     = "RateLimit"
+    name     = local.waf_rules.rate_limit_rule
     priority = 8
 
     action {
@@ -222,7 +222,7 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-RateLimitRuleSet"
+      metric_name                = local.waf_rules.rate_limit_rule
       sampled_requests_enabled   = true
     }
   }

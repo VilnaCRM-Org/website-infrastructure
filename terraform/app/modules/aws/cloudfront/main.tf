@@ -1,7 +1,6 @@
 resource "aws_cloudfront_distribution" "this" {
   provider = aws.us-east-1
-  #ts:skip=AC-AW-IS-CD-M-0026 Geo restriction is not needed
-  enabled             = true
+  enabled  = true
   origin_group {
     origin_id = "${var.project_name}-groupS3"
 
@@ -102,33 +101,16 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
-  continuous_deployment_policy_id = aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy.id
+  #continuous_deployment_policy_id = aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy.id
 
   wait_for_deployment = false
 
 }
 
-resource "aws_cloudfront_origin_access_control" "this" {
-  name                              = var.domain_name
-  description                       = "${var.domain_name} OAC"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}
-
-resource "aws_cloudfront_origin_access_control" "replication" {
-  name                              = "${var.domain_name}-replication"
-  description                       = "${var.domain_name} OAC"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}
-
 resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
   provider = aws.us-east-1
-  staging = true
-  enabled             = true
-  #ts:skip=AC-AW-IS-CD-M-0026 Geo restriction is not needed
+  staging  = true
+  enabled  = true
 
   origin_group {
     origin_id = "${var.project_name}-groupS3"
@@ -147,13 +129,13 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
   }
 
   origin {
-    domain_name              = var.aws_s3_bucket_staging_bucket_regional_domain_name
+    domain_name              = "staging.${var.aws_s3_bucket_this_bucket_regional_domain_name}"
     origin_id                = local.s3_origin_id
     origin_access_control_id = aws_cloudfront_origin_access_control.this.id
   }
 
   origin {
-    domain_name              = var.aws_s3_bucket_staging_replication_bucket_regional_domain_name
+    domain_name              = "staging.${var.aws_s3_bucket_replication_bucket_regional_domain_name}"
     origin_id                = local.s3_failover_origin_id
     origin_access_control_id = aws_cloudfront_origin_access_control.replication.id
   }
@@ -228,18 +210,3 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
   wait_for_deployment = false
 }
 
-resource "aws_cloudfront_continuous_deployment_policy" "continuous_deployment_policy" {
-  enabled = true
-
-  staging_distribution_dns_names {
-    items    = [aws_cloudfront_distribution.staging_cloudfront_distribution.domain_name]
-    quantity = 1
-  }
-
-  traffic_config {
-    type = "SingleWeight"
-    single_weight_config {
-      weight = "0.15"
-    }
-  }
-}
