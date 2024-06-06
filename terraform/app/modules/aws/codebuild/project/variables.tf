@@ -4,7 +4,12 @@ variable "project_name" {
 }
 
 variable "build_configuration" {
-  description = "Configuration for CodeBuild Project"
+  description = "Build Configuration for CodeBuild Project"
+  type        = map(any)
+}
+
+variable "source_configuration" {
+  description = "Source Configuration for CodeBuild Project"
   type        = map(any)
 }
 

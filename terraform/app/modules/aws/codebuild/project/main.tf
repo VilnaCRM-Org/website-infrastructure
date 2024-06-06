@@ -32,13 +32,13 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
   }
 
   source {
-    type            = "GITHUB"
-    buildspec       = "./aws/buildspecs/website/down.yml"
-    location        = "https://github.com/VilnaCRM-Org/website-infrastructure.git"
-    git_clone_depth = 1
+    type            = var.source_configuration.type
+    buildspec       = var.source_configuration.buildspec
+    location        = var.source_configuration.location
+    git_clone_depth = var.source_configuration.depth
   }
 
-  source_version = "2-set-up-the-frontend-production-infrastructure"
+  source_version = var.source_configuration.version
 
 
   logs_config {
