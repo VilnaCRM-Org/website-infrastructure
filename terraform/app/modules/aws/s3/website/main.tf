@@ -20,7 +20,6 @@ resource "aws_s3_bucket_policy" "this" {
 }
 
 resource "aws_s3_bucket_versioning" "this" {
-  count  = var.s3_bucket_versioning == true ? 1 : 0
   bucket = aws_s3_bucket.this.id
   versioning_configuration {
     status = "Enabled"
@@ -28,7 +27,6 @@ resource "aws_s3_bucket_versioning" "this" {
 }
 
 resource "aws_s3_bucket_public_access_block" "this" {
-  count                   = var.s3_bucket_public_access_block == true ? 1 : 0
   bucket                  = aws_s3_bucket.this.id
   block_public_acls       = true
   block_public_policy     = true

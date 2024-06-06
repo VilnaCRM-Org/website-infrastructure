@@ -18,12 +18,6 @@ variable "domain_name" {
   description = "Domain name for website, used for all resources"
 }
 
-variable "deploy_sample_content" {
-  type        = bool
-  default     = false
-  description = "Deploy sample content to show website working?"
-}
-
 variable "s3_artifacts_bucket_files_deletion_days" {
   description = "Expiring time of files in buckets for lifecycle configuration rule"
   type        = number
@@ -37,11 +31,6 @@ variable "s3_logs_lifecycle_configuration" {
 variable "s3_bucket_custom_name" {
   type        = string
   description = "Any non-empty string here will replace default name of bucket `var.domain_name`"
-}
-
-variable "s3_bucket_versioning" {
-  type        = bool
-  description = "Apply versioning to S3 bucket?"
 }
 
 variable "canary_configuration" {
@@ -62,11 +51,6 @@ variable "cloudfront_custom_error_responses" {
     response_page_path    = string
   }))
   description = "See https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GeneratingCustomErrorResponses.html"
-}
-
-variable "s3_bucket_public_access_block" {
-  type        = bool
-  description = "Apply public access block to S3 bucket?"
 }
 
 variable "ttl_validation" {

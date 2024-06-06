@@ -5,12 +5,12 @@ locals {
   website_infra_codebuild_project_down_name = "${var.website_infra_project_name}-down"
 
   website_infra_codebuild_project_down_source_configuration = {
-      type = "GITHUB"
-      buildspec = "./aws/buildspecs/website/down.yml"
-      location = "https://github.com/${var.source_repo_owner}/${var.source_repo_name}"
-      depth = 1
-      version = var.source_repo_branch
-   }
+    type      = "GITHUB"
+    buildspec = "./aws/buildspecs/website/down.yml"
+    location  = "https://github.com/${var.source_repo_owner}/${var.source_repo_name}"
+    depth     = 1
+    version   = var.source_repo_branch
+  }
 
 
   ubuntu_based_build = {
@@ -71,7 +71,7 @@ locals {
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
-        "CI_CD_WEBSITE_PIPELINE_NAME" = "${var.ci_cd_website_project_name}-pipeline"
+        "CI_CD_WEBSITE_PIPELINE_NAME"            = "${var.ci_cd_website_project_name}-pipeline"
         }
     })
   }
@@ -193,7 +193,7 @@ locals {
     })
     trigger = merge(local.amazonlinux2_based_build,
       { env_variables = {
-          "PROJECT_NAME" = local.website_infra_codebuild_project_down_name
+        "PROJECT_NAME" = local.website_infra_codebuild_project_down_name
         }
     })
   }

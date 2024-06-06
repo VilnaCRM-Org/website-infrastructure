@@ -54,6 +54,16 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     ]
   }
   statement {
+    sid    = "CloudfrontContinuousDeploymentPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudfront:CreateContinuousDeploymentPolicy",
+    ]
+    resources = [
+      "arn:aws:cloudfront::${local.account_id}:continuous-deployment-policy/*"
+    ]
+  }
+  statement {
     sid    = "WAFV2CloudfrontCreationPolicy"
     effect = "Allow"
     actions = [
@@ -130,9 +140,9 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-bytes-downloaded-anomaly-detection",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-5xx-errors-alarm",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-origin-latency-alarm",
-      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-5xx-errors-alarm",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-staging-5xx-errors-alarm",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-staging-origin-latency-alarm",
-      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-staging-requests-flood-alarm",
+      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-cloudfront-requests-flood-alarm",
       "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-heartbeat-canary-2xx",
       "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-s3-objects-anomaly-detection",
       "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-s3-requests-anomaly-detection",
@@ -141,6 +151,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-lambda-s3-errors-detection",
       "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-lambda-s3-throttles-anomaly-detection",
       "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-lambda-s3-duration-anomaly-detection",
+      "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.project_name}-staging-s3-4xx-errors-anomaly-detection",
 
     ]
   }
@@ -162,6 +173,18 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     resources = [
       "arn:aws:logs:us-east-1:${local.account_id}:log-group:*",
       "arn:aws:logs:${var.region}:${local.account_id}:log-group:*"
+    ]
+  }
+
+  statement {
+    sid    = "CanaryPolicy"
+    effect = "Allow"
+    actions = [
+      "synthetics:CreateCanary",
+      "synthetics:TagResource",
+    ]
+    resources = [
+      "arn:aws:synthetics:${var.region}:${local.account_id}:canary:${var.project_name}-hearbeat",
     ]
   }
 } 

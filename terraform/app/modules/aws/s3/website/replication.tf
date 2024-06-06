@@ -12,7 +12,6 @@ resource "aws_s3_bucket" "replication_bucket" {
 
 resource "aws_s3_bucket_public_access_block" "replication_bucket" {
   provider                = aws.eu-west-1
-  count                   = var.s3_bucket_public_access_block == true ? 1 : 0
   bucket                  = aws_s3_bucket.replication_bucket.id
   block_public_acls       = true
   block_public_policy     = true

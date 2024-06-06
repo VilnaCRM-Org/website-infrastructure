@@ -8,6 +8,7 @@ resource "aws_cloudwatch_log_group" "s3_lambda_notification_group" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "s3_objects_anomaly_detection" {
+  count               = var.staging ? 0 : 1
   alarm_name          = "${var.project_name}-s3-objects-anomaly-detection"
   comparison_operator = "LessThanLowerOrGreaterThanUpperThreshold"
   evaluation_periods  = 5
@@ -40,6 +41,7 @@ resource "aws_cloudwatch_metric_alarm" "s3_objects_anomaly_detection" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "s3_requests_anomaly_detection" {
+  count               = var.staging ? 0 : 1
   alarm_name          = "${var.project_name}-s3-requests-anomaly-detection"
   comparison_operator = "LessThanLowerOrGreaterThanUpperThreshold"
   evaluation_periods  = 5
@@ -107,6 +109,7 @@ resource "aws_cloudwatch_metric_alarm" "s3_4xx_errors_anomaly_detection" {
 
 
 resource "aws_cloudwatch_metric_alarm" "lambda_invocations_anomaly_detection" {
+  count               = var.staging ? 0 : 1
   alarm_name          = "${var.project_name}-lambda-s3-invocations-anomaly-detection"
   comparison_operator = "GreaterThanUpperThreshold"
   evaluation_periods  = 1
@@ -139,6 +142,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_invocations_anomaly_detection" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_errors_detection" {
+  count               = var.staging ? 0 : 1
   alarm_name          = "${var.project_name}-lambda-s3-errors-detection"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 1
@@ -158,6 +162,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors_detection" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_throttles_anomaly_detection" {
+  count               = var.staging ? 0 : 1
   alarm_name          = "${var.project_name}-lambda-s3-throttles-anomaly-detection"
   comparison_operator = "GreaterThanUpperThreshold"
   evaluation_periods  = 1
@@ -190,6 +195,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles_anomaly_detection" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_duration_anomaly_detection" {
+  count               = var.staging ? 0 : 1
   alarm_name          = "${var.project_name}-lambda-s3-duration-anomaly-detection"
   comparison_operator = "GreaterThanUpperThreshold"
   evaluation_periods  = 1

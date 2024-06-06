@@ -31,15 +31,7 @@ data "aws_iam_policy_document" "sns_bucket_topic_doc" {
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
-      values = [
-        "${aws_cloudwatch_metric_alarm.s3_objects_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.s3_requests_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.s3_4xx_errors_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.lambda_invocations_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.lambda_errors_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.lambda_throttles_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.lambda_duration_anomaly_detection.arn}",
-      ]
+      values   = var.staging == true ? local.sns_staging_alarms : local.sns_alarms
     }
   }
 }
@@ -128,15 +120,7 @@ data "aws_iam_policy_document" "bucket_sns_kms_key_policy_doc" {
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
-      values = [
-        "${aws_cloudwatch_metric_alarm.s3_objects_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.s3_requests_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.s3_4xx_errors_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.lambda_invocations_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.lambda_errors_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.lambda_throttles_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.lambda_duration_anomaly_detection.arn}",
-      ]
+      values   = var.staging == true ? local.sns_staging_alarms : local.sns_alarms
     }
   }
 }

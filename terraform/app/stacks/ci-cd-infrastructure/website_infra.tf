@@ -81,8 +81,8 @@ module "website_infra_codebuild_down" {
   environment = var.environment
 
   build_configuration = local.amazonlinux2_based_build
-  env_variables = local.website_infra_build_project_down_env_variables
-  
+  env_variables       = local.website_infra_build_project_down_env_variables
+
   source_configuration = local.website_infra_codebuild_project_down_source_configuration
 
   role_arn    = module.website_infra_codepipeline_iam_role.role_arn

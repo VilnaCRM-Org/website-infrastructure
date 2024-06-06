@@ -50,21 +50,6 @@ variable "s3_bucket_custom_name" {
   description = "Any non-empty string here will replace default name of bucket `var.domain_name`"
 }
 
-variable "s3_bucket_versioning" {
-  type        = bool
-  description = "Apply versioning to S3 bucket?"
-}
-
-variable "s3_bucket_public_access_block" {
-  type        = bool
-  description = "Apply public access block to S3 bucket?"
-}
-
-variable "deploy_sample_content" {
-  type        = bool
-  description = "Deploy sample content to show website working?"
-}
-
 variable "lambda_configuration" {
   description = "Lambda Configuration Variables"
   type        = map(any)
@@ -73,6 +58,11 @@ variable "lambda_configuration" {
 variable "cloudwatch_log_group_retention_days" {
   description = "Retention time of Cloudwatch log group logs"
   type        = number
+}
+
+variable "staging" {
+  type        = string
+  description = "Domain name for website, used for all resources"
 }
 
 variable "tags" {
