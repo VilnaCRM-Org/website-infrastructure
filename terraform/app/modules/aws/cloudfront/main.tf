@@ -101,9 +101,9 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
-  #continuous_deployment_policy_id = aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy.id
-
   wait_for_deployment = false
+
+  depends_on = [aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy]
 
 }
 

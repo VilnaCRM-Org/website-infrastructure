@@ -44,6 +44,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "cloudfront:CreateDistribution",
       "cloudfront:CreateDistributionWithTags",
       "cloudfront:GetDistribution",
+      "cloudfront:CreateInvalidation"
       "cloudfront:ListTagsForResource",
       "cloudfront:UpdateDistribution",
       "cloudfront:TagResource",
@@ -163,6 +164,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "logs:CreateLogDelivery",
       "logs:DescribeResourcePolicies",
       "logs:ListTagsLogGroup",
+      "logs:ListTagsForResource",
       "logs:GetLogEvents",
       "logs:PutLogEvents",
       "logs:PutRetentionPolicy",
@@ -181,10 +183,12 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     effect = "Allow"
     actions = [
       "synthetics:CreateCanary",
+      "synthetics:GetCanary",
+      "synthetics:DeleteCanary",
       "synthetics:TagResource",
     ]
     resources = [
       "arn:aws:synthetics:${var.region}:${local.account_id}:canary:${var.project_name}-hearbeat",
     ]
   }
-} 
+}

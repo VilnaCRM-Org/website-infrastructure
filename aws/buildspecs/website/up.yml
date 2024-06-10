@@ -8,12 +8,15 @@ phases:
     commands:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
       - 'dnf install -y yum-utils'
+      - 'pip install python-dotenv'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}/terraform'
       - 'echo ## TERRASPACE UP : Bringing up the infrastructure'
       - 'terraspace up website --plan "website.plan" -y'
+      - 'TS_ENV=test terraspace output website > .terraform.env'
+      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_update.py'
       - 'aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME'
 
 artifacts:

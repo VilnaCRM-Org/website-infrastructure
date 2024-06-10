@@ -73,6 +73,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "logs:CreateLogDelivery",
       "logs:DescribeResourcePolicies",
       "logs:DescribeLogGroups",
+      "logs:ListTagsForResource",
       "logs:ListTagsLogGroup",
       "logs:GetLogEvents",
       "logs:PutLogEvents",

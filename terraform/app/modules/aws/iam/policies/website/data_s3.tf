@@ -37,7 +37,6 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "s3:DeleteObjectVersion"
     ]
     resources = [
-
       "arn:aws:s3:::${var.domain_name}",
       "arn:aws:s3:::${var.domain_name}/*",
       "arn:aws:s3:::staging.${var.domain_name}",
@@ -50,9 +49,6 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "arn:aws:s3:::${var.project_name}-logging-bucket/*",
       "arn:aws:s3:::${var.project_name}-replication-logging-bucket",
       "arn:aws:s3:::${var.project_name}-replication-logging-bucket/*",
-      "arn:aws:s3:::${var.project_name}-canaries-reports-bucket",
-      "arn:aws:s3:::${var.project_name}-canaries-reports-bucket/*",
-
     ]
   }
   statement {
@@ -79,7 +75,18 @@ data "aws_iam_policy_document" "s3_policy_doc" {
     ]
     resources = [
       "arn:aws:s3:::${var.project_name}-logging-bucket",
-      "arn:aws:s3:::${var.project_name}-logging-bucket/*"
+      "arn:aws:s3:::${var.project_name}-logging-bucket/*",
+    ]
+  }
+  statement {
+    sid    = "S3CanariesBucket"
+    effect = "Allow"
+    actions = [
+      "s3:*",
+    ]
+    resources = [
+      "arn:aws:s3:::${var.project_name}-canaries-reports-bucket",
+      "arn:aws:s3:::${var.project_name}-canaries-reports-bucket/*",
     ]
   }
 } 
