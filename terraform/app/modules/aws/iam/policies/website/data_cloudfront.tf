@@ -44,7 +44,6 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "cloudfront:CreateDistribution",
       "cloudfront:CreateDistributionWithTags",
       "cloudfront:GetDistribution",
-      "cloudfront:CreateInvalidation"
       "cloudfront:ListTagsForResource",
       "cloudfront:UpdateDistribution",
       "cloudfront:TagResource",
