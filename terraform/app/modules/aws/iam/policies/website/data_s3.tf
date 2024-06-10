@@ -89,4 +89,14 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "arn:aws:s3:::${var.project_name}-canaries-reports-bucket/*",
     ]
   }
+  statement {
+    sid    = "S3LibraryBucket"
+    effect = "Allow"
+    actions = [
+      "s3:GetObjectVersion"
+    ]
+    resources = [
+      "arn:aws:s3:::aws-synthetics-library-*"
+    ]
+  }
 } 

@@ -44,6 +44,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "cloudfront:CreateDistribution",
       "cloudfront:CreateDistributionWithTags",
       "cloudfront:GetDistribution",
+      "cloudfront:GetDistributionConfig",
       "cloudfront:ListTagsForResource",
       "cloudfront:UpdateDistribution",
       "cloudfront:TagResource",
@@ -58,6 +59,8 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     effect = "Allow"
     actions = [
       "cloudfront:CreateContinuousDeploymentPolicy",
+      "cloudfront:GetContinuousDeploymentPolicy",
+      "cloudfront:DeleteContinuousDeploymentPolicy",
     ]
     resources = [
       "arn:aws:cloudfront::${local.account_id}:continuous-deployment-policy/*"
@@ -124,7 +127,6 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     actions = [
       "cloudwatch:PutMetricAlarm",
       "cloudwatch:ListTagsForResource",
-      "cloudwatch:DescribeAlarms",
       "cloudwatch:DeleteAlarms"
     ]
     resources = [

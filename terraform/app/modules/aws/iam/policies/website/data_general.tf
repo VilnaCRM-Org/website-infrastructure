@@ -13,10 +13,17 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "cloudfront:CreateOriginAccessControl",
       "acm:RequestCertificate",
       "iam:CreateServiceLinkedRole",
+      "iam:ListRoles",
+      "s3:ListAllMyBuckets",
+      "s3:GetBucketLocation",
+      "xray:GetTraceSummaries",
+      "xray:BatchGetTraces",
+      "apigateway:GET",
       "logs:DescribeLogGroups",
       "logs:CreateLogDelivery",
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
+      "synthetics:*"
     ]
     #checkov:skip=CKV_AWS_356:Required by AWSCC module and wafv2 logging
     #checkov:skip=CKV_AWS_109:Required by AWSCC module and wafv2 logging
@@ -67,5 +74,36 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "s3:PutObject"
     ]
     resources = ["arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}/main/${var.region}/${var.environment}/stacks/website/terraform.tfstate"]
+  }
+  statement {
+    sid    = "CloudwatchAlarmsPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudwatch:DescribeAlarms",
+    ]
+    resources = [
+      "arn:aws:cloudwatch:*:*:alarm:*"
+    ]
+  }
+  statement {
+    sid    = "CloudwatchAlarmsReadWritePolicy"
+    effect = "Allow"
+    actions = [
+      "cloudwatch:PutMetricAlarm",
+      "cloudwatch:DeleteAlarms"
+    ]
+    resources = [
+      "arn:aws:cloudwatch:*:*:alarm:Synthetics-*"
+    ]
+  }
+  statement {
+    sid    = "CodePipelinePolicy"
+    effect = "Allow"
+    actions = [
+      "codepipeline:StartPipelineExecution",
+    ]
+    resources = [
+      "arn:aws:codepipeline:${var.region}:${local.account_id}:ci-cd-website-${var.environment}-pipeline"
+    ]
   }
 } 
