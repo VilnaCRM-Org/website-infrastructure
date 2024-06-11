@@ -16,7 +16,7 @@ phases:
       - 'echo ## TERRASPACE UP : Bringing up the infrastructure'
       - 'terraspace up website --plan "website.plan" -y'
       - 'TS_ENV=test terraspace output website > .terraform.env'
-      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_update.py'
+      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py'
       - 'aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME'
 
 artifacts:
