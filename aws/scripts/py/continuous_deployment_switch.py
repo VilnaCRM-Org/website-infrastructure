@@ -9,43 +9,35 @@ CONFIG_FILENAME = "continuous_deployment_policy.json"
 REGION = 'us-east-1'
 
 
-def create_weight_config(staging_dns_name, weight):
-    return {
+def create_config(staging_dns_name, config_value, config_type='weight'):
+    base_config = {
         "StagingDistributionDnsNames": {
             "Quantity": 1,
             "Items": [staging_dns_name]
         },
         "Enabled": True,
         "TrafficConfig": {
-            "SingleWeightConfig": {
-                "Weight": weight
-            },
-            "Type": "SingleWeight"
+            "Type": "SingleWeight" if config_type == 'weight' else "SingleHeader"
         }
     }
 
-
-def create_header_config(staging_dns_name, header):
-    return {
-        "StagingDistributionDnsNames": {
-            "Quantity": 1,
-            "Items": [staging_dns_name]
-        },
-        "Enabled": True,
-        "TrafficConfig": {
-            "SingleHeaderConfig": {
-                "Header": f"aws-cf-cd-{header}",
-                "Value": header
-            },
-            "Type": "SingleHeader"
+    if config_type == 'weight':
+        base_config["TrafficConfig"]["SingleWeightConfig"] = {
+            "Weight": config_value
         }
-    }
+    elif config_type == 'header':
+        base_config["TrafficConfig"]["SingleHeaderConfig"] = {
+            "Header": f"aws-cf-cd-{config_value}",
+            "Value": config_value
+        }
+
+    return base_config
 
 
 def type_handler(config_type, staging_dns_name):
     if config_type != "SingleHeader":
-        return create_header_config(staging_dns_name, HEADER)
-    return create_weight_config(staging_dns_name, WEIGHT)
+        return create_config(staging_dns_name, HEADER, config_type='header')
+    return create_config(staging_dns_name, WEIGHT, config_type='weight')
 
 
 def fetch_continuous_deployment_policies():

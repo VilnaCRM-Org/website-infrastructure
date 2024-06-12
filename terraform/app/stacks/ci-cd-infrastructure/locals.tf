@@ -193,6 +193,12 @@ locals {
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
     })
+    release = merge(local.ubuntu_based_build,
+      { env_variables = {
+        "PYTHON_VERSION" = var.runtime_versions.python,
+        "SCRIPT_DIR"     = var.script_dir,
+        }
+    })
     trigger = merge(local.amazonlinux2_based_build,
       { env_variables = {
         "PROJECT_NAME" = local.website_infra_codebuild_project_down_name
