@@ -5,6 +5,13 @@ source_repo_branch        = "2-set-up-the-frontend-production-infrastructure"
 website_repo_branch       = "5-make-website-layout"
 region                    = "eu-central-1"
 
+cloudfront_configuration = {
+  region = "us-east-1"
+
+}
+continuous_deployment_policy_weight = 0.15
+continuous_deployment_policy_header = "staging"
+
 script_dir = "./aws/scripts"
 
 dynamodb_table_name = "terraform_locks"

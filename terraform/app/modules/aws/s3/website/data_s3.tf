@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "this" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = [var.aws_cloudfront_distribution_arn]
+      values   = var.aws_cloudfront_distributions_arns
     }
 
     principals {
@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "replication" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = [var.aws_cloudfront_distribution_arn]
+      values   = var.aws_cloudfront_distributions_arns
     }
   }
   statement {

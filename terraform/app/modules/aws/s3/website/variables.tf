@@ -1,5 +1,5 @@
-variable "aws_cloudfront_distribution_arn" {
-  type        = string
+variable "aws_cloudfront_distributions_arns" {
+  type        = list(string)
   description = "CloudFront Distribution ARN"
 }
 

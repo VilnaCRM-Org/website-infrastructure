@@ -72,6 +72,7 @@ locals {
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         "CI_CD_WEBSITE_PIPELINE_NAME"            = "${var.ci_cd_website_project_name}-pipeline"
+        "CLOUDFRONT_REGION"                      = var.cloudfront_configuration.region
         }
     })
   }
@@ -153,6 +154,9 @@ locals {
         "ALARM_NAME"                    = local.alarm_name
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
+        "CLOUDFRONT_REGION"             = var.cloudfront_configuration.region
+        "CLOUDFRONT_WEIGHT"             = var.continuous_deployment_policy_weight
+        "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header
         }
     })
 
@@ -195,8 +199,9 @@ locals {
     })
     release = merge(local.ubuntu_based_build,
       { env_variables = {
-        "PYTHON_VERSION" = var.runtime_versions.python,
-        "SCRIPT_DIR"     = var.script_dir,
+        "PYTHON_VERSION"    = var.runtime_versions.python,
+        "SCRIPT_DIR"        = var.script_dir,
+        "CLOUDFRONT_REGION" = var.cloudfront_configuration.region
         }
     })
     trigger = merge(local.amazonlinux2_based_build,

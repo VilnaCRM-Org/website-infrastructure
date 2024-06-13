@@ -1,12 +1,14 @@
 import json
 import subprocess
+import os
 
 # Configuration constants
 MAX_ITEMS = "1"
-WEIGHT = 0.15
-HEADER = "staging"
 CONFIG_FILENAME = "continuous_deployment_policy.json"
-REGION = 'us-east-1'
+
+CLOUDFRONT_WEIGHT = os.environ['CLOUDFRONT_WEIGHT']
+CLOUDFRONT_HEADER = os.environ['CLOUDFRONT_HEADER']
+CLOUDFRONT_REGION = os.environ['CLOUDFRONT_REGION']
 
 
 def create_config(staging_dns_name, config_value, config_type='weight'):
@@ -36,14 +38,14 @@ def create_config(staging_dns_name, config_value, config_type='weight'):
 
 def type_handler(config_type, staging_dns_name):
     if config_type != "SingleHeader":
-        return create_config(staging_dns_name, HEADER, config_type='header')
-    return create_config(staging_dns_name, WEIGHT, config_type='weight')
+        return create_config(staging_dns_name, CLOUDFRONT_HEADER, config_type='header')
+    return create_config(staging_dns_name, CLOUDFRONT_WEIGHT, config_type='weight')
 
 
 def fetch_continuous_deployment_policies():
     result = subprocess.check_output(
         ['aws', 'cloudfront', 'list-continuous-deployment-policies',
-         '--region', REGION, '--no-cli-pager', '--max-items', MAX_ITEMS]
+         '--region', CLOUDFRONT_REGION, '--no-cli-pager', '--max-items', MAX_ITEMS]
     )
     return json.loads(result.decode())
 
@@ -51,7 +53,7 @@ def fetch_continuous_deployment_policies():
 def fetch_continuous_deployment_policy(id):
     result = subprocess.check_output(
         ['aws', 'cloudfront', 'get-continuous-deployment-policy',
-         '--region', REGION, '--no-cli-pager', '--id', id]
+         '--region', CLOUDFRONT_REGION, '--no-cli-pager', '--id', id]
     )
     return json.loads(result.decode())
 
@@ -60,7 +62,7 @@ def update_continuous_deployment_policy(policy_id, policy_etag, config_filename)
     subprocess.check_output(
         ['aws', 'cloudfront', 'update-continuous-deployment-policy',
          '--id', policy_id, '--continuous-deployment-policy-config',
-         f"file://{config_filename}", '--region', REGION, '--if-match', policy_etag]
+         f"file://{config_filename}", '--region', CLOUDFRONT_REGION, '--if-match', policy_etag]
     )
 
 

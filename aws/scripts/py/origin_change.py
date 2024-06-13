@@ -1,14 +1,15 @@
 import json
 import subprocess
+import os
 
-REGION = 'us-east-1'
+CLOUDFRONT_REGION = os.environ['CLOUDFRONT_REGION']
 
 config_filename = "distribution_config.json"
 
 
 def fetch_distributions_ids():
     result = subprocess.check_output(
-        ['aws', 'cloudfront', 'list-distributions', '--region', REGION, '--no-cli-pager',])
+        ['aws', 'cloudfront', 'list-distributions', '--region', CLOUDFRONT_REGION, '--no-cli-pager',])
     distrubution_ids = [item['Id'] for item in json.loads(
         result.decode())['DistributionList']['Items']]
     return distrubution_ids
@@ -19,7 +20,7 @@ def fetch_distributions_configs(distrubution_ids):
     for distribution_id in distrubution_ids:
         config_result = subprocess.check_output(
             ['aws', 'cloudfront', 'get-distribution-config', '--id',
-                distribution_id, '--region', REGION, '--no-cli-pager']
+                distribution_id, '--region', CLOUDFRONT_REGION, '--no-cli-pager']
         )
         config = json.loads(config_result.decode())
         distribution_configs.append(config)
@@ -54,7 +55,7 @@ def update_distribution_configs(distribution_ids, distributions_configs):
 
         subprocess.check_output(
             ['aws', 'cloudfront', 'update-distribution', '--id', distribution_id, "--distribution-config",
-                f"file://{config_filename}", '--region', 'us-east-1', '--if-match', etag]
+                f"file://{config_filename}", '--region', CLOUDFRONT_REGION, '--if-match', etag]
         )
 
 

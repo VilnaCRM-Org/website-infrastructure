@@ -118,4 +118,31 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:${var.ci_cd_website_project_name}-lambda-reports-duration-anomaly-detection",
     ]
   }
+  statement {
+    sid    = "CloudfrontDistributionPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudfront:CreateDistribution",
+      "cloudfront:CreateDistributionWithTags",
+      "cloudfront:GetDistribution",
+      "cloudfront:GetDistributionConfig",
+      "cloudfront:ListTagsForResource",
+      "cloudfront:UpdateDistribution",
+      "cloudfront:TagResource",
+    ]
+    resources = [
+      "arn:aws:cloudfront::${local.account_id}:distribution/*"
+    ]
+  }
+  statement {
+    sid    = "CloudfrontContinuousDeploymentPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudfront:CreateContinuousDeploymentPolicy",
+      "cloudfront:GetContinuousDeploymentPolicy",
+    ]
+    resources = [
+      "arn:aws:cloudfront::${local.account_id}:continuous-deployment-policy/*"
+    ]
+  }
 } 

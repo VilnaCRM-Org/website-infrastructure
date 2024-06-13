@@ -29,7 +29,7 @@ resource "aws_s3_bucket_versioning" "logging_bucket_versioning" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "logging_bucket_lifecycle_configuration" {
-  depends_on = [aws_s3_bucket_versioning.logging_bucket_versioning]
+  depends_on = [aws_s3_bucket_versioning.logging_bucket_versioning, aws_s3_bucket.logging_bucket]
 
   bucket = aws_s3_bucket.logging_bucket.id
 

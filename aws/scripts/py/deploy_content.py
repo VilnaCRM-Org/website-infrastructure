@@ -2,7 +2,7 @@ import json
 import subprocess
 import os
 
-REGION = 'us-east-1'
+CLOUDFRONT_REGION = os.environ['CLOUDFRONT_REGION']
 
 
 def get_buckets():
@@ -15,7 +15,7 @@ def get_buckets():
 def fetch_distributions():
     result = subprocess.check_output(
         ['aws', 'cloudfront', 'list-distributions',
-         '--region', REGION, '--no-cli-pager',]
+         '--region', CLOUDFRONT_REGION, '--no-cli-pager',]
     )
     return json.loads(result.decode())
 

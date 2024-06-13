@@ -28,6 +28,21 @@ variable "region" {
   type        = string
 }
 
+variable "cloudfront_configuration" {
+  description = "CloudFront Configuration"
+  type        = map(string)
+}
+
+variable "continuous_deployment_policy_weight" {
+  description = "Continuous Deployment Policy Configuration Weight"
+  type        = number
+}
+
+variable "continuous_deployment_policy_header" {
+  description = "Continuous Deployment Policy Configuration Header"
+  type        = string
+}
+
 variable "website_infra_buildspecs" {
   description = "Buildspecs of Website infrastructure"
   type        = string
