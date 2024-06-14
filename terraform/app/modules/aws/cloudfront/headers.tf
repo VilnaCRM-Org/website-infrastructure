@@ -50,7 +50,7 @@ resource "aws_cloudfront_response_headers_policy" "response_headers" {
     items {
       header   = "Cache-Control"
       override = true
-      value    = "max-age=3600, public"
+      value    = "max-age=31536000"
     }
   }
 }

@@ -25,7 +25,7 @@ def create_config(staging_dns_name, config_value, config_type='weight'):
 
     if config_type == 'weight':
         base_config["TrafficConfig"]["SingleWeightConfig"] = {
-            "Weight": config_value
+            "Weight": float(config_value)
         }
     elif config_type == 'header':
         base_config["TrafficConfig"]["SingleHeaderConfig"] = {

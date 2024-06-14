@@ -13,7 +13,7 @@ continuous_deployment_id = os.getenv('CONTINUOUS_DEPLOYMENT_ID')
 production_distribution_id = os.getenv('PRODUCTION_DISTRIBUTION_ID')
 
 config = subprocess.check_output(
-    ['aws', 'cloudfront', 'get-distribution-config', '--id', production_distribution_id, CLOUDFRONT_REGION, 'us-east-1', '--no-cli-pager'])
+    ['aws', 'cloudfront', 'get-distribution-config', '--id', production_distribution_id, "--region", CLOUDFRONT_REGION, '--no-cli-pager'])
 
 config_json = json.loads(config.decode())
 
@@ -25,4 +25,4 @@ with open(config_filename, "w") as text_file:
     text_file.write(json.dumps(config_json['DistributionConfig']))
 
 subprocess.check_output(
-    ['aws', 'cloudfront', 'update-distribution', '--id', production_distribution_id, "--distribution-config", f"file://{config_filename}", CLOUDFRONT_REGION, 'us-east-1', '--if-match', etag])
+    ['aws', 'cloudfront', 'update-distribution', '--id', production_distribution_id, "--distribution-config", f"file://{config_filename}", "--region", CLOUDFRONT_REGION, '--if-match', etag])
