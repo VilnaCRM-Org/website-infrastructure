@@ -5,7 +5,7 @@ ci_cd_website_project_name = "ci-cd-website-test"
 environment                = "test"
 github_connection_name     = "Github"
 website_url                = "vilnacrmtest.com"
-bucket_name                = "staging.vilnacrmtest.com"
+bucket_name                = "vilnacrmtest.com"
 
 tags = {
   Project     = "website-test"

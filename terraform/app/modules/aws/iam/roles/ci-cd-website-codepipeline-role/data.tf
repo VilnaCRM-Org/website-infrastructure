@@ -40,6 +40,8 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "${var.s3_bucket_arn}",
       "arn:aws:s3:::${var.website_bucket_name}",
       "arn:aws:s3:::${var.website_bucket_name}/*",
+      "arn:aws:s3:::staging.${var.website_bucket_name}",
+      "arn:aws:s3:::staging.${var.website_bucket_name}/*",
       "${var.lhci_reports_bucket_arn}",
       "${var.lhci_reports_bucket_arn}/*",
       "${var.test_reports_bucket_bucket_arn}",
@@ -120,6 +122,44 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "cloudwatch:EnableAlarmActions",
       "cloudwatch:DisableAlarmActions"
     ]
-    resources = ["arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:website-${var.environment}-s3-objects-anomaly-detection"]
+    resources = ["arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:website-${var.region}-s3-objects-anomaly-detection"]
+  }
+  statement {
+    sid    = "CloudfrontDistributionListPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudfront:ListDistributions"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+  statement {
+    sid    = "CloudfrontDistributionPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudfront:CreateDistribution",
+      "cloudfront:CreateDistributionWithTags",
+      "cloudfront:GetDistribution",
+      "cloudfront:ListDistributions",
+      "cloudfront:GetDistributionConfig",
+      "cloudfront:ListTagsForResource",
+      "cloudfront:UpdateDistribution",
+      "cloudfront:TagResource",
+    ]
+    resources = [
+      "arn:aws:cloudfront::${local.account_id}:distribution/*"
+    ]
+  }
+  statement {
+    sid    = "CloudfrontContinuousDeploymentPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudfront:CreateContinuousDeploymentPolicy",
+      "cloudfront:GetContinuousDeploymentPolicy",
+    ]
+    resources = [
+      "arn:aws:cloudfront::${local.account_id}:continuous-deployment-policy/*"
+    ]
   }
 }

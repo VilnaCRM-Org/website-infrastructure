@@ -10,7 +10,8 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "sts:GetCallerIdentity",
       "kms:CreateKey",
       "codestar-notifications:DeleteTarget",
-      "cloudtrail:DescribeTrails"
+      "cloudtrail:DescribeTrails",
+      "cloudfront:ListDistributions",
     ]
     resources = ["*"]
   }

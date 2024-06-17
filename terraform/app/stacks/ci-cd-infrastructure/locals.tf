@@ -12,6 +12,13 @@ locals {
     version   = var.source_repo_branch
   }
 
+  codebuild_rollback_source_configuration = {
+    type      = "GITHUB"
+    buildspec = "./aws/buildspecs/website/release.yml"
+    location  = "https://github.com/${var.source_repo_owner}/${var.source_repo_name}"
+    depth     = 1
+    version   = var.source_repo_branch
+  }
 
   ubuntu_based_build = {
     builder_compute_type                = var.codebuild_environment.default_builder_compute_type
@@ -220,6 +227,12 @@ locals {
     "PYTHON_VERSION"                         = var.runtime_versions.python,
     "RUBY_VERSION"                           = var.runtime_versions.ruby,
     "SCRIPT_DIR"                             = var.script_dir,
+  }
+
+  codebuild_cloudfront_rollback_project_env_variables = {
+    "CLOUDFRONT_REGION" = var.cloudfront_configuration.region
+    "PYTHON_VERSION"    = var.runtime_versions.python,
+    "SCRIPT_DIR"        = var.script_dir,
   }
 }
 

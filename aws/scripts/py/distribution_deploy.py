@@ -3,6 +3,8 @@ import json
 import subprocess
 import os
 
+# TO DO: Refactor for multiple distributions
+
 CLOUDFRONT_REGION = os.environ['CLOUDFRONT_REGION']
 
 # Load environment variables from .env file

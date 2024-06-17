@@ -1,7 +1,7 @@
 version: 0.2
 
 phases:
-  build:
+  install:
     runtime-versions:
       python: $PYTHON_VERSION
     commands:
