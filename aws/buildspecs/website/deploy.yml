@@ -19,3 +19,4 @@ phases:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/deploy_content.py'
       - 'echo #### Turn On Alarm Actions'
       - 'aws cloudwatch enable-alarm-actions --alarm-names $ALARM_NAME'
+      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/continuous_deployment_switch.py'

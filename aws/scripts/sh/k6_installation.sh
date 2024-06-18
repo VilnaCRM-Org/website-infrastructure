@@ -5,3 +5,5 @@ cat /codebuild-user/website/src/test/load/config.json.dist >/codebuild-user/webs
 sed -i "s/http/https/" /codebuild-user/website/src/test/load/config.json
 sed -i "s/localhost/$WEBSITE_URL/" /codebuild-user/website/src/test/load/config.json
 sed -i "s/3000/443/" /codebuild-user/website/src/test/load/config.json
+sed -i "s/Continuous-Deployment-Header-Name/aws-cf-cd-$CLOUDFRONT_HEADER/" /codebuild-user/website/src/test/load/config.json
+sed -i "s/continuous-deployment-header-value/$CLOUDFRONT_HEADER/" /codebuild-user/website/src/test/load/config.json
