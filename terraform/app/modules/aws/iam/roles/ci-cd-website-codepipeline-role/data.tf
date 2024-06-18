@@ -128,7 +128,8 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     sid    = "CloudfrontDistributionListPolicy"
     effect = "Allow"
     actions = [
-      "cloudfront:ListDistributions"
+      "cloudfront:ListDistributions",
+      "cloudfront:ListContinuousDeploymentPolicies"
     ]
     resources = [
       "*"
@@ -157,6 +158,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     actions = [
       "cloudfront:CreateContinuousDeploymentPolicy",
       "cloudfront:GetContinuousDeploymentPolicy",
+      "cloudfront:UpdateContinuousDeploymentPolicy"
     ]
     resources = [
       "arn:aws:cloudfront::${local.account_id}:continuous-deployment-policy/*"
