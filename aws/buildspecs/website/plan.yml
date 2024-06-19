@@ -11,9 +11,9 @@ phases:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
+      - 'cd ${CODEBUILD_SRC_DIR}'
       - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
-      - 'terraspace plan website --out "website.plan"'
+      - 'make terraspace-plan-file stack="website" out="website.plan"'
 artifacts:
   files:
     - '**/*'

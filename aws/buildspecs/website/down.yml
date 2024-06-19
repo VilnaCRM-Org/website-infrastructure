@@ -11,9 +11,9 @@ phases:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
+      - 'cd ${CODEBUILD_SRC_DIR}'
       - 'echo ## TERRASPACE UP : Bringing down the infrastructure'
-      - 'terraspace down website -y'
+      - 'make terraspace-down stack="website"'
 
 artifacts:
   files:

@@ -13,14 +13,14 @@ phases:
       - 'dnf update -y'
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
+      - 'cd ${CODEBUILD_SRC_DIR}'
       - 'echo ## TERRASPACE Init : Initialize all providers and modules'
-      - 'terraspace all init'
+      - 'make terraspace-all-init'
       - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
-      - 'terraspace plan ci-cd-infrastructure --out "ci-cd-infrastructure.plan"'
-      - 'terraspace plan ci-cd-iam --out "ci-cd-iam.plan" -y'
-      - 'terraspace plan website-iam --out "website-iam.plan" -y'
-      - 'terraspace plan iam-groups --out "iam-groups.plan" -y'
+      - 'make terraspace-plan stack="ci-cd-infrastructure" out="ci-cd-infrastructure.plan"'
+      - 'make terraspace-plan stack="ci-cd-iam" out="ci-cd-iam.plan"'
+      - 'make terraspace-plan stack="website-iam" out="website-iam.plan"'
+      - 'make terraspace-plan stack="iam-groups" out="iam-groups.plan"'
 
 artifacts:
   files:

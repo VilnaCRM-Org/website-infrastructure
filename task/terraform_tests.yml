@@ -4,8 +4,8 @@ tasks:
   validate:
     desc: 'Validate Terraform code'
     cmds:
-      - terraspace all init
-      - terraspace all validate
+      - make terraspace-all-init
+      - make terraspace-all-validate
     silent: false
 
   format:

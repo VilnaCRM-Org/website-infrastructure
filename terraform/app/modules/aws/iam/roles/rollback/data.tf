@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
     sid    = "General"
     effect = "Allow"
     actions = [
-        "cloudfront:ListDistributions"
+      "cloudfront:ListDistributions"
     ]
     resources = [
       "*"

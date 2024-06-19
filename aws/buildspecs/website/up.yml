@@ -12,10 +12,11 @@ phases:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
+      - 'cd ${CODEBUILD_SRC_DIR}'
       - 'echo ## TERRASPACE UP : Bringing up the infrastructure'
-      - 'terraspace up website --plan "website.plan" -y'
-      - 'TS_ENV=test terraspace output website > .terraform.env'
+      - 'make terraspace-up-plan stack="website" plan="website.plan"'
+      - 'make terraspace-output-file stack="website" out=".terraform.env"'
+      - 'cd terraform'
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py'
       - 'aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME'
 

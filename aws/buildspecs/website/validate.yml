@@ -20,10 +20,10 @@ phases:
       - 'go install github.com/go-task/task/v3/cmd/task@latest'
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}/terraform'
+      - 'cd ${CODEBUILD_SRC_DIR}'
       - 'echo ## VALIDATION : Starting ...'
       - 'mkdir -p ${CODEBUILD_SRC_DIR}/reports'
-      - 'cp ${CODEBUILD_SRC_DIR}/task/terraform_tests.yml ${CODEBUILD_SRC_DIR}/terraform/Taskfile.yml'
+      - 'cp ${CODEBUILD_SRC_DIR}/task/terraform_tests.yml ${CODEBUILD_SRC_DIR}/Taskfile.yml'
       - 'task --verbose summary'
       - 'cp checkov.xml ${CODEBUILD_SRC_DIR}/reports/checkov.xml'
       - 'cp tfsec-junit.xml ${CODEBUILD_SRC_DIR}/reports/tfsec-junit.xml'
