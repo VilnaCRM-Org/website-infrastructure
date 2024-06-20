@@ -154,6 +154,7 @@ locals {
 
     deploy = merge(local.ubuntu_based_build,
       { env_variables = {
+        "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "PYTHON_VERSION"                = var.runtime_versions.python,
         "BUCKET_NAME"                   = var.bucket_name

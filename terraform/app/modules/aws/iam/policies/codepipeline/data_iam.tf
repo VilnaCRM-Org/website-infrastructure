@@ -18,6 +18,7 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:role/${var.website_project_name}-codepipeline-role",
       "arn:aws:iam::${local.account_id}:role/${var.ci_cd_project_name}-codepipeline-role",
       "arn:aws:iam::${local.account_id}:role/${var.ci_cd_website_project_name}-codepipeline-role",
+      "arn:aws:iam::${local.account_id}:role/${var.ci_cd_website_project_name}-codebuild-rollback-role",
       "arn:aws:iam::${local.account_id}:role/${var.ci_cd_website_project_name}-iam-for-lambda",
       "arn:aws:iam::${local.account_id}:role/reports-chatbot-channel-role"
     ]
@@ -40,6 +41,7 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_project_name}-codepipeline-policy",
       "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_project_name}-iam-policy-allow-logging-for-cloudtrail",
       "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-codepipeline-policy",
+      "arn:aws:iam::${local.account_id}:role/${var.ci_cd_website_project_name}-codebuild-rollback-role-policy",
       "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-iam-policy-allow-sns-for-lambda",
       "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-iam-policy-allow-logging-for-lambda"
     ]

@@ -9,9 +9,9 @@ module "codebuild_cloudfront_rollback_kms" {
 module "codebuild_cloudfront_rollback_iam_role" {
   source = "../../modules/aws/iam/roles/rollback"
 
-  project_name = var.ci_cd_infra_project_name
+  project_name = var.ci_cd_website_project_name
 
-  codebuild_iam_role_name = "${var.ci_cd_infra_project_name}-codebuild-rollback-role"
+  codebuild_iam_role_name = "${var.ci_cd_website_project_name}-codebuild-rollback-role"
 
   source_repo_owner = var.source_repo_owner
   source_repo_name  = var.source_repo_name
@@ -29,7 +29,7 @@ module "codebuild_cloudfront_rollback_iam_role" {
 module "codebuild_cloudfront_rollback" {
   source = "../../modules/aws/codebuild/project"
 
-  project_name = "${var.ci_cd_infra_project_name}-rollback"
+  project_name = "${var.ci_cd_website_project_name}-rollback"
 
   region      = var.region
   environment = var.environment
