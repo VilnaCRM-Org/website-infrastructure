@@ -20,7 +20,7 @@ phases:
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh'
       - 'echo #### Running Memory Leak Test' # No Reports folder
-      - 'export MEMORY_LEAK_RUN=true && pnpm run test:memory-leak 2>&1 | tee memory-leak-logs/memory-leak.log'
+      - 'export MEMORY_LEAK_RUN=true && make test-memory-leak 2>&1 | tee memory-leak-logs/memory-leak.log'
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'

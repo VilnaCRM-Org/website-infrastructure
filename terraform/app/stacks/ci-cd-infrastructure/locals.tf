@@ -138,6 +138,7 @@ locals {
 
     batch_unit_mutation_lint = merge(local.ubuntu_based_build,
       { env_variables = {
+        "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "PYTHON_VERSION"                = var.runtime_versions.python,
         "PW_TEST_HTML_REPORT_OPEN"      = "never",
@@ -175,6 +176,7 @@ locals {
 
     batch_pw_load = merge(local.ubuntu_based_build,
       { env_variables = {
+        "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "PYTHON_VERSION"                = var.runtime_versions.python,
         "WEBSITE_URL"                   = var.website_url,
@@ -193,6 +195,7 @@ locals {
 
     batch_lhci_leak = merge(local.ubuntu_based_build,
       { env_variables = {
+        "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "PYTHON_VERSION"                = var.runtime_versions.python,
         "WEBSITE_URL"                   = var.website_url,

@@ -19,6 +19,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "cloudfront:GetCachePolicy",
       "cloudfront:UpdateCachePolicy",
       "cloudfront:CreateCachePolicy",
+      "cloudfront:DeleteCachePolicy",
     ]
     resources = [
       "arn:aws:cloudfront::${local.account_id}:cache-policy/*"
@@ -59,6 +60,7 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     effect = "Allow"
     actions = [
       "cloudfront:CreateContinuousDeploymentPolicy",
+      "cloudfront:UpdateContinuousDeploymentPolicy",
       "cloudfront:GetContinuousDeploymentPolicy",
       "cloudfront:DeleteContinuousDeploymentPolicy",
     ]

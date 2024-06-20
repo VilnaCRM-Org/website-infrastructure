@@ -17,7 +17,7 @@ phases:
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh'
       - 'echo #### Running Mutation Test' # Reports folder: reports/mutation/
-      - 'export MUTATION_RUN=true && pnpm run test:mutation'
+      - 'export MUTATION_RUN=true && make test-mutation'
       - 'mv /codebuild-user/website/reports/mutation/mutation.html /codebuild-user/website/reports/mutation/index.html'
 
     finally:

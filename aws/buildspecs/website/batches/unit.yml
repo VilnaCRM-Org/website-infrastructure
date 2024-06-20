@@ -17,7 +17,7 @@ phases:
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh'
       - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
-      - 'export UNIT_RUN=true && pnpm run test:unit'
+      - 'export UNIT_RUN=true && make test-unit'
 
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'

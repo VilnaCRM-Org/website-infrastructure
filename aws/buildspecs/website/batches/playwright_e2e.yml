@@ -16,7 +16,7 @@ phases:
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh'
       - 'echo #### Running E2E Test' # Reports folder: playwright-e2e-reports/
-      - 'export PW_E2E_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-e2e-reports pnpm exec playwright test src/test/e2e'
+      - 'export PW_E2E_RUN=true && PLAYWRIGHT_HTML_REPORT=playwright-e2e-reports make test-e2e-local'
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'

@@ -45,7 +45,8 @@ data "aws_iam_policy_document" "general_policy_doc" {
     actions = [
       "cloudwatch:ListDashboards",
       "cloudwatch:GetDashboard",
-      "cloudwatch:PutDashboard"
+      "cloudwatch:PutDashboard",
+      "cloudwatch:DeleteDashboards",
     ]
     resources = [
       "arn:aws:cloudwatch::${local.account_id}:dashboard/${var.project_name}-dashboard"

@@ -15,10 +15,10 @@ phases:
     commands:
       - 'mkdir /codebuild-user/website/lint-logs'
       - 'echo #### Running Lint'
-      - 'export LINT_RUN=true && pnpm run format 2>&1 | tee lint-logs/format.log'
-      - 'pnpm run lint:next 2>&1 | tee lint-logs/next.log'
-      - 'pnpm run lint:tsc | tee lint-logs/tsc.log'
-      - 'pnpm run lint:md | tee lint-logs/md.log'
+      - 'export LINT_RUN=true && make format 2>&1 | tee lint-logs/format.log'
+      - 'make lint-next 2>&1 | tee lint-logs/next.log'
+      - 'make lint-tsc | tee lint-logs/tsc.log'
+      - 'make lint-md | tee lint-logs/md.log'
 
 artifacts:
   files:
