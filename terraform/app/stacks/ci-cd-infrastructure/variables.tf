@@ -199,3 +199,8 @@ variable "REPORT_SLACK_CHANNEL_ID" {
   type        = string
 }
 
+variable "GITHUB_TOKEN" {
+  description = "Token to push credentials to repositories"
+  type        = string
+}
+

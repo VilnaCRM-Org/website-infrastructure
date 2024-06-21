@@ -17,10 +17,10 @@ phases:
       - 'echo ## TERRASPACE Init : Initialize all providers and modules'
       - 'make terraspace-all-init'
       - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
-      - 'make terraspace-plan stack="ci-cd-infrastructure" out="ci-cd-infrastructure.plan"'
-      - 'make terraspace-plan stack="ci-cd-iam" out="ci-cd-iam.plan"'
-      - 'make terraspace-plan stack="website-iam" out="website-iam.plan"'
-      - 'make terraspace-plan stack="iam-groups" out="iam-groups.plan"'
+      - 'make terraspace-plan-file stack="ci-cd-infrastructure" out="ci-cd-infrastructure.plan"'
+      - 'make terraspace-plan-file stack="ci-cd-iam" out="ci-cd-iam.plan"'
+      - 'make terraspace-plan-file stack="website-iam" out="website-iam.plan"'
+      - 'make terraspace-plan-file stack="iam-groups" out="iam-groups.plan"'
 
 artifacts:
   files:
