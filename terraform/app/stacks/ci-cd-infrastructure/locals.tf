@@ -116,6 +116,7 @@ locals {
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         "GITHUB_TOKEN"                           = var.GITHUB_TOKEN,
+        "GITHUB_OWNER"                           = var.source_repo_owner,
         "TF_VAR_GITHUB_TOKEN"                    = var.GITHUB_TOKEN
         }
     })
@@ -133,6 +134,7 @@ locals {
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         "GITHUB_TOKEN"                           = var.GITHUB_TOKEN,
+        "GITHUB_OWNER"                           = var.source_repo_owner,
         "TF_VAR_GITHUB_TOKEN"                    = var.GITHUB_TOKEN
         }
     })
