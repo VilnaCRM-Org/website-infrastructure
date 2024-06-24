@@ -23,11 +23,6 @@ variable "s3_bucket_name" {
   type        = string
 }
 
-variable "codepipeline_buildspecs" {
-  description = "CodePipeline Buildspecs"
-  type        = string
-}
-
 variable "tags" {
   description = "Tags to be applied to the codebuild project"
   type        = map(any)

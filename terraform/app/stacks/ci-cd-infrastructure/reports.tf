@@ -1,5 +1,5 @@
 module "lhci_reports_bucket" {
-  source = "../../modules/aws/s3/reports"
+  source = "../../modules/aws/s3/public"
 
   project_name = "${var.ci_cd_website_project_name}-lhci"
 
@@ -9,7 +9,7 @@ module "lhci_reports_bucket" {
 }
 
 module "test_reports_bucket" {
-  source = "../../modules/aws/s3/reports"
+  source = "../../modules/aws/s3/public"
 
   project_name = "${var.ci_cd_website_project_name}-test"
 

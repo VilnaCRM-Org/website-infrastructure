@@ -57,8 +57,6 @@ module "ci_cd_infra_codebuild" {
   role_arn       = module.ci_cd_infra_codepipeline_iam_role.role_arn
   kms_key_arn    = module.ci_cd_infra_codepipeline_kms.arn
 
-  codepipeline_buildspecs = var.ci_cd_infra_buildspecs
-
   region      = var.region
   environment = var.environment
 

@@ -50,6 +50,6 @@ codebuild_environment = {
 
 ci_cd_infra_buildspecs = "ci-cd-infrastructure"
 
-website_infra_buildspecs = "website"
+website_buildspecs = "website"
 
 ci_cd_website_buildspecs = "ci-cd-website"

@@ -53,7 +53,8 @@ locals {
         "GOLANG_VERSION"                         = var.runtime_versions.golang
         "SCRIPT_DIR"                             = var.script_dir,
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/validate.yml" })
 
     plan = merge(local.amazonlinux2_based_build,
       { env_variables = {
@@ -66,7 +67,8 @@ locals {
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/plan.yml" })
 
     up = merge(local.amazonlinux2_based_build,
       { env_variables = {
@@ -81,7 +83,8 @@ locals {
         "CI_CD_WEBSITE_PIPELINE_NAME"            = "${var.ci_cd_website_project_name}-pipeline"
         "CLOUDFRONT_REGION"                      = var.cloudfront_configuration.region
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/up.yml" })
   }
 
   ci_cd_infra_build_projects = {
@@ -100,7 +103,8 @@ locals {
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.ci_cd_infra_buildspecs}/validate.yml" })
 
     plan = merge(local.amazonlinux2_based_build,
       { env_variables = {
@@ -119,7 +123,8 @@ locals {
         "GITHUB_OWNER"                           = var.source_repo_owner,
         "TF_VAR_GITHUB_TOKEN"                    = var.GITHUB_TOKEN
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.ci_cd_infra_buildspecs}/plan.yml" })
 
     up = merge(local.amazonlinux2_based_build,
       { env_variables = {
@@ -137,11 +142,11 @@ locals {
         "GITHUB_OWNER"                           = var.source_repo_owner,
         "TF_VAR_GITHUB_TOKEN"                    = var.GITHUB_TOKEN
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.ci_cd_infra_buildspecs}/up.yml" })
   }
 
   ci_cd_website_build_projects = {
-
     batch_unit_mutation_lint = merge(local.ubuntu_based_build,
       { env_variables = {
         "CI"                            = 1
@@ -156,7 +161,8 @@ locals {
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_unit_mutation_lint.yml" })
 
     deploy = merge(local.ubuntu_based_build,
       { env_variables = {
@@ -173,13 +179,15 @@ locals {
         "CLOUDFRONT_WEIGHT"             = var.continuous_deployment_policy_weight
         "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/deploy.yml" })
 
     healthcheck = merge(local.amazonlinux2_based_build,
       { env_variables = {
         "WEBSITE_URL" = var.website_url
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/healthcheck.yml" })
 
     batch_pw_load = merge(local.ubuntu_based_build,
       { env_variables = {
@@ -198,7 +206,8 @@ locals {
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_pw_load.yml" })
 
     batch_lhci_leak = merge(local.ubuntu_based_build,
       { env_variables = {
@@ -215,19 +224,22 @@ locals {
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_pw_load.yml" })
     release = merge(local.ubuntu_based_build,
       { env_variables = {
         "PYTHON_VERSION"    = var.runtime_versions.python,
         "SCRIPT_DIR"        = var.script_dir,
         "CLOUDFRONT_REGION" = var.cloudfront_configuration.region
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/release.yml" })
     trigger = merge(local.amazonlinux2_based_build,
       { env_variables = {
         "PROJECT_NAME" = local.website_infra_codebuild_project_down_name
         }
-    })
+      },
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/trigger.yml" })
   }
 
   website_infra_build_project_down_env_variables = {

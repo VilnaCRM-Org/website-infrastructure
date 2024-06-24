@@ -18,7 +18,7 @@ phases:
       - 'echo #### Set up environment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh'
       - 'echo #### Running Load Test' # Reports folder: src/test/load/results/
-      - 'export LOAD_RUN=true && make load-test-local'
+      - 'export LOAD_RUN=true && make load-tests'
     finally:
       - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'

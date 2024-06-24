@@ -43,8 +43,8 @@ variable "continuous_deployment_policy_header" {
   type        = string
 }
 
-variable "website_infra_buildspecs" {
-  description = "Buildspecs of Website infrastructure"
+variable "website_buildspecs" {
+  description = "Buildspecs of Website"
   type        = string
 }
 

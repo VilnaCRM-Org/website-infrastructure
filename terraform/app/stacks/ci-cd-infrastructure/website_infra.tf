@@ -56,8 +56,6 @@ module "website_infra_codebuild" {
   region      = var.region
   environment = var.environment
 
-  codepipeline_buildspecs = var.website_infra_buildspecs
-
   s3_bucket_name = module.website_infra_s3_artifacts_bucket.bucket
   role_arn       = module.website_infra_codepipeline_iam_role.role_arn
   kms_key_arn    = module.website_infra_codepipeline_kms.arn
