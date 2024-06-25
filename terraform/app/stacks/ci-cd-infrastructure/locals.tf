@@ -225,7 +225,8 @@ locals {
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
       },
-    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_pw_load.yml" })
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_lhci_leak.yml" })
+
     release = merge(local.ubuntu_based_build,
       { env_variables = {
         "PYTHON_VERSION"    = var.runtime_versions.python,
@@ -234,6 +235,7 @@ locals {
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/release.yml" })
+
     trigger = merge(local.amazonlinux2_based_build,
       { env_variables = {
         "PROJECT_NAME" = local.website_infra_codebuild_project_down_name
