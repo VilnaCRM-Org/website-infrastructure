@@ -47,8 +47,8 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "s3:PutObjectAcl",
       "s3:PutObject",
     ]
-    resources = [    "${var.s3_bucket_arn}/*",
-    "${var.s3_bucket_arn}",]
+    resources = ["${var.s3_bucket_arn}/*",
+    "${var.s3_bucket_arn}", ]
   }
 
   statement {

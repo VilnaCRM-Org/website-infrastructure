@@ -33,6 +33,6 @@ module "sandox_policies" {
   policy_prefix = "${var.environment}-sandbox"
   region        = var.region
   environment   = var.environment
-  
+
   tags = var.tags
 }
