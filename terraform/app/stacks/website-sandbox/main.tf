@@ -1,7 +1,7 @@
-module "sandobx_bucket" {
+module "sandbox_bucket" {
   source = "../../modules/aws/s3/public"
 
-  project_name = "${var.SANDBOX_BUCKET_NAME}-${var.project_name}"
+  project_name = "${var.project_name}-${var.SANDBOX_BUCKET_NAME}"
 
   s3_artifacts_bucket_files_deletion_days = var.s3_artifacts_bucket_files_deletion_days
 

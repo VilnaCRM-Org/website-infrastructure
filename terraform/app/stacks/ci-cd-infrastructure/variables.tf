@@ -13,6 +13,11 @@ variable "ci_cd_infra_project_name" {
   type        = string
 }
 
+variable "sandbox_project_name" {
+  description = "Unique name for this SandBox Codepipeline"
+  type        = string
+}
+
 variable "ci_cd_website_project_name" {
   description = "Unique name for this Website Deploy Codepipeline"
   type        = string
@@ -106,6 +111,11 @@ variable "ci_cd_infra_stage_input" {
 
 variable "website_infra_stage_input" {
   description = "List of Map containing information about the stages of the Website Infrastructure CodePipeline"
+  type        = list(map(string))
+}
+
+variable "sandbox_stage_input" {
+  description = "List of Map containing information about the stages of the Sandbox CodePipeline"
   type        = list(map(string))
 }
 

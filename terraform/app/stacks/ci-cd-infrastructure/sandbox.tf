@@ -23,7 +23,7 @@ module "sandbox_codepipeline_kms" {
 }
 
 module "sandbox_codepipeline_iam_role" {
-  source = "../../modules/aws/iam/roles/codepipeline-role"
+  source = "../../modules/aws/iam/roles/sandbox-codepipeline-role"
 
   project_name = var.sandbox_project_name
 
@@ -34,17 +34,15 @@ module "sandbox_codepipeline_iam_role" {
   region      = var.region
   environment = var.environment
 
-  website_bucket_name = var.bucket_name
-
   kms_key_arn             = module.sandbox_codepipeline_kms.arn
   s3_bucket_arn           = module.sandbox_s3_artifacts_bucket.arn
   codestar_connection_arn = module.codestar_connection.arn
 
-  policy_arns = []
+  policy_arns = module.sandox_policies.policy_arns
 
   tags = var.tags
 
-  depends_on = [module.sandbox_policies]
+  depends_on = [module.sandox_policies]
 }
 
 module "sandbox_codebuild" {
@@ -71,7 +69,7 @@ module "sandbox_codebuild" {
 }
 
 module "sandbox_codepipeline" {
-  source = "../../modules/aws/codepipeline/infrastructure"
+  source = "../../modules/aws/codepipeline/sandbox"
 
   project_name       = var.sandbox_project_name
   source_repo_owner  = var.source_repo_owner

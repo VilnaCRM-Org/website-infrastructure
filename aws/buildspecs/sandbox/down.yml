@@ -12,7 +12,7 @@ phases:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}'
       - 'echo ## TERRASPACE UP : Bringing down the infrastructure'
-      - 'make terraspace-down stack="website"'
+      - 'make terraspace-down stack="website-sandbox"'
 
 artifacts:
   files:

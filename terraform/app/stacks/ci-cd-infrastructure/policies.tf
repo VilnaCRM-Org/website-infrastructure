@@ -25,3 +25,14 @@ module "website_infra_policies" {
 
   tags = var.tags
 }
+
+module "sandox_policies" {
+  source = "../../modules/aws/iam/policies/sandbox"
+
+  project_name  = var.project_name
+  policy_prefix = "${var.environment}-sandbox"
+  region        = var.region
+  environment   = var.environment
+  
+  tags = var.tags
+}

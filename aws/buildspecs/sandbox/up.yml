@@ -11,13 +11,11 @@ phases:
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}'
-      - 'echo ## TERRASPACE UP : Bringing down the infrastructure'
-      - 'make terraspace-down stack="website"'
-
+      - 'echo ## TERRASPACE UP : Bringing up the infrastructure'
+      - 'make terraspace-up-plan stack="website-sandbox" plan="website-sandbox.plan"'
 artifacts:
   files:
     - '**/*'
-
 cache:
   paths:
     - '/bin'
