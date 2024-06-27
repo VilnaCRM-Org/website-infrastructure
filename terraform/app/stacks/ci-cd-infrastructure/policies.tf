@@ -29,7 +29,7 @@ module "website_infra_policies" {
 module "sandox_policies" {
   source = "../../modules/aws/iam/policies/sandbox"
 
-  project_name  = var.project_name
+  project_name  = var.sandbox_project_name
   policy_prefix = "${var.environment}-sandbox"
   region        = var.region
   environment   = var.environment

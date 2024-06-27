@@ -1,7 +1,7 @@
 module "lhci_reports_bucket" {
   source = "../../modules/aws/s3/public"
 
-  project_name = "${var.ci_cd_website_project_name}-lhci"
+  project_name = "${var.ci_cd_website_project_name}-lhci-reports-bucket"
 
   s3_artifacts_bucket_files_deletion_days = var.s3_artifacts_bucket_files_deletion_days
 
@@ -11,7 +11,7 @@ module "lhci_reports_bucket" {
 module "test_reports_bucket" {
   source = "../../modules/aws/s3/public"
 
-  project_name = "${var.ci_cd_website_project_name}-test"
+  project_name = "${var.ci_cd_website_project_name}-test-reports-bucket"
 
   s3_artifacts_bucket_files_deletion_days = var.s3_artifacts_bucket_files_deletion_days
 
