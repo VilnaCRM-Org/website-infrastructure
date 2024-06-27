@@ -260,6 +260,31 @@ locals {
   }
 
   sandbox_build_projects = {
+    plan = merge(local.amazonlinux2_based_build,
+      { env_variables = {
+        "ROLE_ARN"               = module.sandbox_codepipeline_iam_role.terraform_role_arn,
+        "TS_ENV"                 = var.environment,
+        "AWS_DEFAULT_REGION"     = var.region,
+        "PYTHON_VERSION"         = var.runtime_versions.python,
+        "TF_VAR_SANDBOX_BUCKET_NAME" = "testing"
+        "RUBY_VERSION"           = var.runtime_versions.ruby,
+        "SCRIPT_DIR"             = var.script_dir,
+        }
+      },
+    { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/plan.yml" })
+
+    up = merge(local.amazonlinux2_based_build,
+      { env_variables = {
+        "ROLE_ARN"               = module.sandbox_codepipeline_iam_role.terraform_role_arn,
+        "TS_ENV"                 = var.environment,
+        "AWS_DEFAULT_REGION"     = var.region,
+        "TF_VAR_SANDBOX_BUCKET_NAME" = "testing"
+        "RUBY_VERSION"           = var.runtime_versions.ruby,
+        "SCRIPT_DIR"             = var.script_dir,
+        }
+      },
+    { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/up.yml" })
+
     deploy = merge(local.ubuntu_based_build,
       { env_variables = {
         "CI"                          = 1

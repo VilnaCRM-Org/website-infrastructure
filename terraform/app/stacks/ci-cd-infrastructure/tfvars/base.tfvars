@@ -1,7 +1,7 @@
 source_repo_owner         = "VilnaCRM-Org"
 source_repo_name          = "website-infrastructure"
 website_content_repo_name = "website"
-source_repo_branch        = "2-set-up-the-frontend-production-infrastructure"
+source_repo_branch        = "3-implement-sandbox-infrastructure"
 website_repo_branch       = "5-make-website-layout"
 region                    = "eu-central-1"
 
@@ -53,3 +53,5 @@ ci_cd_infra_buildspecs = "ci-cd-infrastructure"
 website_buildspecs = "website"
 
 ci_cd_website_buildspecs = "ci-cd-website"
+
+sandbox_buildspecs = "sandbox"

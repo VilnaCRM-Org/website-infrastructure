@@ -72,10 +72,12 @@ module "sandbox_codepipeline" {
   source = "../../modules/aws/codepipeline/sandbox"
 
   project_name       = var.sandbox_project_name
+
   source_repo_owner  = var.source_repo_owner
   source_repo_name   = var.source_repo_name
   source_repo_branch = var.source_repo_branch
-  detect_changes     = "true"
+  
+  detect_changes     = "false"
 
   stages = var.sandbox_stage_input
 

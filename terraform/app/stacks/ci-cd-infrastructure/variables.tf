@@ -63,6 +63,11 @@ variable "ci_cd_website_buildspecs" {
   type        = string
 }
 
+variable "sandbox_buildspecs" {
+  description = "Buildspecs of Sandbox Deploy"
+  type        = string
+}
+
 variable "source_repo_owner" {
   description = "Source repo owner of the GitHub repository"
   type        = string

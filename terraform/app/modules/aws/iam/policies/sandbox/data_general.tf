@@ -46,6 +46,6 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "s3:GetObjectVersion",
       "s3:PutObject"
     ]
-    resources = ["arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}/main/${var.region}/${var.environment}/stacks/sandbox/terraform.tfstate"]
+    resources = ["arn:aws:s3:::terraform-state-${local.account_id}-${var.region}-${var.environment}/main/${var.region}/${var.environment}/stacks/website-sandbox/terraform.tfstate"]
   }
 } 

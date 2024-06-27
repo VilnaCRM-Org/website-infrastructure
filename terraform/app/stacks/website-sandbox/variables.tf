@@ -3,8 +3,13 @@ variable "project_name" {
   type        = string
 }
 
-variable "github_connection_name" {
-  description = "Name of the CodeStar connection"
+variable "environment" {
+  description = "Environment for this project"
+  type        = string
+}
+
+variable "region" {
+  description = "Region for this project"
   type        = string
 }
 
@@ -16,4 +21,9 @@ variable "s3_artifacts_bucket_files_deletion_days" {
 variable "SANDBOX_BUCKET_NAME" {
   description = "Name for SandBox bucket"
   type        = string
+}
+
+variable "tags" {
+  description = "Tags to be associated with the S3 bucket"
+  type        = map(any)
 }

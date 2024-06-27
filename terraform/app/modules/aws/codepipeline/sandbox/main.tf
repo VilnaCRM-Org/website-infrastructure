@@ -50,8 +50,6 @@ resource "aws_codepipeline" "pipeline" {
         run_order        = index(var.stages, stage.value) + 2
 
         configuration = {
-          CombineArtifacts = startswith(stage.value["name"], "batch") ? true : false
-          BatchEnabled     = startswith(stage.value["name"], "batch") ? true : false
           ProjectName      = stage.value["provider"] == "CodeBuild" ? "${var.project_name}-${stage.value["name"]}" : null
         }
       }
