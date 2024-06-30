@@ -50,11 +50,18 @@ resource "aws_codepipeline" "pipeline" {
         run_order        = index(var.stages, stage.value) + 2
 
         configuration = {
-          ProjectName      = stage.value["provider"] == "CodeBuild" ? "${var.project_name}-${stage.value["name"]}" : null
+          ProjectName = stage.value["provider"] == "CodeBuild" ? "${var.project_name}-${stage.value["name"]}" : null
         }
       }
     }
   }
+
+  variable {
+    name          = "timeout"
+    default_value = 1000
+    description   = "Timeout"
+  }
+
 }
 
 resource "aws_codestarnotifications_notification_rule" "codepipeline_rule" {

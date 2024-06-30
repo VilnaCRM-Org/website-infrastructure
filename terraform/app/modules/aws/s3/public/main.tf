@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket = "${var.project_name}"
+  bucket = var.project_name
   #checkov:skip=CKV_AWS_18:The access logging of reports bucket is not needed 
   #checkov:skip=CKV2_AWS_61:The lifecycle configuration of reports bucket is not needed 
   #checkov:skip=CKV2_AWS_62: The event notifications of reports bucket is not needed 

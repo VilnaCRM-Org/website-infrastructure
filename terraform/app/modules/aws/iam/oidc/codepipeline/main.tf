@@ -21,6 +21,12 @@ resource "github_actions_secret" "aws_codepipeline_role_arn" {
 
 resource "github_actions_secret" "aws_codepipeline_name" {
   repository      = var.source_repo_name
-  secret_name     = "AWS_CODEPIPELINE_NAME"
+  secret_name     = "AWS_WEBSITE_CODEPIPELINE_NAME"
   plaintext_value = var.ci_cd_website_codepipeline_name
+}
+
+resource "github_actions_secret" "aws_codepipeline_name" {
+  repository      = var.source_repo_name
+  secret_name     = "AWS_SANDBOX_CODEPIPELINE_NAME"
+  plaintext_value = var.sandbox_codepipeline_name
 }
