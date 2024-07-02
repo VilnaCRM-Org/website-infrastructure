@@ -5,14 +5,14 @@ phases:
     runtime-versions:
       ruby: $RUBY_VERSION
     commands:
+      - 'env'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
       - 'dnf install -y yum-utils'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}'
       - 'echo ## TERRASPACE UP : Bringing up the infrastructure'
-      - 'make terraspace-up-plan stack="website-sandbox" plan="website-sandbox.plan"'
+      - 'make terraspace-up stack="website-sandbox"'
 artifacts:
   files:
     - '**/*'

@@ -19,13 +19,13 @@ resource "github_actions_secret" "aws_codepipeline_role_arn" {
   depends_on = [module.github_oidc]
 }
 
-resource "github_actions_secret" "aws_codepipeline_name" {
+resource "github_actions_secret" "aws_website_codepipeline_name" {
   repository      = var.source_repo_name
   secret_name     = "AWS_WEBSITE_CODEPIPELINE_NAME"
   plaintext_value = var.ci_cd_website_codepipeline_name
 }
 
-resource "github_actions_secret" "aws_codepipeline_name" {
+resource "github_actions_secret" "aws_sandbox_codepipeline_name" {
   repository      = var.source_repo_name
   secret_name     = "AWS_SANDBOX_CODEPIPELINE_NAME"
   plaintext_value = var.sandbox_codepipeline_name
