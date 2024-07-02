@@ -59,9 +59,9 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   variable {
-    name          = "timeout"
-    default_value = 1000
-    description   = "Timeout"
+    name          = "BRANCH_NAME"
+    default_value = "default"
+    description   = "Name of the Branch"
   }
 
 }

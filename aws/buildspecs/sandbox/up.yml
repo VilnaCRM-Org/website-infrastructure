@@ -5,7 +5,7 @@ phases:
     runtime-versions:
       ruby: $RUBY_VERSION
     commands:
-      - 'env'
+      - 'echo $BRANCH_NAME'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
       - 'dnf install -y yum-utils'
   build:
