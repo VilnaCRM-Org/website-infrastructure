@@ -33,8 +33,8 @@ def create_s3_policy():
                 },
                 "Action": "s3:GetObject",
                 "Resource": [
-                    f"arn:aws:s3:::{BRANCH_NAME}-{PROJECT_NAME}/*",
-                    f"arn:aws:s3:::{BRANCH_NAME}-{PROJECT_NAME}"
+                    f"arn:aws:s3:::{PROJECT_NAME}-{BRANCH_NAME}/*",
+                    f"arn:aws:s3:::{PROJECT_NAME}-{BRANCH_NAME}"
                 ]
             }
         ]
