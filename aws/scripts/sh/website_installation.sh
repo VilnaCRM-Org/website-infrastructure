@@ -5,4 +5,4 @@ cd /codebuild-user/website/
 echo #### Install pnpm
 npm install -g pnpm
 echo #### Install dependencies
-pnpm i --frozen-lockfile
+make install

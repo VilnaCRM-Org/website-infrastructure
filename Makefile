@@ -4,7 +4,15 @@ DOCKER         = docker
 MAKE 		   = make
 BUNDLE		   = bundle
 CD 			   = cd
+TERRAFORM 	   = terraform
 TERRASPACE	   = terraspace
+TFENV		   = tfenv
+GIT 		   = git
+ECHO 		   = echo
+CURL		   = curl
+CHMOD		   = chmod
+EXPORT 		   = export
+RM 			   = rm
 
 # Misc
 .DEFAULT_GOAL = help
@@ -26,8 +34,8 @@ help:
 terraform: ## Terraform enables you to safely and predictably create, change, and improve infrastructure.
 	${DOCKER_COMPOSE} terraform "$1"
 
-tf-fmt:
-	terraform fmt --recursive
+tf-fmt: # Format terraform code recursively.
+	$(TERRAFORM) fmt --recursive
 
 terraform-compliance: ## Terraform compliance is a security and compliance focused test framework.
 	${DOCKER_COMPOSE} terraform-compliance
@@ -38,13 +46,24 @@ terraspace: ## Terraspace is a terraform framework.
 codebuild-local-set-up: ## Setting up CodeBuild Agent for testing buildspecs locally
 	$(DOCKER) pull public.ecr.aws/codebuild/amazonlinux2-x86_64-standard:5.0
 	$(DOCKER) pull public.ecr.aws/codebuild/local-builds:latest
-	curl -O https://raw.githubusercontent.com/aws/aws-codebuild-docker-images/master/local_builds/codebuild_build.sh
-	chmod +x codebuild_build.sh
+	$(CURL) -O https://raw.githubusercontent.com/aws/aws-codebuild-docker-images/master/local_builds/codebuild_build.sh
+	$(CHMOD) +x codebuild_build.sh
 
 codebuild-run: ## Runnig CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'
 	./codebuild_build.sh -i $(image) -d -a codebuild_artifacts -b $(buildspec) -e .env
 
-install-terraspace:
+install-terraspace: ## Install terraspace locally.
+	$(ECHO) "## Install OpenTofu"
+	$(CURL) --proto "=https" --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+	$(CHMOD) +x install-opentofu.sh
+	./install-opentofu.sh --install-method rpm
+	$(RM) install-opentofu.sh
+	$(ECHO) "## Install Terraform"
+	$(GIT) clone https://github.com/tfutils/tfenv.git ~/.tfenv
+	$(ECHO) $(export PATH="$HOME/.tfenv/bin:$PATH") >>~/.bash_profile
+	$(EXPORT) PATH="$HOME/.tfenv/bin:$PATH"
+	$(TFENV) install 1.4.7
+	$(TFENV) use 1.4.7
 	$(BUNDLE) install --gemfile $(.TERRAFORM_DIR)/Gemfile
 
 # Terraspace All

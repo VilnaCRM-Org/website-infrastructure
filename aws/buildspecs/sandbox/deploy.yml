@@ -19,4 +19,4 @@ phases:
       - 'aws s3 sync ./out s3://"$PROJECT_NAME-$BRANCH_NAME'
       - 'echo $GITHUB_TOKEN > token.txt'
       - 'gh auth login --with-token < token.txt'
-      - 'gh pr comment 3 -R $GITHUB_REPOSITORY --body "http://"$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com"'
+      - 'gh pr comment $PR_NUMBER -R $GITHUB_REPOSITORY --body "Latest Version is ready: http://"$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com"'

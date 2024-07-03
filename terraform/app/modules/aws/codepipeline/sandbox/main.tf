@@ -59,6 +59,11 @@ resource "aws_codepipeline" "pipeline" {
                 name : "BRANCH_NAME",
                 value : "#{variables.BRANCH_NAME}",
                 type : "PLAINTEXT"
+              },
+              {
+                name : "PR_NUMBER",
+                value : "#{variables.PR_NUMBER}",
+                type : "PLAINTEXT"
               }
             ]
           )
@@ -71,6 +76,12 @@ resource "aws_codepipeline" "pipeline" {
     name          = "BRANCH_NAME"
     default_value = "default"
     description   = "Name of the Branch"
+  }
+
+    variable {
+    name          = "PR_NUMBER"
+    default_value = "1000"
+    description   = "Number of the Pull request"
   }
 
 }
