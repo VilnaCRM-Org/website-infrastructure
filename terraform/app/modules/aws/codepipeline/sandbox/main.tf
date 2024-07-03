@@ -53,6 +53,15 @@ resource "aws_codepipeline" "pipeline" {
 
         configuration = {
           ProjectName = stage.value["provider"] == "CodeBuild" ? "${var.project_name}-${stage.value["name"]}" : null
+          EnvironmentVariables = jsonencode(
+            [
+              {
+                name : "BRANCH_NAME",
+                value : "#{variables.BRANCH_NAME}",
+                type : "PLAINTEXT"
+              }
+            ]
+          )
         }
       }
     }

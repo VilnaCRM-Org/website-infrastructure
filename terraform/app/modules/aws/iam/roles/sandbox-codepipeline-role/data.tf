@@ -60,6 +60,14 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["${var.kms_key_arn}"]
   }
+  statement {
+    sid    = "AllowCodepipelineGetState"
+    effect = "Allow"
+    actions = [
+      "codepipeline:GetPipelineState",
+    ]
+    resources = ["arn:aws:codepipeline:${var.region}:${local.account_id}:${var.project_name}-pipeline"]
+  }
 
   statement {
     sid    = "AllowCodeBuildActions"

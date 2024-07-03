@@ -3,16 +3,20 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      ruby: $RUBY_VERSION
+      python: $PYTHON_VERSION
     commands:
-      - 'echo $BRANCH_NAME'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
       - 'dnf install -y yum-utils'
   build:
     commands:
       - 'cd ${CODEBUILD_SRC_DIR}'
-      - 'echo ## TERRASPACE UP : Bringing up the infrastructure'
-      - 'make terraspace-up stack="website-sandbox"'
+      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/s3_sandbox_configuration.py'
+      - 'aws s3api create-bucket --bucket "$BRANCH_NAME-$PROJECT_NAME" --region $AWS_DEFAULT_REGION --create-bucket-configuration LocationConstraint=$AWS_DEFAULT_REGION'
+      - 'aws s3api put-public-access-block --bucket "$BRANCH_NAME-$PROJECT_NAME" --public-access-block-configuration "BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false" --region $AWS_DEFAULT_REGION'
+      - 'aws s3api put-bucket-ownership-controls --bucket "$BRANCH_NAME-$PROJECT_NAME" --ownership-controls="Rules=[{ObjectOwnership=BucketOwnerPreferred}]" --region $AWS_DEFAULT_REGION'
+      - 'aws s3api put-bucket-acl --bucket "$BRANCH_NAME-$PROJECT_NAME" --acl public-read --region $AWS_DEFAULT_REGION'
+      - 'aws s3api put-bucket-website --bucket "$BRANCH_NAME-$PROJECT_NAME" --website-configuration file://website_configuration.json --region $AWS_DEFAULT_REGION'
+      - 'aws s3api put-bucket-policy --bucket "$BRANCH_NAME-$PROJECT_NAME" --policy file://s3_policy.json --region $AWS_DEFAULT_REGION'
 artifacts:
   files:
     - '**/*'
