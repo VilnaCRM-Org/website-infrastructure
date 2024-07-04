@@ -277,7 +277,7 @@ locals {
       { env_variables = {
         "CI"                          = 1
         "NODEJS_VERSION"              = var.runtime_versions.nodejs,
-        "AWS_DEFAULT_REGION"         = var.region,
+        "AWS_DEFAULT_REGION"          = var.region,
         "BUCKET_NAME"                 = var.bucket_name
         "SCRIPT_DIR"                  = var.script_dir,
         "GITHUB_TOKEN"                = var.GITHUB_TOKEN,
