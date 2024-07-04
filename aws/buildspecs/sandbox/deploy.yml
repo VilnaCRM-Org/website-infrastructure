@@ -5,7 +5,6 @@ phases:
     runtime-versions:
       nodejs: $NODEJS_VERSION
     commands:
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh'
       - 'cd /codebuild-user/website'
       - 'sudo apt update'

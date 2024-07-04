@@ -112,4 +112,18 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${local.account_id}:log-group:*"]
   }
+  statement {
+    sid    = "S3PolicyArtifactBucket"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:GetObjectVersion",
+      "s3:PutObjectAcl",
+      "s3:PutObject"
+    ]
+    resources = [
+      "arn:aws:s3:::${var.project_name}-*",
+    ]
+  }
 }
