@@ -7,8 +7,8 @@ phases:
     commands:
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh'
       - 'cd /codebuild-user/website'
-      - 'sudo dnf install gh'
-      - 'sudo dnf update gh'
+      - 'sudo apt update'
+      - 'sudo apt install gh -y'
 
   build:
     commands:
