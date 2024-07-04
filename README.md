@@ -199,14 +199,6 @@ Start reading at the [GitHub wiki](https://github.com/VilnaCRM-Org/website-infra
 
 If the documentation doesn't cover what you need, search the [many questions on Stack Overflow](http://stackoverflow.com/questions/tagged/vilnacrm), and before you ask a question, [read the troubleshooting guide](https://github.com/VilnaCRM-Org/website-infrastructure/wiki/Troubleshooting).
 
-## Tests
-
-[Tests](https://github.com/VilnaCRM-Org/website-infrastructure/tree/main/tests/) use [Terraform Compliance](https://terraform-compliance.com/).
-
-[![Test status](https://github.com/VilnaCRM-Org/website-infrastructure/workflows/Tests/badge.svg)](https://github.com/VilnaCRM-Org/website-infrastructure/actions)
-
-If this isn't passing, is there something you can do to help?
-
 ## Security
 
 Please disclose any vulnerabilities found responsibly – report security issues to the maintainers privately.
@@ -231,28 +223,3 @@ Donations are very welcome, whether in beer 🍺, T-shirts 👕, or cold, hard c
 
 See [changelog](CHANGELOG.md).
 
-<!-- BEGIN_TF_DOCS -->
-## Requirements
-
-No requirements.
-
-## Providers
-
-No providers.
-
-## Modules
-
-No modules.
-
-## Resources
-
-No resources.
-
-## Inputs
-
-No inputs.
-
-## Outputs
-
-No outputs.
-<!-- END_TF_DOCS -->

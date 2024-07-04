@@ -64,6 +64,11 @@ resource "aws_codepipeline" "pipeline" {
                 name : "PR_NUMBER",
                 value : "#{variables.PR_NUMBER}",
                 type : "PLAINTEXT"
+              },
+              {
+                name : "IS_PULL_REQUEST",
+                value : "#{variables.IS_PULL_REQUEST}",
+                type : "PLAINTEXT"
               }
             ]
           )
@@ -78,10 +83,16 @@ resource "aws_codepipeline" "pipeline" {
     description   = "Name of the Branch"
   }
 
-    variable {
+  variable {
     name          = "PR_NUMBER"
     default_value = "1000"
     description   = "Number of the Pull request"
+  }
+
+  variable {
+    name          = "IS_PULL_REQUEST"
+    default_value = "0"
+    description   = "Is it Pull Request"
   }
 
 }

@@ -17,6 +17,4 @@ phases:
       - 'make build'
       - 'echo #### Deploy Project'
       - 'aws s3 sync ./out s3://"$PROJECT_NAME-$BRANCH_NAME'
-      - 'echo $GITHUB_TOKEN > token.txt'
-      - 'gh auth login --with-token < token.txt'
-      - 'gh pr comment $PR_NUMBER -R $GITHUB_REPOSITORY --body "Latest Version is ready: http://"$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com"'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pull_request.sh'
