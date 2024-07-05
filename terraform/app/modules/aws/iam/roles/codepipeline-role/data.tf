@@ -245,6 +245,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:CreatePolicy",
       "iam:GetPolicy",
       "iam:GetPolicyVersion",
+      "iam:ListPolicyVersions",
       "iam:TagPolicy",
     ]
     resources = [
