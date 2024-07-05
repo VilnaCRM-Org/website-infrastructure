@@ -1,14 +1,12 @@
 source_repo_owner         = "VilnaCRM-Org"
 source_repo_name          = "website-infrastructure"
 website_content_repo_name = "website"
-source_repo_branch        = "3-implement-sandbox-infrastructure"
-website_repo_branch       = "5-make-website-layout"
 region                    = "eu-central-1"
 
 cloudfront_configuration = {
   region = "us-east-1"
-
 }
+
 continuous_deployment_policy_weight = 0.15
 continuous_deployment_policy_header = "staging"
 

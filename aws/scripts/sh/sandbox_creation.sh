@@ -8,5 +8,5 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
     aws s3api put-bucket-acl --bucket "$PROJECT_NAME-$BRANCH_NAME" --acl public-read --region $AWS_DEFAULT_REGION
     aws s3api put-bucket-website --bucket "$PROJECT_NAME-$BRANCH_NAME" --website-configuration file://website_configuration.json --region $AWS_DEFAULT_REGION
     aws s3api put-bucket-policy --bucket "$PROJECT_NAME-$BRANCH_NAME" --policy file://s3_policy.json --region $AWS_DEFAULT_REGION
-    echo "Bucket was successfully requested."
+    echo "Bucket was successfully created."
 fi
