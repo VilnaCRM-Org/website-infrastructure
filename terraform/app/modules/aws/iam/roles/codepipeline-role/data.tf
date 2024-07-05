@@ -243,6 +243,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
     effect = "Allow"
     actions = [
       "iam:CreatePolicy",
+      "iam:CreatePolicyVersion",
       "iam:GetPolicy",
       "iam:GetPolicyVersion",
       "iam:ListPolicyVersions",
