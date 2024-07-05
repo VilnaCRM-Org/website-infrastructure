@@ -1,3 +1,12 @@
+## [0.1.2](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.1.1...v0.1.2) (2024-07-05)
+
+
+### Bug Fixes
+
+* **hotfix:** update locals ([ee1651f](https://github.com/VilnaCRM-Org/website-infrastructure/commit/ee1651fd9343495a203a1427ca5eb0b00ab7da17))
+
+
+
 ## [0.1.1](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.1.0...v0.1.1) (2024-07-05)
 
 
