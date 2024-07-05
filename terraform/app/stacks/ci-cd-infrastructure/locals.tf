@@ -194,6 +194,7 @@ locals {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "PYTHON_VERSION"                = var.runtime_versions.python,
+        "GOLANG_VERSION"                = var.runtime_versions.golang
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
         "ACCOUNT_ID"                    = local.account_id
@@ -225,7 +226,7 @@ locals {
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
       },
-    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_pw_load.yml" })
+    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_lhci_leak.yml" })
     release = merge(local.ubuntu_based_build,
       { env_variables = {
         "PYTHON_VERSION"    = var.runtime_versions.python,
