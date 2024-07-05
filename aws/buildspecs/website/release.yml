@@ -1,0 +1,8 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: $PYTHON_VERSION
+    commands:
+      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/origin_change.py'

@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: $NODEJS_VERSION
+    commands:
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh'
+      - 'cd /codebuild-user/website'
+      - 'sudo apt update'
+      - 'sudo apt install gh -y'
+
+  build:
+    commands:
+      - 'echo #### Build Project'
+      - 'make build'
+      - 'echo #### Deploy Project'
+      - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pull_request.sh'
