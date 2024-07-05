@@ -13,7 +13,7 @@ module "github_oidc" {
 resource "github_actions_secret" "aws_codepipeline_role_arn" {
   #checkov:skip=CKV_GIT_4: It is encypted in any case - https://github.com/bridgecrewio/checkov/issues/2374
   repository      = var.source_repo_name
-  secret_name     = "AWS_CODEPIPELINE_ROLE_ARN"
+  secret_name     = "${upper(var.environment)}_AWS_CODEPIPELINE_ROLE_ARN"
   plaintext_value = module.github_oidc.oidc_role
 
   depends_on = [module.github_oidc]
@@ -21,6 +21,6 @@ resource "github_actions_secret" "aws_codepipeline_role_arn" {
 
 resource "github_actions_secret" "aws_codepipeline_name" {
   repository      = var.source_repo_name
-  secret_name     = "AWS_CODEPIPELINE_NAME"
+  secret_name     = "${upper(var.environment)}_AWS_CODEPIPELINE_NAME"
   plaintext_value = var.ci_cd_website_codepipeline_name
 }

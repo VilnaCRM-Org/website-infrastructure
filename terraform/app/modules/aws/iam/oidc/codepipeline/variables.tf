@@ -13,6 +13,11 @@ variable "source_repo_name" {
   type        = string
 }
 
+variable "environment" {
+  description = "Environment for the project"
+  type        = string
+}
+
 variable "ci_cd_website_codepipeline_arn" {
   description = "CodePipeline ARN of CI/CD Website pipeline"
   type        = string
