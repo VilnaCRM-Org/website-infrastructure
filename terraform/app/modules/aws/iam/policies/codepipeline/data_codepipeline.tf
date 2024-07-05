@@ -5,6 +5,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     actions = [
       "codepipeline:CreatePipeline",
       "codepipeline:GetPipeline",
+      "codepipeline:UpdatePipeline",
       "codepipeline:ListTagsForResource",
       "codepipeline:TagResource",
       "codepipeline:DeletePipeline"
