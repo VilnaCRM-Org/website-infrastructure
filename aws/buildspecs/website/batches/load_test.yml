@@ -1,0 +1,36 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: $NODEJS_VERSION
+      python: $PYTHON_VERSION
+      golang: $GOLANG_VERSION
+    commands:
+      - 'apt update -y'
+      - 'apt install tree -y'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/k6_installation.sh'
+      - 'cd /codebuild-user/website'
+
+  build:
+    commands:
+      - 'echo #### Set up environment'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh'
+      - 'echo #### Running Load Test' # Reports folder: src/test/load/results/
+      - 'export LOAD_RUN=true && make load-tests'
+    finally:
+      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
+      - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
+
+artifacts:
+  files:
+    - '/codebuild-user/website/src/test/load/results/**/*'
+
+cache:
+  paths:
+    - '/bin'
+    - '/usr/local/bin'
+    - '/root/.cache'
+    - '/codebuild-user/website/node_modules'
+    - '/usr/local/bundle'

@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  terraform:
+    image: hashicorp/terraform:1.3.6
+    volumes:
+      - ../terraform:/infra
+      - ~/.aws:/root/.aws:ro
+    working_dir: /infra
+
+  terraspace:
+    image: boltops/terraspace:2.2.3-debian
+    volumes:
+      - ../terraform:/infra
+      - ~/.aws:/root/.aws:ro
+    working_dir: /infra
+
+  terraform-compliance:
+    image: eerkunt/terraform-compliance:1.3.34

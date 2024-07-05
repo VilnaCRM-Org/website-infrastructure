@@ -1,0 +1,39 @@
+version: '3'
+
+tasks:
+  format:
+    desc: 'Run Format'
+    cmds:
+      - pnpm run format
+    silent: false
+
+  lint:
+    desc: 'Run lint'
+    cmds:
+      - pnpm run lint:next
+      - pnpm run lint:tsc
+      - pnpm run lint:md
+    silent: false
+
+  test:
+    desc: 'Run test'
+    cmds:
+      - pnpm run test:e2e
+      - pnpm run test:mutation
+      - pnpm run test:visual
+      - pnpm run test:unit
+      - pnpm run test:memory-leak
+    silent: false
+
+  lighthouse:
+    desc: 'Run lighthouse'
+    cmds:
+      - pnpm run lighthouse:desktop
+      - pnpm run lighthouse:mobile
+    silent: false
+
+  summary:
+    desc: 'Display summary'
+    deps: [format, lint, test, lighthouse]
+    cmds:
+      - echo "Tests have been completed."

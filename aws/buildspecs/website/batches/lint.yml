@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: $NODEJS_VERSION
+    commands:
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
+      - 'cd /codebuild-user/website'
+      - 'echo #### Owner Change'
+      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh'
+
+  build:
+    run-as: 'codebuild-user'
+    commands:
+      - 'mkdir /codebuild-user/website/lint-logs'
+      - 'echo #### Running Lint'
+      - 'export LINT_RUN=true && make format 2>&1 | tee lint-logs/format.log'
+      - 'make lint-next 2>&1 | tee lint-logs/next.log'
+      - 'make lint-tsc | tee lint-logs/tsc.log'
+      - 'make lint-md | tee lint-logs/md.log'
+
+artifacts:
+  files:
+    - '/codebuild-user/website/lint-logs/**/*'
+
+cache:
+  paths:
+    - '/bin'
+    - '/usr/local/bin'
+    - '/codebuild-user/website/node_modules'
+    - '/root/.cache'
+    - '/usr/local/bundle'

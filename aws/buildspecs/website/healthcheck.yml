@@ -1,0 +1,21 @@
+version: 0.2
+
+env:
+  variables:
+    HURL_VERSION: '4.2.0'
+    HURL: './target/release/hurl-installation'
+    HURL_DIR: './hurl'
+
+phases:
+  install:
+    commands:
+      - 'dnf install -y pkg-config gcc openssl-devel libxml2-devel'
+      - 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
+      - 'source $HOME/.cargo/env'
+      - 'rustc --version'
+      - 'cargo --version'
+      - 'cargo install hurl'
+  build:
+    commands:
+      - 'echo ## Test Website Connection...'
+      - 'hurl --test --verbose --variable website_url=$WEBSITE_URL ${CODEBUILD_SRC_DIR}/${HURL_DIR}/healthcheck.hurl'
