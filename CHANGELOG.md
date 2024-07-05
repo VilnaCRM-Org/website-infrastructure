@@ -1,4 +1,13 @@
-# 0.1.0 (2024-07-05)
+## [0.1.1](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.1.0...v0.1.1) (2024-07-05)
+
+
+### Bug Fixes
+
+* **hotfix:** update variables ([7580e77](https://github.com/VilnaCRM-Org/website-infrastructure/commit/7580e7763c889a026a6fbe4a892b400434630668))
+
+
+
+# [0.1.0](https://github.com/VilnaCRM-Org/website-infrastructure/compare/e471e3e117a684d3f6af22b3dbfdf6bf1b403a4b...v0.1.0) (2024-07-05)
 
 
 ### Bug Fixes
