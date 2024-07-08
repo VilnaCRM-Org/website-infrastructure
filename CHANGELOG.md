@@ -1,3 +1,12 @@
+## [0.1.3](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.1.2...v0.1.3) (2024-07-08)
+
+
+### Bug Fixes
+
+* **hotfix:** update create env ([04733a7](https://github.com/VilnaCRM-Org/website-infrastructure/commit/04733a70480ba784cf495a57c6d480ec5afd6bdd))
+
+
+
 ## [0.1.2](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.1.1...v0.1.2) (2024-07-05)
 
 
