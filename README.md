@@ -33,11 +33,19 @@ Here you can get acquainted with our infrastructure for frontend and CD pipeline
 
 #### Production Environment
 
-![Production Terraform CD Pipeline Infrastructure](/diagrams/img/terraform_prod_env_cd_pipeline_infra_design.png)
+![CI/CD Infrastructure Terraform pipeline Production Design VilnaCRM](/diagrams/img/prod/ci_cd_infra_pipeline_design.png)
+
+![Website Infrastructure Terraform pipeline Production Design VilnaCRM](/diagrams/img/prod/website_infra_pipeline_design.png)
+
+![CI/CD Website pipeline Production Design VilnaCRM](/diagrams/img/prod/ci_cd_website_pipeline_design.png)
 
 #### Test Environment
 
-![Test Terraform CD Pipeline Infrastructure](/diagrams/img/terraform_test_env_cd_pipeline_infra_design.png)
+![CI/CD Infrastructure Terraform pipeline Test Design VilnaCRM](/diagrams/img/test/ci_cd_infra_pipeline_design.png)
+
+![Website Infrastructure Terraform pipeline Test Design VilnaCRM](/diagrams/img/test/website_infra_pipeline_design.png)
+
+![CI/CD Website pipeline Test Design VilnaCRM](/diagrams/img/test/ci_cd_website_pipeline_design.png)
 
 Used AWS Services: Chatbot, Cloudwatch, S3, CodeBuild, CodePipeline, CodeStar, KMS, IAM, DNS, Cloudfront, SNS, Lambda.
 
