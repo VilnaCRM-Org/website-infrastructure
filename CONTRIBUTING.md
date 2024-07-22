@@ -16,6 +16,7 @@ To get an overview of the project, read the [README](README.md). Here are some r
 - [Set up Git](https://docs.github.com/en/get-started/quickstart/set-up-git)
 - [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow)
 - [Collaborating with pull requests](https://docs.github.com/en/github/collaborating-with-pull-requests)
+- [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 ### Issues
 
