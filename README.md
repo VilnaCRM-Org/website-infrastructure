@@ -134,7 +134,7 @@ After you can move to the next step.
 
 ### Environmental variables 
 
-Also before running you need to set up some of variables of the variables:
+Also before running you need to set up some local variables:
 - **TF_VAR_SLACK_WORKSPACE_ID** - ID of your Slack workspace.
 - **TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID** - ID of Slack channel where the deployments notification will be posted.
 - **TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID** - ID of Slack channel where the CodePipeline alerts will be posted.
