@@ -1,3 +1,12 @@
+# [0.2.0](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.1.3...v0.2.0) (2024-07-30)
+
+
+### Features
+
+* **#4:** add new diagrams ([7b8d1b2](https://github.com/VilnaCRM-Org/website-infrastructure/commit/7b8d1b2d4a4a641b34722f3e2c118bc577b9d69b)), closes [#4](https://github.com/VilnaCRM-Org/website-infrastructure/issues/4)
+
+
+
 ## [0.1.3](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.1.2...v0.1.3) (2024-07-08)
 
 
