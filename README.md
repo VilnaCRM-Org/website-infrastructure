@@ -120,7 +120,7 @@ The string of letters and numbers beginning with **"C"** is your channel ID.(Als
 
 ### Local machine software requirements
 
-Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine. Follow the guides specified in the links.
+Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine. You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project locally using this OS. Follow the guides specified in the links.
 
 Necessary Terraform Version for the Terraspace is 1.4.7.
 Please, follow this links to install  [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/) to install it.
@@ -136,7 +136,7 @@ AWS Secret Access Key [None]: <Your Secret Key Here>
 Default region name [None]: eu-central-1
 Default output format [None]:
 ```
-In case, if you are using other region, please respecify it in the `tfvars`.
+In case, if you are using other region, please respecify it in the `tfvars`. Also specify your own domain name in the `tfvars`.
 
 After you can move to the next step.
 
