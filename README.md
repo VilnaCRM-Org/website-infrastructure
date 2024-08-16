@@ -161,7 +161,7 @@ After you configured everything you can deploy infrastructure by running such co
 - `make terraspace-all-validate`
 - `make terraspace-all-up`
 
-After you deployed infrastructure you can trigger CI/CD for website setup by running such command.
+After you deployed you can create the website infrastructure itself using.
 - `terraspace all up`
 
 ## Using make
