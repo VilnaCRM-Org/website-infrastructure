@@ -5,7 +5,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
   source {
     type      = "GITHUB"
     location  = "https://github.com/VilnaCRM-Org/website-infrastructure"
-    buildspec = "website-infrastructure/aws/buildspecs/sandbox/delete.yml"
+    buildspec = "./aws/buildspecs/sandbox/delete.yml"
   }
 
   environment {

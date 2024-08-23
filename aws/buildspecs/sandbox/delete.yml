@@ -1,10 +1,16 @@
 version: 0.2
 
 phases:
+  install:
+    commands:
+      - echo "Listing files in the current directory:"
+      - ls -la
+      - echo "Listing files in the scripts directory:"
+      - ls -la website-infrastructure/aws/scripts/sh
   build:
     commands:
       - echo "Fetching all S3 buckets..."
-      - buckets=$(aws s3api list-buckets --query "Buckets[].Name" --output text)
-      - echo "Buckets to delete: $buckets"
-      - for bucket in $buckets; do aws s3 rb s3://$bucket --force; done
+      - cd website-infrastructure/aws/scripts/sh
+      - chmod +x sandbox_deletion.sh
+      - ./sandbox_deletion.sh
       - echo "All S3 buckets have been deleted."
