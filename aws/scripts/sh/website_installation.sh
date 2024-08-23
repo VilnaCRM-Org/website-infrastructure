@@ -1,5 +1,6 @@
 echo #### Install Software
-n install 21.7.1
+n install 20.14.0
+n 20.14.0
 git clone -b $WEBSITE_GIT_REPOSITORY_BRANCH "$WEBSITE_GIT_REPOSITORY_LINK.git" /codebuild-user/website
 cd /codebuild-user/website/
 echo #### Install pnpm
