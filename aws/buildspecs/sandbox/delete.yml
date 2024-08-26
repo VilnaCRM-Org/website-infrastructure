@@ -6,11 +6,11 @@ phases:
       - echo "Listing files in the current directory:"
       - ls -la
       - echo "Listing files in the scripts directory:"
-      - ls -la website-infrastructure/aws/scripts/sh
+      - ls -la ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh
   build:
     commands:
       - echo "Fetching all S3 buckets..."
-      - cd website-infrastructure/aws/scripts/sh
+      - cd ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh
       - chmod +x sandbox_deletion.sh
       - ./sandbox_deletion.sh
       - echo "All S3 buckets have been deleted."
