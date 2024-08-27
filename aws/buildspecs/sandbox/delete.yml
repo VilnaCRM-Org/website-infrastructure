@@ -5,10 +5,10 @@ phases:
     commands:
       - echo "Listing files in the current directory:"
       - ls -la
-
+      
   build:
     commands:
       - chmod +x ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_deletion.sh
       - echo "Run script"
-      - source ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_deletion.sh
+      - . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_deletion.sh
       - echo "S3 bucket has been deleted."

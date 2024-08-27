@@ -1,8 +1,6 @@
-# #!/bin/bash
-# buckets=$(aws s3api list-buckets --query "Buckets[].Name" --output text)
-# echo "Buckets to delete: $buckets"
-# for bucket in $buckets; do
-#   aws s3 rb s3://$bucket --force
-# done
-
-# delete just 1 bucket(check sandbox creation)
+#!/bin/bash
+BUCKET_NAME="$PROJECT_NAME-$BRANCH_NAME"
+echo "Deleting Bucket: $BUCKET_NAME..."
+aws s3 rm s3://$BUCKET_NAME --recursive --region $AWS_DEFAULT_REGION
+aws s3api delete-bucket --bucket $BUCKET_NAME --region $AWS_DEFAULT_REGION
+echo "Bucket $BUCKET_NAME was successfully deleted."
