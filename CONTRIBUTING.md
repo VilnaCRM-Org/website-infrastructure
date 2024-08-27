@@ -63,4 +63,4 @@ When you're finished with the changes, create a pull request, also known as a PR
 
 Congratulations :tada::tada: The our team thanks you :sparkles:.
 
-Now that you are part of the php service template community.
+Now that you are part of the website infrastructure community.
