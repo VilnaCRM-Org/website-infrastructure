@@ -8,8 +8,7 @@ phases:
 
   build:
     commands:
-      - echo "Changing mod for script file"
       - chmod +x ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_deletion.sh
-      - echo "Run script sandbox_deletion.sh"
+      - echo "Run script"
       - source ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_deletion.sh
       - echo "S3 bucket has been deleted."
