@@ -161,6 +161,25 @@ After you configured everything you can deploy infrastructure by running such co
 - `make terraspace-all-validate`
 - `make terraspace-all-up`
 
+After you deployed you can create the website infrastructure itself using.
+- `terraspace all up`
+
+### Instructions on how to set up and run the changes in AWS
+
+CLI Instructions:
+Once you have made the changes, you can run the pipeline using the `make` capabilities. If you already have the infrastructure, don't forget to apply the changes before running the pipeline.
+
+> make trigger-pipeline
+
+Run the command for each pipeline specifying its name, see the list of `make` possibilities for details on how to properly run this trigger
+
+
+AWS Management Console Instructions:
+Before running, make sure you have applied the changes made earlier.
+
+Search -> Codepipeline -> Pipelines -> Select a pipeline using the checkbox on the left -> Release change -> Release 
+
+Follow these steps for each pipeline. 
 
 ## Using make
 
@@ -198,6 +217,7 @@ The list of the `make` possibilities:
   terraspace-output-file         Output the stack variables into file. Variables: env, stack, out.
   terraspace-output              Output the stack variables. Variables: env, stack.
   terraspace-down                Down the stack. Variables: env, stack.
+  trigger-pipeline:              Trigger AWS CodePipeline. Variables: pipeline. Example: make trigger-pipeline pipeline=ci-cd-infra-test-pipeline
 
 ```
 
