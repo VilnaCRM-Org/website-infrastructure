@@ -76,4 +76,22 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:role/${var.ci_cd_project_name}-iam-for-cloudtrail"
     ]
   }
-} 
+  statement {
+    sid    = "CodeStarConnectionsListTagsForResource"
+    effect = "Allow"
+    actions = [
+      "codestar-connections:ListTagsForResource"
+    ]
+    resources = ["*"]
+  }
+  statement {
+    sid    = "GetRolePolicy"
+    effect = "Allow"
+    actions = [
+      "iam:GetRolePolicy"
+    ]
+    resources = [
+      "arn:aws:iam::010438498391:role/ci-cd-infra-test-codebuild-terraform-role"
+    ]
+  }
+}

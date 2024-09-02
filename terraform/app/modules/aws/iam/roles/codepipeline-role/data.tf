@@ -336,5 +336,14 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-terraform-role-iam-policy",
     ]
   }
-
+  statement {
+    sid    = "AllowCodeBuildStartBuild"
+    effect = "Allow"
+    actions = [
+      "codebuild:StartBuild",
+    ]
+    resources = [
+      "arn:aws:codebuild:${data.aws_region.current.id}:${local.account_id}:project/website-infra-test-down",
+    ]
+  }
 }
