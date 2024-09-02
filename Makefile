@@ -114,3 +114,8 @@ terraspace-output-file: ## Output the stack variables into file. Variables: env,
 
 terraspace-down: ## Down the stack. Variables: env, stack.
 	$(EXEC_TS) down $(stack) -y
+
+# AWS CodePipeline Trigger
+
+trigger-pipeline: ## Trigger AWS CodePipeline. Variables: pipeline. Example: make trigger-pipeline pipeline=ci-cd-infra-test-pipeline
+	aws codepipeline start-pipeline-execution --name $(pipeline)
