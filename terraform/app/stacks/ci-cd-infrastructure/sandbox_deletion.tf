@@ -10,7 +10,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {  #refactor (policies and r
 
   environment {
     compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "aws/codebuild/standard:5.0"
+    image        = "aws/codebuild/standard:7.0"
     type         = "LINUX_CONTAINER"
   }
 
@@ -42,7 +42,7 @@ resource "aws_codepipeline" "sandbox_pipeline" {
       configuration = {
         Owner      = "VilnaCRM-Org"
         Repo       = "website-infrastructure"
-        Branch     = "3-implement-sandbox-infrastructure"
+        Branch     = var.source_repo_branch
         OAuthToken = var.GITHUB_TOKEN
       }
     }
