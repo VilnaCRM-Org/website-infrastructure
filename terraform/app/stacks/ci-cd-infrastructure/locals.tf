@@ -193,6 +193,7 @@ locals {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "PYTHON_VERSION"                = var.runtime_versions.python,
+        "GOLANG_VERSION"                = var.runtime_versions.golang
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
         "ACCOUNT_ID"                    = local.account_id

@@ -4,15 +4,33 @@ tags = {
   Project     = "website"
   Environment = "prod"
 }
-domain_name                           = "vilnacrm.com"
-s3_bucket_custom_name                 = "vilnacrm.com"
-s3_bucket_versioning                  = true
-s3_bucket_public_access_block         = true
-deploy_sample_content                 = true
-cloudfront_price_class                = "PriceClass_100"
-cloudfront_min_ttl                    = 0
-cloudfront_default_ttl                = 86400
-cloudfront_max_ttl                    = 31536000
-cloudfront_access_control_max_age_sec = 31536000
-ttl_validation                        = 60
-ttl_route53_record                    = "300"
+domain_name           = "vilnacrm.com"
+s3_bucket_custom_name = "vilnacrm.com"
+
+cloudfront_custom_error_responses = [
+  {
+    error_code            = 403
+    response_code         = 404
+    error_caching_min_ttl = 10
+    response_page_path    = "/index.html"
+  },
+  {
+    error_code            = 404
+    response_code         = 404
+    error_caching_min_ttl = 10
+    response_page_path    = "/index.html"
+  }
+]
+
+cloudfront_configuration = {
+  price_class                = "PriceClass_100"
+  min_ttl                    = 0
+  default_ttl                = 86400
+  max_ttl                    = 31536000
+  access_control_max_age_sec = 31536000
+  default_root_object        = "index.html"
+  minimum_protocol_version   = "TLSv1.2_2019"
+}
+
+ttl_validation     = 60
+ttl_route53_record = "300"

@@ -33,11 +33,19 @@ Here you can get acquainted with our infrastructure for frontend and CD pipeline
 
 #### Production Environment
 
-![Production Terraform CD Pipeline Infrastructure](/diagrams/img/terraform_prod_env_cd_pipeline_infra_design.png)
+![CI/CD Infrastructure Terraform pipeline Production Design VilnaCRM](/diagrams/img/prod/ci_cd_infra_pipeline_design.png)
+
+![Website Infrastructure Terraform pipeline Production Design VilnaCRM](/diagrams/img/prod/website_infra_pipeline_design.png)
+
+![CI/CD Website pipeline Production Design VilnaCRM](/diagrams/img/prod/ci_cd_website_pipeline_design.png)
 
 #### Test Environment
 
-![Test Terraform CD Pipeline Infrastructure](/diagrams/img/terraform_test_env_cd_pipeline_infra_design.png)
+![CI/CD Infrastructure Terraform pipeline Test Design VilnaCRM](/diagrams/img/test/ci_cd_infra_pipeline_design.png)
+
+![Website Infrastructure Terraform pipeline Test Design VilnaCRM](/diagrams/img/test/website_infra_pipeline_design.png)
+
+![CI/CD Website pipeline Test Design VilnaCRM](/diagrams/img/test/ci_cd_website_pipeline_design.png)
 
 Used AWS Services: Chatbot, Cloudwatch, S3, CodeBuild, CodePipeline, CodeStar, KMS, IAM, DNS, Cloudfront, SNS, Lambda.
 
@@ -112,7 +120,9 @@ The string of letters and numbers beginning with **"C"** is your channel ID.(Als
 
 ### Local machine software requirements
 
-Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine. Follow the guides specified in the links.
+
+Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine. You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project locally using this OS. Follow the guides specified in the links.
+
 
 Necessary Terraform Version for the Terraspace is 1.4.7.
 Please, follow this links to install  [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/) to install it.
@@ -128,13 +138,15 @@ AWS Secret Access Key [None]: <Your Secret Key Here>
 Default region name [None]: eu-central-1
 Default output format [None]:
 ```
-In case, if you are using other region, please respecify it in the `tfvars`.
+
+In case, if you are using other region, please respecify it in the `tfvars`. Also specify your own domain name in the `tfvars`.
 
 After you can move to the next step.
 
 ### Environmental variables 
 
-Also before running you need to set up some of variables of the variables:
+Also before running you need to set up some local variables:
+
 - **TF_VAR_SLACK_WORKSPACE_ID** - ID of your Slack workspace.
 - **TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID** - ID of Slack channel where the deployments notification will be posted.
 - **TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID** - ID of Slack channel where the CodePipeline alerts will be posted.
@@ -154,10 +166,29 @@ After you configured everything you can deploy infrastructure by running such co
 - `make terraspace-all-up`
 
 
+After you deployed you can create the website infrastructure itself using.
+- `terraspace all up`
+
+### Instructions on how to set up and run the changes in AWS
+
+CLI Instructions:
+Once you have made the changes, you can run the pipeline using the `make` capabilities. If you already have the infrastructure, don't forget to apply the changes before running the pipeline.
+
+> make trigger-pipeline
+
+Run the command for each pipeline specifying its name, see the list of `make` possibilities for details on how to properly run this trigger
+
+
+AWS Management Console Instructions:
+Before running, make sure you have applied the changes made earlier.
+
+Search -> Codepipeline -> Pipelines -> Select a pipeline using the checkbox on the left -> Release change -> Release 
+
+Follow these steps for each pipeline. 
+
 ## Using make
 
 You can use `make` command to easily control and work with project locally.
-
 
 > make install
 
@@ -190,6 +221,7 @@ The list of the `make` possibilities:
   terraspace-output-file         Output the stack variables into file. Variables: env, stack, out.
   terraspace-output              Output the stack variables. Variables: env, stack.
   terraspace-down                Down the stack. Variables: env, stack.
+  trigger-pipeline:              Trigger AWS CodePipeline. Variables: pipeline. Example: make trigger-pipeline pipeline=ci-cd-infra-test-pipeline
 
 ```
 
