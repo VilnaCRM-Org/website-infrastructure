@@ -5,13 +5,13 @@ BRANCH_NAME = os.environ['BRANCH_NAME']
 PROJECT_NAME = os.environ['PROJECT_NAME']
 
 
-def create_website_configuration():
+def create_website_configuration() -> None:
     config = {
         "IndexDocument": {
-            "Suffix": "index.html"
+            "Suffix": "index.html",
         },
         "ErrorDocument": {
-            "Key": "error.html"
+            "Key": "error.html",
         }
     }
     json_string = json.dumps(config, indent=4)
@@ -23,18 +23,18 @@ def create_website_configuration():
     print("Config has been written to website_configuration.json")
 
 
-def create_s3_policy():
+def create_s3_policy() -> None:
     policy = {
         "Statement": [
             {
                 "Effect": "Allow",
                 "Principal": {
-                    "AWS": "*"
+                    "AWS": "*",
                 },
                 "Action": "s3:GetObject",
                 "Resource": [
                     f"arn:aws:s3:::{PROJECT_NAME}-{BRANCH_NAME}/*",
-                    f"arn:aws:s3:::{PROJECT_NAME}-{BRANCH_NAME}"
+                    f"arn:aws:s3:::{PROJECT_NAME}-{BRANCH_NAME}",
                 ]
             }
         ]
@@ -49,7 +49,7 @@ def create_s3_policy():
     print("Policy has been written to s3_policy.json")
 
 
-def main():
+def main() -> None:
     create_website_configuration()
     create_s3_policy()
 

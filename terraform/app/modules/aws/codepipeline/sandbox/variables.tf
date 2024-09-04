@@ -44,7 +44,7 @@ variable "codestar_connection_arn" {
 }
 
 variable "detect_changes" {
-  description = "Specyfing changes detection"
+  description = "Specifying changes detection"
   type        = string
 }
 

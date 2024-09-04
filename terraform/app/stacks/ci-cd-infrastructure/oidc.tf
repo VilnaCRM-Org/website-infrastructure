@@ -13,5 +13,7 @@ module "oidc_role" {
 
   tags = var.tags
 
+  environment = var.environment
+
   depends_on = [module.ci_cd_website_codepipeline, module.sandbox_codepipeline]
 }

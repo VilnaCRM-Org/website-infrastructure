@@ -10,5 +10,5 @@ output "terraform_role_arn" {
 
 output "role_name" {
   value       = aws_iam_role.codepipeline_role.name
-  description = "The ARN of the IAM Role"
+  description = "The name of the IAM Role"
 }

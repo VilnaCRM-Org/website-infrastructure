@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Check for required variables
+# Check for all required variables
 if [ -z "$PROJECT_NAME" ] || [ -z "$BRANCH_NAME" ] || [ -z "$AWS_DEFAULT_REGION" ]; then
     echo "Error: PROJECT_NAME, BRANCH_NAME, and AWS_DEFAULT_REGION variables must be set."
     echo "Usage: Make sure all environment variables are set before running the script."

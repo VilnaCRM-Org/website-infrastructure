@@ -1,4 +1,58 @@
-resource "aws_codebuild_project" "sandbox_deletion" {  #refactor (policies and resources)
+resource "aws_iam_role_policy" "codepipeline_restricted_access" {
+  name = "codepipeline-restricted-access-policy"
+  role = aws_iam_role.codepipeline_role_sandbox.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "codepipeline:StartPipelineExecution",
+          "codepipeline:PutJobSuccessResult",
+          "codepipeline:PutJobFailureResult",
+          "codepipeline:GetPipelineState",
+          "codepipeline:GetPipelineExecution",
+          "codepipeline:GetPipeline",
+          "codepipeline:ListPipelineExecutions",
+          "codepipeline:ListPipelines"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "codebuild:StartBuild",
+          "codebuild:BatchGetBuilds",
+          "codebuild:ListBuilds",
+          "codebuild:ListProjects",
+          "codebuild:BatchGetProjects"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:DeleteObject"
+        ]
+        Resource = "arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:EnableAlarmActions",
+          "cloudwatch:DisableAlarmActions"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_codebuild_project" "sandbox_deletion" {
   name          = "sandbox-deletion"
   service_role  = aws_iam_role.codebuild_role_sandbox.arn
 
@@ -82,11 +136,6 @@ resource "aws_iam_role" "codepipeline_role_sandbox" {
       }
     ]
   })
-
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess",
-    "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess"
-  ]
 }
 
 resource "aws_iam_role_policy" "codepipeline_s3_access" {
@@ -129,8 +178,8 @@ resource "aws_iam_role" "codebuild_role_sandbox" {
   })
 
   managed_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-    "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
+    "arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess"
   ]
 }
 
