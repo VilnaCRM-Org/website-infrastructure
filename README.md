@@ -80,7 +80,7 @@ After creating your account you should do the following steps:
 
    After creation of user:
 
-   Press on user you just created -> Go to Security credentials -> Create access key -> Choose Local code -> Check Confirmation mark -> Next -> Enter description value -> Create access key -> Save the Access key and Secret access key credentials
+   Press on user you just created -> Go to Security credentials -> Create access key -> Choose  code -> Check Confirmation mark -> Next -> Enter description value -> Create access key -> Save the Access key and Secret access key credentials
 
 **Save them, you will need it later.**
 
@@ -120,9 +120,7 @@ The string of letters and numbers beginning with **"C"** is your channel ID.(Als
 
 ### Local machine software requirements
 
-
 Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine. You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project locally using this OS. Follow the guides specified in the links.
-
 
 Necessary Terraform Version for the Terraspace is 1.4.7.
 Please, follow this links to install  [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/) to install it.
@@ -139,14 +137,13 @@ Default region name [None]: eu-central-1
 Default output format [None]:
 ```
 
-In case, if you are using other region, please respecify it in the `tfvars`. Also specify your own domain name in the `tfvars`.
+In case, if you are using any other region, please respecify it in the `tfvars`. Also specify your own domain name in the `tfvars`.
 
 After you can move to the next step.
 
 ### Environmental variables 
 
 Also before running you need to set up some local variables:
-
 - **TF_VAR_SLACK_WORKSPACE_ID** - ID of your Slack workspace.
 - **TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID** - ID of Slack channel where the deployments notification will be posted.
 - **TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID** - ID of Slack channel where the CodePipeline alerts will be posted.
@@ -164,7 +161,6 @@ After you configured everything you can deploy infrastructure by running such co
 - `make terraspace-all-init`
 - `make terraspace-all-validate`
 - `make terraspace-all-up`
-
 
 After you deployed you can create the website infrastructure itself using.
 - `terraspace all up`
