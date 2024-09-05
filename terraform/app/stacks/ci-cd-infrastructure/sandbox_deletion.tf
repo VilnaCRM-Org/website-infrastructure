@@ -17,7 +17,10 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "codepipeline:ListPipelineExecutions",
           "codepipeline:ListPipelines"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-pipeline-deletion",
+          "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-deletion"
+        ]
       },
       {
         Effect = "Allow"
@@ -28,7 +31,10 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "codebuild:ListProjects",
           "codebuild:BatchGetProjects"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-pipeline-deletion",
+          "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-deletion"
+        ]
       },
       {
         Effect = "Allow"
@@ -40,21 +46,35 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
         ]
         Resource = "arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*"
       },
+            {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = [
+          "arn:aws:logs:${var.region}:${local.account_id}:log-group:/aws/codebuild/sandbox-deletion*"
+        ]
+      },
       {
         Effect = "Allow"
         Action = [
           "cloudwatch:EnableAlarmActions",
           "cloudwatch:DisableAlarmActions"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-pipeline-deletion",
+          "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-deletion"
+        ]
       }
     ]
   })
 }
 
 resource "aws_codebuild_project" "sandbox_deletion" {
-  name          = "sandbox-deletion"
-  service_role  = aws_iam_role.codebuild_role_sandbox.arn
+  name         = "sandbox-deletion"
+  service_role = aws_iam_role.codebuild_role_sandbox.arn
 
   source {
     type      = "GITHUB"
@@ -185,4 +205,35 @@ resource "aws_iam_role" "codebuild_role_sandbox" {
 
 resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket = "codepipeline-artifacts-bucket-deletion"
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "codepipeline_bucket_lifecycle" {
+  bucket = aws_s3_bucket.codepipeline_bucket.id
+
+  rule {
+    id     = "lifecycle-30-days-glacier"
+    status = "Enabled"
+
+    transition {
+      days          = 30
+      storage_class = "GLACIER"
+    }
+
+    expiration {
+      days = 90
+    }
+  }
+}
+
+resource "aws_s3_bucket_logging" "codepipeline_bucket_logging" {
+  bucket        = aws_s3_bucket.codepipeline_bucket.id
+  target_bucket = "access-logs-bucket"
+  target_prefix = "log/"
+}
+
+resource "aws_s3_bucket_versioning" "codepipeline_bucket_versioning" {
+  bucket = aws_s3_bucket.codepipeline_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }

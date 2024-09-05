@@ -28,8 +28,7 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
     fi
     
     # Create a pull request comment with a link to the latest version of the project
-    gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "Latest Version is ready: http://$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com"
-    if [ $? -ne 0 ]; then
+    if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "Latest Version is ready: http://$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com"; then
         echo "Failed to create the pull request comment. Please check the provided environment variables."
         exit 1
     fi

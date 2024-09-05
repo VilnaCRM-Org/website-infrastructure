@@ -38,11 +38,11 @@ module "sandbox_codepipeline_iam_role" {
   s3_bucket_arn           = module.sandbox_s3_artifacts_bucket.arn
   codestar_connection_arn = module.codestar_connection.arn
 
-  policy_arns = module.sandox_policies.policy_arns
+  policy_arns = module.sandbox_policies.policy_arns
 
   tags = var.tags
 
-  depends_on = [module.sandox_policies]
+  depends_on = [module.sandbox_policies]
 }
 
 module "sandbox_codebuild" {
