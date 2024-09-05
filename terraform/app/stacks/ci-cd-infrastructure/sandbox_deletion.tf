@@ -46,17 +46,6 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
         ]
         Resource = "arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*"
       },
-            {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Resource = [
-          "arn:aws:logs:${var.region}:${local.account_id}:log-group:/aws/codebuild/sandbox-deletion*"
-        ]
-      },
       {
         Effect = "Allow"
         Action = [
@@ -201,6 +190,30 @@ resource "aws_iam_role" "codebuild_role_sandbox" {
     "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
     "arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess"
   ]
+}
+
+resource "aws_iam_role_policy" "codebuild_logs_access" {
+  name = "codebuild-logs-access-policy-sandbox"
+  role = aws_iam_role.codebuild_role_sandbox.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:GetLogEvents"
+        ]
+        Resource = [
+          "arn:aws:logs:${var.region}:${local.account_id}:log-group:/aws/codebuild/sandbox-deletion*"
+        ]
+      }
+    ]
+  })
 }
 
 resource "aws_s3_bucket" "codepipeline_bucket" {
