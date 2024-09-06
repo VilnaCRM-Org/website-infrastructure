@@ -79,7 +79,7 @@ resource "aws_codepipeline" "pipeline" {
 
   variable {
     name          = "BRANCH_NAME"
-    default_value = "default"
+    default_value = "6-implement-sandbox-workflows"
     description   = "Name of the Branch"
   }
 
