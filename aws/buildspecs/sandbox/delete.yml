@@ -11,3 +11,10 @@ phases:
       - echo "Run script"
       - . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh
       - echo "S3 bucket has been deleted."
+env:
+  variables:
+    PROJECT_NAME: "sandbox-test"
+    BRANCH_NAME: "6-implement-sandbox-workflows"
+    AWS_DEFAULT_REGION: "eu-central-1"
+
+
