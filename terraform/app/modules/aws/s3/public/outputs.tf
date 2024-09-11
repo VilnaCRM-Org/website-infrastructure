@@ -5,7 +5,7 @@ output "arn" {
 
 output "id" {
   value       = aws_s3_bucket.bucket.id
-  description = "ID of the logging bucket"
+  description = "ID of the public bucket"
 }
 
 output "name" {

@@ -18,16 +18,26 @@
 
 # Check if the script is running in the context of a pull request
 if [ "$IS_PULL_REQUEST" -eq 1 ]; then
-    # Store the GitHub token in a temporary file
-    echo "$GITHUB_TOKEN" >token.txt
-    
-    # Authenticate with GitHub using the token
-    if ! gh auth login --with-token <token.txt; then
-        echo "Failed to authenticate with GitHub. Please check the GITHUB_TOKEN environment variable."
+# Use mktemp for secure temporary file handling
+    TOKEN_FILE=$(mktemp)
+    echo "$GITHUB_TOKEN" >"$TOKEN_FILE"
+
+# Enhanced logging
+    echo "Starting GitHub authentication..."
+    if ! gh auth login --with-token <"$TOKEN_FILE"; then
+        echo "Authentication failed. Check GITHUB_TOKEN."
+        rm -f "$TOKEN_FILE"
+        exit 1
+    fi
+        echo "Authentication successful."
+
+# Parameterize the script
+    if [ $# -eq 0 ]; then
+        echo "No arguments provided. Exiting."
         exit 1
     fi
     
-    # Create a pull request comment with a link to the latest version of the project
+# Create a pull request comment with a link to the latest version of the project
     if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "Latest Version is ready: http://$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com"; then
         echo "Failed to create the pull request comment. Please check the provided environment variables."
         exit 1

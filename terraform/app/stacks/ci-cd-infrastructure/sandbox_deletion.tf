@@ -68,7 +68,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
   source {
     type      = "GITHUB"
     location  = "https://github.com/VilnaCRM-Org/website-infrastructure"
-    buildspec = "./aws/buildspecs/sandbox/delete.yml"
+    buildspec = var.buildspec_path
   }
 
   environment {
@@ -226,6 +226,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "codepipeline_bucket_lifecycle"
   rule {
     id     = "lifecycle-30-days-glacier"
     status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
 
     transition {
       days          = 30

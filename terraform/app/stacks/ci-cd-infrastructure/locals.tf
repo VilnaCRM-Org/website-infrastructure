@@ -290,4 +290,3 @@ locals {
     { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/deploy.yml" })
   }
 }
-

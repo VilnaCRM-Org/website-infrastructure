@@ -219,3 +219,8 @@ variable "GITHUB_TOKEN" {
   type        = string
 }
 
+variable "buildspec_path" {
+  description = "Path to the buildspec file for the CodeBuild project"
+  type        = string
+  default     = "./aws/buildspecs/sandbox/delete.yml"
+}

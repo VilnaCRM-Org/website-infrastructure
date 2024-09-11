@@ -17,13 +17,13 @@ tasks:
   checkov:
     desc: 'Run checkov'
     cmds:
-      - checkov -o junitxml --framework terraform -d ./ --download-external-modules true > checkov.xml 2> >(tee -a /dev/stderr)
+      - checkov -o cli --framework terraform -d ./ --download-external-modules true
     silent: false
 
   tfsec:
     desc: 'Run tfsec'
     cmds:
-      - tfsec ./ --format junit --out tfsec-junit.xml
+      - tfsec ./
     silent: false
 
   summary:
