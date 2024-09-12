@@ -186,34 +186,57 @@ resource "aws_iam_role" "codebuild_role_sandbox" {
     ]
   })
 
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
-    "arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess"
-  ]
+  inline_policy {
+    name = "codebuild-s3-access"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = [
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:ListBucket",
+            "s3:DeleteObject"
+          ]
+          Resource = [
+            "arn:aws:s3:::codepipeline-artifacts-bucket-deletion",
+            "arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*"
+          ]
+        }
+      ]
+    })
+  }
+
+  inline_policy {
+    name = "codebuild-cloudwatch-logs-access"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "logs:DescribeLogStreams",
+            "logs:GetLogEvents"
+          ]
+          Resource = [
+            "arn:aws:logs:${var.region}:${local.account_id}:log-group:/aws/codebuild/sandbox-deletion*"
+          ]
+        }
+      ]
+    })
+  }
 }
 
-resource "aws_iam_role_policy" "codebuild_logs_access" {
-  name = "codebuild-logs-access-policy-sandbox"
-  role = aws_iam_role.codebuild_role_sandbox.id
+resource "aws_s3_bucket" "access_logs_bucket" {
+  bucket = "deletion-logs-bucket"
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogStreams",
-          "logs:GetLogEvents"
-        ]
-        Resource = [
-          "arn:aws:logs:${var.region}:${local.account_id}:log-group:/aws/codebuild/sandbox-deletion*"
-        ]
-      }
-    ]
-  })
+  tags = {
+    Name = "deletion-logs-bucket"
+  }
 }
 
 resource "aws_s3_bucket" "codepipeline_bucket" {
@@ -244,7 +267,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "codepipeline_bucket_lifecycle"
 
 resource "aws_s3_bucket_logging" "codepipeline_bucket_logging" {
   bucket        = aws_s3_bucket.codepipeline_bucket.id
-  target_bucket = "access-logs-bucket"
+  target_bucket = aws_s3_bucket.access_logs_bucket.bucket
   target_prefix = "log/"
 }
 

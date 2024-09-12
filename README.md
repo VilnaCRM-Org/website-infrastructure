@@ -137,7 +137,7 @@ Default region name [None]: eu-central-1
 Default output format [None]:
 ```
 
-In case, you are using any other region, please respecify it in the `tfvars`. Also specify your own domain name in the `tfvars`.
+In case you are using any other region, please respecify it in the `tfvars`. Also specify your own domain name in the `tfvars`.
 
 After you can move to the next step.
 
