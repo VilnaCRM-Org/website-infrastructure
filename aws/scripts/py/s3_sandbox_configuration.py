@@ -35,8 +35,8 @@ def create_s3_policy() -> None:
                 "Resource": [
                     f"arn:aws:s3:::{PROJECT_NAME}-{BRANCH_NAME}/*",
                     f"arn:aws:s3:::{PROJECT_NAME}-{BRANCH_NAME}",
-                ]
-            }
+                ],
+            },
         ]
     }
 

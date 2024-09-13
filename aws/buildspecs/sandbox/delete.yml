@@ -17,4 +17,3 @@ phases:
       - echo "Run script"
       - . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh
       - echo "S3 bucket has been deleted."
-      

@@ -147,20 +147,20 @@ resource "aws_iam_role" "codepipeline_role_sandbox" {
   })
 }
 
-resource "aws_iam_role_policy" "codepipeline_s3_access" {
-  name = "codepipeline-s3-access-policy-sandbox"
-  role = aws_iam_role.codepipeline_role_sandbox.id
+resource "aws_iam_role_policy" "codebuild_s3_access" {
+  name = "codebuild-s3-access-policy-sandbox"
+  role = aws_iam_role.codebuild_role_sandbox.id
 
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow"
+        Effect = "Allow",
         Action = [
           "s3:GetObject",
           "s3:PutObject",
           "s3:ListBucket"
-        ]
+        ],
         Resource = [
           "arn:aws:s3:::codepipeline-artifacts-bucket-deletion",
           "arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*"
@@ -219,8 +219,6 @@ resource "aws_iam_role" "codebuild_role_sandbox" {
             "logs:CreateLogGroup",
             "logs:CreateLogStream",
             "logs:PutLogEvents",
-            "logs:DescribeLogStreams",
-            "logs:GetLogEvents"
           ]
           Resource = [
             "arn:aws:logs:${var.region}:${local.account_id}:log-group:/aws/codebuild/sandbox-deletion*"
@@ -236,6 +234,32 @@ resource "aws_s3_bucket" "access_logs_bucket" {
 
   tags = {
     Name = "deletion-logs-bucket"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "access_logs_bucket_lifecycle" {
+  bucket = aws_s3_bucket.access_logs_bucket.id
+
+  rule {
+    id     = "log-expiration"
+    status = "Enabled"
+
+    transition {
+      days          = 90
+      storage_class = "GLACIER"
+    }
+
+    expiration {
+      days = 365
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "access_logs_bucket_versioning" {
+  bucket = aws_s3_bucket.access_logs_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 

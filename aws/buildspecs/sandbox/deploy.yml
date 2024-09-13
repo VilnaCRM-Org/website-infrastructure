@@ -17,4 +17,3 @@ phases:
       - 'echo #### Deploy Project'
       - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pull_request.sh'
-      
