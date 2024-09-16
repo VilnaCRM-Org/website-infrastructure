@@ -7,8 +7,3 @@ output "id" {
   value       = aws_s3_bucket.bucket.id
   description = "ID of the public bucket"
 }
-
-output "name" {
-  value       = aws_s3_bucket.bucket.id
-  description = "Name of the public bucket"
-}

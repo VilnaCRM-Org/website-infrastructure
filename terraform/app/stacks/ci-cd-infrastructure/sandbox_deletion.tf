@@ -106,7 +106,6 @@ resource "aws_codepipeline" "sandbox_pipeline" {
         Owner      = "VilnaCRM-Org"
         Repo       = "website-infrastructure"
         Branch     = var.source_repo_branch
-        OAuthToken = var.GITHUB_TOKEN
       }
     }
   }
@@ -207,26 +206,29 @@ resource "aws_iam_role" "codebuild_role_sandbox" {
       ]
     })
   }
+}
 
-  inline_policy {
-    name = "codebuild-cloudwatch-logs-access"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Effect = "Allow"
-          Action = [
-            "logs:CreateLogGroup",
-            "logs:CreateLogStream",
-            "logs:PutLogEvents",
-          ]
-          Resource = [
-            "arn:aws:logs:${var.region}:${local.account_id}:log-group:/aws/codebuild/sandbox-deletion*"
-          ]
-        }
-      ]
-    })
-  }
+resource "aws_iam_role_policy" "codebuild_cloudwatch_logs_access" {
+  name = "codebuild-cloudwatch-logs-access-policy-sandbox"
+  role = aws_iam_role.codebuild_role_sandbox.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = [
+          "arn:aws:logs:${var.region}:${local.account_id}:log-group:/aws/codebuild/${aws_codebuild_project.sandbox_deletion.name}",
+          "arn:aws:logs:${var.region}:${local.account_id}:log-group:/aws/codebuild/${aws_codebuild_project.sandbox_deletion.name}:*"
+        ]
+      }
+    ]
+  })
 }
 
 resource "aws_s3_bucket" "access_logs_bucket" {
