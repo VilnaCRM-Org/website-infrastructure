@@ -97,7 +97,7 @@ resource "aws_codepipeline" "pipeline" {
 
 }
 
-resource "aws_codestarnotifications_notification_rule" "codepipeline_rule" {
+resource "aws_codestarnotifications_notification_rule" "codepipeline_sns_rule" {
   detail_type = "BASIC"
   event_type_ids = [
     "codepipeline-pipeline-pipeline-execution-failed",
@@ -116,4 +116,34 @@ resource "aws_codestarnotifications_notification_rule" "codepipeline_rule" {
   }
 
   tags = var.tags
+}
+
+
+module "chatbot" {
+  source          = "../../chatbot"
+  project_name    = var.project_name
+  channel_id      = var.channel_id
+  workspace_id    = var.workspace_id
+  sns_topic_arns  = var.sns_topic_arns
+  tags            = var.tags
+}
+
+resource "aws_codestarnotifications_notification_rule" "codepipeline_rule" {
+  detail_type = "FULL"
+  event_type_ids = [
+    "codepipeline-pipeline-pipeline-execution-failed",
+    "codepipeline-pipeline-pipeline-execution-canceled",
+    "codepipeline-pipeline-pipeline-execution-started",
+    "codepipeline-pipeline-pipeline-execution-resumed",
+    "codepipeline-pipeline-pipeline-execution-succeeded",
+    "codepipeline-pipeline-pipeline-execution-superseded",
+  ]
+
+  name     = "${var.project_name}-notifications"
+  resource = aws_codepipeline.pipeline.arn
+
+  target {
+    address = module.chatbot.slack_channel_configuration_arn
+    type    = "AWSChatbotSlack"
+  }
 }

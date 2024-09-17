@@ -7,8 +7,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
     sid    = "GeneralPolicy"
     effect = "Allow"
     actions = [
-      "sts:GetCallerIdentity",
-      "kms:CreateKey",
+      "sts:GetCallerIdentity"
     ]
     resources = ["*"]
   }

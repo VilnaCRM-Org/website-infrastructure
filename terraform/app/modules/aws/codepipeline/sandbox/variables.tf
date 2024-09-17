@@ -57,3 +57,18 @@ variable "stages" {
   description = "List of Map containing information about the stages of the CodePipeline"
   type        = list(map(any))
 }
+
+variable "channel_id" {
+  description = "Slack channel ID for notifications"
+  type        = string
+}
+
+variable "workspace_id" {
+  description = "Slack workspace ID"
+  type        = string
+}
+
+variable "sns_topic_arns" {
+  description = "ARN of existing SNS topics for Chatbot"
+  type        = list(string)
+}
