@@ -1,7 +1,7 @@
 resource "aws_codepipeline" "pipeline" {
   name     = "${var.project_name}-pipeline"
   role_arn = var.codepipeline_role_arn
-  tags     = var.tags
+  tags     = var.tags  
 
   pipeline_type = "V2"
 
@@ -51,47 +51,50 @@ resource "aws_codepipeline" "pipeline" {
         version          = "1"
         run_order        = index(var.stages, stage.value) + 2
 
-        configuration = {
-          ProjectName = stage.value["provider"] == "CodeBuild" ? "${var.project_name}-${stage.value["name"]}" : null
-          EnvironmentVariables = jsonencode(
-            [
+
+        configuration = merge(
+          {
+            EnvironmentVariables = jsonencode([
               {
-                name : "BRANCH_NAME",
-                value : "#{variables.BRANCH_NAME}",
-                type : "PLAINTEXT"
+                name  = "BRANCH_NAME",
+                value = "#{variables.BRANCH_NAME}",
+                type  = "PLAINTEXT"
               },
               {
-                name : "PR_NUMBER",
-                value : "#{variables.PR_NUMBER}",
-                type : "PLAINTEXT"
+                name  = "PR_NUMBER",
+                value = "#{variables.PR_NUMBER}",
+                type  = "PLAINTEXT"
               },
               {
-                name : "IS_PULL_REQUEST",
-                value : "#{variables.IS_PULL_REQUEST}",
-                type : "PLAINTEXT"
+                name  = "IS_PULL_REQUEST",
+                value = "#{variables.IS_PULL_REQUEST}",
+                type  = "PLAINTEXT"
               }
-            ]
-          )
-        }
+            ])
+          },
+          stage.value["provider"] == "CodeBuild" ? {
+            ProjectName = "${var.project_name}-${stage.value["name"]}"
+          } : {}
+        )     
       }
     }
   }
 
   variable {
     name          = "BRANCH_NAME"
-    default_value = "6-implement-sandbox-workflows"
+    default_value = var.BRANCH_NAME
     description   = "Name of the Branch"
   }
 
   variable {
     name          = "PR_NUMBER"
-    default_value = "1000"
+    default_value = var.PR_NUMBER
     description   = "Number of the Pull request"
   }
 
   variable {
     name          = "IS_PULL_REQUEST"
-    default_value = "0"
+    default_value = var.IS_PULL_REQUEST ? "1" : "0"
     description   = "Is it Pull Request"
   }
 
@@ -108,7 +111,7 @@ resource "aws_codestarnotifications_notification_rule" "codepipeline_sns_rule" {
     "codepipeline-pipeline-pipeline-execution-superseded",
   ]
 
-  name     = "${var.project_name}-notifications"
+  name     = "${var.project_name}-sns-notifications"
   resource = aws_codepipeline.pipeline.arn
 
   target {
@@ -120,12 +123,12 @@ resource "aws_codestarnotifications_notification_rule" "codepipeline_sns_rule" {
 
 
 module "chatbot" {
-  source          = "../../chatbot"
-  project_name    = var.project_name
-  channel_id      = var.channel_id
-  workspace_id    = var.workspace_id
-  sns_topic_arns  = var.sns_topic_arns
-  tags            = var.tags
+  source         = "../../chatbot"
+  project_name   = var.project_name
+  channel_id     = var.channel_id
+  workspace_id   = var.workspace_id
+  sns_topic_arns = var.sns_topic_arns
+  tags           = var.tags
 }
 
 resource "aws_codestarnotifications_notification_rule" "codepipeline_rule" {
@@ -139,7 +142,7 @@ resource "aws_codestarnotifications_notification_rule" "codepipeline_rule" {
     "codepipeline-pipeline-pipeline-execution-superseded",
   ]
 
-  name     = "${var.project_name}-notifications"
+  name     = "${var.project_name}-chatbot-notifications"
   resource = aws_codepipeline.pipeline.arn
 
   target {

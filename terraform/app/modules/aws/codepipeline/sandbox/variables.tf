@@ -44,17 +44,17 @@ variable "codestar_connection_arn" {
 }
 
 variable "detect_changes" {
-  description = "Specifying changes detection"
+  description = "Method for detecting changes"
   type        = string
 }
 
 variable "tags" {
   description = "Tags to be attached to the CodePipeline"
-  type        = map(any)
+  type        = map(string)
 }
 
 variable "stages" {
-  description = "List of Map containing information about the stages of the CodePipeline"
+  description = "List containing information about the stages of the CodePipeline"
   type        = list(map(any))
 }
 
@@ -69,6 +69,21 @@ variable "workspace_id" {
 }
 
 variable "sns_topic_arns" {
-  description = "ARN of existing SNS topics for Chatbot"
+  description = "ARNs of existing SNS topics for Chatbot"
   type        = list(string)
+}
+
+variable "BRANCH_NAME" {
+  type        = string
+  description = "Name of the branch"
+}
+
+variable "PR_NUMBER" {
+  type        = string
+  description = "Number of the pull request"
+}
+
+variable "IS_PULL_REQUEST" {
+  type        = bool
+  description = "Indicates if this is a pull request"
 }

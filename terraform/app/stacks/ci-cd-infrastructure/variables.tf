@@ -214,6 +214,16 @@ variable "REPORT_SLACK_CHANNEL_ID" {
   type        = string
 }
 
+variable "SNS_TOPIC_ARNS" {
+  description = "ARN of existing SNS topics for Chatbot"
+  type        = list(string)
+}
+
+variable "CHANNEL_ID" {
+  description = "Slack channel ID for notifications"
+  type        = string
+}
+
 variable "GITHUB_TOKEN" {
   description = "Token to push credentials to repositories"
   type        = string

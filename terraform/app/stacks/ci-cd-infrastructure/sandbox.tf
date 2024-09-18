@@ -77,6 +77,10 @@ module "sandbox_codepipeline" {
   source_repo_name   = var.source_repo_name
   source_repo_branch = var.source_repo_branch
 
+  channel_id     = var.CHANNEL_ID
+  workspace_id   = var.SLACK_WORKSPACE_ID
+  sns_topic_arns = var.SNS_TOPIC_ARNS
+
   detect_changes = "false"
 
   stages = var.sandbox_stage_input

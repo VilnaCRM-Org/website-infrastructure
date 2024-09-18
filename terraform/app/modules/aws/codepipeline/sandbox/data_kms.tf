@@ -25,7 +25,13 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
   statement {
     sid       = "AllowAccessForKeyAdministratorsForCodePipelineSNSKMSKey"
     effect    = "Allow"
-    actions   = ["kms:*"]
+    actions   = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
     resources = ["${aws_kms_key.codepipeline_sns_encryption_key.arn}"]
 
     principals {
@@ -37,7 +43,7 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
       values = [
-        "${aws_sns_topic.codepipeline_notifications.arn}"
+        local.sns_topic_arn
       ]
     }
   }
@@ -61,7 +67,7 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
       values = [
-        "${aws_sns_topic.codepipeline_notifications.arn}"
+        local.sns_topic_arn
       ]
     }
   }
@@ -70,8 +76,8 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
     sid    = "AllowUseOfTheKeyForCodeStarNotificationKMSKey"
     effect = "Allow"
     actions = [
-      "kms:GenerateDataKey*",
-      "kms:Decrypt"
+      "kms:Decrypt",
+      "kms:GenerateDataKey*"
     ]
 
     resources = ["${aws_kms_key.codepipeline_sns_encryption_key.arn}"]
