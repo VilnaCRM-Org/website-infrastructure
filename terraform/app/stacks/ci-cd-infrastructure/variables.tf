@@ -14,7 +14,7 @@ variable "ci_cd_infra_project_name" {
 }
 
 variable "sandbox_project_name" {
-  description = "Unique name for this SandBox Codepipeline"
+  description = "Unique name for this Sandbox CodePipeline"
   type        = string
 }
 
@@ -59,12 +59,12 @@ variable "ci_cd_infra_buildspecs" {
 }
 
 variable "ci_cd_website_buildspecs" {
-  description = "Buildspecs of Website Deploy"
+  description = "Buildspecs of Website Deployment"
   type        = string
 }
 
 variable "sandbox_buildspecs" {
-  description = "Buildspecs of Sandbox Deploy"
+  description = "Buildspecs for Sandbox Deployment"
   type        = string
 }
 
@@ -120,7 +120,7 @@ variable "website_infra_stage_input" {
 }
 
 variable "sandbox_stage_input" {
-  description = "List of Map containing information about the stages of the Sandbox CodePipeline"
+  description = "List of maps containing information about the stages of the Sandbox CodePipeline"
   type        = list(map(string))
 }
 
@@ -215,7 +215,7 @@ variable "REPORT_SLACK_CHANNEL_ID" {
 }
 
 variable "SNS_TOPIC_ARNS" {
-  description = "ARN of existing SNS topics for Chatbot"
+  description = "ARNs of existing SNS topics for Chatbot"
   type        = list(string)
 }
 
@@ -233,4 +233,19 @@ variable "buildspec_path" {
   description = "Path to the buildspec file for the CodeBuild project"
   type        = string
   default     = "./aws/buildspecs/sandbox/delete.yml"
+}
+
+variable "BRANCH_NAME" {
+  type        = string
+  description = "Name of the branch"
+}
+
+variable "PR_NUMBER" {
+  type        = string
+  description = "Number of the pull request"
+}
+
+variable "IS_PULL_REQUEST" {
+  type        = bool
+  description = "Indicates if this is a pull request"
 }

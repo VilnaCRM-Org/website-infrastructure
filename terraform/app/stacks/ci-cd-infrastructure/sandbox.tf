@@ -81,6 +81,10 @@ module "sandbox_codepipeline" {
   workspace_id   = var.SLACK_WORKSPACE_ID
   sns_topic_arns = var.SNS_TOPIC_ARNS
 
+  IS_PULL_REQUEST = var.IS_PULL_REQUEST
+  PR_NUMBER       = var.PR_NUMBER
+  BRANCH_NAME     = var.BRANCH_NAME
+
   detect_changes = "false"
 
   stages = var.sandbox_stage_input

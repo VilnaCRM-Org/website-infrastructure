@@ -1,13 +1,14 @@
 resource "aws_codepipeline" "pipeline" {
   name     = "${var.project_name}-pipeline"
   role_arn = var.codepipeline_role_arn
-  tags     = var.tags  
+  tags     = var.tags
 
   pipeline_type = "V2"
 
   artifact_store {
     location = var.s3_bucket_name
     type     = "S3"
+
     encryption_key {
       id   = var.kms_key_arn
       type = "KMS"
@@ -41,6 +42,7 @@ resource "aws_codepipeline" "pipeline" {
 
     content {
       name = "Stage-${stage.value["name"]}"
+
       action {
         category         = stage.value["category"]
         name             = "Action-${stage.value["name"]}"
@@ -51,31 +53,30 @@ resource "aws_codepipeline" "pipeline" {
         version          = "1"
         run_order        = index(var.stages, stage.value) + 2
 
-
         configuration = merge(
           {
             EnvironmentVariables = jsonencode([
               {
-                name  = "BRANCH_NAME",
-                value = "#{variables.BRANCH_NAME}",
+                name  = "BRANCH_NAME"
+                value = "#{variables.BRANCH_NAME}"
                 type  = "PLAINTEXT"
               },
               {
-                name  = "PR_NUMBER",
-                value = "#{variables.PR_NUMBER}",
+                name  = "PR_NUMBER"
+                value = "#{variables.PR_NUMBER}"
                 type  = "PLAINTEXT"
               },
               {
-                name  = "IS_PULL_REQUEST",
-                value = "#{variables.IS_PULL_REQUEST}",
+                name  = "IS_PULL_REQUEST"
+                value = "#{variables.IS_PULL_REQUEST}"
                 type  = "PLAINTEXT"
-              }
+              },
             ])
           },
           stage.value["provider"] == "CodeBuild" ? {
             ProjectName = "${var.project_name}-${stage.value["name"]}"
           } : {}
-        )     
+        )
       }
     }
   }
@@ -97,7 +98,6 @@ resource "aws_codepipeline" "pipeline" {
     default_value = var.IS_PULL_REQUEST ? "1" : "0"
     description   = "Is it Pull Request"
   }
-
 }
 
 resource "aws_codestarnotifications_notification_rule" "codepipeline_sns_rule" {
@@ -120,7 +120,6 @@ resource "aws_codestarnotifications_notification_rule" "codepipeline_sns_rule" {
 
   tags = var.tags
 }
-
 
 module "chatbot" {
   source         = "../../chatbot"
