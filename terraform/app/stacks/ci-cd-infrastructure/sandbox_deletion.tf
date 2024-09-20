@@ -106,6 +106,7 @@ resource "aws_codepipeline" "sandbox_pipeline" {
         Owner      = "VilnaCRM-Org"
         Repo       = "website-infrastructure"
         Branch     = var.source_repo_branch
+        OAuthToken = var.GITHUB_TOKEN
       }
     }
   }

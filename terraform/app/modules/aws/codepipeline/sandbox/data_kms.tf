@@ -15,6 +15,7 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
       "kms:ScheduleKeyDeletion",
       "kms:CancelKeyDeletion",
       "kms:List*",
+      "kms:PutKeyPolicy"
     ]
     #checkov:skip=CKV_AWS_356:Without this statement, KMS key cannot be managed by root
     resources = ["${aws_kms_key.codepipeline_sns_encryption_key.arn}"]
@@ -25,14 +26,15 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
   }
 
   statement {
-    sid     = "AllowAccessForKeyAdministratorsForCodePipelineSNSKMSKey"
-    effect  = "Allow"
+    sid    = "AllowAccessForKeyAdministratorsForCodePipelineSNSKMSKey"
+    effect = "Allow"
     actions = [
       "kms:Encrypt",
       "kms:Decrypt",
       "kms:ReEncrypt*",
       "kms:GenerateDataKey*",
       "kms:DescribeKey",
+      "kms:PutKeyPolicy"
     ]
     resources = ["${aws_kms_key.codepipeline_sns_encryption_key.arn}"]
 
@@ -54,6 +56,7 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
     actions = [
       "kms:Decrypt",
       "kms:GenerateDataKey*",
+      "kms:PutKeyPolicy"
     ]
     resources = ["${aws_kms_key.codepipeline_sns_encryption_key.arn}"]
 
@@ -75,6 +78,7 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
     actions = [
       "kms:Decrypt",
       "kms:GenerateDataKey*",
+      "kms:PutKeyPolicy"
     ]
     resources = ["${aws_kms_key.codepipeline_sns_encryption_key.arn}"]
 

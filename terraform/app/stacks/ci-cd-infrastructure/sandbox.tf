@@ -12,6 +12,11 @@ module "sandbox_s3_artifacts_bucket" {
   codepipeline_role_arn = module.sandbox_codepipeline_iam_role.role_arn
 
   tags = var.tags
+
+  depends_on = [
+    module.sandbox_codepipeline_kms,
+    module.sandbox_codepipeline_iam_role
+  ]
 }
 
 module "sandbox_codepipeline_kms" {
@@ -77,15 +82,11 @@ module "sandbox_codepipeline" {
   source_repo_name   = var.source_repo_name
   source_repo_branch = var.source_repo_branch
 
-  channel_id     = var.CHANNEL_ID
-  workspace_id   = var.SLACK_WORKSPACE_ID
-  sns_topic_arns = var.SNS_TOPIC_ARNS
-
   IS_PULL_REQUEST = var.IS_PULL_REQUEST
   PR_NUMBER       = var.PR_NUMBER
   BRANCH_NAME     = var.BRANCH_NAME
 
-  detect_changes = "false"
+  detect_changes = false
 
   stages = var.sandbox_stage_input
 

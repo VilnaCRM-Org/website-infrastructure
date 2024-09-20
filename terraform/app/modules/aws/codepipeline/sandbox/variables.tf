@@ -58,21 +58,6 @@ variable "stages" {
   type        = list(map(any))
 }
 
-variable "channel_id" {
-  description = "Slack channel ID for notifications"
-  type        = string
-}
-
-variable "workspace_id" {
-  description = "Slack workspace ID"
-  type        = string
-}
-
-variable "sns_topic_arns" {
-  description = "ARNs of existing SNS topics for Chatbot"
-  type        = list(string)
-}
-
 variable "BRANCH_NAME" {
   type        = string
   description = "Name of the branch"
