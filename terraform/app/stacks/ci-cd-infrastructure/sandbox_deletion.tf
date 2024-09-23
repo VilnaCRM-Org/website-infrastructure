@@ -43,7 +43,7 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "s3:DeleteObject"
         ]
         Resource = ["arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*",
-        "arn:aws:s3:::codepipeline-artifacts-bucket-deletion"
+          "arn:aws:s3:::codepipeline-artifacts-bucket-deletion"
         ]
       },
       {
