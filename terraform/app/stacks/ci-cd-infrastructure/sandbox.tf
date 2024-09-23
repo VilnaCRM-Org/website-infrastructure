@@ -13,10 +13,6 @@ module "sandbox_s3_artifacts_bucket" {
 
   tags = var.tags
 
-  depends_on = [
-    module.sandbox_codepipeline_kms,
-    module.sandbox_codepipeline_iam_role
-  ]
 }
 
 module "sandbox_codepipeline_kms" {

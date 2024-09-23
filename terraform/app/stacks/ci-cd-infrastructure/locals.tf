@@ -156,7 +156,7 @@ locals {
         "ENVIRONMENT"                   = var.environment,
         "ACCOUNT_ID"                    = local.account_id
         "SCRIPT_DIR"                    = var.script_dir,
-        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
@@ -201,8 +201,8 @@ locals {
         "PW_TEST_HTML_REPORT_OPEN"      = "never",
         "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header
         "GOLANG_VERSION"                = var.runtime_versions.golang
-        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.name
-        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
+        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.id
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
@@ -219,8 +219,8 @@ locals {
         "ACCOUNT_ID"                    = local.account_id
         "SCRIPT_DIR"                    = var.script_dir,
         "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header
-        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.name
-        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
+        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.id
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }

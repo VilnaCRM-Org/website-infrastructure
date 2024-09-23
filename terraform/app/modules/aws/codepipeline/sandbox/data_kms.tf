@@ -93,4 +93,21 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
       values   = ["sns.${var.region}.amazonaws.com"]
     }
   }
+
+  statement {
+    sid    = "AllowSandboxAdminFullAccess"
+    effect = "Allow"
+    actions = [
+      "kms:DescribeKey",
+      "kms:GetKeyPolicy",
+      "kms:PutKeyPolicy",
+      "kms:GetKeyRotationStatus",
+    ]
+    resources = ["${aws_kms_key.codepipeline_sns_encryption_key.arn}"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.account_id}:user/sandbox-admin"]
+    }
+  }
 }

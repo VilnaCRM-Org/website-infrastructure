@@ -18,8 +18,7 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "codepipeline:ListPipelines"
         ]
         Resource = [
-          "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-pipeline-deletion",
-          "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-deletion"
+          "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-pipeline-deletion"
         ]
       },
       {
@@ -32,7 +31,6 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "codebuild:BatchGetProjects"
         ]
         Resource = [
-          "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-pipeline-deletion",
           "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-deletion"
         ]
       },
@@ -44,7 +42,9 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "s3:ListBucket",
           "s3:DeleteObject"
         ]
-        Resource = "arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*"
+        Resource = ["arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*",
+        "arn:aws:s3:::codepipeline-artifacts-bucket-deletion"
+        ]
       },
       {
         Effect = "Allow"
@@ -246,6 +246,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "access_logs_bucket_lifecycle" 
   rule {
     id     = "log-expiration"
     status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
 
     transition {
       days          = 90
