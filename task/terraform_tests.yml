@@ -1,33 +1,33 @@
-version: '3'
+version: "3"
 
 tasks:
   validate:
-    desc: 'Validate Terraform code'
+    desc: "Validate Terraform code"
     cmds:
       - make terraspace-all-init
       - make terraspace-all-validate
     silent: false
 
   format:
-    desc: 'Format Terraform code'
+    desc: "Format Terraform code"
     cmds:
       - terraform fmt -recursive
     silent: false
 
   checkov:
-    desc: 'Run checkov'
+    desc: "Run checkov"
     cmds:
-      - checkov -o junitxml --framework terraform -d ./ > checkov.xml --download-external-modules true
+      - checkov -o cli --framework terraform -d ./ --download-external-modules true
     silent: false
 
   tfsec:
-    desc: 'Run tfsec'
+    desc: "Run tfsec"
     cmds:
-      - tfsec ./ --format junit --out tfsec-junit.xml
+      - tfsec ./
     silent: false
 
   summary:
-    desc: 'Display summary'
+    desc: "Display summary"
     deps: [validate, format, checkov, tfsec]
     cmds:
       - echo "Validation and checks have been completed."
