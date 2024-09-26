@@ -82,7 +82,9 @@ data "aws_iam_policy_document" "iam_policy_doc" {
     actions = [
       "codestar-connections:ListTagsForResource"
     ]
-    resources = ["*"]
+    resources = [
+      "arn:aws:iam::010438498391:role/ci-cd-infra-test-codebuild-terraform-role"
+    ]
   }
   statement {
     sid    = "GetRolePolicy"
