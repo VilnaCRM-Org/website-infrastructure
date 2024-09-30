@@ -77,6 +77,13 @@ resource "aws_codebuild_project" "sandbox_deletion" {
     type         = "LINUX_CONTAINER"
   }
 
+  logs_config {
+    s3_logs {
+      status = "ENABLED"
+      location = aws_s3_bucket.access_logs_bucket.id
+    }
+  }
+
   artifacts {
     type = "NO_ARTIFACTS"
   }
@@ -89,6 +96,10 @@ resource "aws_codepipeline" "sandbox_pipeline" {
   artifact_store {
     type     = "S3"
     location = aws_s3_bucket.codepipeline_bucket.bucket
+    encryption_key {
+      id   = "alias/aws/s3" 
+      type = "AWS_MANAGED_KEY"
+    }
   }
 
   stage {
@@ -240,6 +251,14 @@ resource "aws_s3_bucket" "access_logs_bucket" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "access_logs_bucket_public_access_block" {
+  bucket = aws_s3_bucket.access_logs_bucket.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}  
+
 resource "aws_s3_bucket_lifecycle_configuration" "access_logs_bucket_lifecycle" {
   bucket = aws_s3_bucket.access_logs_bucket.id
 
@@ -272,6 +291,15 @@ resource "aws_s3_bucket_versioning" "access_logs_bucket_versioning" {
 
 resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket = "codepipeline-artifacts-bucket-deletion"
+}
+
+resource "aws_s3_bucket_public_access_block" "codepipeline_bucket_public_access_block" {
+  bucket = aws_s3_bucket.codepipeline_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "codepipeline_bucket_lifecycle" {
