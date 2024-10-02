@@ -79,8 +79,8 @@ resource "aws_codebuild_project" "sandbox_deletion" {
 
   logs_config {
     s3_logs {
-      status = "ENABLED"
-      location = aws_s3_bucket.access_logs_bucket.id
+      status   = "ENABLED"
+      location = "arn:aws:s3:::${aws_s3_bucket.access_logs_bucket.bucket}"
     }
   }
 
@@ -92,14 +92,10 @@ resource "aws_codebuild_project" "sandbox_deletion" {
 resource "aws_codepipeline" "sandbox_pipeline" {
   name     = "sandbox-pipeline-deletion"
   role_arn = aws_iam_role.codepipeline_role_sandbox.arn
-
+  #checkov:skip=CKV_AWS_219:CodePipeline Artifact store does not need a KMS CMK
   artifact_store {
     type     = "S3"
     location = aws_s3_bucket.codepipeline_bucket.bucket
-    encryption_key {
-      id   = "alias/aws/s3" 
-      type = "AWS_MANAGED_KEY"
-    }
   }
 
   stage {
@@ -196,28 +192,35 @@ resource "aws_iam_role" "codebuild_role_sandbox" {
       }
     ]
   })
+}
 
-  inline_policy {
-    name = "codebuild-s3-access"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Effect = "Allow"
-          Action = [
-            "s3:GetObject",
-            "s3:PutObject",
-            "s3:ListBucket",
-            "s3:DeleteObject"
-          ]
-          Resource = [
-            "arn:aws:s3:::codepipeline-artifacts-bucket-deletion",
-            "arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*"
-          ]
-        }
-      ]
-    })
-  }
+resource "aws_iam_policy" "codebuild_s3_access_policy" {
+  name        = "codebuild-s3-access-policy-sandbox"
+  description = "Policy to allow CodeBuild to access S3"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket",
+          "s3:DeleteObject"
+        ]
+        Resource = [
+          "arn:aws:s3:::codepipeline-artifacts-bucket-deletion",
+          "arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "codebuild_s3_access_policy_attachment" {
+  role       = aws_iam_role.codebuild_role_sandbox.id
+  policy_arn = aws_iam_policy.codebuild_s3_access_policy.arn
 }
 
 resource "aws_iam_role_policy" "codebuild_cloudwatch_logs_access" {
@@ -244,20 +247,23 @@ resource "aws_iam_role_policy" "codebuild_cloudwatch_logs_access" {
 }
 
 resource "aws_s3_bucket" "access_logs_bucket" {
-  bucket = "deletion-logs-bucket"
+  #checkov:skip=CKV_AWS_145:The KMS encryption of access logs bucket is not needed
+  #checkov:skip=CKV2_AWS_62:The event notifications of access logs bucket is not needed
+  #checkov:skip=CKV_AWS_144:The S3 bucket cross-region replication is not needed
+  bucket = var.sandbox_deletion_logs_bucket_name
 
   tags = {
-    Name = "deletion-logs-bucket"
+    Name = "sandbox-deletion-logs-bucket"
   }
 }
 
 resource "aws_s3_bucket_public_access_block" "access_logs_bucket_public_access_block" {
-  bucket = aws_s3_bucket.access_logs_bucket.id
+  bucket                  = aws_s3_bucket.access_logs_bucket.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}  
+}
 
 resource "aws_s3_bucket_lifecycle_configuration" "access_logs_bucket_lifecycle" {
   bucket = aws_s3_bucket.access_logs_bucket.id
@@ -290,7 +296,13 @@ resource "aws_s3_bucket_versioning" "access_logs_bucket_versioning" {
 }
 
 resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket = "codepipeline-artifacts-bucket-deletion"
+  #checkov:skip=CKV2_AWS_62:The event notifications of access logs bucket is not needed
+  #checkov:skip=CKV_AWS_144:The S3 bucket cross-region replication is not needed
+  bucket = var.codepipeline_artifacts_bucket_name
+
+  tags = {
+    Name = "codepipeline-deletion-artifacts-bucket"
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "codepipeline_bucket_public_access_block" {

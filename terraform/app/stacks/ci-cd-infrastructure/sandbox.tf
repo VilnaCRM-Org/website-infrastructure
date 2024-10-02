@@ -64,8 +64,6 @@ module "sandbox_codebuild" {
   depends_on = [
     module.sandbox_s3_artifacts_bucket,
     module.sandbox_codepipeline_iam_role,
-    module.sandbox_codepipeline_kms,
-    module.codestar_connection
   ]
 }
 

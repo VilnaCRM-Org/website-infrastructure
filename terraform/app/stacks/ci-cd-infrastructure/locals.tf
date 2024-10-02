@@ -266,7 +266,7 @@ locals {
         "ROLE_ARN"                   = module.sandbox_codepipeline_iam_role.terraform_role_arn,
         "TS_ENV"                     = var.environment,
         "AWS_DEFAULT_REGION"         = var.region,
-        "TF_VAR_SANDBOX_BUCKET_NAME" = "testing"
+        "TF_VAR_SANDBOX_BUCKET_NAME" = var.sandbox_bucket_name,
         "PYTHON_VERSION"             = var.runtime_versions.python,
         "SCRIPT_DIR"                 = var.script_dir,
         "PROJECT_NAME"               = var.sandbox_project_name
@@ -276,14 +276,15 @@ locals {
 
     deploy = merge(local.ubuntu_based_build,
       { env_variables = {
-        "CI"                          = 1
+        "CI"                          = "1",
         "NODEJS_VERSION"              = var.runtime_versions.nodejs,
+        "PYTHON_VERSION"              = var.runtime_versions.python,
         "AWS_DEFAULT_REGION"          = var.region,
-        "BUCKET_NAME"                 = var.bucket_name
+        "BUCKET_NAME"                 = var.bucket_name,
         "SCRIPT_DIR"                  = var.script_dir,
         "GITHUB_TOKEN"                = var.GITHUB_TOKEN,
-        "WEBSITE_GIT_REPOSITORY_LINK" = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
-        "GITHUB_REPOSITORY"           = "${var.source_repo_owner}/${var.website_content_repo_name}"
+        "WEBSITE_GIT_REPOSITORY_LINK" = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
+        "GITHUB_REPOSITORY"           = "${var.source_repo_owner}/${var.website_content_repo_name}",
         "PROJECT_NAME"                = var.sandbox_project_name
         }
       },
