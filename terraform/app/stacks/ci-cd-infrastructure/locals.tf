@@ -260,33 +260,40 @@ locals {
     "SCRIPT_DIR"        = var.script_dir,
   }
 
+  common_sandbox_env_variables = {
+    "AWS_DEFAULT_REGION" = var.region,
+    "PYTHON_VERSION"     = var.runtime_versions.python,
+    "SCRIPT_DIR"         = var.script_dir,
+    "PROJECT_NAME"       = var.sandbox_project_name,
+  }
+
   sandbox_build_projects = {
     up = merge(local.amazonlinux2_based_build,
-      { env_variables = {
-        "ROLE_ARN"                   = module.sandbox_codepipeline_iam_role.terraform_role_arn,
-        "TS_ENV"                     = var.environment,
-        "AWS_DEFAULT_REGION"         = var.region,
-        "TF_VAR_SANDBOX_BUCKET_NAME" = var.sandbox_bucket_name,
-        "PYTHON_VERSION"             = var.runtime_versions.python,
-        "SCRIPT_DIR"                 = var.script_dir,
-        "PROJECT_NAME"               = var.sandbox_project_name
-        }
+      {
+        env_variables = merge(
+          local.common_sandbox_env_variables,
+          {
+            "ROLE_ARN"                   = module.sandbox_codepipeline_iam_role.terraform_role_arn,
+            "TS_ENV"                     = var.environment,
+            "TF_VAR_SANDBOX_BUCKET_NAME" = var.sandbox_bucket_name,
+          }
+        )
       },
     { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/up.yml" })
 
     deploy = merge(local.ubuntu_based_build,
-      { env_variables = {
-        "CI"                          = "1",
-        "NODEJS_VERSION"              = var.runtime_versions.nodejs,
-        "PYTHON_VERSION"              = var.runtime_versions.python,
-        "AWS_DEFAULT_REGION"          = var.region,
-        "BUCKET_NAME"                 = var.bucket_name,
-        "SCRIPT_DIR"                  = var.script_dir,
-        "GITHUB_TOKEN"                = var.GITHUB_TOKEN,
-        "WEBSITE_GIT_REPOSITORY_LINK" = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
-        "GITHUB_REPOSITORY"           = "${var.source_repo_owner}/${var.website_content_repo_name}",
-        "PROJECT_NAME"                = var.sandbox_project_name
-        }
+      {
+        env_variables = merge(
+          local.common_sandbox_env_variables,
+          {
+            "CI"                          = "1",
+            "NODEJS_VERSION"              = var.runtime_versions.nodejs,
+            "BUCKET_NAME"                 = var.bucket_name,
+            "GITHUB_TOKEN"                = var.GITHUB_TOKEN,
+            "WEBSITE_GIT_REPOSITORY_LINK" = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
+            "GITHUB_REPOSITORY"           = "${var.source_repo_owner}/${var.website_content_repo_name}",
+          }
+        )
       },
     { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/deploy.yml" })
   }

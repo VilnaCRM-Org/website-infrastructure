@@ -107,7 +107,7 @@ data "aws_iam_policy_document" "codepipeline_sns_kms_key_policy_doc" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${local.account_id}:user/sandbox-admin"]
+      identifiers = ["arn:aws:iam::${local.account_id}:user/sandbox_admin"]
     }
   }
 }

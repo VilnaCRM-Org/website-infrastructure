@@ -214,16 +214,6 @@ variable "REPORT_SLACK_CHANNEL_ID" {
   type        = string
 }
 
-variable "SNS_TOPIC_ARNS" {
-  description = "ARNs of existing SNS topics for Chatbot"
-  type        = list(string)
-}
-
-variable "CHANNEL_ID" {
-  description = "Slack channel ID for notifications"
-  type        = string
-}
-
 variable "GITHUB_TOKEN" {
   description = "Token to push credentials to repositories"
   type        = string
@@ -236,16 +226,35 @@ variable "buildspec_path" {
 }
 
 variable "BRANCH_NAME" {
-  type        = string
   description = "Name of the branch"
+  type        = string
 }
 
 variable "PR_NUMBER" {
-  type        = string
   description = "Number of the pull request"
+  type        = string
 }
 
 variable "IS_PULL_REQUEST" {
-  type        = bool
   description = "Indicates if this is a pull request"
+  type        = bool
+  default     = false
+}
+
+variable "sandbox_bucket_name" {
+  description = "S3 Sandbox Bucket Name"
+  type        = string
+  default     = "testing"  
+}
+
+variable "sandbox_access_logs_bucket_name" {
+  description = "Name of the S3 bucket for sandbox deletion logs"
+  type        = string
+  default     = "sandbox-deletion-access-logs-bucket"
+}
+
+variable "codepipeline_artifacts_bucket_name" {
+  description = "value"
+  type        = string
+  default     = "codepipeline-artifacts-bucket-deletion"
 }

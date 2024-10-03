@@ -80,7 +80,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
   logs_config {
     s3_logs {
       status   = "ENABLED"
-      location = "arn:aws:s3:::${aws_s3_bucket.access_logs_bucket.bucket}"
+      location = aws_s3_bucket.codebuild_logs_bucket.arn
     }
   }
 
@@ -154,29 +154,6 @@ resource "aws_iam_role" "codepipeline_role_sandbox" {
   })
 }
 
-resource "aws_iam_role_policy" "codebuild_s3_access" {
-  name = "codebuild-s3-access-policy-sandbox"
-  role = aws_iam_role.codebuild_role_sandbox.id
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:ListBucket"
-        ],
-        Resource = [
-          "arn:aws:s3:::codepipeline-artifacts-bucket-deletion",
-          "arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*"
-        ]
-      }
-    ]
-  })
-}
-
 resource "aws_iam_role" "codebuild_role_sandbox" {
   name = "codebuild-role-sandbox-deletion"
 
@@ -210,8 +187,10 @@ resource "aws_iam_policy" "codebuild_s3_access_policy" {
           "s3:DeleteObject"
         ]
         Resource = [
-          "arn:aws:s3:::codepipeline-artifacts-bucket-deletion",
-          "arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*"
+          "${aws_s3_bucket.codepipeline_bucket.arn}",
+          "${aws_s3_bucket.codepipeline_bucket.arn}/*",
+          "${aws_s3_bucket.codebuild_logs_bucket.arn}",
+          "${aws_s3_bucket.codebuild_logs_bucket.arn}/*"
         ]
       }
     ]
@@ -250,10 +229,10 @@ resource "aws_s3_bucket" "access_logs_bucket" {
   #checkov:skip=CKV_AWS_145:The KMS encryption of access logs bucket is not needed
   #checkov:skip=CKV2_AWS_62:The event notifications of access logs bucket is not needed
   #checkov:skip=CKV_AWS_144:The S3 bucket cross-region replication is not needed
-  bucket = var.sandbox_deletion_logs_bucket_name
+  bucket = var.sandbox_access_logs_bucket_name
 
   tags = {
-    Name = "sandbox-deletion-logs-bucket"
+    Name = "sandbox-deletion-access-logs-bucket"
   }
 }
 
@@ -346,5 +325,57 @@ resource "aws_s3_bucket_versioning" "codepipeline_bucket_versioning" {
   bucket = aws_s3_bucket.codepipeline_bucket.id
   versioning_configuration {
     status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket" "codebuild_logs_bucket" {
+  bucket = "${var.project_name}-codebuild-logs-bucket"
+  #checkov:skip=CKV_AWS_144:The S3 bucket cross-region replication is not needed
+  #checkov:skip=CKV2_AWS_62:The event notifications of access logs bucket is not needed
+  #checkov:skip=CKV_AWS_145:The KMS encryption of access logs bucket is not needed
+  #checkov:skip=CKV_AWS_18:The access logging of this bucket is not needed
+
+  tags = {
+    Name        = "${var.project_name}-codebuild-logs-bucket"
+    Environment = var.environment
+    Project     = var.project_name
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "codebuild_logs_bucket_public_access_block" {
+  bucket                  = aws_s3_bucket.codebuild_logs_bucket.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_versioning" "codebuild_logs_bucket_versioning" {
+  bucket = aws_s3_bucket.codebuild_logs_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "codebuild_logs_bucket_lifecycle" {
+  bucket = aws_s3_bucket.codebuild_logs_bucket.id
+
+  rule {
+    id     = "AbortIncompleteUploads"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+
+  rule {
+    id     = "ExpireOldLogs"
+    status = "Enabled"
+
+    expiration {
+      days = 90
+    }
   }
 }

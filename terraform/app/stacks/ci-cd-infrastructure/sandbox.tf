@@ -42,8 +42,6 @@ module "sandbox_codepipeline_iam_role" {
   policy_arns = module.sandbox_policies.policy_arns
 
   tags = var.tags
-
-  depends_on = [module.sandbox_policies]
 }
 
 module "sandbox_codebuild" {
