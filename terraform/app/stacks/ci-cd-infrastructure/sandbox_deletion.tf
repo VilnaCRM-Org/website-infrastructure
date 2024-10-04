@@ -18,7 +18,7 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "codepipeline:ListPipelines"
         ]
         Resource = [
-          "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-pipeline-deletion"
+          "${aws_codepipeline.sandbox_pipeline.arn}"
         ]
       },
       {
@@ -31,7 +31,7 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "codebuild:BatchGetProjects"
         ]
         Resource = [
-          "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-deletion"
+          "${aws_codebuild_project.sandbox_deletion.arn}"
         ]
       },
       {
@@ -42,8 +42,9 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "s3:ListBucket",
           "s3:DeleteObject"
         ]
-        Resource = ["arn:aws:s3:::codepipeline-artifacts-bucket-deletion/*",
-          "arn:aws:s3:::codepipeline-artifacts-bucket-deletion"
+        Resource = [
+          "${aws_s3_bucket.codepipeline_bucket.arn}/*",
+          "${aws_s3_bucket.codepipeline_bucket.arn}"
         ]
       },
       {
@@ -53,8 +54,8 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "cloudwatch:DisableAlarmActions"
         ]
         Resource = [
-          "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-pipeline-deletion",
-          "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-deletion"
+          "${aws_codepipeline.sandbox_pipeline.arn}",
+          "${aws_codebuild_project.sandbox_deletion.arn}"
         ]
       }
     ]

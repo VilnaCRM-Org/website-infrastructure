@@ -64,7 +64,7 @@ variable "ci_cd_website_buildspecs" {
 }
 
 variable "sandbox_buildspecs" {
-  description = "Buildspecs for Sandbox Deployment"
+  description = "Buildspecs of Sandbox Deployment"
   type        = string
 }
 
@@ -244,7 +244,6 @@ variable "IS_PULL_REQUEST" {
 variable "sandbox_bucket_name" {
   description = "S3 Sandbox Bucket Name"
   type        = string
-  default     = "testing"  
 }
 
 variable "sandbox_access_logs_bucket_name" {
@@ -254,7 +253,7 @@ variable "sandbox_access_logs_bucket_name" {
 }
 
 variable "codepipeline_artifacts_bucket_name" {
-  description = "value"
+  description = "Name of the S3 bucket for CodePipeline artifacts"
   type        = string
   default     = "codepipeline-artifacts-bucket-deletion"
 }
