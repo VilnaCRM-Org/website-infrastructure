@@ -68,7 +68,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
 
   source {
     type      = "GITHUB"
-    location  = "https://github.com/VilnaCRM-Org/website-infrastructure"
+    location  = "https://github.com/${var.source_repo_owner}/${var.source_repo_name}"
     buildspec = var.buildspec_path
   }
 
@@ -111,8 +111,8 @@ resource "aws_codepipeline" "sandbox_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner      = "VilnaCRM-Org"
-        Repo       = "website-infrastructure"
+        Owner      = var.source_repo_owner
+        Repo       = var.source_repo_name
         Branch     = var.source_repo_branch
         OAuthToken = var.GITHUB_TOKEN
       }
@@ -230,7 +230,7 @@ resource "aws_s3_bucket" "access_logs_bucket" {
   #checkov:skip=CKV_AWS_145:The KMS encryption of access logs bucket is not needed
   #checkov:skip=CKV2_AWS_62:The event notifications of access logs bucket is not needed
   #checkov:skip=CKV_AWS_144:The S3 bucket cross-region replication is not needed
-  bucket = var.sandbox_access_logs_bucket_name
+  bucket = local.sandbox_access_logs_bucket_name
 
   tags = {
     Name = "sandbox-deletion-access-logs-bucket"
@@ -278,7 +278,7 @@ resource "aws_s3_bucket_versioning" "access_logs_bucket_versioning" {
 resource "aws_s3_bucket" "codepipeline_bucket" {
   #checkov:skip=CKV2_AWS_62:The event notifications of access logs bucket is not needed
   #checkov:skip=CKV_AWS_144:The S3 bucket cross-region replication is not needed
-  bucket = var.codepipeline_artifacts_bucket_name
+  bucket = local.codepipeline_artifacts_bucket_name
 
   tags = {
     Name = "codepipeline-deletion-artifacts-bucket"
@@ -379,4 +379,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "codebuild_logs_bucket_lifecycl
       days = 90
     }
   }
+}
+
+locals {
+  sandbox_access_logs_bucket_name    = "${var.project_name}-sandbox-access-logs-${var.environment}"
+  codepipeline_artifacts_bucket_name = "${var.project_name}-codepipeline-artifacts-${var.environment}"
 }

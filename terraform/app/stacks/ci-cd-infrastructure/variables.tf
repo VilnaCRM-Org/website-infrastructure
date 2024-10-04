@@ -49,22 +49,22 @@ variable "continuous_deployment_policy_header" {
 }
 
 variable "website_buildspecs" {
-  description = "Buildspecs of Website"
+  description = "Buildspecs for Website"
   type        = string
 }
 
 variable "ci_cd_infra_buildspecs" {
-  description = "Buildspecs of CI/CD infrastructure"
+  description = "Buildspecs for CI/CD infrastructure"
   type        = string
 }
 
 variable "ci_cd_website_buildspecs" {
-  description = "Buildspecs of Website Deployment"
+  description = "Buildspecs for Website Deployment"
   type        = string
 }
 
 variable "sandbox_buildspecs" {
-  description = "Buildspecs of Sandbox Deployment"
+  description = "Buildspecs for Sandbox Deployment"
   type        = string
 }
 
@@ -244,16 +244,4 @@ variable "IS_PULL_REQUEST" {
 variable "sandbox_bucket_name" {
   description = "S3 Sandbox Bucket Name"
   type        = string
-}
-
-variable "sandbox_access_logs_bucket_name" {
-  description = "Name of the S3 bucket for sandbox deletion logs"
-  type        = string
-  default     = "sandbox-deletion-access-logs-bucket"
-}
-
-variable "codepipeline_artifacts_bucket_name" {
-  description = "Name of the S3 bucket for CodePipeline artifacts"
-  type        = string
-  default     = "codepipeline-artifacts-bucket-deletion"
 }
