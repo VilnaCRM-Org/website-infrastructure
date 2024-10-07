@@ -4,12 +4,12 @@ variable "project_name" {
 }
 
 variable "website_infra_project_name" {
-  description = "Unique name for this Website Codepipeline"
+  description = "Unique name for this Website CodePipeline"
   type        = string
 }
 
 variable "ci_cd_infra_project_name" {
-  description = "Unique name for this CI/CD Codepipeline"
+  description = "Unique name for this CI/CD CodePipeline"
   type        = string
 }
 
@@ -19,7 +19,7 @@ variable "sandbox_project_name" {
 }
 
 variable "ci_cd_website_project_name" {
-  description = "Unique name for this Website Deploy Codepipeline"
+  description = "Unique name for this Website Deploy CodePipeline"
   type        = string
 }
 
@@ -99,7 +99,7 @@ variable "github_connection_name" {
 }
 
 variable "codepipeline_iam_role_name" {
-  description = "Name of the IAM role to be used by the Codepipeline"
+  description = "Name of the IAM role to be used by the CodePipeline"
   type        = string
   default     = "codepipeline-role"
 }
@@ -110,12 +110,12 @@ variable "website_url" {
 }
 
 variable "ci_cd_infra_stage_input" {
-  description = "List of Map containing information about the stages of the CI/CD Infrastructure CodePipeline"
+  description = "List of maps containing information about the stages of the CI/CD Infrastructure CodePipeline"
   type        = list(map(string))
 }
 
 variable "website_infra_stage_input" {
-  description = "List of Map containing information about the stages of the Website Infrastructure CodePipeline"
+  description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
   type        = list(map(string))
 }
 
@@ -125,7 +125,7 @@ variable "sandbox_stage_input" {
 }
 
 variable "ci_cd_website_stage_input" {
-  description = "List of Map containing information about the stages of the Website Infrastructure CodePipeline"
+  description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
   type        = list(map(string))
 }
 

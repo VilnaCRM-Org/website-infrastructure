@@ -1,3 +1,9 @@
+locals {
+  sandbox_access_logs_bucket_name    = "${var.project_name}-sandbox-access-logs-${var.environment}"
+  codepipeline_artifacts_bucket_name = "${var.project_name}-codepipeline-artifacts-${var.environment}"
+  codebuild_logs_bucket_name         = "${var.project_name}-codebuild-logs-bucket-${var.environment}"
+}
+
 resource "aws_iam_role_policy" "codepipeline_restricted_access" {
   name = "codepipeline-restricted-access-policy"
   role = aws_iam_role.codepipeline_role_sandbox.id
@@ -176,6 +182,11 @@ resource "aws_iam_policy" "codebuild_s3_access_policy" {
   name        = "codebuild-s3-access-policy-sandbox"
   description = "Policy to allow CodeBuild to access S3"
 
+  depends_on = [
+    aws_s3_bucket.codepipeline_bucket,
+    aws_s3_bucket.codebuild_logs_bucket,
+  ]
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -330,7 +341,7 @@ resource "aws_s3_bucket_versioning" "codepipeline_bucket_versioning" {
 }
 
 resource "aws_s3_bucket" "codebuild_logs_bucket" {
-  bucket = "${var.project_name}-codebuild-logs-bucket"
+  bucket = local.codebuild_logs_bucket_name
   #checkov:skip=CKV_AWS_144:The S3 bucket cross-region replication is not needed
   #checkov:skip=CKV2_AWS_62:The event notifications of access logs bucket is not needed
   #checkov:skip=CKV_AWS_145:The KMS encryption of access logs bucket is not needed
@@ -379,9 +390,4 @@ resource "aws_s3_bucket_lifecycle_configuration" "codebuild_logs_bucket_lifecycl
       days = 90
     }
   }
-}
-
-locals {
-  sandbox_access_logs_bucket_name    = "${var.project_name}-sandbox-access-logs-${var.environment}"
-  codepipeline_artifacts_bucket_name = "${var.project_name}-codepipeline-artifacts-${var.environment}"
 }
