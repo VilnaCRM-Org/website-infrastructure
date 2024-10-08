@@ -52,17 +52,6 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
           "${aws_s3_bucket.codepipeline_bucket.arn}/*",
           "${aws_s3_bucket.codepipeline_bucket.arn}"
         ]
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "cloudwatch:EnableAlarmActions",
-          "cloudwatch:DisableAlarmActions"
-        ]
-        Resource = [
-          "${aws_codepipeline.sandbox_pipeline.arn}",
-          "${aws_codebuild_project.sandbox_deletion.arn}"
-        ]
       }
     ]
   })

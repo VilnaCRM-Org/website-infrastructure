@@ -29,10 +29,10 @@ module "sandbox_codepipeline_kms" {
 module "sandbox_codepipeline_iam_role" {
   source = "../../modules/aws/iam/roles/sandbox-codepipeline-role"
 
-  project_name            = local.project_name
+  project_name               = local.project_name
   codepipeline_iam_role_name = "${local.project_name}-codepipeline-role"
-  source_repo_owner       = var.source_repo_owner
-  source_repo_name        = var.source_repo_name
+  source_repo_owner          = var.source_repo_owner
+  source_repo_name           = var.source_repo_name
 
   region      = local.region
   environment = var.environment

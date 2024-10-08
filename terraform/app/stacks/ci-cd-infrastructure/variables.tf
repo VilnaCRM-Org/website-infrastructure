@@ -145,12 +145,12 @@ variable "bucket_name" {
 }
 
 variable "script_dir" {
-  description = "Directory for Scripts of CodeBuild"
+  description = "Directory containing scripts for CodeBuild"
   type        = string
 }
 
 variable "s3_artifacts_bucket_files_deletion_days" {
-  description = "Expiring time of files in buckets for lifecycle configuration rule"
+  description = "Expiration time of files in buckets for lifecycle configuration rule"
   type        = number
 }
 
@@ -160,7 +160,7 @@ variable "s3_logs_lifecycle_configuration" {
 }
 
 variable "cloudwatch_log_group_retention_days" {
-  description = "Retention time of Cloudwatch log group logs"
+  description = "Retention time of CloudWatch log group logs"
   type        = number
 }
 
@@ -175,12 +175,12 @@ variable "lambda_reserved_concurrent_executions" {
 }
 
 variable "dynamodb_table_name" {
-  description = "Dynamodb Table Name for Logs"
+  description = "Dynamodb table name for logs"
   type        = string
 }
 
 variable "create_slack_notification" {
-  description = "This responsible for creating Slack Notifications"
+  description = "Responsible for creating Slack Notifications"
   type        = string
 }
 
@@ -195,17 +195,17 @@ variable "SLACK_WORKSPACE_ID" {
 }
 
 variable "CODEPIPELINE_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Notifications"
+  description = "Slack Channel ID for CodePipeline notifications"
   type        = string
 }
 
 variable "CI_CD_ALERTS_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Notifications"
+  description = "Slack Channel ID for CI/CD alerts"
   type        = string
 }
 
 variable "WEBSITE_ALERTS_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Notifications"
+  description = "Slack Channel ID for website alerts"
   type        = string
 }
 
