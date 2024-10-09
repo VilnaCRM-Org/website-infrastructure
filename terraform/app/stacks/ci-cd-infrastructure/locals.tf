@@ -63,7 +63,6 @@ locals {
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
-        "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         }
@@ -157,7 +156,7 @@ locals {
         "ENVIRONMENT"                   = var.environment,
         "ACCOUNT_ID"                    = local.account_id
         "SCRIPT_DIR"                    = var.script_dir,
-        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
@@ -202,8 +201,8 @@ locals {
         "PW_TEST_HTML_REPORT_OPEN"      = "never",
         "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header
         "GOLANG_VERSION"                = var.runtime_versions.golang
-        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.name
-        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
+        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.id
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
@@ -220,13 +219,14 @@ locals {
         "ACCOUNT_ID"                    = local.account_id
         "SCRIPT_DIR"                    = var.script_dir,
         "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header
-        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.name
-        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.name
+        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.id
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
         "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_lhci_leak.yml" })
+
     release = merge(local.ubuntu_based_build,
       { env_variables = {
         "PYTHON_VERSION"    = var.runtime_versions.python,
@@ -235,6 +235,7 @@ locals {
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/release.yml" })
+
     trigger = merge(local.amazonlinux2_based_build,
       { env_variables = {
         "PROJECT_NAME" = local.website_infra_codebuild_project_down_name
@@ -249,7 +250,6 @@ locals {
     "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
     "TS_ENV"                                 = var.environment,
     "AWS_DEFAULT_REGION"                     = var.region,
-    "PYTHON_VERSION"                         = var.runtime_versions.python,
     "RUBY_VERSION"                           = var.runtime_versions.ruby,
     "SCRIPT_DIR"                             = var.script_dir,
   }
@@ -259,5 +259,42 @@ locals {
     "PYTHON_VERSION"    = var.runtime_versions.python,
     "SCRIPT_DIR"        = var.script_dir,
   }
-}
 
+  common_sandbox_env_variables = {
+    "AWS_DEFAULT_REGION" = var.region,
+    "PYTHON_VERSION"     = var.runtime_versions.python,
+    "SCRIPT_DIR"         = var.script_dir,
+    "PROJECT_NAME"       = var.sandbox_project_name,
+  }
+
+  sandbox_build_projects = {
+    up = merge(local.amazonlinux2_based_build,
+      {
+        env_variables = merge(
+          local.common_sandbox_env_variables,
+          {
+            "ROLE_ARN"                   = module.sandbox_codepipeline_iam_role.terraform_role_arn,
+            "TS_ENV"                     = var.environment,
+            "TF_VAR_SANDBOX_BUCKET_NAME" = var.sandbox_bucket_name,
+          }
+        )
+      },
+    { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/up.yml" })
+
+    deploy = merge(local.ubuntu_based_build,
+      {
+        env_variables = merge(
+          local.common_sandbox_env_variables,
+          {
+            "CI"                          = "1",
+            "NODEJS_VERSION"              = var.runtime_versions.nodejs,
+            "BUCKET_NAME"                 = var.bucket_name,
+            "GITHUB_TOKEN"                = var.GITHUB_TOKEN,
+            "WEBSITE_GIT_REPOSITORY_LINK" = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
+            "GITHUB_REPOSITORY"           = "${var.source_repo_owner}/${var.website_content_repo_name}",
+          }
+        )
+      },
+    { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/deploy.yml" })
+  }
+}

@@ -6,7 +6,8 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "codepipeline:StartPipelineExecution",
     ]
     resources = [
-      "${var.ci_cd_website_codepipeline_arn}"
+      "${var.ci_cd_website_codepipeline_arn}",
+      "${var.sandbox_codepipeline_arn}"
     ]
   }
 }

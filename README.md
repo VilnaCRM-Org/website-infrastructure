@@ -80,7 +80,7 @@ After creating your account you should do the following steps:
 
    After creation of user:
 
-   Press on user you just created -> Go to Security credentials -> Create access key -> Choose Local code -> Check Confirmation mark -> Next -> Enter description value -> Create access key -> Save the Access key and Secret access key credentials
+   Press on user you just created -> Go to Security credentials -> Create access key -> Choose  code -> Check Confirmation mark -> Next -> Enter description value -> Create access key -> Save the Access key and Secret access key credentials
 
 **Save them, you will need it later.**
 
@@ -136,7 +136,8 @@ AWS Secret Access Key [None]: <Your Secret Key Here>
 Default region name [None]: eu-central-1
 Default output format [None]:
 ```
-In case, if you are using other region, please respecify it in the `tfvars`. Also specify your own domain name in the `tfvars`.
+
+In case you are using any other region, please respecify it in the `tfvars`. Also specify your own domain name in the `tfvars`.
 
 After you can move to the next step.
 
@@ -184,7 +185,6 @@ Follow these steps for each pipeline.
 ## Using make
 
 You can use `make` command to easily control and work with project locally.
-
 
 > make install
 

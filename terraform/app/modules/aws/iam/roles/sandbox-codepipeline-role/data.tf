@@ -24,6 +24,18 @@ data "aws_iam_policy_document" "codepipeline_role_document" {
   }
 }
 
+data "aws_iam_policy_document" "terraform_role_document" {
+  statement {
+    sid     = "AllowCICDInfraRoleAssumeRole"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.account_id}:role/sandbox-${var.environment}-codepipeline-role"]
+    }
+  }
+}
+
 data "aws_iam_policy_document" "codepipeline_policy_document" {
   statement {
     sid    = "AllowS3Actions"
@@ -33,20 +45,10 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "s3:GetObject",
       "s3:GetObjectVersion",
       "s3:PutObjectAcl",
-      "s3:PutObject"
+      "s3:PutObject",
     ]
-    resources = [
-      "${var.s3_bucket_arn}/*",
-      "${var.s3_bucket_arn}",
-      "arn:aws:s3:::${var.website_bucket_name}",
-      "arn:aws:s3:::${var.website_bucket_name}/*",
-      "arn:aws:s3:::staging.${var.website_bucket_name}",
-      "arn:aws:s3:::staging.${var.website_bucket_name}/*",
-      "${var.lhci_reports_bucket_arn}",
-      "${var.lhci_reports_bucket_arn}/*",
-      "${var.test_reports_bucket_bucket_arn}",
-      "${var.test_reports_bucket_bucket_arn}/*"
-    ]
+    resources = ["${var.s3_bucket_arn}/*",
+    "${var.s3_bucket_arn}", ]
   }
 
   statement {
@@ -58,6 +60,14 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["${var.kms_key_arn}"]
   }
+  statement {
+    sid    = "AllowCodepipelineGetState"
+    effect = "Allow"
+    actions = [
+      "codepipeline:GetPipelineState",
+    ]
+    resources = ["arn:aws:codepipeline:${var.region}:${local.account_id}:${var.project_name}-pipeline"]
+  }
 
   statement {
     sid    = "AllowCodeBuildActions"
@@ -65,10 +75,6 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     actions = [
       "codebuild:BatchGetBuilds",
       "codebuild:StartBuild",
-      "codebuild:StartBuildBatch",
-      "codebuild:BatchGetBuildBatches",
-      "codebuild:StopBuild",
-      "codebuild:RetryBuild",
       "codebuild:BatchGetProjects",
       "codebuild:CreateReportGroup",
       "codebuild:CreateReport",
@@ -106,61 +112,18 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${local.account_id}:log-group:*"]
   }
-
   statement {
-    sid    = "AllowInvokeLambda"
+    sid    = "S3PolicyArtifactBucket"
     effect = "Allow"
     actions = [
-      "lambda:InvokeFunction"
-    ]
-    resources = ["arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:ci-cd-website-${var.environment}-reports-notification"]
-  }
-  statement {
-    sid    = "AllowChangeAlarmState"
-    effect = "Allow"
-    actions = [
-      "cloudwatch:EnableAlarmActions",
-      "cloudwatch:DisableAlarmActions"
-    ]
-    resources = ["arn:aws:cloudwatch:${var.region}:${local.account_id}:alarm:website-${var.region}-s3-objects-anomaly-detection"]
-  }
-  statement {
-    sid    = "CloudfrontDistributionListPolicy"
-    effect = "Allow"
-    actions = [
-      "cloudfront:ListDistributions",
-      "cloudfront:ListContinuousDeploymentPolicies"
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:GetObjectVersion",
+      "s3:PutObjectAcl",
+      "s3:PutObject"
     ]
     resources = [
-      "*"
-    ]
-  }
-  statement {
-    sid    = "CloudfrontDistributionPolicy"
-    effect = "Allow"
-    actions = [
-      "cloudfront:CreateDistribution",
-      "cloudfront:CreateDistributionWithTags",
-      "cloudfront:GetDistribution",
-      "cloudfront:GetDistributionConfig",
-      "cloudfront:ListTagsForResource",
-      "cloudfront:UpdateDistribution",
-      "cloudfront:TagResource",
-    ]
-    resources = [
-      "arn:aws:cloudfront::${local.account_id}:distribution/*"
-    ]
-  }
-  statement {
-    sid    = "CloudfrontContinuousDeploymentPolicy"
-    effect = "Allow"
-    actions = [
-      "cloudfront:CreateContinuousDeploymentPolicy",
-      "cloudfront:GetContinuousDeploymentPolicy",
-      "cloudfront:UpdateContinuousDeploymentPolicy"
-    ]
-    resources = [
-      "arn:aws:cloudfront::${local.account_id}:continuous-deployment-policy/*"
+      "arn:aws:s3:::${var.project_name}-*",
     ]
   }
 }
