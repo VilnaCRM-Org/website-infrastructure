@@ -76,7 +76,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
   logs_config {
     s3_logs {
       status   = "ENABLED"
-      location = aws_s3_bucket.codebuild_logs_bucket.arn
+      location = aws_s3_bucket.codebuild_logs_bucket.id
     }
   }
 
