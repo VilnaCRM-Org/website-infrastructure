@@ -76,7 +76,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
   logs_config {
     s3_logs {
       status   = "ENABLED"
-      location = aws_s3_bucket.codebuild_logs_bucket.id
+      location = aws_s3_bucket.codebuild_logs_bucket.arn
     }
   }
 
@@ -100,16 +100,15 @@ resource "aws_codepipeline" "sandbox_pipeline" {
     action {
       name             = "Source"
       category         = "Source"
-      owner            = "ThirdParty"
-      provider         = "GitHub"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
       version          = "1"
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner      = var.source_repo_owner
-        Repo       = var.source_repo_name
-        Branch     = var.source_repo_branch
-        OAuthToken = var.GITHUB_TOKEN
+        FullRepositoryId = "${var.source_repo_owner}/${var.source_repo_name}"
+        ConnectionArn    = module.codestar_connection.arn
+        BranchName       = var.source_repo_branch
       }
     }
   }

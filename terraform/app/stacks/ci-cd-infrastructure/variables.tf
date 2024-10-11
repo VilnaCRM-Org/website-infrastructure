@@ -245,3 +245,9 @@ variable "sandbox_bucket_name" {
   description = "S3 Sandbox Bucket Name"
   type        = string
 }
+
+variable "github_token_secret_name" {
+  description = "Name of the GitHub token secret"
+  type        = string
+  default     = "github-token"
+}

@@ -20,6 +20,10 @@
 if [ "$IS_PULL_REQUEST" -eq 1 ]; then
 # Use mktemp for secure temporary file handling
     TOKEN_FILE=$(mktemp)
+
+# Get the GitHub token
+    GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github-token --query 'SecretString' --output text)
+
     echo "$GITHUB_TOKEN" >"$TOKEN_FILE"
 
 # Enhanced logging
