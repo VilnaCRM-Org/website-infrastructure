@@ -18,19 +18,11 @@
 
 # Check if the script is running in the context of a pull request
 if [ "$IS_PULL_REQUEST" -eq 1 ]; then
-# Use mktemp for secure temporary file handling
-    TOKEN_FILE=$(mktemp)
-
-# Get the GitHub token
-    GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github-token --query 'SecretString' --output text)
-
-    echo "$GITHUB_TOKEN" >"$TOKEN_FILE"
 
 # Enhanced logging
-    echo "Starting GitHub authentication..."
-    if ! gh auth login --with-token <"$TOKEN_FILE"; then
+    # Get the GitHub token and pass it directly to the authentication command
+    if ! aws secretsmanager get-secret-value --secret-id github-token --query 'SecretString' --output text | gh auth login --with-token; then
         echo "Authentication failed. Check GITHUB_TOKEN."
-        rm -f "$TOKEN_FILE"
         exit 1
     fi
         echo "Authentication successful."

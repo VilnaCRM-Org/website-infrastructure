@@ -2,7 +2,7 @@ resource "aws_iam_policy" "github_token_policy" {
   name        = "github-token-policy"
   description = "Policy to allow access to GitHub token"
 
-  policy      = jsonencode({
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {

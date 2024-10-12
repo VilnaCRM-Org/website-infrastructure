@@ -62,8 +62,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
   service_role = aws_iam_role.codebuild_role_sandbox.arn
 
   source {
-    type      = "GITHUB"
-    location  = "https://github.com/${var.source_repo_owner}/${var.source_repo_name}"
+    type      = "CODEPIPELINE"
     buildspec = var.buildspec_path
   }
 
@@ -133,7 +132,7 @@ resource "aws_codepipeline" "sandbox_pipeline" {
 }
 
 resource "aws_iam_role" "codepipeline_role_sandbox" {
-  name = "codepipeline-role-sandbox-deletion"
+  name = "${var.project_name}-codepipeline-role-sandbox-deletion-${var.environment}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -150,7 +149,7 @@ resource "aws_iam_role" "codepipeline_role_sandbox" {
 }
 
 resource "aws_iam_role" "codebuild_role_sandbox" {
-  name = "codebuild-role-sandbox-deletion"
+  name = "${var.project_name}-codebuild-role-${var.environment}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -233,6 +232,8 @@ resource "aws_s3_bucket" "access_logs_bucket" {
 
   tags = {
     Name = "sandbox-deletion-access-logs-bucket"
+    Project = var.project_name
+    Environment = var.environment
   }
 }
 
@@ -281,6 +282,8 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
 
   tags = {
     Name = "codepipeline-deletion-artifacts-bucket"
+    Project = var.project_name
+    Environment = var.environment
   }
 }
 
