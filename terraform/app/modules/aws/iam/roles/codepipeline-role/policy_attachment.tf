@@ -28,8 +28,3 @@ resource "aws_iam_role_policy_attachment" "terraform_iam_policy_role_attachment"
   policy_arn = aws_iam_policy.terraform_iam_policy[0].arn
   depends_on = [aws_iam_role.terraform_role, aws_iam_policy.terraform_iam_policy[0]]
 }
-
-resource "aws_iam_role_policy_attachment" "github_token_policy_attachment" {
-  role       = "sandbox-test-codepipeline-role"
-  policy_arn = aws_iam_policy.github_token_policy.arn
-}

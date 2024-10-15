@@ -1,18 +1,16 @@
-# GitHub Token Rotation and CodePipeline IAM Configuration
-#
-# This Terraform configuration manages the following components:
-# - GitHub token storage in AWS Secrets Manager
-# - IAM policy for GitHub token access
-#
-
-# Manages the GitHub token secret in AWS Secrets Manager for secure storage and rotation
 module "github_token_secret" {
   source = "../../modules/aws/secrets"
-
-  github_token = var.github_token_secret_name
+  github_token_secret_name = "github-token"
 }
 
-#  Policies to allow GitHub token rotation
 module "github_token_policy" {
-  source = "../../modules/aws/iam/policies/github_token"
+  source    = "../../modules/aws/iam/policies/github-token"
+  secret_arn = module.github_token_secret.secret_arn
+}
+
+module "github_actions_role" {
+  source            = "../../modules/aws/iam/roles/github-token-rotation-role"
+  source_repo_owner = var.source_repo_owner
+  source_repo_name  = var.source_repo_name
+  policy_arn        = module.github_token_policy.policy_arn
 }

@@ -1,9 +1,4 @@
-variable "github_token" {
+variable "github_token_secret_name" {
+  description = "The name of the GitHub token secret"
   type        = string
-  sensitive   = true
-  description = "GitHub token for token rotation"
-  validation {
-    condition     = can(regex("^gh[pousr]_[A-Za-z0-9]{36}$", var.github_token))
-    error_message = "The github_token must be a valid GitHub token format."
-  }
 }
