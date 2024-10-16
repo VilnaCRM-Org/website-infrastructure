@@ -57,12 +57,29 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
   })
 }
 
+resource "aws_iam_role_policy" "codebuild_policy" {
+  name = "codebuild-policy"
+  role = aws_iam_role.codepipeline_role_sandbox.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "codestar-connections:UseConnection"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 resource "aws_codebuild_project" "sandbox_deletion" {
   name         = "sandbox-deletion"
   service_role = aws_iam_role.codebuild_role_sandbox.arn
 
   source {
-    type      = "CODEPIPELINE"
+    type      = "GITHUB"
+    location  = "https://github.com/${var.source_repo_owner}/${var.source_repo_name}"
     buildspec = var.buildspec_path
   }
 
@@ -231,8 +248,8 @@ resource "aws_s3_bucket" "access_logs_bucket" {
   bucket = local.sandbox_access_logs_bucket_name
 
   tags = {
-    Name = "sandbox-deletion-access-logs-bucket"
-    Project = var.project_name
+    Name        = "sandbox-deletion-access-logs-bucket"
+    Project     = var.project_name
     Environment = var.environment
   }
 }
@@ -281,8 +298,8 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket = local.codepipeline_artifacts_bucket_name
 
   tags = {
-    Name = "codepipeline-deletion-artifacts-bucket"
-    Project = var.project_name
+    Name        = "codepipeline-deletion-artifacts-bucket"
+    Project     = var.project_name
     Environment = var.environment
   }
 }

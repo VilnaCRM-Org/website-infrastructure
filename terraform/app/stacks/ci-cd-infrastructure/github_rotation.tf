@@ -1,10 +1,10 @@
 module "github_token_secret" {
-  source = "../../modules/aws/secrets"
+  source                   = "../../modules/aws/secrets"
   github_token_secret_name = "github-token"
 }
 
 module "github_token_policy" {
-  source    = "../../modules/aws/iam/policies/github-token"
+  source     = "../../modules/aws/iam/policies/github-token"
   secret_arn = module.github_token_secret.secret_arn
 }
 
