@@ -19,23 +19,26 @@
 # Check if the script is running in the context of a pull request
 if [ "$IS_PULL_REQUEST" -eq 1 ]; then
 
-# Enhanced logging
-    # Get the GitHub token and pass it directly to the authentication command
-    if ! aws secretsmanager get-secret-value --secret-id github-token --query 'SecretString' --output text | gh auth login --with-token; then
+    echo "Running in the context of a pull request."
+
+    # Authenticate with GitHub using the token from Secrets Manager
+    echo "Authenticating with GitHub using the token from Secrets Manager..."
+    if ! echo "$GITHUB_TOKEN" | gh auth login --with-token; then
         echo "Authentication failed. Check GITHUB_TOKEN."
         exit 1
     fi
-        echo "Authentication successful."
 
-# Parameterize the script
-    if [ $# -eq 0 ]; then
-        echo "No arguments provided. Exiting."
-        exit 1
-    fi
-    
-# Create a pull request comment with a link to the latest version of the project
+    echo "Authentication successful."
+
+    # Create a pull request comment with a link to the latest version of the project
+    echo "Creating pull request comment..."
     if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "Latest Version is ready: http://$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com"; then
         echo "Failed to create the pull request comment. Please check the provided environment variables."
         exit 1
     fi
+
+    echo "Pull request comment created successfully."
+
+else
+    echo "Not a pull request. Skipping comment creation."
 fi

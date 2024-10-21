@@ -128,13 +128,13 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
   }
 
   statement {
-    sid       = "AllowSecretsManagerAccess"
-    effect    = "Allow"
-    actions   = [
-      "secretsmanager:GetSecretValue"
+    sid    = "AllowSecretsManagerAccess"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:GetSecretValue",
     ]
     resources = [
-      "arn:aws:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:github-token"
+      "arn:aws:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:github-token*"
     ]
   }
 }

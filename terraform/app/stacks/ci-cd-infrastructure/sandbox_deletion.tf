@@ -200,13 +200,16 @@ resource "aws_iam_policy" "codebuild_s3_access_policy" {
           "s3:GetObject",
           "s3:PutObject",
           "s3:ListBucket",
-          "s3:DeleteObject"
+          "s3:DeleteObject",
+          "s3:DeleteBucket",
         ]
         Resource = [
           "${aws_s3_bucket.codepipeline_bucket.arn}",
           "${aws_s3_bucket.codepipeline_bucket.arn}/*",
           "${aws_s3_bucket.codebuild_logs_bucket.arn}",
-          "${aws_s3_bucket.codebuild_logs_bucket.arn}/*"
+          "${aws_s3_bucket.codebuild_logs_bucket.arn}/*",
+          "arn:aws:s3:::sandbox-test-${var.BRANCH_NAME}",
+          "arn:aws:s3:::sandbox-test-${var.BRANCH_NAME}/*"
         ]
       }
     ]

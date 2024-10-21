@@ -118,9 +118,7 @@ locals {
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
-        "GITHUB_TOKEN"                           = var.GITHUB_TOKEN,
         "GITHUB_OWNER"                           = var.source_repo_owner,
-        "TF_VAR_GITHUB_TOKEN"                    = var.GITHUB_TOKEN
         }
       },
     { buildspec = "./aws/buildspecs/${var.ci_cd_infra_buildspecs}/plan.yml" })
@@ -137,9 +135,7 @@ locals {
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
-        "GITHUB_TOKEN"                           = var.GITHUB_TOKEN,
         "GITHUB_OWNER"                           = var.source_repo_owner,
-        "TF_VAR_GITHUB_TOKEN"                    = var.GITHUB_TOKEN
         }
       },
     { buildspec = "./aws/buildspecs/${var.ci_cd_infra_buildspecs}/up.yml" })
@@ -289,7 +285,6 @@ locals {
             "CI"                          = "1",
             "NODEJS_VERSION"              = var.runtime_versions.nodejs,
             "BUCKET_NAME"                 = var.bucket_name,
-            "GITHUB_TOKEN"                = var.GITHUB_TOKEN,
             "WEBSITE_GIT_REPOSITORY_LINK" = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
             "GITHUB_REPOSITORY"           = "${var.source_repo_owner}/${var.website_content_repo_name}",
           }

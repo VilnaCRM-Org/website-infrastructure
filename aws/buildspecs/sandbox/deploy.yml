@@ -12,8 +12,11 @@ phases:
 
   build:
     commands:
+      - 'echo #### Fetching GitHub token from Secrets Manager'
+      - 'export GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text)'
       - 'echo #### Build Project'
       - 'make build'
       - 'echo #### Deploy Project'
       - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME'
+      - 'echo #### Create pull request comment'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pull_request.sh'
