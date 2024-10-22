@@ -208,8 +208,8 @@ resource "aws_iam_policy" "codebuild_s3_access_policy" {
           "${aws_s3_bucket.codepipeline_bucket.arn}/*",
           "${aws_s3_bucket.codebuild_logs_bucket.arn}",
           "${aws_s3_bucket.codebuild_logs_bucket.arn}/*",
-          "arn:aws:s3:::sandbox-test-${var.BRANCH_NAME}",
-          "arn:aws:s3:::sandbox-test-${var.BRANCH_NAME}/*"
+          "arn:aws:s3:::${var.sandbox_project_name}-${var.BRANCH_NAME}",
+          "arn:aws:s3:::${var.sandbox_project_name}-${var.BRANCH_NAME}/*"
         ]
       }
     ]
