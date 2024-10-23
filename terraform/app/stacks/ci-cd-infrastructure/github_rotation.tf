@@ -1,6 +1,6 @@
 module "github_token_secret" {
   source                   = "../../modules/aws/secrets"
-  github_token_secret_name = "github-token"
+  github_token_secret_name = var.github_token_secret_name
 }
 
 module "github_token_policy" {

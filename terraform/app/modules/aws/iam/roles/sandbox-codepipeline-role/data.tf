@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "terraform_role_document" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${local.account_id}:role/sandbox-${var.environment}-codepipeline-role"]
+      identifiers = ["arn:${data.aws_partition.current.partition}:iam::${local.account_id}:role/sandbox-${var.environment}-codepipeline-role"]
     }
   }
 }
@@ -66,7 +66,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     actions = [
       "codepipeline:GetPipelineState",
     ]
-    resources = ["arn:aws:codepipeline:${var.region}:${local.account_id}:${var.project_name}-pipeline"]
+    resources = ["arn:${data.aws_partition.current.partition}:codepipeline:${var.region}:${local.account_id}:${var.project_name}-pipeline"]
   }
 
   statement {
@@ -82,8 +82,8 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "codebuild:BatchPutTestCases",
     ]
     resources = [
-      "arn:aws:codebuild:${data.aws_region.current.id}:${local.account_id}:project/${var.project_name}*",
-      "arn:aws:codebuild:${data.aws_region.current.id}:${local.account_id}:report-group/${var.project_name}*"
+      "arn:${data.aws_partition.current.partition}:codebuild:${data.aws_region.current.id}:${local.account_id}:project/${var.project_name}*",
+      "arn:${data.aws_partition.current.partition}:codebuild:${data.aws_region.current.id}:${local.account_id}:report-group/${var.project_name}*"
     ]
   }
 
@@ -123,7 +123,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "s3:PutObject"
     ]
     resources = [
-      "arn:aws:s3:::${var.project_name}-*",
+      "arn:${data.aws_partition.current.partition}:s3:::${var.project_name}-*",
     ]
   }
 
@@ -134,7 +134,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "secretsmanager:GetSecretValue",
     ]
     resources = [
-      "arn:aws:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:github-token*"
+      "arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:github-token*"
     ]
   }
 }

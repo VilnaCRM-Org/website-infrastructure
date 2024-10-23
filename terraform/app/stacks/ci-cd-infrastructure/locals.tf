@@ -50,7 +50,7 @@ locals {
         "AWS_DEFAULT_REGION"                     = var.region,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
-        "GOLANG_VERSION"                         = var.runtime_versions.golang
+        "GOLANG_VERSION"                         = var.runtime_versions.golang,
         "SCRIPT_DIR"                             = var.script_dir,
         }
       },
@@ -79,8 +79,8 @@ locals {
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
-        "CI_CD_WEBSITE_PIPELINE_NAME"            = "${var.ci_cd_website_project_name}-pipeline"
-        "CLOUDFRONT_REGION"                      = var.cloudfront_configuration.region
+        "CI_CD_WEBSITE_PIPELINE_NAME"            = "${var.ci_cd_website_project_name}-pipeline",
+        "CLOUDFRONT_REGION"                      = var.cloudfront_configuration.region,
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/up.yml" })
@@ -150,11 +150,11 @@ locals {
         "PW_TEST_HTML_REPORT_OPEN"      = "never",
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
-        "ACCOUNT_ID"                    = local.account_id
+        "ACCOUNT_ID"                    = local.account_id,
         "SCRIPT_DIR"                    = var.script_dir,
-        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
-        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_unit_mutation_lint.yml" })
@@ -164,15 +164,15 @@ locals {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "PYTHON_VERSION"                = var.runtime_versions.python,
-        "BUCKET_NAME"                   = var.bucket_name
-        "STAGING_BUCKET_NAME"           = "staging.${var.bucket_name}"
+        "BUCKET_NAME"                   = var.bucket_name,
+        "STAGING_BUCKET_NAME"           = "staging.${var.bucket_name}",
         "SCRIPT_DIR"                    = var.script_dir,
-        "ALARM_NAME"                    = local.alarm_name
+        "ALARM_NAME"                    = local.alarm_name,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
-        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
-        "CLOUDFRONT_REGION"             = var.cloudfront_configuration.region
-        "CLOUDFRONT_WEIGHT"             = var.continuous_deployment_policy_weight
-        "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
+        "CLOUDFRONT_REGION"             = var.cloudfront_configuration.region,
+        "CLOUDFRONT_WEIGHT"             = var.continuous_deployment_policy_weight,
+        "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header,
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/deploy.yml" })
@@ -189,18 +189,18 @@ locals {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "PYTHON_VERSION"                = var.runtime_versions.python,
-        "GOLANG_VERSION"                = var.runtime_versions.golang
+        "GOLANG_VERSION"                = var.runtime_versions.golang,
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
-        "ACCOUNT_ID"                    = local.account_id
+        "ACCOUNT_ID"                    = local.account_id,
         "SCRIPT_DIR"                    = var.script_dir,
         "PW_TEST_HTML_REPORT_OPEN"      = "never",
-        "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header
-        "GOLANG_VERSION"                = var.runtime_versions.golang
-        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.id
-        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id
+        "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header,
+        "GOLANG_VERSION"                = var.runtime_versions.golang,
+        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.id,
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
-        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_pw_load.yml" })
@@ -212,13 +212,13 @@ locals {
         "PYTHON_VERSION"                = var.runtime_versions.python,
         "WEBSITE_URL"                   = var.website_url,
         "ENVIRONMENT"                   = var.environment,
-        "ACCOUNT_ID"                    = local.account_id
+        "ACCOUNT_ID"                    = local.account_id,
         "SCRIPT_DIR"                    = var.script_dir,
-        "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header
-        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.id
-        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id
+        "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header,
+        "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.id,
+        "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
-        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}"
+        "WEBSITE_GIT_REPOSITORY_LINK"   = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_lhci_leak.yml" })
@@ -227,14 +227,14 @@ locals {
       { env_variables = {
         "PYTHON_VERSION"    = var.runtime_versions.python,
         "SCRIPT_DIR"        = var.script_dir,
-        "CLOUDFRONT_REGION" = var.cloudfront_configuration.region
+        "CLOUDFRONT_REGION" = var.cloudfront_configuration.region,
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/release.yml" })
 
     trigger = merge(local.amazonlinux2_based_build,
       { env_variables = {
-        "PROJECT_NAME" = local.website_infra_codebuild_project_down_name
+        "PROJECT_NAME" = local.website_infra_codebuild_project_down_name,
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/trigger.yml" })
@@ -251,7 +251,7 @@ locals {
   }
 
   codebuild_cloudfront_rollback_project_env_variables = {
-    "CLOUDFRONT_REGION" = var.cloudfront_configuration.region
+    "CLOUDFRONT_REGION" = var.cloudfront_configuration.region,
     "PYTHON_VERSION"    = var.runtime_versions.python,
     "SCRIPT_DIR"        = var.script_dir,
   }

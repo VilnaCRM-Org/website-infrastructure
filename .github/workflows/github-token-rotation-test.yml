@@ -12,16 +12,30 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: Validate Environment Variables
+        run: |
+          if [ -z "${{ secrets.VILNACRM_APP_ID }}" ] || [ -z "${{ secrets.VILNACRM_APP_PRIVATE_KEY }}" ]; then
+            echo "Error: GITHUB_APP_ID and GITHUB_PRIVATE_KEY must be set in secrets."
+          exit 1
+          fi
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          # Assume IAM role for GitHub Actions to access AWS resources
+          role-to-assume: ${{ secrets.GITHUB_TOKEN_ROTATION_ROLE_TO_ASSUME_TEST}}
           aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install PyJWT
+        run: |
+          pip3 install PyJWT      
 
       - name: Rotate GitHub Token
         env:
           SECRET_NAME: github-token
         run: |
+          set -euo pipefail
+          
           echo "Generating new GitHub token..."
 
           # Authenticate as a GitHub App
@@ -32,6 +46,12 @@ jobs:
             -H "Authorization: Bearer $jwt" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/app/installations | jq -r '.[0].id')
+          
+          
+          if [ -z "$installation_id" ]; then
+            echo "Failed to retrieve installation ID"
+            exit 1
+          fi
 
           # Create an installation access token
           token_response=$(curl -s -X POST \
@@ -40,6 +60,11 @@ jobs:
             https://api.github.com/app/installations/$installation_id/access_tokens)
 
           NEW_TOKEN=$(echo $token_response | jq -r '.token')
+
+          if [ -z "$NEW_TOKEN" ]; then
+            echo "Failed to generate new token"
+            exit 1
+          fi
 
           # Update AWS Secrets Manager with the new token
           aws secretsmanager put-secret-value --secret-id "$SECRET_NAME" --secret-string "$NEW_TOKEN"

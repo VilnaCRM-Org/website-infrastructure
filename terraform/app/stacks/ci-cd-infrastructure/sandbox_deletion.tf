@@ -67,7 +67,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
       {
         Effect   = "Allow"
         Action   = "codestar-connections:UseConnection"
-        Resource = "*"
+        Resource = "${module.codestar_connection.arn}"
       }
     ]
   })

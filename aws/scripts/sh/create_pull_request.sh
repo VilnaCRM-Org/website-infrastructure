@@ -16,15 +16,25 @@
 # Outputs:
 #   - A pull request comment with a link to the latest version of the project.
 
+set -euo pipefail
+
+# Validate required environment variables
+for var in GITHUB_TOKEN PR_NUMBER GITHUB_REPOSITORY PROJECT_NAME BRANCH_NAME AWS_DEFAULT_REGION; do
+    if [ -z "${!var}" ]; then
+        echo "Error: $var environment variable is not set"
+        exit 1
+    fi
+done
+
 # Check if the script is running in the context of a pull request
 if [ "$IS_PULL_REQUEST" -eq 1 ]; then
 
     echo "Running in the context of a pull request."
 
-    # Authenticate with GitHub using the token from Secrets Manager
-    echo "Authenticating with GitHub using the token from Secrets Manager..."
+    # Authenticate with GitHub
+    echo "Authenticating with GitHub..."
     if ! echo "$GITHUB_TOKEN" | gh auth login --with-token; then
-        echo "Authentication failed. Check GITHUB_TOKEN."
+        echo "GitHub authentication failed. Please ensure the GITHUB_TOKEN has the required permissions."
         exit 1
     fi
 
@@ -32,7 +42,8 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
 
     # Create a pull request comment with a link to the latest version of the project
     echo "Creating pull request comment..."
-    if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "Latest Version is ready: http://$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com"; then
+    COMMENT_BODY="Latest Version is ready: http://$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com"
+    if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
         echo "Failed to create the pull request comment. Please check the provided environment variables."
         exit 1
     else
