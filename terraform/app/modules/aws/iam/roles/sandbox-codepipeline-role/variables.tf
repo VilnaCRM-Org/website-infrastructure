@@ -53,3 +53,15 @@ variable "policy_arns" {
   description = "Set of policies to attach to Role"
   default     = { value = {} }
 }
+
+variable "codepipeline_role_name_suffix" {
+  description = "Suffix for the CodePipeline role name"
+  type        = string
+  default     = "-codepipeline-role"
+}
+
+variable "github_token_secret_name" {
+  description = "Name of the GitHub token secret"
+  type        = string
+  default     = "github-token"
+}

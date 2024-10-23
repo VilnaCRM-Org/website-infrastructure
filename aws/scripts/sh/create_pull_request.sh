@@ -19,7 +19,7 @@
 set -euo pipefail
 
 # Validate required environment variables
-for var in GITHUB_TOKEN PR_NUMBER GITHUB_REPOSITORY PROJECT_NAME BRANCH_NAME AWS_DEFAULT_REGION; do
+for var in IS_PULL_REQUEST GITHUB_TOKEN PR_NUMBER GITHUB_REPOSITORY PROJECT_NAME BRANCH_NAME AWS_DEFAULT_REGION; do
     if [ -z "${!var}" ]; then
         echo "Error: $var environment variable is not set"
         exit 1

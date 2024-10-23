@@ -98,7 +98,7 @@ locals {
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
-        "GOLANG_VERSION"                         = var.runtime_versions.golang
+        "GOLANG_VERSION"                         = var.runtime_versions.golang,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         }
@@ -196,7 +196,6 @@ locals {
         "SCRIPT_DIR"                    = var.script_dir,
         "PW_TEST_HTML_REPORT_OPEN"      = "never",
         "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header,
-        "GOLANG_VERSION"                = var.runtime_versions.golang,
         "LHCI_REPORTS_BUCKET"           = module.lhci_reports_bucket.id,
         "TEST_REPORTS_BUCKET"           = module.test_reports_bucket.id,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,

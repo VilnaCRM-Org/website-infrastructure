@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "terraform_role_document" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
-      identifiers = ["arn:${data.aws_partition.current.partition}:iam::${local.account_id}:role/sandbox-${var.environment}-codepipeline-role"]
+      identifiers = ["arn:${data.aws_partition.current.partition}:iam::${local.account_id}:role/sandbox-${var.environment}${var.codepipeline_role_name_suffix}"]
     }
   }
 }
@@ -134,7 +134,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "secretsmanager:GetSecretValue",
     ]
     resources = [
-      "arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:github-token*"
+      "arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:${var.github_token_secret_name}*"
     ]
   }
 }
