@@ -39,14 +39,14 @@ jobs:
           if ! python3 -c "import jwt; print(jwt.__version__)" &>/dev/null; then
             echo "Error: Failed to install PyJWT"
             exit 1
-          fi     
+          fi
 
       - name: Rotate GitHub Token
         env:
-          SECRET_NAME: github-token
+          SECRET_NAME: ${{ secrets.SECRET_NAME }}
         run: |
           set -euo pipefail
-          
+
           echo "Generating new GitHub token..."
 
           # Authenticate as a GitHub App
@@ -57,9 +57,9 @@ jobs:
             -H "Authorization: Bearer $jwt" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/app/installations)
-          
+
           installation_id=$(echo "$response" | jq -r '.[0].id')
-          
+
           if [ -z "$installation_id" ] || [ "$installation_id" = "null" ]; then
             echo "Failed to retrieve installation ID"
             exit 1
@@ -79,6 +79,6 @@ jobs:
           fi
 
           # Store the new token in AWS Secrets Manager
-          aws secretsmanager put-secret-value --secret-id "$SECRET_NAME" --secret-string "$NEW_TOKEN"
+          aws secretsmanager put-secret-value --secret-id "${SECRET_NAME}" --secret-string "${NEW_TOKEN}"
 
           echo "GitHub token has been rotated and updated in AWS Secrets Manager."

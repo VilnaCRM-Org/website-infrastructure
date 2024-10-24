@@ -59,7 +59,7 @@ resource "aws_iam_role_policy" "codepipeline_restricted_access" {
 
 resource "aws_iam_role_policy" "codebuild_policy" {
   name = "codebuild-policy"
-  role = aws_iam_role.codepipeline_role_sandbox.id
+  role = aws_iam_role.codebuild_role_sandbox.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -67,7 +67,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
       {
         Effect   = "Allow"
         Action   = "codestar-connections:UseConnection"
-        Resource = "${module.codestar_connection.arn}"
+        Resource = "*"
       }
     ]
   })
