@@ -1,6 +1,11 @@
 variable "secret_arn" {
-  description = "The ARN of the GitHub token secret"
+  description = "The ARN of the GitHub token secret in AWS Secrets Manager (format: arn:aws:secretsmanager:REGION:ACCOUNT:secret:NAME)"
   type        = string
+  sensitive   = true
+  validation {
+    condition     = can(regex("^arn:aws:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:.+$", var.secret_arn))
+    error_message = "The secret_arn value must be a valid AWS Secrets Manager ARN"
+  }
 }
 
 variable "policy_name" {

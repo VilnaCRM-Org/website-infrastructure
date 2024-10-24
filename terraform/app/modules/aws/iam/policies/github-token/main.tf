@@ -3,8 +3,8 @@ resource "aws_iam_policy" "github_token_secrets_access_policy" {
   description = "Policy allowing access to GitHub token stored in Secrets Manager"
 
   tags = {
-    Purpose     = "GitHub Token Rotation"
-    ManagedBy   = "Terraform"
+    Purpose   = "GitHub Token Rotation"
+    ManagedBy = "Terraform"
   }
 
   policy = jsonencode({
