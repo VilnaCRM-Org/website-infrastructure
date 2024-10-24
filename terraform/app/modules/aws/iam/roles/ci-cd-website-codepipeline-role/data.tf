@@ -142,7 +142,6 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "cloudfront:CreateDistribution",
       "cloudfront:CreateDistributionWithTags",
       "cloudfront:GetDistribution",
-      "cloudfront:ListDistributions",
       "cloudfront:GetDistributionConfig",
       "cloudfront:ListTagsForResource",
       "cloudfront:UpdateDistribution",

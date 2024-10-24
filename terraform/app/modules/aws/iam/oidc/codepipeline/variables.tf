@@ -28,6 +28,16 @@ variable "ci_cd_website_codepipeline_name" {
   type        = string
 }
 
+variable "sandbox_codepipeline_arn" {
+  description = "CodePipeline ARN of SandBox pipeline"
+  type        = string
+}
+
+variable "sandbox_codepipeline_name" {
+  description = "CodePipeline Name of SandBox pipeline"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to be attached to the resource"
   type        = map(any)
