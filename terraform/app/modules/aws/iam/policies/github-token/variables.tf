@@ -5,7 +5,7 @@ variable "secret_arn" {
 }
 
 variable "policy_name" {
-  description = "GitHub repository name. Must be 1-100 characters long and can contain alphanumeric characters, underscores, dots, and hyphens."
+  description = "Name of the IAM policy for GitHub token access."
   type        = string
   default     = "GitHubTokenSecretsAccessPolicy"
 }

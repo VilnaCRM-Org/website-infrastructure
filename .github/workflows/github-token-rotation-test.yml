@@ -13,9 +13,27 @@ jobs:
       contents: read
     steps:
       - name: Validate Environment Variables
+        env:  
+          VILNACRM_APP_ID: ${{ secrets.VILNACRM_APP_ID }}
+          VILNACRM_APP_PRIVATE_KEY: ${{ secrets.VILNACRM_APP_PRIVATE_KEY }}
         run: |
           if [ -z "${{ secrets.VILNACRM_APP_ID }}" ] || [ -z "${{ secrets.VILNACRM_APP_PRIVATE_KEY }}" ]; then
-            echo "Error: VILNACRM_APP_ID and VILNACRM_APP_PRIVATE_KEY must be set in secrets."
+            if [ -z "${{ secrets.VILNACRM_APP_ID }}" ]; then
+              echo "Error: VILNACRM_APP_ID is not set in secrets."
+            fi
+            if [ -z "${{ secrets.VILNACRM_APP_PRIVATE_KEY }}" ]; then
+              echo "Error: VILNACRM_APP_PRIVATE_KEY is not set in secrets."
+            fi
+          fi
+          
+          # Validate App ID format (should be numeric)
+          if ! [[ "${{ secrets.VILNACRM_APP_ID }}" =~ ^[0-9]+$ ]]; then
+            echo "Error: VILNACRM_APP_ID should be a numeric value."
+            exit 1
+          fi
+          # Validate private key format (should start with -----BEGIN)
+          if ! echo "${{ secrets.VILNACRM_APP_PRIVATE_KEY }}" | grep -q "^-----BEGIN"; then
+            echo "Error: VILNACRM_APP_PRIVATE_KEY should be in PEM format."
             exit 1
           fi
 
@@ -33,11 +51,24 @@ jobs:
             exit 1
           fi
 
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-    
+
       - name: Install PyJWT
         run: |
           pip3 install "PyJWT==2.8.0"
-          if ! python3 -c "import jwt; print(jwt.__version__)" &>/dev/null; then
+          installed_version=$(python3 -c "import jwt; print(jwt.__version__)" 2>/dev/null)
+          expected_version="2.8.0"
+          if [ -z "$installed_version" ]; then
             echo "Error: Failed to install PyJWT"
+            exit 1
+          elif [ "$installed_version" != "$expected_version" ]; then
+            echo "Error: Incorrect PyJWT version. Expected $expected_version, got $installed_version"
             exit 1
           fi
 
@@ -79,6 +110,6 @@ jobs:
           fi
 
           # Store the new token in AWS Secrets Manager
-          aws secretsmanager put-secret-value --secret-id "${SECRET_NAME}" --secret-string "${NEW_TOKEN}"
+          aws secretsmanager put-secret-value --secret-id "${SECRET_NAME}" --secret-string "${NEW_TOKEN}" --version-stage "AWSCURRENT"
 
           echo "GitHub token has been rotated and updated in AWS Secrets Manager."
