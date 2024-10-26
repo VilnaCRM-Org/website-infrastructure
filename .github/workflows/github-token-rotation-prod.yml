@@ -8,12 +8,13 @@ on:
 jobs:
   rotate-github-token:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       id-token: write
       contents: read
     steps:
       - name: Validate Environment Variables
-        env:  
+        env:
           VILNACRM_APP_ID: ${{ secrets.VILNACRM_APP_ID }}
           VILNACRM_APP_PRIVATE_KEY: ${{ secrets.VILNACRM_APP_PRIVATE_KEY }}
         run: |
@@ -24,8 +25,8 @@ jobs:
             if [ -z "${{ secrets.VILNACRM_APP_PRIVATE_KEY }}" ]; then
               echo "Error: VILNACRM_APP_PRIVATE_KEY is not set in secrets."
             fi
+            exit 1
           fi
-          
           # Validate App ID format (should be numeric)
           if ! [[ "${{ secrets.VILNACRM_APP_ID }}" =~ ^[0-9]+$ ]]; then
             echo "Error: VILNACRM_APP_ID should be a numeric value."
@@ -47,17 +48,10 @@ jobs:
       - name: Verify AWS credentials
         run: |
           if ! aws sts get-caller-identity &>/dev/null; then
-            echo "Error: Failed to configure AWS credentials"
+            echo "Error: Failed to configure AWS credentials. Details:"
+            aws sts get-caller-identity >&2
             exit 1
           fi
-
-      - name: Cache pip packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-    
 
       - name: Install PyJWT
         run: |
@@ -110,6 +104,18 @@ jobs:
           fi
 
           # Store the new token in AWS Secrets Manager
-          aws secretsmanager put-secret-value --secret-id "${SECRET_NAME}" --secret-string "${NEW_TOKEN}" --version-stage "AWSCURRENT"
+          if ! aws secretsmanager put-secret-value \
+            --secret-id "${SECRET_NAME}" \
+            --secret-string "${NEW_TOKEN}" \
+            --version-stage "AWSCURRENT"; then
+            echo "Error: Failed to update secret in AWS Secrets Manager"
+            exit 1
+          fi
+
+          # Verify the secret was updated
+          if ! aws secretsmanager describe-secret --secret-id "${SECRET_NAME}" >/dev/null 2>&1; then
+            echo "Error: Failed to verify secret update"
+            exit 1
+          fi
 
           echo "GitHub token has been rotated and updated in AWS Secrets Manager."
