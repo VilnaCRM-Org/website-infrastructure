@@ -1,5 +1,9 @@
 resource "aws_iam_role" "codepipeline_role_sandbox" {
-  name = "${var.project_name}-codepipeline-role-sandbox-deletion-${var.environment}"
+  name = "${var.project_name}${var.codepipeline_role_name_suffix}${var.environment}"
+  tags = {
+    Environment = var.environment
+    Purpose     = "sandbox-deletion"
+  }
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -15,8 +19,18 @@ resource "aws_iam_role" "codepipeline_role_sandbox" {
   })
 }
 
+variable "codepipeline_role_name_suffix" {
+  description = "Suffix for the CodePipeline role name"
+  type        = string
+  default     = "-codepipeline-role-sandbox-deletion-"
+}
+
 resource "aws_iam_role" "codebuild_role_sandbox" {
-  name = "${var.project_name}-codebuild-role-${var.environment}"
+  name = "${var.project_name}${var.codebuild_role_name_suffix}${var.environment}"
+  tags = {
+    Environment = var.environment
+    Purpose     = "sandbox-deletion"
+  }
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -30,4 +44,10 @@ resource "aws_iam_role" "codebuild_role_sandbox" {
       }
     ]
   })
+}
+
+variable "codebuild_role_name_suffix" {
+  description = "Suffix for the CodeBuild role name"
+  type        = string
+  default     = "-codebuild-role-sandbox-deletion-"
 }

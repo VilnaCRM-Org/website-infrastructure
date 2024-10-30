@@ -27,19 +27,19 @@ resource "aws_codepipeline" "sandbox_pipeline" {
     }
   }
 
-stage {
-  name = "Delete"
+  stage {
+    name = "Delete"
 
-  action {
-    name             = "Delete"
-    category         = "Build"
-    owner            = "AWS"
-    provider         = "CodeBuild"
-    version          = "1"
-    input_artifacts  = ["source_output"]
-    configuration = {
+    action {
+      name            = "Delete"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      version         = "1"
+      input_artifacts = ["source_output"]
+      configuration = {
         ProjectName = var.codebuild_project_name
       }
+    }
   }
-}
 }

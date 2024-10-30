@@ -16,7 +16,6 @@ resource "aws_s3_bucket" "access_logs_bucket" {
   tags          = var.tags
 }
 
-# Политики для ограничения публичного доступа для всех бакетов
 resource "aws_s3_bucket_public_access_block" "codepipeline_bucket" {
   bucket                  = aws_s3_bucket.codepipeline_bucket.id
   block_public_acls       = true
@@ -57,6 +56,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "access_logs_bucket" {
 
     expiration {
       days = 365
+    }
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
     }
   }
 }

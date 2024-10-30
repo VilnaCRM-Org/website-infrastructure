@@ -1,13 +1,23 @@
 version: 0.2
 
 phases:
-  install:
-    commands:
-      - echo "Listing files in the current directory:"
-      - ls -la
   build:
     commands:
       - chmod +x ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh
-      - echo "Run script"
-      - . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh
-      - echo "S3 bucket has been deleted."
+      - echo "Starting sandbox deletion for PR: ${CODEBUILD_SOURCE_VERSION}"
+      - |
+        if ! chmod +x ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh; then
+          echo "Failed to set execution permissions"
+          exit 1
+        fi
+      - echo "Starting sandbox deletion script..."
+      - |
+        if ! . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh; then
+          echo "Script execution failed"
+          exit 1
+        fi
+      - |
+        echo "Sandbox cleanup completed:"
+        echo "- PR: ${CODEBUILD_SOURCE_VERSION}"
+        echo "- Build: ${CODEBUILD_BUILD_ID}"
+        echo "- Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
