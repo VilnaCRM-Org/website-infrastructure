@@ -38,7 +38,7 @@ variable "buildspec_path" {
   description = "Path to the buildspec file in the repository"
   type        = string
   validation {
-    condition     = can(regex("^[\\w.-/]+\\.ya?ml$", var.buildspec_path))
+    condition     = can(regex("^[\\w.-/\\\\:]+\\.ya?ml$", var.buildspec_path))
     error_message = "Buildspec path must be a valid path to a YAML file (*.yml or *.yaml)"
   }
 }
@@ -55,10 +55,6 @@ variable "BRANCH_NAME" {
 variable "region" {
   description = "AWS region where resources will be created"
   type        = string
-  validation {
-    condition     = contains(data.aws_regions.available.names, var.region)
-    error_message = "Must be a valid AWS region name."
-  }
 }
 
 variable "logs_bucket_arn" {

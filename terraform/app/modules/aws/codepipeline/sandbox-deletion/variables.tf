@@ -20,8 +20,8 @@ variable "s3_bucket_name" {
   description = "Name of the S3 bucket for pipeline artifacts"
   type        = string
   validation {
-    condition     = can(regex("^[a-z0-9.-]{3,63}$", var.s3_bucket_name)) && !can(regex("[^a-z0-9.-]", var.s3_bucket_name)) && !startswith(var.s3_bucket_name, "-") && !endswith(var.s3_bucket_name, "-")
-    error_message = "S3 bucket name must be between 3 and 63 characters, contain only lowercase letters, numbers, dots, and hyphens, and cannot start or end with a hyphen."
+    condition     = can(regex("^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$", var.s3_bucket_name)) && !can(regex("\\.\\.", var.s3_bucket_name))
+    error_message = "S3 bucket name must be between 3 and 63 characters, start and end with a lowercase letter or number, contain only lowercase letters, numbers, dots, and hyphens, and cannot contain consecutive dots."
   }
 }
 
@@ -56,7 +56,7 @@ variable "source_repo_branch" {
   description = "Branch name to track in the GitHub repository"
   type        = string
   validation {
-    condition     = can(regex("^[a-zA-Z0-9_.-]+$", var.source_repo_branch))
+    condition     = can(regex("^[a-zA-Z0-9][a-zA-Z0-9/_.-]*[a-zA-Z0-9]$", var.source_repo_branch)) && !can(regex("\\.\\.", var.source_repo_branch))
     error_message = "Branch name must contain only alphanumeric characters, underscores, dots, and hyphens."
   }
 }
@@ -73,8 +73,4 @@ variable "codebuild_project_name" {
 variable "region" {
   description = "AWS region where resources will be created"
   type        = string
-  validation {
-    condition     = contains(data.aws_region.current.names, var.region)
-    error_message = "Must be a valid AWS region name (e.g., us-east-1, eu-west-1)."
-  }
 }

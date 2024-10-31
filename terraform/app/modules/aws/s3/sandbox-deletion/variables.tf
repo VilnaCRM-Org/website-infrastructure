@@ -8,7 +8,7 @@ variable "project_name" {
 }
 
 variable "environment" {
-  description = "The environment where sandbox deletion resources will be deployed (e.g., dev, staging, prod, test)"
+  description = "The deployment environment for sandbox deletion resources"
   type        = string
   validation {
     condition     = contains(["dev", "staging", "prod", "test"], var.environment)
@@ -19,8 +19,4 @@ variable "environment" {
 variable "tags" {
   description = "A map of tags to assign to AWS resources"
   type        = map(string)
-  validation {
-    condition     = var.tags == {} || length(var.tags) >= 0
-    error_message = "Tags must be a map and can be empty or contain any key-value pairs."
-  }
 }
