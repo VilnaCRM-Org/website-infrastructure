@@ -212,6 +212,10 @@ This documentation guides you through the configuration of a GitHub Actions work
 
 ```bash
 curl -s -X GET \
+  --connect-timeout 10 \
+  --max-time 30 \
+  --retry 3 \
+  --retry-delay 5 \
   -H "Authorization: Bearer ${GITHUB_TOKEN:?}" \
   -H "Accept: application/vnd.github.v3+json" \
   "https://api.github.com/app" | jq -e . >/dev/null 2>&1 || {
@@ -230,7 +234,7 @@ curl -s -X GET \
 
 ---
 
-### Security Best Practices
+# Security Best Practices
 
 ## Token Configuration and Best Practices
 
@@ -280,33 +284,39 @@ curl -s -X GET \
 
 **Consider the following security enhancements to further protect token rotation and usage**:
 
-1.  **Mandatory Audit Logging for Secrets Manager Operations:**:
-    Enable AWS CloudTrail Logging: AWS CloudTrail allows you to log all actions associated with managing secrets in AWS Secrets Manager. This logging helps identify suspicious activities and anomalies in the usage of secrets like GitHub tokens.
-    To enable CloudTrail, create or configure an existing trail in AWS and select the region where your Secrets Manager is located.
-    Retention Requirements: Make audit logging mandatory with a specific retention period. Ensure logs are retained for a minimum of 90 days (or according to organizational policies) to comply with regulatory requirements and support incident investigation.
+1. **Mandatory Audit Logging for Secrets Manager Operations**:
+   - **Enable AWS CloudTrail Logging**: AWS CloudTrail allows you to log all actions associated with managing secrets in AWS Secrets Manager. This logging helps identify suspicious activities and anomalies in the usage of secrets like GitHub tokens.
+   - **Retention Requirements**: Make audit logging mandatory with a specific retention period. Ensure logs are retained for a minimum of 90 days (or according to organizational policies) to comply with regulatory requirements and support incident investigation.
 
-2.  **Implement Token Usage Monitoring with AWS CloudWatch Metrics**:
-    Use AWS CloudWatch to set up metrics that track the usage of tokens in your GitHub Actions workflows. This can help detect unauthorized access attempts or unusual activity.
-    Configure CloudWatch to trigger alerts based on token-related events, such as usage frequency or successful and unsuccessful access attempts to Secrets Manager, allowing timely response to potential security threats.
+2. **Implement Token Usage Monitoring with AWS CloudWatch Metrics**:
+   - Use AWS CloudWatch to set up metrics that track the usage of tokens in your GitHub Actions workflows. This can help detect unauthorized access attempts or unusual activity.
+   - Configure CloudWatch to trigger alerts based on token-related events, such as usage frequency or successful and unsuccessful access attempts to Secrets Manager, allowing timely response to potential security threats.
 
-3.  **Add Rate Limiting Guidelines for Token Usage**:
-    To prevent API overload and unauthorized access, set rate limits for token usage, specifying the maximum number of requests within a given time frame.
-    Consider implementing these limits at the GitHub App level to ensure the tokens’ security and sustainable use within your workflows.
+3. **Add Rate Limiting Guidelines for Token Usage**:
+   - To prevent API overload and unauthorized access, set rate limits for token usage, specifying the maximum number of requests within a given time frame.
+   - Consider implementing these limits at the GitHub App level to ensure the tokens’ security and sustainable use within your workflows.
 
-4.  **Encryption Requirements for Token Storage in AWS Secrets Manager**:
-    AWS Secrets Manager provides encryption at rest by default, ensuring that tokens are securely stored. This default encryption is sufficient for most applications and does not require additional KMS setup.
-    Regularly verify that Secrets Manager's encryption configuration aligns with your organization’s security policies to ensure compliance and security best practices.
+4. **Encryption Requirements for Token Storage in AWS Secrets Manager**:
+   - AWS Secrets Manager provides encryption at rest by default, ensuring that tokens are securely stored. This default encryption is sufficient for most applications and does not require additional KMS setup.
+   - Regularly verify that Secrets Manager's encryption configuration aligns with your organization’s security policies to ensure compliance and security best practices.
 
-5.  **Access Control Policies for AWS Secrets Manager**:
-    Implement strict access control policies to limit who and what can access your tokens in Secrets Manager.
-    Use AWS Identity and Access Management (IAM) policies to define permissions for specific users, roles, or services, ensuring the principle of least privilege. Only authorized users and GitHub workflows should have access to retrieve tokens.
-    Regularly review and audit IAM policies and Secrets Manager access logs (using AWS CloudTrail) to detect and mitigate unauthorized access attempts.
-    Add IP-based access restrictions to enforce that tokens are accessed only from approved IP addresses, further securing token usage from unauthorized locations.
+5. **Access Control Policies for AWS Secrets Manager**:
+   - Implement strict access control policies to limit who and what can access your tokens in Secrets Manager.
+   - Use AWS Identity and Access Management (IAM) policies to define permissions for specific users, roles, or services, ensuring the principle of least privilege. Only authorized users and GitHub workflows should have access to retrieve tokens.
+   - Regularly review and audit IAM policies and Secrets Manager access logs (using AWS CloudTrail) to detect and mitigate unauthorized access attempts.
+   - Add IP-based access restrictions to enforce that tokens are accessed only from approved IP addresses, further securing token usage from unauthorized locations.
 
-6.  **Secure Storage Requirements for Token Backups**:
-    Store backup tokens securely, following encryption and access control best practices. It’s crucial to store backup tokens in restricted-access locations, such as AWS Secrets Manager, ensuring they are encrypted and protected by the same security policies as primary tokens.
-    Rotate backup tokens in sync with primary tokens, and maintain an audit trail of any backup token access to facilitate compliance and improve security oversight.
+6. **Secure Storage Requirements for Token Backups**:
+   - Store backup tokens securely, following encryption and access control best practices. It’s crucial to store backup tokens in restricted-access locations, such as AWS Secrets Manager, ensuring they are encrypted and protected by the same security policies as primary tokens.
+   - Rotate backup tokens in sync with primary tokens, and maintain an audit trail of any backup token access to facilitate compliance and improve security oversight.
 
+7. **Token Usage Quotas to Prevent Abuse**:
+   - Set specific usage quotas on tokens to prevent abuse and help ensure that tokens are only used within intended parameters.
+   - Define these quotas per token or workflow to limit the number of API requests and actions each token can perform.
+
+8. **IP Allowlisting for Token Usage**:
+   - Implement IP allowlisting for token usage to limit access to trusted IP addresses only.
+   - Enforce this restriction in AWS Secrets Manager or GitHub’s access control settings to enhance security against unauthorized access attempts from unapproved locations.
 ---
 
 ## Operational Considerations
@@ -319,9 +329,9 @@ Implement retries with specific exempt status codes to avoid excessive retries o
 jobs:
   rotate-token:
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
       - name: Rotate Token
-        uses: actions/github-script@v7
+        uses: actions/github-script@v7.0.1
         with:
           retries: 3
           retry-exempt-status-codes: 400,401,403,404,422
@@ -355,7 +365,10 @@ aws cloudwatch put-metric-alarm \
    --alarm-actions "${NOTIFICATION_SNS_TOPIC_ARN}" \
    --ok-actions "${NOTIFICATION_SNS_TOPIC_ARN}" \
    --insufficient-data-actions "${NOTIFICATION_SNS_TOPIC_ARN}" \
-  --alarm-description "Monitors GitHub token rotation failures in production environment"
+   --alarm-description "Monitors GitHub token rotation failures in production environment" || {
+     echo "Failed to create CloudWatch alarm: $?" >&2
+     exit 1
+   }
 ```
 
 ## Preventing Concurrent Execution
