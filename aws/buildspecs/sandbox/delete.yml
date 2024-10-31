@@ -3,8 +3,6 @@ version: 0.2
 phases:
   build:
     commands:
-      - chmod +x ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh
-      - echo "Starting sandbox deletion for PR: ${CODEBUILD_SOURCE_VERSION}"
       - |
         if ! chmod +x ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh; then
           echo "Failed to set execution permissions"

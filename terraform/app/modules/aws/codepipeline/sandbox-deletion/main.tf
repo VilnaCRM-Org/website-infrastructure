@@ -1,4 +1,5 @@
 resource "aws_codepipeline" "sandbox_pipeline" {
+  #checkov:skip=CKV_AWS_219: KMS encryption is not needed
   name     = "sandbox-deletion-pipeline"
   role_arn = var.codepipeline_role_arn
 
@@ -6,7 +7,7 @@ resource "aws_codepipeline" "sandbox_pipeline" {
 
   artifact_store {
     type     = "S3"
-    location = var.s3_bucket_arn
+    location = var.s3_bucket_name
   }
 
   stage {

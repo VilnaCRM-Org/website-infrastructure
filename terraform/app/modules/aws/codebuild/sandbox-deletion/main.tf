@@ -41,7 +41,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
 
     s3_logs {
       status   = "ENABLED"
-      location = var.logs_bucket_name
+      location = var.logs_bucket_arn
     }
   }
 

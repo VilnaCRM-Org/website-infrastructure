@@ -22,3 +22,8 @@ output "codebuild_logs_bucket_name" {
   description = "Name of the S3 bucket used for storing CodeBuild logs"
   value       = aws_s3_bucket.codebuild_logs_bucket.bucket
 }
+
+output "access_logs_bucket_name" {
+  description = "Name of the S3 bucket used for storing access logs"
+  value       = aws_s3_bucket.access_logs_bucket.bucket
+}
