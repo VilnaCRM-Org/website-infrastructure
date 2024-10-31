@@ -35,11 +35,14 @@ This documentation guides you through the configuration of a GitHub Actions work
 
    - Go to **Settings > Developer Settings > GitHub Apps** and select **New GitHub App**.
    - Fill out the required fields and configure permissions:
-     - **Administration**: Unnecessary, can be removed for security.
-     - **Metadata**: Read-only (essential for basic API access).
-     - **Contents**: Read-only (required for workflow operations).
-   - Generate and store a private key securely.
-   - Install the GitHub App on the intended repository.
+     - **Repository Permissions**:
+       - **Metadata**: Read-only (essential for basic API access).
+       - **Contents**: Read-only (required for workflow operations).
+     - **Organization Permissions**: None required.
+     - **User Permissions**: None required.
+   - Generate and store a private key securely:
+     - Recommended storage format is PEM, placed in **GitHub Secrets** and never in version control.
+     - Rotate the private key regularly and ensure updates are applied in GitHub Secrets.
 
 3. **Workflow Schedule Configuration**
 
@@ -47,67 +50,88 @@ This documentation guides you through the configuration of a GitHub Actions work
 
    - To modify the schedule, adjust the cron expression under `schedule` in the YAML file to your preferred rotation frequency.
 
+4. **Validation Steps Post-Setup**
+
+   - Run the workflow manually and confirm that it generates a new token and stores it in AWS Secrets Manager.
+   - Verify API access using the new token to ensure that all components are correctly configured.
+
 ---
 
 ## Testing and Verification Procedures
 
-### Testing Procedures for Sandbox Environment
+### Specific Test Scenarios
 
-1. **Set up a sandbox repository** to mimic the production environment.
-2. **Add test secrets and necessary permissions** to the sandbox environment.
-3. **Trigger the workflow manually** to observe the process in a controlled environment without affecting production.
+1. **Basic Token Rotation**
+   - Trigger manual rotation.
+   - Verify that the old token is revoked.
+   - Confirm the new token is active in AWS Secrets Manager.
 
-### Verification of Token Rotation
+2. **Permission Validation**
+   - Test repository access to confirm permissions are set correctly.
+   - Verify that the token respects API rate limits.
+   - Confirm scope restrictions and ensure no unauthorized access is granted.
 
-1. **Validate the new token** in AWS Secrets Manager to confirm successful rotation.
-2. **Verify GitHub App access** by querying the API endpoints to ensure the new token works as expected.
+3. **Error Handling**
+   - Test with intentionally incorrect permissions to observe error handling.
+   - Simulate AWS connectivity issues to verify rollback procedures.
+   - Confirm the workflow handles errors and logs them appropriately.
 
 ### Testing Token Permissions
 
 1. Perform a series of actions allowed by the token in a test environment.
 2. Ensure that the token’s permissions are scoped appropriately and that it has the **minimum required access** to perform its functions.
 
+### Step-by-Step Validation Commands
+
+- **Verify Token Rotation**: Use GitHub API to check the `app/installations` and `app/installations/{id}/access_tokens` endpoints.
+- **Confirm Token Permissions**: Test specific actions (e.g., accessing repository contents) to ensure the token’s scope is correctly restricted.
+
 ---
 
 ## Troubleshooting Guide
 
-### Common Issues and Solutions
+### Common Error Messages
 
-1. **Token Generation Failures**: 
-   - Ensure the GitHub App has sufficient permissions.
-   - Verify that the correct App ID and private key are in use.
+1. **"Resource not found" in AWS Secrets Manager**
+   - **Cause**: Incorrect region or secret name.
+   - **Solution**: Verify `AWS_REGION` and the secret’s path in Secrets Manager.
 
-2. **AWS Secrets Manager Errors**: 
-   - Check AWS permissions for the role in use.
-   - Ensure the correct `AWS_REGION` is set and the role ARN has the right policy for Secrets Manager access.
+2. **"Installation not found" from GitHub API**
+   - **Cause**: The GitHub App is not properly installed on the repository.
+   - **Solution**: Verify that the App is installed and has necessary permissions.
 
-### Debug Procedures
+3. **"Invalid private key" error**
+   - **Cause**: Malformed private key format.
+   - **Solution**: Ensure the private key is in proper PEM format without additional whitespace.
 
-- Use the `DEBUG` flag in the workflow for additional logging output.
-- Confirm AWS IAM role assumptions and permissions align with workflow requirements.
+### Debugging Commands and Log Analysis Guidance
+
+- **Debugging**: Set the `DEBUG` flag to true in the workflow to obtain detailed logs.
+- **Log Analysis**: Review workflow logs in GitHub Actions for any errors in token generation or API interactions.
 
 ---
 
 ## Security Best Practices
 
-### Token Usage and Expiration
+### Token Configuration and Best Practices
 
-- Configure tokens with appropriate expiration periods.
-- Set the workflow frequency in alignment with token expiration.
+- **Token Expiration**: Set token expiration to a maximum of 7 days to limit exposure.
+- **Required Permissions**: Limit token scopes to `metadata:read` and `contents:read`.
+- **Naming Conventions**: Name tokens with a clear structure (e.g., `github-rotation-token-<timestamp>`) for better audit trails.
 
-### Principle of Least Privilege
+### Compliance Requirements
 
-- Limit token permissions to the minimum required.
-- Remove unnecessary permissions, like **Administration: Read & Write**, as noted.
-
-### Audit Logging
-
-- Enable audit logging in AWS and GitHub to monitor token usage.
-- Regularly review access logs for any unusual activity.
+1. **SOC 2**: Ensure AWS Secrets Manager configurations align with SOC 2 requirements for secure secret storage.
+2. **GDPR Logging**: Enable audit logging for token usage to maintain compliance with GDPR.
+3. **Industry-Specific Compliance**: Regularly review your setup to ensure it aligns with any industry-specific standards applicable to your organization.
 
 ### Emergency Rotation Procedures
 
-- If a token is suspected to be compromised, trigger a **manual token rotation** and replace the compromised token in AWS Secrets Manager immediately.
+1. **Incident Response Plan**:
+   - Immediately trigger a manual token rotation if a compromise is suspected.
+   - Replace the compromised token in AWS Secrets Manager.
+2. **Communication Protocols**: Notify relevant security personnel and stakeholders.
+3. **Recovery Procedures**: Verify the new token’s functionality and perform additional testing to confirm stability.
 
 ---
 
@@ -115,22 +139,35 @@ This documentation guides you through the configuration of a GitHub Actions work
 
 ### Error Handling and Retry Strategy
 
-- Configure the workflow to automatically retry upon failures due to transient errors.
-- Use conditional steps to handle failures gracefully, ensuring no sensitive data is exposed.
+   Implement retries with specific exempt status codes to avoid excessive retries on certain errors.
+
+   ```yaml
+   jobs:
+     rotate-token:
+       steps:
+         - uses: actions/checkout@v2
+         - name: Rotate Token
+           uses: actions/github-script@v6
+           with:
+             retries: 3
+             retry-exempt-status-codes: 422,401
+
+   - Configure the workflow to automatically retry upon failures due to transient errors.
+   - Use conditional steps to handle failures gracefully, ensuring no sensitive data is exposed.
 
 ### Monitoring and Alerting Setup
 
-- Integrate alerts (e.g., using GitHub Actions or AWS CloudWatch) for failed rotations.
-- Set up notifications via Slack, email, or SMS to alert the security team about failures.
+   - Integrate alerts (e.g., using GitHub Actions or AWS CloudWatch) for failed rotations.
+   - Set up notifications via Slack, email, or SMS to alert the security team about failures.
 
 ### Preventing Concurrent Execution
 
-- Use a **mutex lock** or implement checks to prevent concurrent executions, avoiding race conditions during token updates.
+   - Use a **mutex lock** or implement checks to prevent concurrent executions, avoiding race conditions during token updates.
 
 ### Backup Procedures for Rotation Failures
 
-- Maintain a secure backup token as a contingency.
-- Regularly verify that backup tokens are rotated in sync with the primary rotation schedule.
+   - Maintain a secure backup token as a contingency.
+   - Regularly verify that backup tokens are rotated in sync with the primary rotation schedule.
 
 ---
 
