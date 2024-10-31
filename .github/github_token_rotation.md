@@ -38,7 +38,10 @@ This documentation guides you through the configuration of a GitHub Actions work
      - **Repository Permissions**:
        - **Metadata**: Read-only (essential for basic API access).
        - **Contents**: Read-only (required for workflow operations).
-     - **Organization Permissions**: None required.
+       - **Administration**: Read – Enables the app to manage repository settings, which may be useful for specific token-related configurations.
+       - **Actions**: Read – Allows the app to read GitHub Actions settings, enabling better integration with workflow-related processes.
+     - **Organization Permissions**:
+       - **Members**: Read – Necessary if the app needs to verify organization membership for additional security checks or access controls. 
      - **User Permissions**: None required.
    - Generate and store a private key securely:
      - Recommended storage format is PEM, placed in **GitHub Secrets** and never in version control.
@@ -55,6 +58,27 @@ This documentation guides you through the configuration of a GitHub Actions work
    - Run the workflow manually and confirm that it generates a new token and stores it in AWS Secrets Manager.
    - Verify API access using the new token to ensure that all components are correctly configured.
 
+   **Verify GitHub App Installation**
+
+   - Confirm that the GitHub App is correctly installed on the repository and configured to access necessary resources.
+
+        ```bash curl -X GET \
+      -H "Authorization: Bearer $GITHUB_TOKEN" \
+      -H "Accept: application/vnd.github.v3+json" \
+      "https://api.github.com/app/installations"
+      ```
+
+      - **Expected Response**: A JSON response listing the installations of the GitHub App, including repository details.
+      - **Validation**: Check that the installation includes the target repository.
+   
+   **Verify AWS Role Configuration**
+
+   - Confirm that the AWS role can be assumed correctly with the provided ARN.
+
+      ```bash aws sts get-caller-identity --role-arn $GITHUB_TOKEN_ROTATION_ROLE_TO_ASSUME_TEST```
+
+      - **Expected Response**: Caller identity details, verifying that the role is correctly configured and accessible.
+      - **Validation**: Ensure the response shows valid AWS account information, indicating that the role assumption was successful.
 ---
 
 ## Testing and Verification Procedures
@@ -109,6 +133,33 @@ This documentation guides you through the configuration of a GitHub Actions work
 - **Debugging**: Set the `DEBUG` flag to true in the workflow to obtain detailed logs.
 - **Log Analysis**: Review workflow logs in GitHub Actions for any errors in token generation or API interactions.
 
+- **AWS Secrets Manager Debugging**
+
+  Use the following command to check if the GitHub token is correctly stored in AWS Secrets Manager:
+
+```bash
+aws secretsmanager get-secret-value \
+  --secret-id github-token \
+  --query SecretString \
+  --output text 
+```
+
+   - **Expected Output**: The current GitHub token value stored in AWS Secrets Manager.
+   - **Validation**: Ensure the response contains a valid token string, which indicates that Secrets Manager is correctly storing and providing access to the token.
+
+- **GitHub API Debugging**
+
+   To confirm that the GitHub App is authorized and properly configured, use this command to retrieve the app details:
+
+```bash
+curl -v -X GET \
+  -H "Authorization: Bearer $GITHUB_TOKEN" \
+  "https://api.github.com/app"
+```
+
+   - **Expected Output**: JSON response containing details about the GitHub App, including id, name, and owner.
+   - **Validation**: Verify that the output includes accurate GitHub App information, confirming the app’s configuration and authentication status.
+
 ---
 
 ## Security Best Practices
@@ -133,6 +184,22 @@ This documentation guides you through the configuration of a GitHub Actions work
 2. **Communication Protocols**: Notify relevant security personnel and stakeholders.
 3. **Recovery Procedures**: Verify the new token’s functionality and perform additional testing to confirm stability.
 
+### Strengthening Security Configurations
+
+**Consider the following security enhancements to further protect token rotation and usage**:
+
+   1. **Enable AWS CloudTrail Logging for Secrets Manager Operations**:
+        AWS CloudTrail allows you to log all actions associated with managing secrets in AWS Secrets Manager. This logging helps identify suspicious activities and anomalies in the usage of secrets like GitHub tokens.
+        To enable CloudTrail, create or configure an existing trail in AWS and select the region where your Secrets Manager is located.
+
+   2. **Implement Token Usage Monitoring with AWS CloudWatch Metrics**:
+        Use AWS CloudWatch to set up metrics that track the usage of tokens in your GitHub Actions workflows. This can help detect unauthorized access attempts or unusual activity.
+        Configure CloudWatch to trigger alerts based on token-related events, such as usage frequency or successful and unsuccessful access attempts to Secrets Manager, allowing timely response to potential security threats.
+
+   3. **Add Rate Limiting Guidelines for Token Usage**:
+        To prevent API overload and unauthorized access, set rate limits for token usage, specifying the maximum number of requests within a given time frame.
+        Consider implementing these limits at the GitHub App level to ensure the tokens’ security and sustainable use within your workflows.
+
 ---
 
 ## Operational Considerations
@@ -145,12 +212,16 @@ This documentation guides you through the configuration of a GitHub Actions work
    jobs:
      rotate-token:
        steps:
-         - uses: actions/checkout@v2
+         - uses: actions/checkout@v4
          - name: Rotate Token
-           uses: actions/github-script@v6
+           uses: actions/github-script@v7
            with:
              retries: 3
              retry-exempt-status-codes: 422,401
+             retry-delay: exponential
+             base-delay: 1000
+             max-delay: 4000
+   ```
 
    - Configure the workflow to automatically retry upon failures due to transient errors.
    - Use conditional steps to handle failures gracefully, ensuring no sensitive data is exposed.
@@ -160,6 +231,20 @@ This documentation guides you through the configuration of a GitHub Actions work
    - Integrate alerts (e.g., using GitHub Actions or AWS CloudWatch) for failed rotations.
    - Set up notifications via Slack, email, or SMS to alert the security team about failures.
 
+   # CloudWatch Alarm example
+   ```bash
+   aws cloudwatch put-metric-alarm \
+     --alarm-name GithubTokenRotationFailure \
+     --metric-name FailedRotations \
+     --namespace GitHub/TokenRotation \
+     --statistic Sum \
+     --period 300 \
+     --evaluation-periods 1 \
+     --threshold 1 \
+     --comparison-operator GreaterThanThreshold \
+     --alarm-actions <SNS_TOPIC_ARN>
+   ```
+   
 ### Preventing Concurrent Execution
 
    - Use a **mutex lock** or implement checks to prevent concurrent executions, avoiding race conditions during token updates.
