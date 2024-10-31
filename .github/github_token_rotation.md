@@ -1,5 +1,15 @@
 # GitHub Token Rotation
 
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Setting Up GitHub Token Rotation Workflow](#setting-up-github-token-rotation-workflow)
+3. [Testing and Verification Procedures](#testing-and-verification-procedures)
+4. [Troubleshooting Guide](#troubleshooting-guide)
+5. [Security Best Practices](#security-best-practices)
+6. [Operational Considerations](#operational-considerations)
+
 ## Overview
 
 This documentation guides you through the configuration of a GitHub Actions workflow that automates the rotation of a GitHub token. The workflow uses a GitHub App to generate a new GitHub token and stores it securely in AWS Secrets Manager. It is designed to run on a weekly schedule or can be triggered manually. This setup ensures that sensitive tokens are regularly refreshed to maintain security best practices.
@@ -165,10 +175,15 @@ aws secretsmanager get-secret-value \
 
   To confirm that the GitHub App is authorized and properly configured, use this command to retrieve the app details:
 
+# Verify GitHub App configuration
 ```bash
-curl -v -X GET \
-  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-  "https://api.github.com/app"
+curl -s -X GET \
+  -H "Authorization: Bearer ${GITHUB_TOKEN:?}" \
+  -H "Accept: application/vnd.github.v3+json" \
+  "https://api.github.com/app" | jq -e . >/dev/null 2>&1 || {
+    echo "Error: Failed to verify GitHub App configuration" >&2
+    exit 1
+}
 ```
 
 - **Expected Output**: JSON response containing details about the GitHub App, including id, name, and owner.
