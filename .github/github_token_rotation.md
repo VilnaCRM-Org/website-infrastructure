@@ -1,6 +1,5 @@
 # GitHub Token Rotation
 
-
 ## Table of Contents
 
 1. [Overview](#overview)
@@ -57,6 +56,32 @@ This documentation guides you through the configuration of a GitHub Actions work
      - Recommended storage format is PEM, placed in **GitHub Secrets** and never in version control.
      - Rotate the private key regularly and ensure updates are applied in GitHub Secrets.
 
+   **Security Implications of Granting Permissions**
+
+      Each permission granted to a GitHub App extends its access to various parts of the repository or organization, so it’s essential to weigh these permissions carefully:
+
+      - **Metadata (Read-only)**: This is a minimal permission, providing basic information about the repository or organization. However, metadata can sometimes reveal sensitive project configurations or collaborator lists, so access should be granted only when necessary.
+
+      - **Contents (Read-only)**: This permission allows the GitHub App to read repository content, which could include proprietary code, configuration files, or workflow definitions. It’s essential to use this permission only when the app genuinely needs it for tasks like automation or CI/CD workflows.
+
+      - **Administration (Read)**: Enabling read access to repository settings lets the GitHub App view configurations but not modify them. However, it could expose critical settings or secrets related to the repository’s security and functionality.
+
+      - **Actions (Read)**: This allows the app to access GitHub Actions settings, workflows, and logs. While this aids in monitoring and workflow management, logs may contain sensitive data, including debugging information or output with environment variables.
+
+      - **Members (Read)**: This permission is used to verify organization membership, which is particularly useful for enforcing access controls. Still, membership lists reveal the structure of teams and roles, which could pose a risk if exposed improperly.
+
+   **Auditing Usage of Permissions**
+
+      To maintain oversight over the permissions and actions taken by the GitHub App:
+
+      - **Monitor GitHub Audit Logs**: The audit logs for your GitHub Organization or Repository will display actions taken by the GitHub App, including API requests and any access to repository content. This helps in tracking and verifying appropriate usage.
+
+      - **Use Security Overview**: GitHub provides a security overview at the organization level, summarizing GitHub Apps and OAuth Apps with access. Review it periodically to ensure that only required apps retain access.
+
+      - **Check GitHub App Settings**: Regularly review the app’s configured permissions to verify that they align with current needs and organizational policies. Ensure no unused or excessive permissions are granted.
+
+      - **Set Alerts for Anomalous Activity**: In case of suspicious or abnormal actions from the GitHub App, GitHub’s security settings allow admins to set alerts for specific events, which could signal potential misuse.
+
 3. **Workflow Schedule Configuration**
 
    This workflow is set to rotate the token every Sunday at midnight (0 0 \* \* 0) and can be manually triggered using `workflow_dispatch`.
@@ -72,17 +97,23 @@ This documentation guides you through the configuration of a GitHub Actions work
 
    - Confirm that the GitHub App is correctly installed on the repository and configured to access necessary resources.
 
-     ```bash +curl -X GET \
+   ```bash  
+   curl -X GET \
+     --max-time 30 \
+     --retry 3 \
+     --retry-delay 5 \
      -H "Authorization: Bearer ${GITHUB_TOKEN:?}" \
      -H "Accept: application/vnd.github.v3+json" \
      -s \
      -o /dev/null \
      -w "%{http_code}" \
      "https://api.github.com/app/installations" || {
-       echo "Failed to verify installation" >&2
+      echo "Failed to verify installation" >&2
+      echo "Failed to verify installation: $? (HTTP: %{http_code})" >&2
+      echo "Please check token permissions and network connectivity" >&2
        exit 1
       }
-     ```
+   ```
 
      - **Expected Response**: A JSON response listing the installations of the GitHub App, including repository details.
      - **Validation**: Check that the installation includes the target repository.
@@ -159,13 +190,18 @@ This documentation guides you through the configuration of a GitHub Actions work
   Use the following command to check if the GitHub token is correctly stored in AWS Secrets Manager:
 
 ```bash
-aws secretsmanager get-secret-value \
-   --secret-id github-token \
-   --query SecretString \
-   --output text 2>/dev/null || {
-       echo "Failed to retrieve secret" >&2
-       exit 1
-   } | grep -q "." && echo "Secret retrieved successfully"
+ aws secretsmanager get-secret-value \
+    --secret-id github-token \
+    --query SecretString \
+    --output text 2>/dev/null || {
+        echo "Failed to retrieve secret" >&2
+    --output text 2>&1 || {
+        echo "Error retrieving secret: $?" >&2
+        echo "Please verify AWS credentials and secret name" >&2
+         exit 1
+    } | grep -q "." && echo "Secret retrieved successfully"
+    } | jq -e 'length > 0' >/dev/null && \
+    echo "Secret retrieved successfully and validated"
 ```
 
 - **Expected Output**: The current GitHub token value stored in AWS Secrets Manager.
@@ -176,6 +212,7 @@ aws secretsmanager get-secret-value \
   To confirm that the GitHub App is authorized and properly configured, use this command to retrieve the app details:
 
 # Verify GitHub App configuration
+
 ```bash
 curl -s -X GET \
   -H "Authorization: Bearer ${GITHUB_TOKEN:?}" \
@@ -212,6 +249,26 @@ curl -s -X GET \
    - Replace the compromised token in AWS Secrets Manager.
 2. **Communication Protocols**: Notify relevant security personnel and stakeholders.
 3. **Recovery Procedures**: Verify the new token’s functionality and perform additional testing to confirm stability.
+
+---
+
+### Additional Steps
+
+#### Immediate Revocation of the Old Token
+- **Remove Access**: Revoke the old token immediately to prevent unauthorized access from potentially compromised credentials.
+- **AWS Secrets Update**: Ensure that the old token is fully removed from **AWS Secrets Manager** or any other secure storage location.
+
+#### Audit Log Analysis for Potential Misuse
+- **Examine Logs**: Conduct a thorough audit log review to identify any unauthorized or unusual activity associated with the compromised token.
+- **Investigate**: Pay special attention to any access patterns or actions that deviate from standard usage.
+
+#### Incident Documentation Requirements
+- **Detailed Incident Report**: Document the incident in detail, including suspected cause, timeline of actions taken, personnel involved, and the steps followed for token rotation.
+- **Lessons Learned**: Include any insights gained to improve future incident response and token security measures.
+
+#### Post-Incident Review Process
+- **Post-Mortem Analysis**: Hold a post-incident review to analyze the effectiveness of the response, identify potential gaps, and plan improvements.
+- **Update Security Policies**: Revise token management and security protocols based on findings, ensuring stronger preventive measures and faster response times.
 
 ## Strengthening Security Configurations
 
@@ -279,15 +336,20 @@ jobs:
 
 ```bash
 aws cloudwatch put-metric-alarm \
-  --alarm-name GithubTokenRotationFailure \
-  --metric-name FailedRotations \
-  --namespace GitHub/TokenRotation \
-  --statistic Sum \
-  --period 300 \
-  --evaluation-periods 1 \
-  --threshold 1 \
-  --comparison-operator GreaterThanThreshold \
+   --alarm-name GithubTokenRotationFailure \
+   --metric-name FailedRotations \
+   --namespace GitHub/TokenRotation \
+  --dimensions Name=Environment,Value=Production \
+   --statistic Sum \
+   --period 300 \
+   --evaluation-periods 1 \
+   --threshold 1 \
+   --comparison-operator GreaterThanThreshold \
   --alarm-actions <SNS_TOPIC_ARN>
+  --alarm-actions <SNS_TOPIC_ARN_HIGH_PRIORITY> \
+  --ok-actions <SNS_TOPIC_ARN_NORMAL> \
+  --insufficient-data-actions <SNS_TOPIC_ARN_WARNING> \
+  --alarm-description "Monitors GitHub token rotation failures in production environment"
 ```
 
 ## Preventing Concurrent Execution
