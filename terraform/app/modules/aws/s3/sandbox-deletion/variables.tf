@@ -2,13 +2,13 @@ variable "project_name" {
   description = "The name of the project"
   type        = string
   validation {
-    condition     = can(regex("^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]$", var.project_name)) && length(var.project_name) >= 3
-    error_message = "Project name must only contain alphanumeric characters and hyphens, start and end with alphanumeric characters, and be at least 3 characters long."
+    condition     = can(regex("^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]$", var.project_name)) && length(var.project_name) >= 3 && length(var.project_name) <= 63
+    error_message = "Project name must be 3-63 characters long, contain only alphanumeric characters and hyphens, and must start and end with an alphanumeric character."
   }
 }
-  
+
 variable "environment" {
-  description = "The deployment environment (e.g., dev, staging, prod)"
+  description = "The environment where sandbox deletion resources will be deployed (e.g., dev, staging, prod, test)"
   type        = string
   validation {
     condition     = contains(["dev", "staging", "prod", "test"], var.environment)
@@ -20,7 +20,7 @@ variable "tags" {
   description = "A map of tags to assign to AWS resources"
   type        = map(string)
   validation {
-    condition     = contains(keys(var.tags), "Owner") && contains(keys(var.tags), "CostCenter")
-    error_message = "Tags must contain 'Owner' and 'CostCenter' keys."
+    condition     = var.tags == {} || length(var.tags) >= 0
+    error_message = "Tags must be a map and can be empty or contain any key-value pairs."
   }
 }

@@ -29,27 +29,35 @@ variable "source_repo_name" {
   description = "Name of the GitHub repository"
   type        = string
   validation {
-    condition     = can(regex("^[a-zA-Z0-9._-]+$", var.source_repo_name))
-    error_message = "Repository name must contain only alphanumeric characters, periods, hyphens, and underscores"
+    condition     = can(regex("^[a-zA-Z0-9][a-zA-Z0-9._-]{0,98}[a-zA-Z0-9]$", var.source_repo_name)) && !endswith(var.source_repo_name, ".git")
+    error_message = "Source repository name must start and end with an alphanumeric character, be up to 100 characters long, contain only alphanumeric characters, dots, underscores, and hyphens, and must not end with '.git'."
   }
 }
 
 variable "buildspec_path" {
   description = "Path to the buildspec file in the repository"
   type        = string
+  validation {
+    condition     = can(regex("^[\\w.-/]+\\.ya?ml$", var.buildspec_path))
+    error_message = "Buildspec path must be a valid path to a YAML file (*.yml or *.yaml)"
+  }
 }
 
 variable "BRANCH_NAME" {
   description = "Git branch name for the sandbox environment"
   type        = string
+  validation {
+    condition     = can(regex("^[\\w.-]+(/[\\w.-]+)*$", var.BRANCH_NAME))
+    error_message = "Branch name must be a valid Git branch name (e.g., 'main', 'feature/new-sandbox', 'bugfix/issue-123')"
+  }
 }
 
 variable "region" {
   description = "AWS region where resources will be created"
   type        = string
   validation {
-    condition     = can(regex("^[a-z]{2}-[a-z]+-\\d{1}$", var.region))
-    error_message = "Region must be a valid AWS region identifier"
+    condition     = contains(data.aws_regions.available.names, var.region)
+    error_message = "Must be a valid AWS region name."
   }
 }
 
