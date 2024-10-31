@@ -4,4 +4,4 @@ tags = {
   Project     = "website"
   Environment = "test"
 }
-domain_name = "vilnacrmtest.com"
+domain_name = "itshost.site"

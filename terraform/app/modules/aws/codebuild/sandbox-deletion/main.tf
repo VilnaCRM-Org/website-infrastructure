@@ -3,7 +3,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
   service_role = var.codebuild_role_arn
 
   source {
-    type            = "GITHUB_ENTERPRISE"
+    type            = "GITHUB"
     location        = "${var.source_repo_owner}/${var.source_repo_name}"
     buildspec       = var.buildspec_path
     git_clone_depth = 1

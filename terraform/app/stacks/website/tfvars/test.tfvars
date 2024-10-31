@@ -4,8 +4,8 @@ tags = {
   Project     = "website"
   Environment = "test"
 }
-domain_name           = "vilnacrmtest.com"
-s3_bucket_custom_name = "vilnacrmtest.com"
+domain_name           = "itshost.site"
+s3_bucket_custom_name = "itshost.site"
 
 cloudfront_custom_error_responses = [
   {

@@ -192,26 +192,31 @@ variable "tags" {
 variable "SLACK_WORKSPACE_ID" {
   description = "Slack Workspace ID for Notifications"
   type        = string
+  default     = "T07E4PG83M3"
 }
 
 variable "CODEPIPELINE_SLACK_CHANNEL_ID" {
   description = "Slack Channel ID for CodePipeline notifications"
   type        = string
+  default     = "C07EA5BCEA0"
 }
 
 variable "CI_CD_ALERTS_SLACK_CHANNEL_ID" {
   description = "Slack Channel ID for CI/CD alerts"
   type        = string
+  default     = "C07E7LS2JPL"
 }
 
 variable "WEBSITE_ALERTS_SLACK_CHANNEL_ID" {
   description = "Slack Channel ID for website alerts"
   type        = string
+  default     = "C07E7HFR859"
 }
 
 variable "REPORT_SLACK_CHANNEL_ID" {
   description = "Slack Channel ID for Reports"
   type        = string
+  default     = "C07ELB7AKHP"
 }
 
 variable "buildspec_path" {
@@ -223,22 +228,25 @@ variable "buildspec_path" {
 variable "BRANCH_NAME" {
   description = "Name of the branch"
   type        = string
+  default     = "6-implement-sandbox-workflows"
 }
 
 variable "PR_NUMBER" {
   description = "Number of the pull request"
   type        = string
+  default     = "5"
 }
 
 variable "IS_PULL_REQUEST" {
   description = "Indicates if this is a pull request"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "sandbox_bucket_name" {
   description = "S3 Sandbox Bucket Name"
   type        = string
+  default     = "testing"
 }
 
 variable "github_token_secret_name" {

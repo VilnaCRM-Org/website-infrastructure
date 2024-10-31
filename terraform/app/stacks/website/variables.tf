@@ -76,11 +76,13 @@ variable "cloudwatch_log_group_retention_days" {
 variable "SLACK_WORKSPACE_ID" {
   description = "Slack Workspace ID for Notifications"
   type        = string
+  default     = "T07E4PG83M3"
 }
 
 variable "WEBSITE_ALERTS_SLACK_CHANNEL_ID" {
   description = "Slack Channel ID for Notifications"
   type        = string
+  default     = "C07E7HFR859"
 }
 
 variable "lambda_configuration" {

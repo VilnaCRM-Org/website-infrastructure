@@ -7,8 +7,8 @@ environment                = "test"
 github_connection_name     = "Github"
 source_repo_branch         = "3-implement-sandbox-infrastructure"
 website_repo_branch        = "main"
-website_url                = "vilnacrmtest.com"
-bucket_name                = "vilnacrmtest.com"
+website_url                = "itshost.site"
+bucket_name                = "itshost.site"
 
 tags = {
   Project     = "website-test"

@@ -24,7 +24,7 @@ module "codebuild_sandbox_deletion" {
   buildspec_path     = var.buildspec_path
   BRANCH_NAME        = var.BRANCH_NAME
   region             = var.region
-  logs_bucket_arn   = module.s3_buckets.codebuild_logs_bucket_arn
+  logs_bucket_arn    = module.s3_buckets.codebuild_logs_bucket_arn
 }
 
 module "codepipeline_sandbox_deletion" {
