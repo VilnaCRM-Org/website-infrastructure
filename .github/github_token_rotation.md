@@ -60,7 +60,7 @@ This documentation guides you through the configuration of a GitHub Actions work
 
    Each permission granted to a GitHub App extends its access to various parts of the repository or organization, so it’s essential to weigh these permissions carefully:
 
-   - **Metadata (Read-only)**: This is a minimal permission, providing basic information about the repository or organization. However, metadata can sometimes reveal sensitive project configurations or collaborator lists, so access should be granted only when necessary.
+   - **Metadata (Read-only)**: This is minimal permission, providing basic information about the repository or organization. However, metadata can sometimes reveal sensitive project configurations or collaborator lists, so access should be granted only when necessary.
 
    - **Contents (Read-only)**: This permission allows the GitHub App to read repository content, which could include proprietary code, configuration files, or workflow definitions. It’s essential to use this permission only when the app genuinely needs it for tasks like automation or CI/CD workflows.
 
@@ -190,15 +190,18 @@ This documentation guides you through the configuration of a GitHub Actions work
   Use the following command to check if the GitHub token is correctly stored in AWS Secrets Manager:
 
 ```bash
- aws secretsmanager get-secret-value \
-    --secret-id github-token \
-    --query SecretString \
-    --output text 2>&1 || {
-        echo "Failed to retrieve secret: $?" >&2
-        echo "Please verify AWS credentials and secret name" >&2
-        exit 1
-    } | jq -e 'length > 0' >/dev/null && \
-    echo "Secret retrieved successfully and validated"
+  aws secretsmanager get-secret-value \
+     --secret-id "${SECRET_ID:?}" \
+     --query SecretString \
+     --output text 2>&1 || {
+         echo "Failed to retrieve secret: $?" >&2
+         echo "Error: Failed to retrieve secret '${SECRET_ID}'. Please verify:" >&2
+         echo "  - AWS credentials are valid" >&2
+         echo "  - Secret name is correct" >&2
+         echo "  - You have necessary IAM permissions" >&2
+         exit 1
+     } | jq -e 'length > 0' >/dev/null && \
+     echo "Secret retrieved successfully and validated"
 ```
 
 - **Expected Output**: The current GitHub token value stored in AWS Secrets Manager.
@@ -256,6 +259,15 @@ curl -s -X GET \
 2. **Communication Protocols**: Notify relevant security personnel and stakeholders.
 3. **Recovery Procedures**: Verify the new token’s functionality and perform additional testing to confirm stability.
 
+## Enhanced Token Usage Guidelines
+
+- **Token Usage Monitoring Thresholds**:
+   - **API Rate Limits**: Set specific limits for API requests per hour to prevent abuse.
+   - **Concurrent Operations**: Define maximum thresholds for concurrent operations allowed with each token.
+   - **Maximum Token Lifetime**: Ensure tokens have a predefined maximum lifetime that aligns with organizational security standards.
+- **Token Rotation Guidelines**:
+   - Regularly rotate tokens, particularly when there are changes in team members or updates to repository access requirements.
+
 ---
 
 ### Additional Steps
@@ -292,7 +304,7 @@ curl -s -X GET \
    - Use AWS CloudWatch to set up metrics that track the usage of tokens in your GitHub Actions workflows. This can help detect unauthorized access attempts or unusual activity.
    - Configure CloudWatch to trigger alerts based on token-related events, such as usage frequency or successful and unsuccessful access attempts to Secrets Manager, allowing timely response to potential security threats.
 
-3. **Add Rate Limiting Guidelines for Token Usage**:
+3. **Add Rate-Limiting Guidelines for Token Usage**:
    - To prevent API overload and unauthorized access, set rate limits for token usage, specifying the maximum number of requests within a given time frame.
    - Consider implementing these limits at the GitHub App level to ensure the tokens’ security and sustainable use within your workflows.
 
@@ -353,22 +365,24 @@ jobs:
 
 ```bash
 aws cloudwatch put-metric-alarm \
-   --alarm-name GithubTokenRotationFailure \
-   --metric-name FailedRotations \
-   --namespace GitHub/TokenRotation \
-  --dimensions Name=Environment,Value=Production \
-   --statistic Sum \
-   --period 300 \
-   --evaluation-periods 1 \
-   --threshold 1 \
-   --comparison-operator GreaterThanThreshold \
-   --alarm-actions "${NOTIFICATION_SNS_TOPIC_ARN}" \
-   --ok-actions "${NOTIFICATION_SNS_TOPIC_ARN}" \
-   --insufficient-data-actions "${NOTIFICATION_SNS_TOPIC_ARN}" \
-   --alarm-description "Monitors GitHub token rotation failures in production environment" || {
-     echo "Failed to create CloudWatch alarm: $?" >&2
-     exit 1
-   }
+    --alarm-name GithubTokenRotationFailure \
+    --metric-name "${METRIC_NAME:-FailedRotations}" \
+    --namespace GitHub/TokenRotation \
+    --dimensions Name=Environment,Value="${ENVIRONMENT:?}" \
+    --statistic Sum \
+    --period "${EVALUATION_PERIOD:-300}" \
+    --evaluation-periods 1 \
+    --threshold 1 \
+    --comparison-operator GreaterThanThreshold \
+    --treat-missing-data missing \
+    --alarm-actions "${NOTIFICATION_SNS_TOPIC_ARN}" \
+    --ok-actions "${NOTIFICATION_SNS_TOPIC_ARN}" \
+    --insufficient-data-actions "${NOTIFICATION_SNS_TOPIC_ARN}" \
+    --alarm-description "Monitors GitHub token rotation failures in ${ENVIRONMENT} environment" || {
+      echo "Failed to create CloudWatch alarm: $?" >&2
+      echo "Please verify SNS topic ARN and IAM permissions" >&2
+      exit 1
+    }
 ```
 
 ## Preventing Concurrent Execution
@@ -382,4 +396,4 @@ aws cloudwatch put-metric-alarm \
 
 ---
 
-This enhanced workflow aligns permissions with the **principle of least privilege** and automates security compliance through regular, validated token rotations.
+This enhanced workflow aligns permissions with **the principle of least privilege** and automates security compliance through regular, validated token rotations.
