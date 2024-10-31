@@ -21,7 +21,6 @@ variable "s3_artifacts_bucket_files_deletion_days" {
 variable "sandbox_bucket_name" {
   description = "Name for SandBox bucket"
   type        = string
-  default     = "nikita"
 }
 
 variable "tags" {
