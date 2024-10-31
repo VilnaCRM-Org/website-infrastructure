@@ -38,7 +38,7 @@ variable "buildspec_path" {
   description = "Path to the buildspec file in the repository"
   type        = string
   validation {
-    condition     = can(regex("^[\\w.-/]+\\.ya?ml$", var.buildspec_path))
+    condition     = can(regex("^(?:[\\w-]+/)*[\\w-]+\\.ya?ml$", var.buildspec_path))
     error_message = "Buildspec path must be a valid path to a YAML file (*.yml or *.yaml)"
   }
 }
