@@ -20,8 +20,7 @@ resource "aws_iam_policy" "codepipeline_policy" {
           "codebuild:BatchGetBuilds"
         ],
         Resource = [
-          "arn:aws:codepipeline:${var.region}:${var.account_id}:${var.project_name}-*",
-          "arn:aws:codepipeline:${var.region}:${var.account_id}:${var.project_name}-codepipeline-role-sandbox-deletion-${var.environment}",
+          "arn:aws:codepipeline:${var.region}:${var.account_id}:${var.project_name}-sandbox-deletion-${var.environment}",
           "arn:aws:codebuild:${var.region}:${var.account_id}:project/sandbox-${var.environment}-deletion"
         ]
       },
@@ -73,7 +72,7 @@ resource "aws_iam_policy" "codebuild_policy" {
           "codebuild:BatchGetProjects"
         ],
         Resource = [
-          "arn:aws:codebuild:${var.region}:${var.account_id}:project/${var.project_name}-*",
+          "arn:aws:codebuild:${var.region}:${var.account_id}:project/sandbox-${var.environment}-deletion",
           "arn:aws:codepipeline:${var.region}:${var.account_id}:${var.project_name}-codepipeline-role-sandbox-deletion-${var.environment}"
         ]
       },
