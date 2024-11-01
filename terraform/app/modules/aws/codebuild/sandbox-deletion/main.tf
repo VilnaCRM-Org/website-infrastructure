@@ -3,8 +3,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
   service_role = var.codebuild_role_arn
 
   source {
-    type            = "GITHUB"
-    location        = "${var.source_repo_owner}/${var.source_repo_name}"
+    type            = "CODEPIPELINE"
     buildspec       = var.buildspec_path
     git_clone_depth = 1
   }
@@ -29,7 +28,7 @@ resource "aws_codebuild_project" "sandbox_deletion" {
   }
 
   artifacts {
-    type = "NO_ARTIFACTS"
+    type = "CODEPIPELINE"
   }
 
   logs_config {

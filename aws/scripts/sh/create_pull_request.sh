@@ -16,8 +16,6 @@
 # Outputs:
 #   - A pull request comment with a link to the latest version of the project.
 
-set -euo pipefail
-
 # Validate required environment variables
 for var in IS_PULL_REQUEST GITHUB_TOKEN PR_NUMBER GITHUB_REPOSITORY PROJECT_NAME BRANCH_NAME AWS_DEFAULT_REGION; do
     if [ -z "${!var}" ]; then
