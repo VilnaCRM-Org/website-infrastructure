@@ -38,12 +38,16 @@ variable "codestar_connection_arn" {
   description = "CodeStar connection ARN"
   type        = string
   validation {
-    condition     = can(regex("^arn:aws:codestar-connections:[a-z]{2}-[a-z]+-\\d{1}:\\d{12}:connection/[a-zA-Z0-9-]+$", var.codestar_connection_arn))
-    error_message = "Invalid CodeStar connection ARN format"
+    condition     = can(regex("^arn:aws:codeconnections:[\\w-]+:\\d{12}:connection/[\\w-]+$", var.codestar_connection_arn))
+    error_message = "The ARN format is invalid. It must be a valid CodeStar connection ARN."
   }
 }
 
 variable "BRANCH_NAME" {
   description = "Name of the branch"
   type        = string
+  validation {
+    condition     = can(regex("^[\\w.-]+(/[\\w.-]+)*$", var.BRANCH_NAME))
+    error_message = "Branch name must be a valid Git branch name (e.g., 'main', 'feature/new-sandbox', 'bugfix/issue-123')"
+  }
 }

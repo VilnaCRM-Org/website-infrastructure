@@ -29,8 +29,8 @@ variable "codestar_connection_arn" {
   description = "ARN of the CodeStar connection for GitHub access"
   type        = string
   validation {
-    condition     = can(regex("^arn:aws:codestar-connections:[a-zA-Z0-9-]+:[0-9]{12}:connection/[a-zA-Z0-9-]+$", var.codestar_connection_arn))
-    error_message = "CodeStar connection ARN must be in the format arn:aws:codestar-connections:REGION:ACCOUNT_ID:connection/CONNECTION_ID."
+    condition     = can(regex("^arn:aws:codeconnections:[\\w-]+:\\d{12}:connection/[\\w-]+$", var.codestar_connection_arn))
+    error_message = "The ARN format is invalid. It must be a valid CodeStar connection ARN."
   }
 }
 
@@ -38,7 +38,7 @@ variable "source_repo_owner" {
   description = "Owner (user/organization) of the GitHub repository"
   type        = string
   validation {
-    condition     = can(regex("^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$", var.source_repo_owner))
+    condition     = can(regex("^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$", var.source_repo_owner))
     error_message = "GitHub owner must follow GitHub username requirements"
   }
 }

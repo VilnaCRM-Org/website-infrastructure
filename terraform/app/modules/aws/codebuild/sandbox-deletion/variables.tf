@@ -20,7 +20,7 @@ variable "source_repo_owner" {
   description = "Owner (user/organization) of the GitHub repository"
   type        = string
   validation {
-    condition     = can(regex("^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$", var.source_repo_owner))
+    condition     = can(regex("^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$", var.source_repo_owner))
     error_message = "GitHub owner must follow GitHub username requirements"
   }
 }
@@ -38,7 +38,7 @@ variable "buildspec_path" {
   description = "Path to the buildspec file in the repository"
   type        = string
   validation {
-    condition     = can(regex("^(?:[\\w-]+/)*[\\w-]+\\.ya?ml$", var.buildspec_path))
+    condition     = can(regex("^(?:\\./)?(?:[\\w-]+/)*[\\w-]+\\.ya?ml$", var.buildspec_path))
     error_message = "Buildspec path must be a valid path to a YAML file (*.yml or *.yaml)"
   }
 }
