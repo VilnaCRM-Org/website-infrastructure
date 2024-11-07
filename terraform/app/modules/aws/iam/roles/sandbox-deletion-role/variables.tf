@@ -53,6 +53,10 @@ variable "BRANCH_NAME" {
 }
 
 variable "kms_key_arn" {
-  description = "KMS key ARN"
+  description = "ARN of the KMS key used for encryption"
   type        = string
+  validation {
+    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:\\d{12}:key/[a-f0-9-]+$", var.kms_key_arn))
+    error_message = "The ARN format is invalid. It must be a valid KMS key ARN."
+  }
 }

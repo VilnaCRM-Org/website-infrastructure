@@ -165,7 +165,7 @@ variable "s3_logs_lifecycle_configuration" {
 }
 
 variable "cloudwatch_log_group_retention_days" {
-  description = "Retention time of CloudWatch log group logs"
+  description = "Retention time of CloudWatch Log Group logs"
   type        = number
 }
 
@@ -180,12 +180,12 @@ variable "lambda_reserved_concurrent_executions" {
 }
 
 variable "dynamodb_table_name" {
-  description = "Dynamodb table name for logs"
+  description = "DynamoDB table name for logs"
   type        = string
 }
 
 variable "create_slack_notification" {
-  description = "Responsible for creating Slack Notifications"
+  description = "Responsible for creating Slack notifications"
   type        = string
 }
 
@@ -217,12 +217,6 @@ variable "WEBSITE_ALERTS_SLACK_CHANNEL_ID" {
 variable "REPORT_SLACK_CHANNEL_ID" {
   description = "Slack Channel ID for Reports"
   type        = string
-}
-
-variable "buildspec_path" {
-  description = "Path to the buildspec file for the CodeBuild project"
-  type        = string
-  default     = "./aws/buildspecs/sandbox/delete.yml"
 }
 
 variable "BRANCH_NAME" {
