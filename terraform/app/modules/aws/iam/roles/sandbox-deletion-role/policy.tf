@@ -21,7 +21,8 @@ resource "aws_iam_policy" "codepipeline_policy" {
         ],
         Resource = [
           "arn:aws:codepipeline:${var.region}:${var.account_id}:${var.project_name}-sandbox-deletion-${var.environment}",
-          "arn:aws:codebuild:${var.region}:${var.account_id}:project/sandbox-${var.environment}-deletion"
+          "arn:aws:codebuild:${var.region}:${var.account_id}:project/sandbox-${var.environment}-delete",
+          "arn:aws:codepipeline:${var.region}:${var.account_id}:${var.project_name}-codepipeline-role-sandbox-deletion-${var.environment}"
         ]
       },
       {
@@ -50,6 +51,16 @@ resource "aws_iam_policy" "codepipeline_policy" {
           "arn:aws:s3:::sandbox-${var.environment}-${var.BRANCH_NAME}",
           "arn:aws:s3:::sandbox-${var.environment}-${var.BRANCH_NAME}/*"
         ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "kms:GenerateDataKey*",
+          "kms:Decrypt",
+        ],
+        Resource = [
+          "${var.kms_key_arn}"
+        ]
       }
     ]
   })
@@ -72,7 +83,7 @@ resource "aws_iam_policy" "codebuild_policy" {
           "codebuild:BatchGetProjects"
         ],
         Resource = [
-          "arn:aws:codebuild:${var.region}:${var.account_id}:project/sandbox-${var.environment}-deletion",
+          "arn:aws:codebuild:${var.region}:${var.account_id}:project/sandbox-${var.environment}-delete",
           "arn:aws:codepipeline:${var.region}:${var.account_id}:${var.project_name}-codepipeline-role-sandbox-deletion-${var.environment}"
         ]
       },
@@ -84,7 +95,7 @@ resource "aws_iam_policy" "codebuild_policy" {
           "logs:PutLogEvents"
         ],
         Resource = [
-          "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/codebuild/sandbox-${var.environment}-deletion:*"
+          "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/codebuild/sandbox-${var.environment}-delete:*"
         ]
       },
       {
@@ -114,6 +125,16 @@ resource "aws_iam_policy" "codebuild_policy" {
         ],
         Resource = [
           "${var.codestar_connection_arn}"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "kms:GenerateDataKey*",
+          "kms:Decrypt",
+        ],
+        Resource = [
+          "${var.kms_key_arn}"
         ]
       }
     ]

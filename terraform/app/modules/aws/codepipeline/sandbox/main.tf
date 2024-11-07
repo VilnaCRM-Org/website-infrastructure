@@ -1,5 +1,5 @@
 resource "aws_codepipeline" "pipeline" {
-  name     = "${var.project_name}-pipeline"
+  name     = var.codepipeline_name
   role_arn = var.codepipeline_role_arn
   tags     = var.tags
 

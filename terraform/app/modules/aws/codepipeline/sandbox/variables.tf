@@ -3,6 +3,11 @@ variable "project_name" {
   type        = string
 }
 
+variable "codepipeline_name" {
+  description = "Unique name for this CodePipeline"
+  type        = string
+}
+
 variable "source_repo_owner" {
   description = "Source repo owner of the GitHub repository"
   type        = string

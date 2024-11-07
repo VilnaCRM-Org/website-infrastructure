@@ -124,6 +124,11 @@ variable "sandbox_stage_input" {
   type        = list(map(string))
 }
 
+variable "sandbox_deletion_stage_input" {
+  description = "List of maps containing information about the stages of the Sandbox CodePipeline"
+  type        = list(map(string))
+}
+
 variable "ci_cd_website_stage_input" {
   description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
   type        = list(map(string))

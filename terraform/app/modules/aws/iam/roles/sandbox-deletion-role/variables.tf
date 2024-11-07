@@ -51,3 +51,8 @@ variable "BRANCH_NAME" {
     error_message = "Branch name must be a valid Git branch name (e.g., 'main', 'feature/new-sandbox', 'bugfix/issue-123')"
   }
 }
+
+variable "kms_key_arn" {
+  description = "KMS key ARN"
+  type        = string
+}

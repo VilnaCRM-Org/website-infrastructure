@@ -72,6 +72,8 @@ module "sandbox_codebuild" {
 module "sandbox_codepipeline" {
   source = "../../modules/aws/codepipeline/sandbox"
 
+  codepipeline_name = "${local.project_name}-pipeline"
+
   project_name = local.project_name
 
   source_repo_owner  = var.source_repo_owner

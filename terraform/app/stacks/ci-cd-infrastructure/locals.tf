@@ -291,4 +291,18 @@ locals {
       },
     { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/deploy.yml" })
   }
+
+  sandbox_delete_projects = {
+    delete = merge(
+      local.amazonlinux2_based_build,
+      {
+        project_name = "${var.project_name}-delete"
+        env_variables = {
+          "PROJECT_NAME"       = var.sandbox_project_name,
+          "BRANCH_NAME"        = var.BRANCH_NAME
+          "AWS_DEFAULT_REGION" = var.region
+        }
+      },
+    { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/delete.yml" })
+  }
 }
