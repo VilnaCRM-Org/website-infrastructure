@@ -66,5 +66,5 @@ module "codepipeline_sandbox_deletion" {
 
   tags = var.tags
 
-  depends_on = [module.s3_buckets, module.codebuild_sandbox_deletion]
+  depends_on = [module.s3_buckets, module.codebuild_sandbox_deletion, module.iam_roles]
 }
