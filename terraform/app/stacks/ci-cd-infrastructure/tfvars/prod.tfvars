@@ -42,5 +42,5 @@ sandbox_stage_input = [
 ]
 
 sandbox_deletion_stage_input = [
-  { name = "delete", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "DeleteOutput" }
+  { name = "delete", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "DeleteOutput" },
 ]
