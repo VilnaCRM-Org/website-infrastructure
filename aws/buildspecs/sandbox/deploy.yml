@@ -12,8 +12,6 @@ phases:
 
   build:
     commands:
-      - 'echo #### Fetching GitHub token from Secrets Manager'
-      - 'export GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text)'
       - 'echo #### Build Project'
       - 'make build'
       - 'echo #### Deploy Project'

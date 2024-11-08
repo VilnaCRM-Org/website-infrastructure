@@ -31,7 +31,7 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
 
     # Authenticate with GitHub
     echo "Authenticating with GitHub..."
-    if ! echo "$GITHUB_TOKEN" | gh auth login --with-token; then
+    if ! aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text | gh auth login --with-token; then
         echo "GitHub authentication failed. Please ensure the GITHUB_TOKEN has the required permissions."
         exit 1
     fi
