@@ -5,10 +5,11 @@ phases:
     runtime-versions:
       nodejs: $NODEJS_VERSION
     commands:
+      - '[ -n "$NODEJS_VERSION" ] || { echo "NODEJS_VERSION is not set"; exit 1; }'
       - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh'
       - 'cd ${WEBSITE_DIR:-/codebuild-user/website}'
       - 'sudo apt update'
-      - 'sudo apt install gh -y'
+      - 'sudo apt install gh -y || { echo "Failed to install GitHub CLI"; exit 1; }'
 
   build:
     commands:
