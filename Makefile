@@ -1,18 +1,18 @@
 # Executables: local only
 DOCKER_COMPOSE = docker compose -f docker/docker-compose.yml run --rm
 DOCKER         = docker
-MAKE 		   = make
-BUNDLE		   = bundle
-CD 	           = cd
-TERRAFORM 	   = terraform
-TERRASPACE	   = terraspace
-TFENV		   = tfenv
-GIT 		   = git
-ECHO 		   = echo
-CURL		   = curl
-CHMOD		   = chmod
-EXPORT 		   = export
-RM 		   = rm
+MAKE           = make
+BUNDLE         = bundle
+CD             = cd
+TERRAFORM      = terraform
+TERRASPACE     = terraspace
+TFENV          = tfenv
+GIT            = git
+ECHO           = echo
+CURL           = curl
+CHMOD          = chmod
+EXPORT         = export
+RM             = rm
 
 # Misc
 .DEFAULT_GOAL = help
@@ -34,7 +34,7 @@ help:
 terraform: ## Terraform enables you to safely and predictably create, change, and improve infrastructure.
 	${DOCKER_COMPOSE} terraform "$1"
 
-tf-fmt: # Format terraform code recursively.
+tf-fmt: ## Format terraform code recursively.
 	$(TERRAFORM) fmt --recursive
 
 terraform-compliance: ## Terraform compliance is a security and compliance focused test framework.
@@ -52,19 +52,21 @@ codebuild-local-set-up: ## Setting up CodeBuild Agent for testing buildspecs loc
 codebuild-run: ## Runnig CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'
 	./codebuild_build.sh -i $(image) -d -a codebuild_artifacts -b $(buildspec) -e .env
 
+TERRAFORM_VERSION ?= 1.4.7
+
 install-terraspace: ## Install terraspace locally.
-	$(ECHO) "## Install OpenTofu"
+	@$(ECHO) "## Install OpenTofu"
 	$(CURL) --proto "=https" --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
 	$(CHMOD) +x install-opentofu.sh
-	./install-opentofu.sh --install-method rpm
+	./install-opentofu.sh --install-method rpm || { @$(ECHO) "Failed to install OpenTofu" && exit 1; }
 	$(RM) install-opentofu.sh
-	$(ECHO) "## Install Terraform"
+	@$(ECHO) "## Install Terraform"
 	$(GIT) clone https://github.com/tfutils/tfenv.git ~/.tfenv
-	$(ECHO) $(export PATH="$HOME/.tfenv/bin:$PATH") >>~/.bash_profile
+	$(ECHO) 'export PATH="$$HOME/.tfenv/bin:$$PATH"' >>~/.bash_profile
 	$(EXPORT) PATH="$HOME/.tfenv/bin:$PATH"
 	$(TFENV) install 1.4.7
-	$(TFENV) use 1.4.7
-	$(BUNDLE) install --gemfile $(.TERRAFORM_DIR)/Gemfile
+	$(TFENV) install $(TERRAFORM_VERSION) || { @$(ECHO) "Failed to install Terraform" && exit 1; }
+	$(TFENV) use $(TERRAFORM_VERSION)
 
 # Terraspace All
 
