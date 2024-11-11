@@ -3,7 +3,7 @@ DOCKER_COMPOSE = docker compose -f docker/docker-compose.yml run --rm
 DOCKER         = docker
 MAKE 		   = make
 BUNDLE		   = bundle
-CD 			   = cd
+CD 	           = cd
 TERRAFORM 	   = terraform
 TERRASPACE	   = terraspace
 TFENV		   = tfenv
@@ -12,7 +12,7 @@ ECHO 		   = echo
 CURL		   = curl
 CHMOD		   = chmod
 EXPORT 		   = export
-RM 			   = rm
+RM 		   = rm
 
 # Misc
 .DEFAULT_GOAL = help
