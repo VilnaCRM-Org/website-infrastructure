@@ -11,8 +11,8 @@ variable "environment" {
   description = "The deployment environment for sandbox deletion resources"
   type        = string
   validation {
-    condition     = contains(["dev", "staging", "prod", "test"], var.environment)
-    error_message = "Environment must be one of: dev, staging, prod, test."
+    condition     = contains(["prod", "test"], var.environment)
+    error_message = "Environment must be one of: prod, test."
   }
 }
 
