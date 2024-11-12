@@ -4,9 +4,11 @@ DOCKER         = docker
 MAKE           = make
 BUNDLE         = bundle
 CD             = cd
+# Terraform and related tools
 TERRAFORM      = terraform
 TERRASPACE     = terraspace
 TFENV          = tfenv
+# Common system commands
 GIT            = git
 ECHO           = echo
 CURL           = curl
@@ -46,8 +48,10 @@ terraspace: ## Terraspace is a terraform framework.
 codebuild-local-set-up: ## Setting up CodeBuild Agent for testing buildspecs locally
 	$(DOCKER) pull public.ecr.aws/codebuild/amazonlinux2-x86_64-standard:5.0
 	$(DOCKER) pull public.ecr.aws/codebuild/local-builds:latest
-	$(CURL) -O https://raw.githubusercontent.com/aws/aws-codebuild-docker-images/master/local_builds/codebuild_build.sh
-	$(CHMOD) +x codebuild_build.sh
+	@$(CURL) -f -O https://raw.githubusercontent.com/aws/aws-codebuild-docker-images/master/local_builds/codebuild_build.sh || \
+		{ echo "Failed to download codebuild_build.sh" >&2; exit 1; }
+	@$(CHMOD) +x codebuild_build.sh || \
+		{ echo "Failed to set executable permissions" >&2; $(RM) -f codebuild_build.sh; exit 1; }
 
 codebuild-run: ## Runnig CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'
 	./codebuild_build.sh -i $(image) -d -a codebuild_artifacts -b $(buildspec) -e .env
@@ -58,14 +62,13 @@ install-terraspace: ## Install terraspace locally.
 	@$(ECHO) "## Install OpenTofu"
 	$(CURL) --proto "=https" --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
 	$(CHMOD) +x install-opentofu.sh
-	./install-opentofu.sh --install-method rpm || { @$(ECHO) "Failed to install OpenTofu" && exit 1; }
+	./install-opentofu.sh --install-method rpm || { $(ECHO) "Failed to install OpenTofu" && exit 1; }
 	$(RM) install-opentofu.sh
 	@$(ECHO) "## Install Terraform"
 	$(GIT) clone https://github.com/tfutils/tfenv.git ~/.tfenv
 	$(ECHO) 'export PATH="$$HOME/.tfenv/bin:$$PATH"' >>~/.bash_profile
 	$(EXPORT) PATH="$HOME/.tfenv/bin:$PATH"
-	$(TFENV) install 1.4.7
-	$(TFENV) install $(TERRAFORM_VERSION) || { @$(ECHO) "Failed to install Terraform" && exit 1; }
+	$(TFENV) install $(TERRAFORM_VERSION) || { $(ECHO) "Failed to install Terraform" && exit 1; }
 	$(TFENV) use $(TERRAFORM_VERSION)
 
 # Terraspace All
