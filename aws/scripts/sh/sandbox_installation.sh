@@ -11,6 +11,6 @@ git clone -b "$BRANCH_NAME" "$WEBSITE_GIT_REPOSITORY_LINK.git" /codebuild-user/w
 }
 cd /codebuild-user/website/ || exit 1
 echo #### Install pnpm
-npm install -g pnpm
+npm install -g pnpm || { echo "Error: Failed to install pnpm" >&2; exit 1; }
 echo #### Install dependencies
 make install
