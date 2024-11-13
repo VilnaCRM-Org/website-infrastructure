@@ -1,7 +1,7 @@
-project_name = "sandbox-prod"
+project_name = "vilnacrm"
 
 environment = "prod"
+
 tags = {
-  Project     = "Sandbox"
   Environment = "prod"
 }
