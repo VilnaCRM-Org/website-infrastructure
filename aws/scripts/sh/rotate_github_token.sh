@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # Check required environment variables
-: "${GITHUB_APP_ID:?Need to set GITHUB_APP_ID}"
-: "${GITHUB_PRIVATE_KEY:?Need to set GITHUB_PRIVATE_KEY}"
+: "${VILNACRM_APP_ID:?Need to set VILNACRM_APP_ID}"
+: "${VILNACRM_APP_PRIVATE_KEY:?Need to set VILNACRM_APP_PRIVATE_KEY}"
 : "${SECRET_NAME:?Need to set SECRET_NAME}"
 
 echo "Generating new GitHub token..."

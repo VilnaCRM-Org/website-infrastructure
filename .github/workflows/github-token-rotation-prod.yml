@@ -7,7 +7,7 @@ on:
 
 jobs:
   rotate-github-token:
-    concurrency: 
+    concurrency:
       group: github-token-rotation
       cancel-in-progress: false
     runs-on: ubuntu-latest
@@ -36,8 +36,12 @@ jobs:
             exit 1
           fi
           # Validate private key format (should start with -----BEGIN)
-          if ! echo "$VILNACRM_APP_PRIVATE_KEY" | grep -q "^-----BEGIN"; then
+          if ! echo "$VILNACRM_APP_PRIVATE_KEY" | grep -qE '^-----BEGIN .+ PRIVATE KEY-----$'; then
             echo "Error: Invalid format for VILNACRM_APP_PRIVATE_KEY."
+            exit 1
+          fi
+          if ! echo "$VILNACRM_APP_PRIVATE_KEY" | grep -q "-----END .* PRIVATE KEY-----$"; then
+            echo "Error: Invalid format for VILNACRM_APP_PRIVATE_KEY (missing END marker)."
             exit 1
           fi
 
