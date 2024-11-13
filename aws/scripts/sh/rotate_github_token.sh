@@ -1,10 +1,26 @@
 #!/bin/bash
 set -euo pipefail
 
+# Check required environment variables
+: "${GITHUB_APP_ID:?Need to set GITHUB_APP_ID}"
+: "${GITHUB_PRIVATE_KEY:?Need to set GITHUB_PRIVATE_KEY}"
+: "${SECRET_NAME:?Need to set SECRET_NAME}"
+
 echo "Generating new GitHub token..."
 
 # Authenticate as a GitHub App
-jwt=$(python3 -c "import jwt, time, os; print(jwt.encode({'iat': int(time.time()), 'exp': int(time.time()) + 600, 'iss': os.environ['GITHUB_APP_ID']}, os.environ['GITHUB_PRIVATE_KEY'].replace('\\n', '\n'), algorithm='RS256'))")
+jwt=$(python3 -c "
+import jwt, time, os
+print(jwt.encode(
+    {
+        'iat': int(time.time()),
+        'exp': int(time.time()) + 600,
+        'iss': os.getenv('VILNACRM_APP_ID')
+    }, 
+    os.getenv('VILNACRM_APP_PRIVATE_KEY').replace('\\n', '\n'), 
+    algorithm='RS256'
+))
+")
 
 # Get installation ID
 response=$(curl -s \
@@ -23,7 +39,7 @@ fi
 token_response=$(curl -s -X POST \
   -H "Authorization: Bearer $jwt" \
   -H "Accept: application/vnd.github.v3+json" \
-  https://api.github.com/app/installations/$installation_id/access_tokens)
+  "https://api.github.com/app/installations/$installation_id/access_tokens")
 
 NEW_TOKEN=$(echo "$token_response" | jq -r '.token')
 

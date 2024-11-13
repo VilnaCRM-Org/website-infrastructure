@@ -7,6 +7,9 @@ on:
 
 jobs:
   rotate-github-token:
+    concurrency: 
+      group: github-token-rotation
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -18,44 +21,42 @@ jobs:
           VILNACRM_APP_ID: ${{ secrets.VILNACRM_APP_ID }}
           VILNACRM_APP_PRIVATE_KEY: ${{ secrets.VILNACRM_APP_PRIVATE_KEY }}
         run: |
-          if [ -z "${{ secrets.VILNACRM_APP_ID }}" ] || [ -z "${{ secrets.VILNACRM_APP_PRIVATE_KEY }}" ]; then
-            if [ -z "${{ secrets.VILNACRM_APP_ID }}" ]; then
-              echo "Error: VILNACRM_APP_ID is not set in secrets."
+          if [ -z "$VILNACRM_APP_ID" ] || [ -z "$VILNACRM_APP_PRIVATE_KEY" ]; then
+            if [ -z "$VILNACRM_APP_ID" ]; then
+              echo "Error: Required secret VILNACRM_APP_ID is not set."
             fi
-            if [ -z "${{ secrets.VILNACRM_APP_PRIVATE_KEY }}" ]; then
-              echo "Error: VILNACRM_APP_PRIVATE_KEY is not set in secrets."
+            if [ -z "$VILNACRM_APP_PRIVATE_KEY" ]; then
+              echo "Error: Required secret VILNACRM_APP_PRIVATE_KEY is not set."
             fi
             exit 1
           fi
           # Validate App ID format (should be numeric)
-          if ! [[ "${{ secrets.VILNACRM_APP_ID }}" =~ ^[0-9]+$ ]]; then
-            echo "Error: VILNACRM_APP_ID should be a numeric value."
+          if ! [[ "$VILNACRM_APP_ID" =~ ^[0-9]+$ ]]; then
+            echo "Error: Invalid format for VILNACRM_APP_ID."
             exit 1
           fi
           # Validate private key format (should start with -----BEGIN)
-          if ! echo "${{ secrets.VILNACRM_APP_PRIVATE_KEY }}" | grep -q "^-----BEGIN"; then
-            echo "Error: VILNACRM_APP_PRIVATE_KEY should be in PEM format."
+          if ! echo "$VILNACRM_APP_PRIVATE_KEY" | grep -q "^-----BEGIN"; then
+            echo "Error: Invalid format for VILNACRM_APP_PRIVATE_KEY."
             exit 1
           fi
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
-          # Assume IAM role for GitHub Actions to access AWS resources
           role-to-assume: ${{ secrets.GITHUB_TOKEN_ROTATION_ROLE_TO_ASSUME_TEST }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Verify AWS credentials
         run: |
           if ! aws sts get-caller-identity &>/dev/null; then
-            echo "Error: Failed to configure AWS credentials. Details:"
-            aws sts get-caller-identity >&2
+            echo "Error: Failed to configure AWS credentials. Please check the role configuration."
             exit 1
           fi
 
       - name: Install PyJWT
         run: |
-          pip3 install "PyJWT==2.8.0"
+          pip3 install --quiet "PyJWT==2.8.0"
           installed_version=$(python3 -c "import jwt; print(jwt.__version__)" 2>/dev/null)
           expected_version="2.8.0"
           if [ -z "$installed_version" ]; then
@@ -66,9 +67,22 @@ jobs:
             exit 1
           fi
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Rotate GitHub Token
         env:
           SECRET_NAME: ${{ secrets.SECRET_NAME }}
+          VILNACRM_APP_ID: ${{ secrets.VILNACRM_APP_ID }}
+          VILNACRM_APP_PRIVATE_KEY: ${{ secrets.VILNACRM_APP_PRIVATE_KEY }}
         run: |
-          chmod +x ./aws/scripts/sh/rotate_github_token.sh
-          ./aws/scripts/sh/rotate_github_token.sh
+          SCRIPT_PATH="./aws/scripts/sh/rotate_github_token.sh"
+          if [ ! -f "$SCRIPT_PATH" ]; then
+            echo "Error: Token rotation script not found at $SCRIPT_PATH"
+            exit 1
+          fi
+          chmod +x "$SCRIPT_PATH"
+          if ! "$SCRIPT_PATH"; then
+            echo "Error: Token rotation script failed"
+            exit 1
+          fi
