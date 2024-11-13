@@ -15,6 +15,18 @@
 #
 # Outputs:
 #   - A pull request comment with a link to the latest version of the project.
+#   - Exit codes:
+#     0: Success
+#     1: Error (environment variables missing, authentication failed, or comment creation failed)
+#
+# Security:
+#   - Requires GitHub token with PR comment permissions
+#   - Token is retrieved securely from AWS Secrets Manager
+#
+# Error Handling:
+#   - Validates all required environment variables
+#   - Handles GitHub authentication failures
+#   - Handles comment creation failures
 
 # Validate required environment variables
 for var in IS_PULL_REQUEST PR_NUMBER GITHUB_REPOSITORY PROJECT_NAME BRANCH_NAME AWS_DEFAULT_REGION; do
@@ -32,7 +44,7 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
     # Authenticate with GitHub
     echo "Authenticating with GitHub..."
     if ! aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text | gh auth login --with-token; then
-        echo "GitHub authentication failed. Please ensure the GITHUB_TOKEN has the required permissions."
+        echo "GitHub authentication failed. Please ensure the github-token secret has the required permissions."
         exit 1
     fi
 
