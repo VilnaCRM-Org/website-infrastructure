@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_metric_alarm" "canary_alarm" {
   alarm_name          = "${var.project_name}-heartbeat-canary-2xx"
   comparison_operator = "LessThanThreshold"
-  period              = "28800" // 8 hours (should be calculated from the frequency of the canary)
+  period              = "28800"
   evaluation_periods  = "1"
   metric_name         = "2xx"
   namespace           = "CloudWatchSynthetics"
