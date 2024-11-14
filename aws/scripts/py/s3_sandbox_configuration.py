@@ -16,7 +16,6 @@ def create_website_configuration() -> None:
     }
     json_string = json.dumps(config, indent=4)
 
-    # Step 3: Write the JSON string to a file
     with open('website_configuration.json', 'w') as file:
         file.write(json_string)
 
@@ -42,7 +41,6 @@ def create_s3_policy() -> None:
 
     json_string = json.dumps(policy, indent=4)
 
-    # Step 3: Write the JSON string to a file
     with open('s3_policy.json', 'w') as file:
         file.write(json_string)
 

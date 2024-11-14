@@ -2,8 +2,6 @@ import json
 import subprocess
 import os
 
-# TO DO: Refactor for multiple distributions
-
 CLOUDFRONT_REGION = os.environ['CLOUDFRONT_REGION']
 config_filename = "distribution_config.json"
 

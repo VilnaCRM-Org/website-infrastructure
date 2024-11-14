@@ -2,9 +2,6 @@ import json
 import subprocess
 import os
 
-# TO DO: Refactor for multiple distributions
-
-# Configuration constants
 MAX_ITEMS = "1"
 CONFIG_FILENAME = "continuous_deployment_policy.json"
 
