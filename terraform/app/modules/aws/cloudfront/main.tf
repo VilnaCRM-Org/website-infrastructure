@@ -64,7 +64,6 @@ resource "aws_cloudfront_distribution" "this" {
 
     viewer_protocol_policy = "redirect-to-https"
 
-    # https://stackoverflow.com/questions/67845341/cloudfront-s3-etag-possible-for-cloudfront-to-send-updated-s3-object-before-t
     min_ttl     = var.cloudfront_configuration.min_ttl
     default_ttl = var.cloudfront_configuration.default_ttl
     max_ttl     = var.cloudfront_configuration.max_ttl
@@ -170,7 +169,6 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
 
     viewer_protocol_policy = "redirect-to-https"
 
-    # https://stackoverflow.com/questions/67845341/cloudfront-s3-etag-possible-for-cloudfront-to-send-updated-s3-object-before-t
     min_ttl     = var.cloudfront_configuration.min_ttl
     default_ttl = var.cloudfront_configuration.default_ttl
     max_ttl     = var.cloudfront_configuration.max_ttl
