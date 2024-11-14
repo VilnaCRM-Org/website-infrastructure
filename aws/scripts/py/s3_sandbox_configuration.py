@@ -2,33 +2,33 @@ import json
 import os
 
 try:
-    BRANCH_NAME = os.environ['BRANCH_NAME']
+    BRANCH_NAME  = os.environ['BRANCH_NAME']
     PROJECT_NAME = os.environ['PROJECT_NAME']
 except KeyError as e:
     raise ValueError(f"Required environment variable {e} is not set") from e
 
 
-def create_website_configuration() -> None:
+def create_website_configuration(output_path: str = 'website_configuration.json') -> None:
     config = {
         "IndexDocument": {
             "Suffix": "index.html",
         },
         "ErrorDocument": {
             "Key": "error.html",
-        }
+        },
     }
     json_string = json.dumps(config, indent=4)
 
     try:
-        with open('website_configuration.json', 'w') as file:
+        with open(output_path, 'w') as file:
             file.write(json_string)
-    except IOError as e:
+    except OSError as e:
         raise RuntimeError(f"Failed to write website configuration: {e}") from e
 
-    print("Config has been written to website_configuration.json")
+    print(f"Config has been written to {output_path}")
 
 
-def create_s3_policy() -> None:
+def create_s3_policy(output_path: str = 's3_policy.json') -> None:
     policy = {
         "Statement": [
             {
@@ -48,12 +48,12 @@ def create_s3_policy() -> None:
     json_string = json.dumps(policy, indent=4)
 
     try:
-        with open('s3_policy.json', 'w') as file:
+        with open(output_path, 'w') as file:
             file.write(json_string)
-    except IOError as e:
+    except OSError as e:
         raise RuntimeError(f"Failed to write S3 policy: {e}") from e
 
-    print("Policy has been written to s3_policy.json")
+    print(f"Policy has been written to {output_path}")
 
 
 def main() -> None:
