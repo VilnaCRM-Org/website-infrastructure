@@ -50,7 +50,7 @@ resource "aws_cloudtrail" "dynamodb_cloudtrail" {
 
   kms_key_id = aws_kms_key.cloudtrail_encryption_key.arn
 
-  cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.dynamodb_terraform_group.arn}:*" # CloudTrail requires the Log Stream wildcard
+  cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.dynamodb_terraform_group.arn}:*"
   cloud_watch_logs_role_arn  = aws_iam_role.iam_for_cloudtrail.arn
 
   depends_on = [aws_iam_role_policy_attachment.cloudtrail_allow_logging_policy_attachment]

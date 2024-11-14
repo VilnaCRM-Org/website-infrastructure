@@ -1,4 +1,3 @@
-#Artifact Bucket
 resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket        = "${var.project_name}-codepipeline-artifacts-bucket"
   tags          = var.tags
