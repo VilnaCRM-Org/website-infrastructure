@@ -1,6 +1,6 @@
 echo #### Install Software
-n install "${NODE_VERSION:?Node.js version is not set}"
-n "${NODE_VERSION:?Node.js version is not set}"
+n install "${NODEJS_VERSION:?Node.js version is not set}"
+n "${NODEJS_VERSION :?Node.js version is not set}"
 git clone -b "$WEBSITE_GIT_REPOSITORY_BRANCH" "$WEBSITE_GIT_REPOSITORY_LINK.git" /codebuild-user/website
 cd /codebuild-user/website/
 echo #### Install pnpm

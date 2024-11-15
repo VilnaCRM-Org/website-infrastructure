@@ -9,7 +9,15 @@ fi
 
 BUCKET_NAME="${PROJECT_NAME}-${BRANCH_NAME}"
 
-echo "Deleting Bucket: ${BUCKET_NAME}..."
+echo "Checking if bucket ${BUCKET_NAME} exists..."
+
+# Check if the bucket exists
+if aws s3api head-bucket --bucket "${BUCKET_NAME}" --region "${AWS_DEFAULT_REGION}" 2>/dev/null; then
+    echo "Bucket ${BUCKET_NAME} exists. Proceeding with deletion..."
+else
+    echo "Bucket ${BUCKET_NAME} does not exist. Exiting."
+    exit 0
+fi
 
 # Removing objects from a bucket
 if aws s3 rm "s3://${BUCKET_NAME}" --recursive --region "${AWS_DEFAULT_REGION}"; then
