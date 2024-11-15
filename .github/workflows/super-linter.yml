@@ -1,0 +1,40 @@
+name: Static analysis and fixers
+
+on:
+  pull_request:
+    branches: ['*']
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token with necessary permissions
+        id: generate_token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.VILNACRM_APP_ID }}
+          private_key: ${{ secrets.VILNACRM_APP_PRIVATE_KEY }}
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          fetch-depth: 0
+
+      - name: Run Super-Linter
+        uses: super-linter/super-linter@v7.1.0
+        env:
+          VALIDATE_MARKDOWN: true
+          VALIDATE_ENV: true
+          VALIDATE_PYTHON_BLACK: true
+          VALIDATE_PYTHON_FLAKE8: true
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_YAML: true
+          VALIDATE_MAKEFILE: true
+          VALIDATE_TERRAFORM_FMT: true
+          VALIDATE_BASH: true
+          FIX_MARKDOWN_PRETTIER: true
+          FIX_YAML_PRETTIER: true
+          FIX_PYTHON_BLACK: true
+          FIX_ENV: true
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
