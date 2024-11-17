@@ -3,6 +3,14 @@ name: Static analysis and fixers
 on:
   pull_request:
     branches: ['*']
+    paths:
+      - '**/*.py'
+      - '**/*.tf'
+      - '**/*.sh'
+      - '**/*.md'
+      - '**/*.yml'
+      - '**/*.yaml'
+      - 'Makefile'
 
 jobs:
   lint:
@@ -19,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ steps.generate_token.outputs.token }}
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Run Super-Linter
         uses: super-linter/super-linter@v7.1.0
@@ -33,7 +41,6 @@ jobs:
           VALIDATE_MAKEFILE: true
           VALIDATE_TERRAFORM_FMT: true
           VALIDATE_BASH: true
-          FIX_MARKDOWN_PRETTIER: true
           FIX_YAML_PRETTIER: true
           FIX_PYTHON_BLACK: true
           FIX_ENV: true
