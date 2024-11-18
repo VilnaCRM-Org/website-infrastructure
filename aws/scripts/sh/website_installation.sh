@@ -1,3 +1,4 @@
+#!/bin/bash
 echo #### Install Software
 n install "${NODEJS_VERSION:?Node.js version is not set}"
 n "${NODEJS_VERSION:?Node.js version is not set}"

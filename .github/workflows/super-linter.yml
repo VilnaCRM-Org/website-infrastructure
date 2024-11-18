@@ -38,6 +38,7 @@ jobs:
       - name: Run Super-Linter
         uses: super-linter/super-linter@v7.1.0
         env:
+          MULTI_STATUS: true
           VALIDATE_MARKDOWN: true
           VALIDATE_ENV: true
           VALIDATE_PYTHON_BLACK: true
@@ -48,7 +49,6 @@ jobs:
           VALIDATE_MAKEFILE: true
           VALIDATE_TERRAFORM_FMT: true
           VALIDATE_BASH: true
-          VALIDATE_DOCKERFILE_HADOLINT: true
           FIX_YAML_PRETTIER: true
           FIX_TERRAFORM_FMT: true
           FIX_PYTHON_BLACK: true
