@@ -52,15 +52,6 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
   }
 
   statement {
-    sid    = "AllowKMSActions"
-    effect = "Allow"
-    actions = [
-      "kms:GenerateDataKey*",
-      "kms:Decrypt"
-    ]
-    resources = ["${var.kms_key_arn}"]
-  }
-  statement {
     sid    = "AllowCodepipelineGetState"
     effect = "Allow"
     actions = [

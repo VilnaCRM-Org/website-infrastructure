@@ -51,12 +51,3 @@ variable "BRANCH_NAME" {
     error_message = "Branch name must be a valid Git branch name (e.g., 'main', 'feature/new-sandbox', 'bugfix/issue-123')"
   }
 }
-
-variable "kms_key_arn" {
-  description = "ARN of the KMS key used for encryption"
-  type        = string
-  validation {
-    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:\\d{12}:key/[a-f0-9-]+$", var.kms_key_arn))
-    error_message = "The ARN format is invalid. It must be a valid KMS key ARN."
-  }
-}

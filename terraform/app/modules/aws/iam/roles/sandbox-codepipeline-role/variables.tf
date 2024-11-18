@@ -33,11 +33,6 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "kms_key_arn" {
-  description = "ARN of KMS key for encryption"
-  type        = string
-}
-
 variable "s3_bucket_arn" {
   description = "The ARN of the S3 Bucket"
   type        = string

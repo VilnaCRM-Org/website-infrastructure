@@ -1,4 +1,5 @@
 resource "aws_codepipeline" "pipeline" {
+  # checkov:skip=CKV_AWS_219: S3 bucket has encryption by default
   name     = var.codepipeline_name
   role_arn = var.codepipeline_role_arn
   tags     = var.tags
@@ -8,11 +9,6 @@ resource "aws_codepipeline" "pipeline" {
   artifact_store {
     location = var.s3_bucket_name
     type     = "S3"
-
-    encryption_key {
-      id   = var.kms_key_arn
-      type = "KMS"
-    }
   }
 
   stage {

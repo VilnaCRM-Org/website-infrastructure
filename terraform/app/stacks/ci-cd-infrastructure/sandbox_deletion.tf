@@ -6,7 +6,6 @@ module "iam_roles" {
   account_id              = data.aws_caller_identity.current.account_id
   codestar_connection_arn = module.codestar_connection.arn
   BRANCH_NAME             = var.BRANCH_NAME
-  kms_key_arn             = module.sandbox_deletion_codepipeline_kms.arn
 }
 
 module "s3_buckets" {
@@ -16,20 +15,11 @@ module "s3_buckets" {
   tags         = var.tags
 }
 
-module "sandbox_deletion_codepipeline_kms" {
-  source = "../../modules/aws/kms"
-
-  codepipeline_role_arn = "arn:aws:iam::${local.account_id}:role/${local.project_name}-codepipeline-role"
-
-  tags = var.tags
-}
-
 module "codebuild_sandbox_deletion" {
   source         = "../../modules/aws/codebuild/stages"
   project_name   = local.project_name
   role_arn       = module.iam_roles.codebuild_role_arn
   build_projects = local.sandbox_delete_projects
-  kms_key_arn    = module.sandbox_deletion_codepipeline_kms.arn
   s3_bucket_name = module.s3_buckets.codebuild_logs_bucket_name
   environment    = var.environment
   region         = var.region
@@ -62,7 +52,6 @@ module "codepipeline_sandbox_deletion" {
   codepipeline_role_arn   = module.iam_roles.codepipeline_role_arn
   s3_bucket_name          = module.s3_buckets.codepipeline_bucket_name
   codestar_connection_arn = module.codestar_connection.arn
-  kms_key_arn             = module.sandbox_deletion_codepipeline_kms.arn
 
   tags = var.tags
 

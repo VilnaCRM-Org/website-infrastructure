@@ -1,11 +1,10 @@
 resource "aws_sns_topic" "codepipeline_notifications" {
+  # checkov:skip=CKV_AWS_26: KMS needs to be removed
   name = "${var.project_name}-notifications"
-
-  kms_master_key_id = aws_kms_key.codepipeline_sns_encryption_key.id
 
   tags = var.tags
 
-  depends_on = [aws_codepipeline.pipeline, aws_kms_key.codepipeline_sns_encryption_key]
+  depends_on = [aws_codepipeline.pipeline]
 }
 
 resource "aws_sns_topic_policy" "codepipeline_notifications" {

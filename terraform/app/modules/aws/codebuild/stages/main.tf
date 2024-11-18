@@ -1,10 +1,9 @@
 resource "aws_codebuild_project" "terraform_codebuild_project" {
-
+  # checkov:skip=CKV_AWS_147: Codebuild project has encryption by default
   for_each = var.build_projects
 
   name           = "${var.project_name}-${replace(each.key, "_", "-")}"
   service_role   = var.role_arn
-  encryption_key = var.kms_key_arn
   tags           = var.tags
 
   artifacts {

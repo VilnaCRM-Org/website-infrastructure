@@ -52,16 +52,6 @@ resource "aws_iam_policy" "codepipeline_policy" {
           "arn:aws:s3:::sandbox-${var.environment}-${var.BRANCH_NAME}/*"
         ]
       },
-      {
-        Effect = "Allow",
-        Action = [
-          "kms:GenerateDataKey*",
-          "kms:Decrypt",
-        ],
-        Resource = [
-          "${var.kms_key_arn}"
-        ]
-      }
     ]
   })
 }
@@ -127,16 +117,6 @@ resource "aws_iam_policy" "codebuild_policy" {
           "${var.codestar_connection_arn}"
         ]
       },
-      {
-        Effect = "Allow",
-        Action = [
-          "kms:GenerateDataKey*",
-          "kms:Decrypt",
-        ],
-        Resource = [
-          "${var.kms_key_arn}"
-        ]
-      }
     ]
   })
 }

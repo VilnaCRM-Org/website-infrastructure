@@ -12,15 +12,6 @@ module "sandbox_s3_artifacts_bucket" {
 
   s3_artifacts_bucket_files_deletion_days = var.s3_artifacts_bucket_files_deletion_days
 
-  kms_key_arn           = module.sandbox_codepipeline_kms.arn
-  codepipeline_role_arn = "arn:aws:iam::${local.account_id}:role/${local.project_name}-codepipeline-role"
-
-  tags = var.tags
-}
-
-module "sandbox_codepipeline_kms" {
-  source = "../../modules/aws/kms"
-
   codepipeline_role_arn = "arn:aws:iam::${local.account_id}:role/${local.project_name}-codepipeline-role"
 
   tags = var.tags
@@ -37,7 +28,6 @@ module "sandbox_codepipeline_iam_role" {
   region      = local.region
   environment = var.environment
 
-  kms_key_arn             = module.sandbox_codepipeline_kms.arn
   s3_bucket_arn           = "arn:aws:s3:::${module.sandbox_s3_artifacts_bucket.bucket}"
   codestar_connection_arn = module.codestar_connection.arn
 
@@ -56,7 +46,6 @@ module "sandbox_codebuild" {
 
   s3_bucket_name = module.sandbox_s3_artifacts_bucket.bucket
   role_arn       = "arn:aws:iam::${local.account_id}:role/${local.project_name}-codepipeline-role"
-  kms_key_arn    = module.sandbox_codepipeline_kms.arn
 
   region      = local.region
   environment = var.environment
@@ -92,7 +81,6 @@ module "sandbox_codepipeline" {
 
   s3_bucket_name          = module.sandbox_s3_artifacts_bucket.bucket
   codepipeline_role_arn   = "arn:aws:iam::${local.account_id}:role/${local.project_name}-codepipeline-role"
-  kms_key_arn             = module.sandbox_codepipeline_kms.arn
   codestar_connection_arn = module.codestar_connection.arn
 
   tags = var.tags
