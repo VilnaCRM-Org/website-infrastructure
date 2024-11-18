@@ -5,6 +5,8 @@ if ! touch config credentials; then
     exit 1
 fi
 
+aws_iam_output=$(aws sts assume-role --role-arn "$ROLE_ARN" --role-session-name "$SESSION_NAME")
+
 # Validate AWS credentials extraction
 if ! access_key_id=$(echo "$aws_iam_output" | jq -r '.["Credentials"] | .["AccessKeyId"]') || \
    ! secret_access_key=$(echo "$aws_iam_output" | jq -r '.["Credentials"] | .["SecretAccessKey"]') || \
