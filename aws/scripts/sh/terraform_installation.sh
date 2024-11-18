@@ -10,21 +10,33 @@
 #   - RPM package manager
 
 echo "## Install OpenTofu"
-curl --proto "=https" --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+if ! curl --proto "=https" --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh; then
+    echo "Failed to download OpenTofu installation script"
+    exit 1
+fi
 chmod +x install-opentofu.sh
-./install-opentofu.sh --install-method rpm
+if ! ./install-opentofu.sh --install-method rpm; then
+    echo "OpenTofu installation failed"
+    rm install-opentofu.sh
+    exit 1
+fi
 rm install-opentofu.sh
 
 echo "## Install Terraform"
-git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+if ! git clone https://github.com/tfutils/tfenv.git ~/.tfenv; then
+    echo "Failed to clone tfenv repository"
+    exit 1
+fi
 
-echo "export PATH=\"$HOME/.tfenv/bin:\$PATH\"" >>~/.bash_profile
+if ! echo "export PATH=\"$HOME/.tfenv/bin:\$PATH\"" >>~/.bash_profile; then
+    echo "Failed to update PATH in .bash_profile"
+    exit 1
+fi
 export PATH="$HOME/.tfenv/bin:$PATH"
 
 tfenv install "${TERRAFORM_VERSION}" || { echo "Failed to install Terraform ${TERRAFORM_VERSION}"; exit 1; }
 tfenv use "${TERRAFORM_VERSION}" || { echo "Failed to switch to Terraform ${TERRAFORM_VERSION}"; exit 1; }
 
-# Install Ruby dependencies
 GEMFILE_PATH="${CODEBUILD_SRC_DIR}/terraform/Gemfile"
 if [ ! -f "$GEMFILE_PATH" ]; then
     echo "Gemfile not found at: $GEMFILE_PATH"
