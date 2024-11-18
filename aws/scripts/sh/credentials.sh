@@ -1,11 +1,17 @@
 #!/bin/bash
 
-touch config
-touch credentials
-aws_iam_output=$(aws sts assume-role --role-arn "$ROLE_ARN" --role-session-name "$SESSION_NAME")
-access_key_id=$(echo "$aws_iam_output" | jq -r '.["Credentials"] | .["AccessKeyId"]')
-secret_access_key=$(echo "$aws_iam_output" | jq -r '.["Credentials"] | .["SecretAccessKey"]')
-session_token=$(echo "$aws_iam_output" | jq -r '.["Credentials"] | .["SessionToken"]')
+if ! touch config credentials; then
+    echo "Error: Failed to create temporary files" >&2
+    exit 1
+fi
+
+# Validate AWS credentials extraction
+if ! access_key_id=$(echo "$aws_iam_output" | jq -r '.["Credentials"] | .["AccessKeyId"]') || \
+   ! secret_access_key=$(echo "$aws_iam_output" | jq -r '.["Credentials"] | .["SecretAccessKey"]') || \
+   ! session_token=$(echo "$aws_iam_output" | jq -r '.["Credentials"] | .["SessionToken"]'); then
+    echo "Error: Failed to extract credentials from AWS response" >&2
+    exit 1
+fi
 
 {
     echo "[profile terraform]"
@@ -19,8 +25,13 @@ session_token=$(echo "$aws_iam_output" | jq -r '.["Credentials"] | .["SessionTok
     echo "aws_session_token = $session_token"
 } > credentials
 
-mkdir -p ~/.aws/
-mv config ~/.aws/config
-mv credentials ~/.aws/credentials
+if ! mkdir -p ~/.aws/; then
+    echo "Error: Failed to create ~/.aws directory" >&2
+    exit 1
+fi
 
+if ! mv config ~/.aws/config || ! mv credentials ~/.aws/credentials; then
+    echo "Error: Failed to move configuration files" >&2
+    exit 1
+fi
 export AWS_PROFILE=terraform
