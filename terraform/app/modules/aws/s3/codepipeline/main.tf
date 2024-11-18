@@ -4,7 +4,8 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
   force_destroy = true
   #checkov:skip=CKV_AWS_144: No usage of cross-region
   #checkov:skip=CKV2_AWS_61: The lifecycle configuration is not needed 
-  #checkov:skip=CKV2_AWS_62: The event notifications of logging bucket is not needed 
+  #checkov:skip=CKV2_AWS_62: The event notifications of logging bucket is not needed
+  #checkov:skip=CKV_AWS_145: Bucket has encryption by default
 }
 
 resource "aws_s3_bucket_public_access_block" "codepipeline_bucket_access" {
