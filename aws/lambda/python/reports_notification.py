@@ -73,9 +73,21 @@ def lambda_handler(event, context):
             "description": description,
         }
     }
-    response = client.publish(
-        TopicArn=sns_topic_arn,
-        MessageStructure='json',
-        Message=json.dumps({'default': json.dumps(message_to_sns)})
-    )
+    
+    try:
+        response = client.publish(
+            TopicArn=sns_topic_arn,
+            MessageStructure='json',
+            Message=json.dumps({'default': json.dumps(message_to_sns)}),
+        )
+        return response
+    except client.exceptions.InvalidParameterException as e:
+        print(f"Invalid parameter in SNS message: {e}")
+        raise
+    except client.exceptions.InvalidParameterValueException as e:
+        print(f"Invalid parameter value in SNS message: {e}")
+        raise
+    except client.exceptions.ClientError as e:
+        print(f"Failed to publish SNS message: {e}")
+        raise
     return response
