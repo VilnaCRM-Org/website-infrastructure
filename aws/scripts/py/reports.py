@@ -147,9 +147,12 @@ def compile_data(build_succeeding, codebuild_link, git_info, tests, reports):
 
 
 def write_to_file(data):
-    json_string = json.dumps(data)
-    with open('payload.json', 'w') as file:
-        file.write(json_string)
+    try:
+        json_string = json.dumps(data)
+        with open('payload.json', 'w') as file:
+            file.write(json_string)
+    except (IOError, json.JSONEncodeError) as e:
+        raise RuntimeError(f"Failed to write payload file: {e}")
 
 
 def main():
