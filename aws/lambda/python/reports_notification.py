@@ -73,7 +73,7 @@ def lambda_handler(event, context):
             "description": description,
         }
     }
-    
+
     try:
         response = client.publish(
             TopicArn=sns_topic_arn,
@@ -90,4 +90,3 @@ def lambda_handler(event, context):
     except client.exceptions.ClientError as e:
         print(f"Failed to publish SNS message: {e}")
         raise
-    return response
