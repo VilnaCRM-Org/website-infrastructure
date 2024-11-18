@@ -33,19 +33,31 @@ def lambda_handler(event, context):
     else:
         warning_string = ":warning: *One of the file`s ACL were modified :bucket:!* \n\n"
 
-    message_to_sns = {
-        "version": "1.0",
-        "source": "custom",
-        "content": {
-            "description": (
-                f"{warning_string} {event_source_string} {bucket_name_string} {file_name_string} "
-                f"{user_identity_id_string} {event_name_string} {buckets_link}"
-            ),
+    try:
+        message_to_sns = {
+            "version": "1.0",
+            "source": "custom",
+            "content": {
+                "description": (
+                    f"{warning_string} {event_source_string} {bucket_name_string} {file_name_string} "
+                    f"{user_identity_id_string} {event_name_string} {buckets_link}"
+                ),
+            },
         }
-    }
-    response = client.publish(
-        TopicArn=sns_topic_arn,
-        MessageStructure='json',
-        Message=json.dumps({'default': json.dumps(message_to_sns)})
-    )
-    return response
+
+        response = client.publish(
+            TopicArn=sns_topic_arn,
+            MessageStructure='json',
+            Message=json.dumps({'default': json.dumps(message_to_sns)}),
+        )
+        print(f"Successfully published message: {response['MessageId']}")
+        return response
+    except client.exceptions.InvalidParameterException as e:
+        print(f"Invalid parameter in SNS publish: {e}")
+        raise
+    except client.exceptions.InvalidMessageStructureException as e:
+        print(f"Invalid message structure: {e}")
+        raise
+    except Exception as e:
+        print(f"Error publishing to SNS: {e}")
+        raise
