@@ -1,4 +1,3 @@
-from selenium.webdriver.common.by import By
 from aws_synthetics.selenium import synthetics_webdriver as syn_webdriver
 from aws_synthetics.common import synthetics_logger as logger
 

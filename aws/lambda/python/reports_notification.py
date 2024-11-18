@@ -6,8 +6,10 @@ import datetime
 sns_topic_arn = os.environ["SNS_TOPIC_ARN"]
 client = boto3.client('sns')
 
+
 def generate_build_succeeding_message(tests):
-    return f":x: {", ".join(tests)} Failed!"
+    return f":x: {', '.join(tests)} Failed!"
+
 
 def generate_reports_messages(reports):
     links = ""
@@ -24,6 +26,7 @@ def generate_reports_messages(reports):
 
     return {"names": names, "links": links}
 
+
 def lambda_handler(event, context):
     today = datetime.datetime.now()
     in_week = today + datetime.timedelta(days=7)
@@ -37,7 +40,7 @@ def lambda_handler(event, context):
     github_commit_sha = data['github']['sha']
 
     codebuild_logs_link = f"<{codebuild_link}|CodeBuild Logs>"
-    github_commit_link=f"<{gh_link}|{github_commit_sha[:7]}>"
+    github_commit_link = f"<{gh_link}|{github_commit_sha[:7]}>"
 
     build_succeeding = data['build_succeeding']
 
@@ -45,16 +48,23 @@ def lambda_handler(event, context):
         return
 
     tests = data['tests']
-    
+
     reports_message = ""
-    
+
     if "reports" in data:
         reports = generate_reports_messages(data["reports"])
-        reports_message = f'\n Reports: {reports["links"]} \n :warning: Reports will be deleted on {in_week.strftime("%m/%d/%Y at %H:%M")}!'
-    
+        reports_message = (
+            f'\n Reports: {reports["links"]} \n '
+            f':warning: Reports will be deleted on {in_week.strftime("%m/%d/%Y at %H:%M")}!'
+        )
+
     build_succeeding_message = generate_build_succeeding_message(tests)
 
-    description = f"{build_succeeding_message} \n Commit info: \n Author: {github_commit_author} \n Name: {github_commit_name} \n SHA: {github_commit_link} \n {codebuild_logs_link} {reports_message}"
+    description = (
+        f"{build_succeeding_message} \n Commit info: \n Author: {github_commit_author} "
+        f"\n Name: {github_commit_name} \n SHA: {github_commit_link} \n "
+        f"{codebuild_logs_link} {reports_message}"
+    )
 
     message_to_sns = {
         "version": "1.0",
@@ -62,6 +72,10 @@ def lambda_handler(event, context):
         "content": {
             "description": description,
         }
-    } 
-    response = client.publish(TopicArn=sns_topic_arn,MessageStructure='json',Message=json.dumps({'default': json.dumps(message_to_sns)}))
+    }
+    response = client.publish(
+        TopicArn=sns_topic_arn,
+        MessageStructure='json',
+        Message=json.dumps({'default': json.dumps(message_to_sns)})
+    )
     return response

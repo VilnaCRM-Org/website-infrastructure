@@ -17,7 +17,7 @@ def fetch_distributions():
     print("Fetching CloudFront distributions...")
     result = subprocess.check_output(
         ['aws', 'cloudfront', 'list-distributions',
-         '--region', CLOUDFRONT_REGION, '--no-cli-pager',]
+         '--region', CLOUDFRONT_REGION, '--no-cli-pager']
     )
     distributions = json.loads(result.decode())
     print(f"Fetched distributions: {distributions}")
@@ -27,7 +27,7 @@ def fetch_distributions():
 def get_staging_distribution(distributions):
     print("Finding staging distribution...")
     for item in distributions["DistributionList"]["Items"]:
-        if item["Staging"] == True:
+        if item["Staging"]:
             print(f"Staging distribution found: {item}")
             return item
 
@@ -63,7 +63,6 @@ def main():
     if staging_distribution:
         print(f"Staging distribution: {staging_distribution}")
 
-    if staging_distribution:
         origins = get_origins(staging_distribution)
         if origins:
             print(f"Origins: {origins}")
