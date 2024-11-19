@@ -38,8 +38,8 @@ variable "source_repo_name" {
   description = "Source repo name of the repository"
   type        = string
   validation {
-    condition     = can(regex("^[a-zA-Z0-9_.-]+$", var.source_repo_name)) && length(var.source_repo_name) <= 100
-    error_message = "source_repo_name must contain only alphanumeric characters, underscores, dots, or hyphens, and be at most 100 characters long."
+    condition     = can(regex("^[\\w.-]+(/[\\w.-]+)*$", var.source_repo_name))
+    error_message = "source_repo_name must be a valid Git branch name (e.g., 'main', 'feature/new-sandbox', 'bugfix/issue-123')"
   }
 }
 
@@ -77,7 +77,7 @@ variable "codestar_connection_arn" {
 
 variable "policy_arns" {
   type        = map(map(string))
-  description = "Map of IAM policies to attach to the role"
+  description = "Map of IAM policies to attach to the role. Format: { policy_name = { arn = 'policy_arn' } }"
   default     = { value = {} }
 }
 
