@@ -39,7 +39,7 @@ variable "source_repo_name" {
   type        = string
   validation {
     condition     = can(regex("^[\\w.-]+(/[\\w.-]+)*$", var.source_repo_name))
-    error_message = "source_repo_name must be a valid Git branch name (e.g., 'main', 'feature/new-sandbox', 'bugfix/issue-123')"
+    error_message = "source_repo_name must be a valid repository name containing only alphanumeric characters, dots, underscores, or hyphens"
   }
 }
 
