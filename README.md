@@ -120,7 +120,8 @@ The string of letters and numbers beginning with **"C"** is your channel ID.(Als
 
 ### Local machine software requirements
 
-Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine. You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project locally using this OS. Follow the guides specified in the links.
+Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine. 
+You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project locally using this OS. Follow the guides specified in the links.
 
 Necessary Terraform Version for the Terraspace is 1.4.7.
 Please, follow this links to install  [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/) to install it.
@@ -129,7 +130,7 @@ Or you can use `make install-terraspace`.
 
 Also you need to set up the connection to your AWS Account. With the credentials you got before use `aws configure`.
 
-```
+```bash
 $aws configure
 AWS Access Key ID [None]: <Your Access Key Here>
 AWS Secret Access Key [None]: <Your Secret Key Here>
@@ -194,7 +195,7 @@ Execute `make` or `make help` to see the full list of project commands.
 
 The list of the `make` possibilities:
 
-```
+```bash
 
   codebuild-local-set-up         Setting up CodeBuild Agent for testing buildspecs locally
   codebuild-run                  Running CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'

@@ -11,7 +11,11 @@
 
 ## Overview
 
-This documentation guides you through the configuration of a GitHub Actions workflow that automates the rotation of a GitHub token. The workflow uses a GitHub App to generate a new GitHub token and stores it securely in AWS Secrets Manager. It is designed to run on a weekly schedule or can be triggered manually. This setup ensures that sensitive tokens are regularly refreshed to maintain security best practices.
+This documentation guides you through the configuration of a GitHub Actions workflow 
+that automates the rotation of a GitHub token. The workflow uses a GitHub App to 
+generate a new GitHub token and stores it securely in AWS Secrets Manager. It is 
+designed to run on a weekly schedule or can be triggered manually. This setup ensures 
+that sensitive tokens are regularly refreshed to maintain security best practices.
 
 ### Why Token Rotation is Important
 
@@ -211,7 +215,7 @@ This documentation guides you through the configuration of a GitHub Actions work
 
   To confirm that the GitHub App is authorized and properly configured, use this command to retrieve the app details:
 
-# Verify GitHub App configuration
+## Verify GitHub App configuration
 
 ```bash
 curl -s -X GET \
@@ -237,7 +241,7 @@ curl -s -X GET \
 
 ---
 
-# Security Best Practices
+## Security Best Practices
 
 ## Token Configuration and Best Practices
 
@@ -369,7 +373,7 @@ jobs:
 - Integrate alerts (e.g., using GitHub Actions or AWS CloudWatch) for failed rotations.
 - Set up notifications via Slack, email, or SMS to alert the security team about failures.
 
-# CloudWatch Alarm example
+## CloudWatch Alarm example
 
 ```bash
 aws cloudwatch put-metric-alarm \

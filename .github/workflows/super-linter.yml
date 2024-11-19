@@ -56,3 +56,4 @@ jobs:
           FIX_ENV: true
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           LINTER_RULES_PATH: .github/linters
+          FILTER_REGEX_EXCLUDE: 'CHANGELOG\.md'
