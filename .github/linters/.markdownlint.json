@@ -1,6 +1,5 @@
 {
     "extends": "markdownlint-config-standard",
-    "ignore": ["CHANGELOG.md"],
     "overrides": [
       {
         "files": ["README.md"],
