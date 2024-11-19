@@ -55,3 +55,4 @@ jobs:
           FIX_MARKDOWN: true
           FIX_ENV: true
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          LINTER_RULES_PATH: .github/linters
