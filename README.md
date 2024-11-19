@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD041 -->
 [![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://supportukrainenow.org/)
 
 # VilnaCRM Infrastructure
@@ -165,6 +166,10 @@ After you configured everything you can deploy infrastructure by running such co
 
 After you deployed you can create the website infrastructure itself using.
 - `terraspace all up`
+
+**⚠️ Important Note:**  
+The deployed website will be automatically **removed after 7 days**.  
+To keep the website active, the developer must **commit again** to redeploy it.
 
 ### Instructions on how to set up and run the changes in AWS
 

@@ -28,6 +28,7 @@ resource "aws_s3_bucket" "access_logs_bucket" {
   #checkov:skip=CKV_AWS_144: Replication of this bucket is not needed
   #checkov:skip=CKV_AWS_145: Bucket has encryption by default
   #checkov:skip=CKV_AWS_21: Versioning of this bucket is not needed
+  #checkov:skip=CKV2_AWS_61: Bucket will not longer live than 7 days
   bucket        = "${var.project_name}-access-logs-${var.environment}"
   force_destroy = true
   tags          = var.tags
@@ -55,31 +56,4 @@ resource "aws_s3_bucket_public_access_block" "access_logs_bucket" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "access_logs_bucket" {
-  bucket = aws_s3_bucket.access_logs_bucket.id
-
-  rule {
-    id     = "log-expiration"
-    status = "Enabled"
-
-    transition {
-      days          = 30
-      storage_class = "STANDARD_IA"
-    }
-
-    transition {
-      days          = 90
-      storage_class = "GLACIER"
-    }
-
-    expiration {
-      days = 365
-    }
-
-    abort_incomplete_multipart_upload {
-      days_after_initiation = 7
-    }
-  }
 }
