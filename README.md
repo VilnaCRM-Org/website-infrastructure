@@ -168,8 +168,8 @@ After you deployed you can create the website infrastructure itself using.
 - `terraspace all up`
 
 **⚠️ Important Note:**  
-The deployed website will be automatically **removed after 7 days**.  
-To keep the website active, the developer must **commit again** to redeploy it.
+The deployed sandbox will be automatically **removed after 7 days**.  
+To keep it active, the developer must **commit again** to redeploy it.
 
 ### Instructions on how to set up and run the changes in AWS
 
