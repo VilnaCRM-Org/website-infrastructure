@@ -6,28 +6,28 @@ phases:
       python: $PYTHON_VERSION
       ruby: $RUBY_VERSION
     commands:
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
-      - 'dnf install -y yum-utils'
-      - 'pip install python-dotenv'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh"
+      - "dnf install -y yum-utils"
+      - "pip install python-dotenv"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh"
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}'
-      - 'echo ## TERRASPACE UP : Bringing up the infrastructure'
+      - "cd ${CODEBUILD_SRC_DIR}"
+      - "echo ## TERRASPACE UP : Bringing up the infrastructure"
       - 'make terraspace-up-plan stack="website" plan="website.plan"'
       - 'make terraspace-output-file stack="website" out=".terraform.env"'
-      - 'cd terraform'
-      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py'
-      - 'aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME'
+      - "cd terraform"
+      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py"
+      - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME"
 
 artifacts:
   files:
-    - '**/*'
+    - "**/*"
 cache:
   paths:
-    - '/bin'
-    - '/usr/local/bin'
-    - '/root/.terraform'
-    - '/root/.cache'
-    - '/root/.gem'
-    - '/usr/local/bundle'
+    - "/bin"
+    - "/usr/local/bin"
+    - "/root/.terraform"
+    - "/root/.cache"
+    - "/root/.gem"
+    - "/usr/local/bundle"

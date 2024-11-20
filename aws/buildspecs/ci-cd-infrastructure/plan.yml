@@ -6,17 +6,17 @@ phases:
       python: $PYTHON_VERSION
       ruby: $RUBY_VERSION
     commands:
-      - 'echo ## Install Terraspace'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
-      - 'dnf install -y yum-utils'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
-      - 'dnf update -y'
+      - "echo ## Install Terraspace"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh"
+      - "dnf install -y yum-utils"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh"
+      - "dnf update -y"
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}'
-      - 'echo ## TERRASPACE Init : Initialize all providers and modules'
-      - 'make terraspace-all-init'
-      - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
+      - "cd ${CODEBUILD_SRC_DIR}"
+      - "echo ## TERRASPACE Init : Initialize all providers and modules"
+      - "make terraspace-all-init"
+      - "echo ## TERRASPACE PLAN : Generate the Terraform Plan"
       - 'make terraspace-plan-file stack="ci-cd-infrastructure" out="ci-cd-infrastructure.plan"'
       - 'make terraspace-plan-file stack="ci-cd-iam" out="ci-cd-iam.plan"'
       - 'make terraspace-plan-file stack="website-iam" out="website-iam.plan"'
@@ -24,13 +24,13 @@ phases:
 
 artifacts:
   files:
-    - '**/*'
+    - "**/*"
 
 cache:
   paths:
-    - '/bin'
-    - '/usr/local/bin'
-    - '/root/.terraform'
-    - '/root/.cache'
-    - '/root/.gem'
-    - '/usr/local/bundle'
+    - "/bin"
+    - "/usr/local/bin"
+    - "/root/.terraform"
+    - "/root/.cache"
+    - "/root/.gem"
+    - "/usr/local/bundle"

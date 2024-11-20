@@ -4,7 +4,7 @@ import json
 import datetime
 
 sns_topic_arn = os.environ["SNS_TOPIC_ARN"]
-client = boto3.client('sns')
+client = boto3.client("sns")
 
 
 def generate_build_succeeding_message(tests):
@@ -15,10 +15,10 @@ def generate_reports_messages(reports):
     links = ""
     names = []
     for report in reports:
-        names.append(report['name'])
-        if len(report['links']) > 1:
+        names.append(report["name"])
+        if len(report["links"]) > 1:
             count = 1
-            for link in report['links']:
+            for link in report["links"]:
                 links += f"\n<{link}|[{report['name']} - #{count}]>"
                 count += 1
         else:
@@ -32,22 +32,22 @@ def lambda_handler(event, context):
     in_week = today + datetime.timedelta(days=7)
 
     data = event
-    gh_link = data['github']['gh_link']
-    codebuild_link = data['codebuild_link']
+    gh_link = data["github"]["gh_link"]
+    codebuild_link = data["codebuild_link"]
 
-    github_commit_author = data['github']['author']
-    github_commit_name = data['github']['name']
-    github_commit_sha = data['github']['sha']
+    github_commit_author = data["github"]["author"]
+    github_commit_name = data["github"]["name"]
+    github_commit_sha = data["github"]["sha"]
 
     codebuild_logs_link = f"<{codebuild_link}|CodeBuild Logs>"
     github_commit_link = f"<{gh_link}|{github_commit_sha[:7]}>"
 
-    build_succeeding = data['build_succeeding']
+    build_succeeding = data["build_succeeding"]
 
     if build_succeeding == "1":
         return
 
-    tests = data['tests']
+    tests = data["tests"]
 
     reports_message = ""
 
@@ -71,14 +71,14 @@ def lambda_handler(event, context):
         "source": "custom",
         "content": {
             "description": description,
-        }
+        },
     }
 
     try:
         response = client.publish(
             TopicArn=sns_topic_arn,
-            MessageStructure='json',
-            Message=json.dumps({'default': json.dumps(message_to_sns)}),
+            MessageStructure="json",
+            Message=json.dumps({"default": json.dumps(message_to_sns)}),
         )
         return response
     except client.exceptions.InvalidParameterException as e:

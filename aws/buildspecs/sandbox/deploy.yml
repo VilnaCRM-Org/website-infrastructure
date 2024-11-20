@@ -5,16 +5,16 @@ phases:
     runtime-versions:
       nodejs: $NODEJS_VERSION
     commands:
-      - 'bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh'
-      - 'cd ${WEBSITE_DIR:-/codebuild-user/website}'
-      - 'sudo apt update'
+      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh"
+      - "cd ${WEBSITE_DIR:-/codebuild-user/website}"
+      - "sudo apt update"
       - 'sudo apt install gh -y || { echo "Failed to install GitHub CLI"; exit 1; }'
 
   build:
     commands:
-      - 'echo #### Build Project'
+      - "echo #### Build Project"
       - 'make build || { echo "Build failed"; exit 1; }'
-      - 'echo #### Deploy Project'
+      - "echo #### Deploy Project"
       - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
-      - 'echo #### Create pull request comment'
-      - 'bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh'
+      - "echo #### Create pull request comment"
+      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh"

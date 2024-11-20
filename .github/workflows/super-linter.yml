@@ -2,7 +2,7 @@ name: Static analysis and fixers
 
 on:
   pull_request:
-    branches: ['main']
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -57,7 +57,7 @@ jobs:
         with:
           branch: ${{ github.event.pull_request.head.ref || github.head_ref ||
             github.ref }}
-          commit_message: 'chore(#${{ toJSON(github.event.number) }}): fix linting issues'
+          commit_message: "chore(#${{ toJSON(github.event.number) }}): fix linting issues"
           commit_user_name: super-linter
           commit_user_email: super-linter@super-linter.dev
           token: ${{ steps.generate_token.outputs.token }}

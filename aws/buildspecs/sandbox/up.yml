@@ -5,12 +5,12 @@ phases:
     runtime-versions:
       python: $PYTHON_VERSION
     commands:
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh"
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}'
-      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/s3_sandbox_configuration.py'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_creation.sh'
+      - "cd ${CODEBUILD_SRC_DIR}"
+      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/s3_sandbox_configuration.py"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_creation.sh"
 artifacts:
   files:
-    - '**/*'
+    - "**/*"

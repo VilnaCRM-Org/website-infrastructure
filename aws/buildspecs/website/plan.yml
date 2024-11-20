@@ -5,23 +5,23 @@ phases:
     runtime-versions:
       ruby: $RUBY_VERSION
     commands:
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh'
-      - 'dnf install -y yum-utils'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh'
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh"
+      - "dnf install -y yum-utils"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/terraform_installation.sh"
   build:
     commands:
-      - 'cd ${CODEBUILD_SRC_DIR}'
-      - 'echo ## TERRASPACE PLAN : Generate the Terraform Plan'
+      - "cd ${CODEBUILD_SRC_DIR}"
+      - "echo ## TERRASPACE PLAN : Generate the Terraform Plan"
       - 'make terraspace-plan-file stack="website" out="website.plan"'
 artifacts:
   files:
-    - '**/*'
+    - "**/*"
 
 cache:
   paths:
-    - '/bin'
-    - '/usr/local/bin'
-    - '/root/.terraform'
-    - '/root/.cache'
-    - '/root/.gem'
-    - '/usr/local/bundle'
+    - "/bin"
+    - "/usr/local/bin"
+    - "/root/.terraform"
+    - "/root/.cache"
+    - "/root/.gem"
+    - "/usr/local/bundle"

@@ -6,31 +6,31 @@ phases:
       nodejs: $NODEJS_VERSION
       python: $PYTHON_VERSION
     commands:
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
-      - 'cd /codebuild-user/website'
-      - 'echo #### Owner Change'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh'
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
+      - "cd /codebuild-user/website"
+      - "echo #### Owner Change"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
 
   build:
-    run-as: 'codebuild-user'
+    run-as: "codebuild-user"
     commands:
-      - 'echo #### Set up environment'
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh'
-      - 'echo #### Running Unit Test' # Reports folder: coverage/lcov-report/
-      - 'export UNIT_RUN=true && make test-unit'
+      - "echo #### Set up environment"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
+      - "echo #### Running Unit Test" # Reports folder: coverage/lcov-report/
+      - "export UNIT_RUN=true && make test-unit"
 
     finally:
-      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py'
+      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
 
 artifacts:
   files:
-    - '/codebuild-user/website/coverage/**/*'
+    - "/codebuild-user/website/coverage/**/*"
 
 cache:
   paths:
-    - '/bin'
-    - '/usr/local/bin'
-    - '/codebuild-user/website/node_modules'
-    - '/root/.cache'
-    - '/usr/local/bundle'
+    - "/bin"
+    - "/usr/local/bin"
+    - "/codebuild-user/website/node_modules"
+    - "/root/.cache"
+    - "/usr/local/bundle"

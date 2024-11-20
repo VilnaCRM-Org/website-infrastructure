@@ -11,10 +11,10 @@
 
 ## Overview
 
-This documentation guides you through the configuration of a GitHub Actions workflow 
-that automates the rotation of a GitHub token. The workflow uses a GitHub App to 
-generate a new GitHub token and stores it securely in AWS Secrets Manager. It is 
-designed to run on a weekly schedule or can be triggered manually. This setup ensures 
+This documentation guides you through the configuration of a GitHub Actions workflow
+that automates the rotation of a GitHub token. The workflow uses a GitHub App to
+generate a new GitHub token and stores it securely in AWS Secrets Manager. It is
+designed to run on a weekly schedule or can be triggered manually. This setup ensures
 that sensitive tokens are regularly refreshed to maintain security best practices.
 
 ### Why Token Rotation is Important

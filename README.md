@@ -99,7 +99,7 @@ If you don\`t need Slack Notification, just set `create_slack_notification` in `
 
 **Otherwise,** you will need Workspace ID and Channel ID`s from your Slack.
 
-Channels that you will need: 
+Channels that you will need:
 - Deployments Notification Channel.
 - Reports Channel.
 - CI/CD Alerts Channel.
@@ -111,7 +111,7 @@ To get them you need:
 
 2. Once you're signed in, navigate to your primary workspace page and find the URL in the top search bar.
 
-**The URL should follow this format: https://app.slack.com/client/T111111L222/C3333333ZPF**
+**The URL should follow this format: <https://app.slack.com/client/T111111L222/C3333333ZPF>**
 
 The string of letters and numbers beginning with **"T"** is your workspace ID.
 
@@ -121,7 +121,7 @@ The string of letters and numbers beginning with **"C"** is your channel ID.(Als
 
 ### Local machine software requirements
 
-Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine. 
+Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine.
 You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project locally using this OS. Follow the guides specified in the links.
 
 Necessary Terraform Version for the Terraspace is 1.4.7.
@@ -143,7 +143,7 @@ In case you are using any other region, please respecify it in the `tfvars`. Als
 
 After you can move to the next step.
 
-### Environmental variables 
+### Environmental variables
 
 Also before running you need to set up some local variables:
 - **TF_VAR_SLACK_WORKSPACE_ID** - ID of your Slack workspace.
@@ -184,9 +184,9 @@ Run the command for each pipeline specifying its name, see the list of `make` po
 AWS Management Console Instructions:
 Before running, make sure you have applied the changes made earlier.
 
-Search -> Codepipeline -> Pipelines -> Select a pipeline using the checkbox on the left -> Release change -> Release 
+Search -> Codepipeline -> Pipelines -> Select a pipeline using the checkbox on the left -> Release change -> Release
 
-Follow these steps for each pipeline. 
+Follow these steps for each pipeline.
 
 ## Using make
 

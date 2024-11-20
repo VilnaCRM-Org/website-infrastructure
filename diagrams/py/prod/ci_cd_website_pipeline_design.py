@@ -8,7 +8,11 @@ from diagrams.aws.integration import SNS
 from diagrams.saas.chat import Slack
 from diagrams.aws.network import CF
 
-with Diagram("\nCI/CD Website pipeline Production Design VilnaCRM", show=False, filename="../../img/prod/ci_cd_website_pipeline_design"):
+with Diagram(
+    "\nCI/CD Website pipeline Production Design VilnaCRM",
+    show=False,
+    filename="../../img/prod/ci_cd_website_pipeline_design",
+):
     gh = Github("Github Repository")
     codepipe = Codepipeline("AWS CodePipeline")
     s3 = SimpleStorageServiceS3("AWS S3 \n Artifact Bucket")
@@ -18,20 +22,29 @@ with Diagram("\nCI/CD Website pipeline Production Design VilnaCRM", show=False, 
     sns = SNS("AWS SNS \n Notify about \n pipeline progress")
 
     with ci_cd_website_codepipeline:
-        builders = [Codebuild("AWS CodeBuild \n batch-unit-mutation-lint"),
-                    Codebuild("AWS CodeBuild \n deploy"),
-                    Codebuild("AWS CodeBuild \n healthcheck"),
-                    Codebuild("AWS CodeBuild \n batch-lhci-leak"),
-                    Codebuild("AWS CodeBuild \n batch-pw-load"),
-                    Codebuild("AWS CodeBuild \n release"),
-                    ]
+        builders = [
+            Codebuild("AWS CodeBuild \n batch-unit-mutation-lint"),
+            Codebuild("AWS CodeBuild \n deploy"),
+            Codebuild("AWS CodeBuild \n healthcheck"),
+            Codebuild("AWS CodeBuild \n batch-lhci-leak"),
+            Codebuild("AWS CodeBuild \n batch-pw-load"),
+            Codebuild("AWS CodeBuild \n release"),
+        ]
 
     gh >> codepipe
 
-    builders[0] >> builders[1] >> builders[2] >> builders[3] >> builders[4] >> builders[5]
+    (
+        builders[0]
+        >> builders[1]
+        >> builders[2]
+        >> builders[3]
+        >> builders[4]
+        >> builders[5]
+    )
 
     builders[1] >> SimpleStorageServiceS3(
-        "AWS S3 \n Website Static Files Staging Bucket")
+        "AWS S3 \n Website Static Files Staging Bucket"
+    )
 
     builders[5] >> CF("AWS Cloudfront \nDistributions Update")
 

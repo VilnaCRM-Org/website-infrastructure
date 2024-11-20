@@ -13,7 +13,7 @@ from diagrams.custom import Custom
 with Diagram(
     "\nFrontend Infra Design VilnaCRM",
     show=False,
-    filename="../img/frontend_infra_design"
+    filename="../img/frontend_infra_design",
 ):
 
     uptimerobot = Custom("\n\n\nUptimeRobot", "../src/uptimerobot.png")
@@ -31,7 +31,16 @@ with Diagram(
     slack = Slack("Slack \n Notifications")
 
     Users("Customers") >> route53
-    uptimerobot >> route53 >> cloudfront >> lamb >> cloudwatch >> snsCloudwatch >> chatbot >> slack
+    (
+        uptimerobot
+        >> route53
+        >> cloudfront
+        >> lamb
+        >> cloudwatch
+        >> snsCloudwatch
+        >> chatbot
+        >> slack
+    )
     lamb >> s3 >> cloudwatch
 
     s3 >> lambNotifications >> snsS3 >> chatbot >> slack

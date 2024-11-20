@@ -7,7 +7,11 @@ from diagrams.aws.management import Chatbot
 from diagrams.aws.integration import SNS
 from diagrams.saas.chat import Slack
 
-with Diagram("\nCI/CD Infrastructure Terraform pipeline Test Design VilnaCRM", show=False, filename="../../img/test/ci_cd_infra_pipeline_design"):
+with Diagram(
+    "\nCI/CD Infrastructure Terraform pipeline Test Design VilnaCRM",
+    show=False,
+    filename="../../img/test/ci_cd_infra_pipeline_design",
+):
     gh = Github("Github Repository")
     codepipe = Codepipeline("AWS CodePipeline")
     s3 = SimpleStorageServiceS3("AWS S3 \n Artifact Bucket")
@@ -17,9 +21,11 @@ with Diagram("\nCI/CD Infrastructure Terraform pipeline Test Design VilnaCRM", s
     sns = SNS("AWS SNS \n Notify about \n pipeline progress")
 
     with ci_cd_infra_codepipeline:
-        builders = [Codebuild("AWS CodeBuild \n terraspace validate"),
-                    Codebuild("AWS CodeBuild \n terraspace plan"),
-                    Codebuild("AWS CodeBuild \n terraspace up"),]
+        builders = [
+            Codebuild("AWS CodeBuild \n terraspace validate"),
+            Codebuild("AWS CodeBuild \n terraspace plan"),
+            Codebuild("AWS CodeBuild \n terraspace up"),
+        ]
 
     gh >> codepipe
 

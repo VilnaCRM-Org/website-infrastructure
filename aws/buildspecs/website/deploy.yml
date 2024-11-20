@@ -6,17 +6,17 @@ phases:
       nodejs: $NODEJS_VERSION
       python: $PYTHON_VERSION
     commands:
-      - '. ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh'
-      - 'cd /codebuild-user/website'
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
+      - "cd /codebuild-user/website"
 
   build:
     commands:
-      - 'echo #### Build Project'
-      - 'make build'
-      - 'echo #### Deploy Project'
-      - 'echo #### Turn Of Alarm Actions'
-      - 'aws cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME'
-      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/deploy_content.py'
-      - 'echo #### Turn On Alarm Actions'
-      - 'aws cloudwatch enable-alarm-actions --alarm-names $ALARM_NAME'
-      - 'python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/continuous_deployment_switch.py'
+      - "echo #### Build Project"
+      - "make build"
+      - "echo #### Deploy Project"
+      - "echo #### Turn Of Alarm Actions"
+      - "aws cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME"
+      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/deploy_content.py"
+      - "echo #### Turn On Alarm Actions"
+      - "aws cloudwatch enable-alarm-actions --alarm-names $ALARM_NAME"
+      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/continuous_deployment_switch.py"

@@ -2,7 +2,7 @@ name: security
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   checkov:

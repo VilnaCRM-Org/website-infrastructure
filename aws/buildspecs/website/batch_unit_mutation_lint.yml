@@ -2,13 +2,13 @@ batch:
   fast-fail: false
   build-list:
     - identifier: mutation
-      buildspec: './aws/buildspecs/website/batches/mutation.yml'
+      buildspec: "./aws/buildspecs/website/batches/mutation.yml"
       ignore-failure: false
 
     - identifier: unit
-      buildspec: './aws/buildspecs/website/batches/unit.yml'
+      buildspec: "./aws/buildspecs/website/batches/unit.yml"
       ignore-failure: false
 
     - identifier: lint
-      buildspec: './aws/buildspecs/website/batches/lint.yml'
+      buildspec: "./aws/buildspecs/website/batches/lint.yml"
       ignore-failure: false

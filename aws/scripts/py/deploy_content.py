@@ -2,22 +2,28 @@ import json
 import subprocess
 import os
 
-CLOUDFRONT_REGION = os.environ['CLOUDFRONT_REGION']
+CLOUDFRONT_REGION = os.environ["CLOUDFRONT_REGION"]
 
 
 def get_buckets():
     print("Getting buckets...")
     return {
-        "production": os.environ['BUCKET_NAME'],
-        "staging": os.environ['STAGING_BUCKET_NAME'],
+        "production": os.environ["BUCKET_NAME"],
+        "staging": os.environ["STAGING_BUCKET_NAME"],
     }
 
 
 def fetch_distributions():
     print("Fetching CloudFront distributions...")
     result = subprocess.check_output(
-        ['aws', 'cloudfront', 'list-distributions',
-         '--region', CLOUDFRONT_REGION, '--no-cli-pager']
+        [
+            "aws",
+            "cloudfront",
+            "list-distributions",
+            "--region",
+            CLOUDFRONT_REGION,
+            "--no-cli-pager",
+        ]
     )
     distributions = json.loads(result.decode())
     print(f"Fetched distributions: {distributions}")
@@ -48,7 +54,9 @@ def check_origins(origins):
 
 def deploy_files(bucket_name):
     print(f"Deploying files to bucket: {bucket_name}")
-    return subprocess.check_output(['aws', 's3', 'sync', './out', f's3://{bucket_name}'])
+    return subprocess.check_output(
+        ["aws", "s3", "sync", "./out", f"s3://{bucket_name}"]
+    )
 
 
 def main():
