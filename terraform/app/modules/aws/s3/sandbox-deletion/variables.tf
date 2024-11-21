@@ -20,3 +20,8 @@ variable "tags" {
   description = "A map of tags to assign to AWS resources"
   type        = map(string)
 }
+
+variable "s3_artifacts_bucket_files_deletion_days" {
+  description = "Expiring time of files in buckets for lifecycle configuration rule"
+  type        = number
+}

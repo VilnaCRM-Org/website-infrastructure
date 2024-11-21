@@ -12,7 +12,10 @@ module "s3_buckets" {
   source       = "../../modules/aws/s3/sandbox-deletion"
   project_name = var.project_name
   environment  = var.environment
-  tags         = var.tags
+
+  s3_artifacts_bucket_files_deletion_days = var.s3_artifacts_bucket_files_deletion_days
+
+  tags = var.tags
 }
 
 module "codebuild_sandbox_deletion" {
