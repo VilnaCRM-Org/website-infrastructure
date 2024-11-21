@@ -9,7 +9,7 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
         echo "Bucket $PROJECT_NAME-$BRANCH_NAME already exists."
     else
         echo "Bucket $PROJECT_NAME-$BRANCH_NAME does not exist. Creating bucket..."
-
+        
         if ! aws s3api create-bucket --bucket "$PROJECT_NAME-$BRANCH_NAME" --region "$AWS_DEFAULT_REGION" --create-bucket-configuration LocationConstraint="$AWS_DEFAULT_REGION"; then
             echo "Error: Failed to create bucket."
             exit 1
@@ -36,5 +36,13 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
         fi
 
         echo "Bucket $PROJECT_NAME-$BRANCH_NAME was successfully created and configured."
+
+        MARKER_PATH=".markers/bucket_created.txt"
+        echo "bucket_created=true" > bucket_created.txt
+        aws s3 cp bucket_created.txt s3://$PROJECT_NAME-$BRANCH_NAME/$MARKER_PATH --acl private || {
+            echo "Error: Failed to upload marker file."
+            exit 1
+        }
+        echo "Marker file uploaded to s3://$PROJECT_NAME-$BRANCH_NAME/$MARKER_PATH"
     fi
 fi
