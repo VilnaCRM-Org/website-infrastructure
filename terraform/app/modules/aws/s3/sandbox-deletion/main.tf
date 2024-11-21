@@ -58,7 +58,7 @@ resource "aws_s3_bucket_public_access_block" "access_logs_bucket" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "codepipeline_bucket_lifecycle_configuration" {
-  depends_on = [ aws_s3_bucket.codepipeline_bucket ]
+  depends_on = [aws_s3_bucket.codepipeline_bucket]
 
   bucket = aws_s3_bucket.codepipeline_bucket.id
 
