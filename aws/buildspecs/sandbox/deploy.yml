@@ -22,7 +22,6 @@ phases:
         if aws s3api head-object --bucket $PROJECT_NAME-$BRANCH_NAME --key $MARKER_PATH > /dev/null 2>&1; then
           echo "Bucket was created in this run. Proceeding to create PR comment."
           bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh
-          # Удаляем маркерный файл после создания комментария
           aws s3 rm s3://$PROJECT_NAME-$BRANCH_NAME/$MARKER_PATH || { echo "Failed to delete marker file"; exit 1; }
         else
           echo "Bucket already existed. Skipping PR comment creation."

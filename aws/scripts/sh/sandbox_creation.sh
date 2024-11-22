@@ -39,7 +39,7 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
 
         MARKER_PATH=".markers/bucket_created.txt"
         echo "bucket_created=true" > bucket_created.txt
-        aws s3 cp bucket_created.txt s3://$PROJECT_NAME-$BRANCH_NAME/$MARKER_PATH --acl private || {
+        aws s3 cp bucket_created.txt s3://"$PROJECT_NAME"-"$BRANCH_NAME"/$MARKER_PATH --acl private || {
             echo "Error: Failed to upload marker file."
             exit 1
         }
