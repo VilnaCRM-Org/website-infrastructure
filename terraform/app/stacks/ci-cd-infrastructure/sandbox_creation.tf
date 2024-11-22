@@ -36,6 +36,8 @@ module "sandbox_codepipeline_iam_role" {
   tags = var.tags
 
   depends_on = [module.sandbox_policies]
+
+  BRANCH_NAME = var.BRANCH_NAME
 }
 
 module "sandbox_codebuild" {
@@ -61,7 +63,7 @@ module "sandbox_codebuild" {
 module "sandbox_codepipeline" {
   source = "../../modules/aws/codepipeline/sandbox"
 
-  codepipeline_name = "${local.project_name}-pipeline"
+  codepipeline_name = "${var.sandbox_buildspecs}-creation"
 
   project_name = local.project_name
 

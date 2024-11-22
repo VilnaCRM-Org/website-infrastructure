@@ -34,7 +34,7 @@ module "codebuild_sandbox_deletion" {
 module "codepipeline_sandbox_deletion" {
   source = "../../modules/aws/codepipeline/sandbox"
 
-  codepipeline_name = "${local.project_name}-deletion"
+  codepipeline_name = "${var.sandbox_buildspecs}-deletion"
 
   project_name = local.project_name
 

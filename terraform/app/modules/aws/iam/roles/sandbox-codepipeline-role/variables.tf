@@ -92,3 +92,12 @@ variable "github_token_secret_name" {
   type        = string
   default     = "github-token"
 }
+
+variable "BRANCH_NAME" {
+  description = "Name of the branch"
+  type        = string
+  validation {
+    condition     = can(regex("^[\\w.-]+(/[\\w.-]+)*$", var.BRANCH_NAME))
+    error_message = "Branch name must be a valid Git branch name (e.g., 'main', 'feature/new-sandbox', 'bugfix/issue-123')"
+  }
+}
