@@ -24,6 +24,7 @@ module "sandbox_codepipeline_iam_role" {
   codepipeline_iam_role_name = "${local.project_name}-codepipeline-role"
   source_repo_owner          = var.source_repo_owner
   source_repo_name           = var.source_repo_name
+  BRANCH_NAME                = var.BRANCH_NAME
 
   region      = local.region
   environment = var.environment
@@ -36,8 +37,6 @@ module "sandbox_codepipeline_iam_role" {
   tags = var.tags
 
   depends_on = [module.sandbox_policies]
-
-  BRANCH_NAME = var.BRANCH_NAME
 }
 
 module "sandbox_codebuild" {

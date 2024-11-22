@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["${var.s3_bucket_arn}/*",
       "${var.s3_bucket_arn}",
-      "arn:aws:s3:::${var.project_name}-${var.BRANCH_NAME}}",
+      "arn:aws:s3:::${var.project_name}-${var.BRANCH_NAME}",
     "arn:aws:s3:::${var.project_name}-${var.BRANCH_NAME}/*"]
   }
 
