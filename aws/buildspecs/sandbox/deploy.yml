@@ -10,7 +10,8 @@ phases:
       - "sudo apt update"
       - 'sudo apt install gh -y || { echo "Failed to install GitHub CLI"; exit 1; }'
       - |
-        if ! gh auth login --with-token < <(aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text); then
+        GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text)
+        if ! echo "$GITHUB_TOKEN" | gh auth login --with-token; then
           echo "GitHub authentication failed"
           exit 1
         fi
