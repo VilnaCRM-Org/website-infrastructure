@@ -5,7 +5,7 @@ phases:
     runtime-versions:
       nodejs: $NODEJS_VERSION
     commands:
-      - 'bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh'
+      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh"
       - "cd ${WEBSITE_DIR:-/codebuild-user/website}"
       - "sudo apt update"
       - 'sudo apt install gh -y || { echo "Failed to install GitHub CLI"; exit 1; }'
@@ -27,4 +27,4 @@ phases:
         fi
       - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
       - "echo #### Check for bucket creation and decide on PR comment"
-      - 'bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh'
+      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh"
