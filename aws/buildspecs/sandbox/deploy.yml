@@ -5,22 +5,26 @@ phases:
     runtime-versions:
       nodejs: $NODEJS_VERSION
     commands:
-      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh"
+      - 'bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh'
       - "cd ${WEBSITE_DIR:-/codebuild-user/website}"
       - "sudo apt update"
       - 'sudo apt install gh -y || { echo "Failed to install GitHub CLI"; exit 1; }'
+      - |
+        if ! gh auth login --with-token < <(aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text); then
+          echo "GitHub authentication failed"
+          exit 1
+        fi
 
   build:
     commands:
       - "echo #### Build Project"
       - 'make build || { echo "Build failed"; exit 1; }'
-      - "echo #### Deploy Project"
+      - |
+        COMMENT_BODY="Deployment has started for version: http://$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com"
+        if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
+          echo "Failed to add comment to PR"
+          exit 1
+        fi
       - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
       - "echo #### Check for bucket creation and decide on PR comment"
-      - |
-        if aws s3api head-bucket --bucket $PROJECT_NAME-$BRANCH_NAME 2>/dev/null; then
-          echo "Bucket $PROJECT_NAME-$BRANCH_NAME already exists. Skipping PR comment creation."
-        else
-          echo "Bucket was created in this run. Proceeding to create PR comment."
-          bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh
-        fi
+      - 'bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh'
