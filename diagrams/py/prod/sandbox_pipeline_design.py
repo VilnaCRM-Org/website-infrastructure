@@ -1,4 +1,4 @@
-from diagrams import Cluster, Diagram, Edge
+from diagrams import Cluster, Diagram
 from diagrams.onprem.vcs import Github
 from diagrams.aws.devtools import Codepipeline, Codebuild
 from diagrams.aws.storage import SimpleStorageServiceS3

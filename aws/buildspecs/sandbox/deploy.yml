@@ -18,7 +18,7 @@ phases:
   build:
     commands:
       - |
-        COMMENT_BODY="Deployment has started for version: http://$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com 
+        COMMENT_BODY="Deployment has started for version: http://$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com
         Please wait until the latest version is ready"
         if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
           echo "Failed to add comment to PR"
