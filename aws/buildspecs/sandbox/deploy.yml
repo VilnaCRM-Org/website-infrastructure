@@ -18,11 +18,9 @@ phases:
       - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
       - "echo #### Check for bucket creation and decide on PR comment"
       - |
-        MARKER_PATH=".markers/bucket_created.txt"
-        if aws s3api head-object --bucket $PROJECT_NAME-$BRANCH_NAME --key $MARKER_PATH > /dev/null 2>&1; then
+        if aws s3api head-bucket --bucket $PROJECT_NAME-$BRANCH_NAME 2>/dev/null; then
+          echo "Bucket $PROJECT_NAME-$BRANCH_NAME already exists. Skipping PR comment creation."
+        else
           echo "Bucket was created in this run. Proceeding to create PR comment."
           bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh
-          aws s3 rm s3://$PROJECT_NAME-$BRANCH_NAME/$MARKER_PATH || { echo "Failed to delete marker file"; exit 1; }
-        else
-          echo "Bucket already existed. Skipping PR comment creation."
         fi
