@@ -15,7 +15,10 @@ phases:
       - "rustc --version"
       - "cargo --version"
       - "cargo install hurl"
-      - 'sudo apt install gh -y || { echo "Failed to install GitHub CLI"; exit 1; }'
+      - sudo yum install -y git
+      - type -p curl >/dev/null || sudo yum install -y curl
+      - curl -fsSL https://cli.github.com/packages/github-release-cli.rpm -o github-release-cli.rpm
+      - sudo yum install -y ./github-release-cli.rpm
 
   build:
     commands:
