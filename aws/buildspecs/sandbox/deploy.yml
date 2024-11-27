@@ -18,7 +18,7 @@ phases:
   build:
     commands:
       - |
-        COMMENT_BODY="The deployment process for the sandbox has started. 
+        COMMENT_BODY="The deployment process for the sandbox has started.
         Please wait until the latest version is ready"
         if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
           echo "Failed to add comment to PR"
