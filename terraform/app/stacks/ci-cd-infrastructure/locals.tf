@@ -296,8 +296,8 @@ locals {
         env_variables = merge(
           local.common_sandbox_env_variables,
           {
-            "BRANCH_NAME"        = var.BRANCH_NAME,
-            "GITHUB_REPOSITORY"  = "${var.source_repo_owner}/${var.website_content_repo_name}",
+            "BRANCH_NAME"       = var.BRANCH_NAME,
+            "GITHUB_REPOSITORY" = "${var.source_repo_owner}/${var.website_content_repo_name}",
           }
         )
       },
