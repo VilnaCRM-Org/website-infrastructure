@@ -1,20 +1,8 @@
 version: 0.2
 
-env:
-  variables:
-    HURL_VERSION: "4.2.0"
-    HURL: "./target/release/hurl-installation"
-    HURL_DIR: "./hurl"
-
 phases:
   install:
     commands:
-      - "dnf install -y pkg-config gcc openssl-devel libxml2-devel"
-      - "curl https://sh.rustup.rs -sSf | sh -s -- -y"
-      - "source $HOME/.cargo/env"
-      - "rustc --version"
-      - "cargo --version"
-      - "cargo install hurl"
       - "echo 'Installing GitHub CLI (gh)...'"
       - "curl -fsSL https://cli.github.com/packages/rpm/gh-cli.repo | sudo tee /etc/yum.repos.d/gh-cli.repo"
       - "sudo yum install -y gh"
@@ -25,13 +13,14 @@ phases:
       - |
         echo "## Running Health Check for Sandbox Bucket..."
         BUCKET_URL="https://${PROJECT_NAME}-${BRANCH_NAME}.s3.${AWS_DEFAULT_REGION}.amazonaws.com"
-        if ! hurl --test --verbose --variable website_url=$BUCKET_URL ${CODEBUILD_SRC_DIR}/${HURL_DIR}/healthcheck.hurl; then
+
+        if ! curl -sSf "$BUCKET_URL" > /dev/null; then
           echo "Health check failed. Adding comment to PR..."
-          if ! gh auth status; then
-            aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text | gh auth login --with-token || {
-              echo "GitHub authentication failed"
-              exit 1
-            }
+
+          if aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text | gh auth login --with-token || {
+            echo "GitHub authentication failed"
+            exit 1
+          }
           fi
 
           COMMENT_BODY=":x: Health check failed for the sandbox bucket.
