@@ -17,10 +17,9 @@ phases:
         if ! curl -sSf "$BUCKET_URL" > /dev/null; then
           echo "Health check failed. Adding comment to PR..."
 
-          if aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text | gh auth login --with-token || {
+          if aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text | gh auth login --with-token; then
             echo "GitHub authentication failed"
             exit 1
-          }
           fi
 
           COMMENT_BODY=":x: Health check failed for the sandbox bucket.
