@@ -296,9 +296,8 @@ locals {
         env_variables = merge(
           local.common_sandbox_env_variables,
           {
-            "PROJECT_NAME"       = var.sandbox_project_name,
             "BRANCH_NAME"        = var.BRANCH_NAME,
-            "AWS_DEFAULT_REGION" = var.region
+            "GITHUB_REPOSITORY"  = "${var.source_repo_owner}/${var.website_content_repo_name}",
           }
         )
       },
