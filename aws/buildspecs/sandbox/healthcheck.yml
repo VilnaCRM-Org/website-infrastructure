@@ -15,6 +15,7 @@ phases:
       - "rustc --version"
       - "cargo --version"
       - "cargo install hurl"
+      - 'sudo apt install gh -y || { echo "Failed to install GitHub CLI"; exit 1; }'
 
   build:
     commands:
