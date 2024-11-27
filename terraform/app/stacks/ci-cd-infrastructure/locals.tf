@@ -312,7 +312,7 @@ locals {
         env_variables = {
           "PROJECT_NAME"       = var.sandbox_project_name,
           "BRANCH_NAME"        = var.BRANCH_NAME
-          "AWS_DEFAULT_REGION" = var.region
+          "AWS_DEFAULT_REGION" = var.region,
         }
       },
     { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/delete.yml" })

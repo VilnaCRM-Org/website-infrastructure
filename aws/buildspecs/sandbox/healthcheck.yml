@@ -25,7 +25,7 @@ phases:
           COMMENT_BODY=":x: Health check failed for the sandbox bucket.
           Please check the CodeBuild logs for detailed error information."
 
-          if ! gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
+          if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
             echo "Failed to add error comment to PR"
             exit 1
           fi
