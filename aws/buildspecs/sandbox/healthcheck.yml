@@ -27,19 +27,23 @@ phases:
         BUCKET_URL="https://${PROJECT_NAME}-${BRANCH_NAME}.s3.${AWS_DEFAULT_REGION}.amazonaws.com"
         if ! hurl --test --verbose --variable website_url=$BUCKET_URL ${CODEBUILD_SRC_DIR}/${HURL_DIR}/healthcheck.hurl; then
           echo "Health check failed. Adding comment to PR..."
-          aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text | gh auth login --with-token || {
-            echo "GitHub authentication failed"
-            exit 1
-          }
+          if ! gh auth status; then
+            aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text | gh auth login --with-token || {
+              echo "GitHub authentication failed"
+              exit 1
+            }
+          fi
+
           COMMENT_BODY=":x: Health check failed for the sandbox bucket.
           Please check the CodeBuild logs for detailed error information."
-          if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
+
+          if ! gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
             echo "Failed to add error comment to PR"
             exit 1
           fi
           exit 1
         else
-          echo "Health check passed. Running сreate_pr_comment script..."
+          echo "Health check passed. Running create_pr_comment script..."
           bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh || {
             echo "Failed to execute create_pr_comment.sh"
             exit 1
