@@ -15,10 +15,10 @@ phases:
       - "rustc --version"
       - "cargo --version"
       - "cargo install hurl"
-      - sudo yum install -y git
-      - type -p curl >/dev/null || sudo yum install -y curl
-      - sudo yum-config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
-      - sudo yum install -y gh
+      - "echo 'Installing GitHub CLI (gh)...'"
+      - "curl -fsSL https://cli.github.com/packages/rpm/gh-cli.repo | sudo tee /etc/yum.repos.d/gh-cli.repo"
+      - "sudo yum install -y gh"
+      - "gh --version"
 
   build:
     commands:
@@ -32,7 +32,7 @@ phases:
             exit 1
           }
           COMMENT_BODY=":x: Health check failed for the sandbox bucket.
-          Please investigate the issue."
+          Please check the CodeBuild logs for detailed error information."
           if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
             echo "Failed to add error comment to PR"
             exit 1
