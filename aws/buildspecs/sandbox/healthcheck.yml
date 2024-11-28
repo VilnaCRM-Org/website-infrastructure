@@ -1,5 +1,10 @@
 version: 0.2
 
+env:
+  variables:
+    HURL_DIR: "./hurl"
+    HURL_FILE: "healthcheck.hurl"
+
 phases:
   install:
     commands:
@@ -7,14 +12,24 @@ phases:
       - "curl -fsSL https://cli.github.com/packages/rpm/gh-cli.repo | sudo tee /etc/yum.repos.d/gh-cli.repo"
       - "sudo yum install -y gh"
       - "gh --version"
+      - "echo 'Installing Hurl...'"
+      - "dnf install -y pkg-config gcc openssl-devel libxml2-devel"
+      - "curl https://sh.rustup.rs -sSf | sh -s -- -y"
+      - "source $HOME/.cargo/env"
+      - "rustc --version"
+      - "cargo --version"
+      - "cargo install hurl"
 
   build:
     commands:
       - |
-        echo "## Running Health Check for Sandbox Bucket..."
+        echo "## Running Health Check for Website and S3 Bucket with Hurl..."
         BUCKET_URL="https://${PROJECT_NAME}-${BRANCH_NAME}.s3.${AWS_DEFAULT_REGION}.amazonaws.com"
+        echo "Bucket URL: $BUCKET_URL"
 
-        if ! curl -sSf "$BUCKET_URL" > /dev/null; then
+        HURL_FILE_PATH="${CODEBUILD_SRC_DIR}/${HURL_DIR}/${HURL_FILE}"
+
+        if ! hurl --test --verbose --variable bucket_url="$BUCKET_URL" "$HURL_FILE_PATH"; then
           echo "Health check failed. Adding comment to PR..."
 
           if aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text | gh auth login --with-token; then
@@ -22,7 +37,7 @@ phases:
             exit 1
           fi
 
-          COMMENT_BODY=":x: Health check failed for the sandbox bucket.
+          COMMENT_BODY=":x: Health check failed for the website or bucket.
           Please check the CodeBuild logs for detailed error information."
 
           if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
