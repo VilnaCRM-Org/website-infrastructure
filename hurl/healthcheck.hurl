@@ -8,9 +8,3 @@ certificate "Subject" == "CN = {{website_url}}"
 certificate "Issuer" matches "C = US, O = Amazon, CN = Amazon RSA 2048 M[0-9]+"
 certificate "Expire-Date" daysAfterNow > 30
 certificate "Serial-Number" matches /[\da-f]+/
-
-GET {{bucket_url}}
-HTTP 200
-[Asserts]
-header "Content-Type" exists
-body matches "<ListBucketResult"

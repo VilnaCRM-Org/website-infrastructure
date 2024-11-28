@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     HURL_DIR: "./hurl"
-    HURL_FILE: "healthcheck.hurl"
+    HURL_FILE: "sandbox_healthcheck.hurl"
 
 phases:
   install:
@@ -23,22 +23,15 @@ phases:
   build:
     commands:
       - |
-        echo "## Preparing Health Check for S3 Bucket and Website..."
+        echo "## Preparing Health Check for S3 Bucket..."
         BUCKET_URL="https://${PROJECT_NAME}-${BRANCH_NAME}.s3.${AWS_DEFAULT_REGION}.amazonaws.com"
 
-        if [ -z "$WEBSITE_URL" ]; then
-          echo "WEBSITE_URL is not set. Skipping website check."
-          WEBSITE_URL="" # Передаем пустую строку
-        fi
-
         echo "Bucket URL: $BUCKET_URL"
-        echo "Website URL: $WEBSITE_URL"
 
         HURL_FILE_PATH="${CODEBUILD_SRC_DIR}/${HURL_DIR}/${HURL_FILE}"
 
         echo "## Running Health Check with Hurl..."
         if ! hurl --test --verbose \
-          --variable website_url="$WEBSITE_URL" \
           --variable bucket_url="$BUCKET_URL" \
           "$HURL_FILE_PATH"; then
           echo "Health check failed. Adding comment to PR..."
