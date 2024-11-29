@@ -96,10 +96,10 @@ module "ci_cd_website_codepipeline" {
 }
 
 module "ci_cd_pipeline_role" {
-  source        = "../../modules/aws/iam/oidc/pipeline-trigger-role"
-  role_name     = "${var.website_content_repo_name}-deploy-trigger-role"
-  github_owner  = var.source_repo_owner
-  github_repo   = var.source_repo_name
-  branch        = var.source_repo_branch
-  pipeline_arn  = "arn:aws:codepipeline:${var.region}:${local.account_id}:ci-cd-website-prod-pipeline"
+  source       = "../../modules/aws/iam/oidc/pipeline-trigger-role"
+  role_name    = "${var.website_content_repo_name}-deploy-trigger-role"
+  github_owner = var.source_repo_owner
+  github_repo  = var.source_repo_name
+  branch       = var.source_repo_branch
+  pipeline_arn = "arn:aws:codepipeline:${var.region}:${local.account_id}:ci-cd-website-prod-pipeline"
 }
