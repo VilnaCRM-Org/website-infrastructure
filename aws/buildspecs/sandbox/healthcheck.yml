@@ -52,8 +52,8 @@ phases:
           exit 1
         else
           echo "Health check passed. Running create_pr_comment script..."
-          bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh || {
-            echo "Failed to execute create_pr_comment.sh"
-            exit 1
-          }
+          if ! bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh; then
+             echo "Failed to execute create_pr_comment.sh"
+             exit 1
+          fi
         fi

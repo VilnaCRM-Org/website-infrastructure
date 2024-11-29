@@ -96,6 +96,6 @@ module "ci_cd_infra_pipeline_role" {
   role_name    = "${var.source_repo_name}-trigger-role"
   github_owner = var.source_repo_owner
   github_repo  = var.source_repo_name
-  branch       = "*"
-  pipeline_arn = "arn:aws:codepipeline:${var.region}:${local.account_id}:ci-cd-infra-test-pipeline"
+  branch       = var.source_repo_branch
+  pipeline_arn = module.ci_cd_infra_codepipeline.arn
 }

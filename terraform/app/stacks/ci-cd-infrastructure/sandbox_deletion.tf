@@ -62,7 +62,7 @@ module "codepipeline_sandbox_deletion" {
 }
 
 module "sandbox_deletion_pipeline_role" {
-  source       = "../../modules/aws/iam/oidc/sandbox-trigger-role"
+  source       = "../../modules/aws/iam/oidc/pipeline-trigger-role"
   role_name    = "${var.sandbox_buildspecs}-deletion-trigger-role"
   github_owner = var.source_repo_owner
   github_repo  = var.source_repo_name
