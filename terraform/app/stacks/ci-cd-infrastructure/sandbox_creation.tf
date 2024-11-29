@@ -95,5 +95,5 @@ module "sandbox_creation_pipeline_role" {
   github_owner = var.source_repo_owner
   github_repo  = var.source_repo_name
   branch       = var.source_repo_branch
-  pipeline_arn = "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-creation"
+  pipeline_arn = module.sandbox_codepipeline.arn
 }
