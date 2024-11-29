@@ -60,3 +60,12 @@ module "codepipeline_sandbox_deletion" {
 
   depends_on = [module.s3_buckets, module.codebuild_sandbox_deletion, module.iam_roles]
 }
+
+module "sandbox_deletion_pipeline_role" {
+  source        = "../../modules/aws/iam/oidc/sandbox-trigger-role"
+  role_name     = "${var.sandbox_buildspecs}-deletion-trigger-role"
+  github_owner  = var.source_repo_owner
+  github_repo   = var.source_repo_name
+  branch        = var.source_repo_branch
+  pipeline_arn  = "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-deletion"
+}

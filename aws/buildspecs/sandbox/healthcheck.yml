@@ -2,6 +2,7 @@ version: 0.2
 
 env:
   variables:
+    HURL_VERSION: "4.2.0"
     HURL_DIR: "./hurl"
     HURL_FILE: "sandbox_healthcheck.hurl"
 

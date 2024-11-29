@@ -90,3 +90,12 @@ module "ci_cd_infra_codepipeline" {
 
   depends_on = [module.ci_cd_infra_codebuild, module.ci_cd_infra_s3_artifacts_bucket]
 }
+
+module "ci_cd_infra_pipeline_role" {
+  source        = "../../modules/aws/iam/oidc/pipeline-trigger-role"
+  role_name     = "${var.source_repo_name}-trigger-role"
+  github_owner  = var.source_repo_owner
+  github_repo   = var.source_repo_name
+  branch        = "*"
+  pipeline_arn  = "arn:aws:codepipeline:${var.region}:${local.account_id}:ci-cd-infra-test-pipeline"
+}

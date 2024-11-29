@@ -88,3 +88,12 @@ module "sandbox_codepipeline" {
 
   depends_on = [module.sandbox_codebuild, module.sandbox_s3_artifacts_bucket]
 }
+
+module "sandbox_creation_pipeline_role" {
+  source        = "../../modules/aws/iam/oidc/sandbox-trigger-role"
+  role_name     = "${var.sandbox_buildspecs}-creation-trigger-role"
+  github_owner  = var.source_repo_owner
+  github_repo   = var.source_repo_name
+  branch        = var.source_repo_branch
+  pipeline_arn  = "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-creation"
+}
