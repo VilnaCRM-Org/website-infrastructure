@@ -5,7 +5,6 @@ module "github_token_secret" {
 
 module "github_token_policy" {
   source     = "../../modules/aws/iam/policies/github-token"
-  secret_arn = module.github_token_secret.secret_arn
 }
 
 module "github_actions_role" {

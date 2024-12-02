@@ -1,3 +1,7 @@
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
+
 resource "aws_iam_policy" "github_token_secrets_access_policy" {
   name        = var.policy_name
   description = "Policy allowing access to GitHub token stored in Secrets Manager"
@@ -17,7 +21,7 @@ resource "aws_iam_policy" "github_token_secrets_access_policy" {
           "secretsmanager:DescribeSecret"
         ],
         Effect   = "Allow",
-        Resource = var.secret_arn
+        Resource = ["arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:github-token-*"]
       }
     ]
   })
