@@ -4,7 +4,7 @@ module "github_token_secret" {
 }
 
 module "github_token_policy" {
-  source     = "../../modules/aws/iam/policies/github-token"
+  source = "../../modules/aws/iam/policies/github-token"
 }
 
 module "github_actions_role" {
