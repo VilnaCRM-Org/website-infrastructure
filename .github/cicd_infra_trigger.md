@@ -3,7 +3,7 @@
 This documentation provides an overview of the GitHub Actions workflow used to trigger the AWS CodePipeline for CI/CD infrastructure. It includes setup instructions for required secrets and environment variables.
 Workflow Overview
 
-Filename: .github/workflows/trigger-aws-ci-cd-infra-codepipeline.yml
+Filename: .github/workflows/ci-cd-infra.yml
 
 Purpose:
 This workflow triggers the AWS CodePipeline responsible for CI/CD infrastructure updates whenever a push occurs to any branch except the main branch.
