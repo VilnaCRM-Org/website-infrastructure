@@ -14,13 +14,11 @@ def lambda_handler(event, context):
     user_identity_id = records["userIdentity"]["principalId"]
     bucket_name = records["s3"]["bucket"]["name"]
     file_name = records["s3"]["object"]["key"]
-    branch_name = records.get("branchName", "Unknown Branch")
 
     event_source_string = f"*EventSource:* {event_source} \n"
     bucket_name_string = f"*Bucket Name:* {bucket_name} \n"
     file_name_string = f"*File Name:* {file_name} \n"
     user_identity_id_string = f"*User Identity ID:* {user_identity_id}! \n"
-    branch_name_string = f"*Branch Name:* {branch_name} \n"
     event_name_string = f"*EventName:* {event_name} \n\n"
     buckets_link = (
         "<https://s3.console.aws.amazon.com/s3/buckets?region=eu-central-1&bucketType=general&region=eu-central-1|"
@@ -45,7 +43,7 @@ def lambda_handler(event, context):
             "content": {
                 "description": (
                     f"{warning_string} {event_source_string} {bucket_name_string} {file_name_string} "
-                    f"{user_identity_id_string} {branch_name_string} {event_name_string} {buckets_link}"
+                    f"{user_identity_id_string} {event_name_string} {buckets_link}"
                 ),
             },
         }

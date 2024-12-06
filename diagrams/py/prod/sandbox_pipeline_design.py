@@ -22,18 +22,19 @@ with Diagram(
         builders = [
             Codebuild("AWS CodeBuild \n up"),
             Codebuild("AWS CodeBuild \n deploy"),
+            Codebuild("AWS CodeBuild \n healthcheck"),
         ]
 
     gh >> codepipe
 
-    builders[0] >> builders[1]
+    builders[0] >> builders[1] >> builders[2]
 
     codepipe >> builders[0]
 
-    for builder in builders:
-        builder >> s3
+    builders[0] >> s3
+    builders[1] >> s3
 
-    builders[1] >> sns
+    builders[2] >> sns
 
     sns >> chatbot
 
