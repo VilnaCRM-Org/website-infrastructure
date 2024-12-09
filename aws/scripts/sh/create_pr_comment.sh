@@ -11,7 +11,6 @@
 #   - PROJECT_NAME: An environment variable containing the project name.
 #   - BRANCH_NAME: An environment variable containing the branch name.
 #   - AWS_DEFAULT_REGION: An environment variable containing the AWS region.
-#   - SECRET_NAME: The name of the secret in AWS Secrets Manager.
 #
 # Security:
 #   - Requires GitHub token with PR comment permissions
@@ -23,7 +22,7 @@
 #   - Handles comment creation failures
 
 # Validate required environment variables
-for var in IS_PULL_REQUEST PR_NUMBER GITHUB_REPOSITORY PROJECT_NAME BRANCH_NAME AWS_DEFAULT_REGION SECRET_NAME; do
+for var in IS_PULL_REQUEST PR_NUMBER GITHUB_REPOSITORY PROJECT_NAME BRANCH_NAME AWS_DEFAULT_REGION; do
     if [ -z "${!var}" ]; then
         echo "Error: $var environment variable is not set"
         exit 1
@@ -41,7 +40,7 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
     # Authenticate with GitHub using the token retrieved directly from AWS Secrets Manager
     echo "Authenticating with GitHub..."
     if ! aws secretsmanager get-secret-value \
-        --secret-id "$SECRET_NAME" \
+        --secret-id "github-token" \
         --query 'SecretString' \
         --output text | jq -r '.token' | gh auth login --with-token; then
         echo "GitHub authentication failed. Please ensure the secret contains a valid JSON object with a 'token' field."

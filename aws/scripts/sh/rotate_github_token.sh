@@ -57,7 +57,7 @@ SECRET_JSON=$(jq -n --arg token "$NEW_TOKEN" --arg timestamp "$TIMESTAMP" \
 
 # Store the new JSON in AWS Secrets Manager
 if ! aws secretsmanager put-secret-value \
-  --secret-id "${SECRET_NAME}" \
+  --secret-id "github-token" \
   --secret-string "${SECRET_JSON}" \
   --version-stage "AWSCURRENT"; then
   echo "Error: Failed to update secret in AWS Secrets Manager"
