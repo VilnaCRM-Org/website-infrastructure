@@ -38,7 +38,7 @@ variable "codestar_connection_arn" {
   description = "CodeStar connection ARN"
   type        = string
   validation {
-    condition     = can(regex("^arn:aws:codeconnections:[\\w-]+:\\d{12}:connection/[\\w-]+$", var.codestar_connection_arn))
+    condition     = can(regex("^arn:aws:codeconnections:[a-z0-9-]+:\\d{12}:connection/[a-zA-Z0-9-]+$", var.codestar_connection_arn))
     error_message = "The ARN format is invalid. It must be a valid CodeStar connection ARN."
   }
 }
