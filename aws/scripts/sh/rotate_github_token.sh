@@ -48,10 +48,17 @@ if [ -z "$NEW_TOKEN" ] || [ "$NEW_TOKEN" = "null" ]; then
   exit 1
 fi
 
-# Store the new token in AWS Secrets Manager
+# Get the current timestamp
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# Create a JSON object with the token and timestamp
+SECRET_JSON=$(jq -n --arg token "$NEW_TOKEN" --arg timestamp "$TIMESTAMP" \
+  '{token: $token, timestamp: $timestamp}')
+
+# Store the new JSON in AWS Secrets Manager
 if ! aws secretsmanager put-secret-value \
   --secret-id "${SECRET_NAME}" \
-  --secret-string "${NEW_TOKEN}" \
+  --secret-string "${SECRET_JSON}" \
   --version-stage "AWSCURRENT"; then
   echo "Error: Failed to update secret in AWS Secrets Manager"
   exit 1

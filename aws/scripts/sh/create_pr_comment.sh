@@ -6,18 +6,12 @@
 #
 # Inputs:
 #   - IS_PULL_REQUEST: An environment variable indicating whether the script is running in the context of a pull request.
-#   - GITHUB_TOKEN: An environment variable containing the GitHub token for authentication.
 #   - PR_NUMBER: An environment variable containing the pull request number.
 #   - GITHUB_REPOSITORY: An environment variable containing the GitHub repository name.
 #   - PROJECT_NAME: An environment variable containing the project name.
 #   - BRANCH_NAME: An environment variable containing the branch name.
 #   - AWS_DEFAULT_REGION: An environment variable containing the AWS region.
-#
-# Outputs:
-#   - A pull request comment with a link to the latest version of the project.
-#   - Exit codes:
-#     0: Success
-#     1: Error (environment variables missing, authentication failed, or comment creation failed)
+#   - SECRET_NAME: The name of the secret in AWS Secrets Manager.
 #
 # Security:
 #   - Requires GitHub token with PR comment permissions
@@ -29,7 +23,7 @@
 #   - Handles comment creation failures
 
 # Validate required environment variables
-for var in IS_PULL_REQUEST PR_NUMBER GITHUB_REPOSITORY PROJECT_NAME BRANCH_NAME AWS_DEFAULT_REGION; do
+for var in IS_PULL_REQUEST PR_NUMBER GITHUB_REPOSITORY PROJECT_NAME BRANCH_NAME AWS_DEFAULT_REGION SECRET_NAME; do
     if [ -z "${!var}" ]; then
         echo "Error: $var environment variable is not set"
         exit 1
@@ -44,10 +38,13 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
 
     echo "Running in the context of a pull request."
 
-    # Authenticate with GitHub
+    # Authenticate with GitHub using the token retrieved directly from AWS Secrets Manager
     echo "Authenticating with GitHub..."
-    if ! gh auth login --with-token < <(aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text); then
-        echo "GitHub authentication failed. Please ensure the github-token secret has the required permissions."
+    if ! aws secretsmanager get-secret-value \
+        --secret-id "$SECRET_NAME" \
+        --query 'SecretString' \
+        --output text | jq -r '.token' | gh auth login --with-token; then
+        echo "GitHub authentication failed. Please ensure the secret contains a valid JSON object with a 'token' field."
         exit 1
     fi
 
@@ -56,8 +53,9 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
     # Create a pull request comment with a link to the latest version of the project
     echo "Creating pull request comment..."
     COMMENT_BODY="Latest Version is ready: http://$PROJECT_NAME-$BRANCH_NAME.s3-website.$AWS_DEFAULT_REGION.amazonaws.com 
-    This deployed website will be automatically deleted after 7 days
-    To keep it active, please make a new commit to trigger a redeployment"
+    This deployed website will be automatically deleted after 7 days.
+    To keep it active, please make a new commit to trigger a redeployment."
+    
     if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
         echo "Failed to create the pull request comment. Please check the provided environment variables."
         exit 1
