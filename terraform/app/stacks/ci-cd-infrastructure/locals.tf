@@ -268,8 +268,8 @@ locals {
         env_variables = merge(
           local.common_sandbox_env_variables,
           {
-            "ROLE_ARN"                   = module.sandbox_codepipeline_iam_role.terraform_role_arn,
-            "TS_ENV"                     = var.environment,
+            "ROLE_ARN" = module.sandbox_codepipeline_iam_role.terraform_role_arn,
+            "TS_ENV"   = var.environment,
           }
         )
       },
