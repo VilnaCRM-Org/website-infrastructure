@@ -222,22 +222,19 @@ variable "REPORT_SLACK_CHANNEL_ID" {
 variable "BRANCH_NAME" {
   description = "Name of the branch"
   type        = string
+  default     = ""
 }
 
 variable "PR_NUMBER" {
   description = "Number of the pull request"
   type        = string
+  default     = ""
 }
 
 variable "IS_PULL_REQUEST" {
   description = "Indicates if this is a pull request"
   type        = bool
   default     = false
-}
-
-variable "sandbox_bucket_name" {
-  description = "S3 Sandbox Bucket Name"
-  type        = string
 }
 
 variable "github_token_secret_name" {

@@ -270,7 +270,6 @@ locals {
           {
             "ROLE_ARN"                   = module.sandbox_codepipeline_iam_role.terraform_role_arn,
             "TS_ENV"                     = var.environment,
-            "TF_VAR_SANDBOX_BUCKET_NAME" = var.sandbox_bucket_name,
           }
         )
       },

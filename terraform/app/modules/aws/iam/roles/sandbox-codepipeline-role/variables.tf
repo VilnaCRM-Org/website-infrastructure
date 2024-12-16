@@ -69,10 +69,6 @@ variable "s3_bucket_arn" {
 variable "codestar_connection_arn" {
   description = "The ARN of the CodeStar connection"
   type        = string
-  validation {
-    condition     = can(regex("^arn:aws:codeconnections:[a-z0-9-]+:\\d{12}:connection/[a-zA-Z0-9-]+$", var.codestar_connection_arn))
-    error_message = "codestar_connection_arn must be a valid AWS CodeStar connection ARN in the format arn:aws:codestar-connections:<region>:<account-id>:connection/<connection-id>."
-  }
 }
 
 variable "policy_arns" {
@@ -96,8 +92,4 @@ variable "github_token_secret_name" {
 variable "BRANCH_NAME" {
   description = "Name of the branch"
   type        = string
-  validation {
-    condition     = can(regex("^[\\w.-]+(/[\\w.-]+)*$", var.BRANCH_NAME))
-    error_message = "Branch name must be a valid Git branch name (e.g., 'main', 'feature/new-sandbox', 'bugfix/issue-123')"
-  }
 }
