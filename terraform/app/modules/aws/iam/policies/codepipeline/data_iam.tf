@@ -54,6 +54,13 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:policy/SandBoxPolicies/${var.environment}-sandbox-s3-policy",
       "arn:aws:iam::${local.account_id}:policy/SandBoxPolicies/${var.environment}-sandbox-general-policy",
       "arn:aws:iam::${local.account_id}:policy/GitHubTokenSecretsAccessPolicy",
+      "arn:aws:iam::${local.account_id}:policy/website-${var.environment}-codepipeline-policy",
+      "arn:aws:iam::${local.account_id}:policy/website-${var.environment}-codebuild-policy",
+      "arn:aws:iam::${local.account_id}:policy/website-deploy-trigger-role-policy",
+      "arn:aws:iam::${local.account_id}:policy/website-infrastructure-trigger-role-policy",
+      "arn:aws:iam::${local.account_id}:policy/sandbox-${var.environment}-codepipeline-role-policy",
+      "arn:aws:iam::${local.account_id}:policy/sandbox-creation-trigger-role-policy",
+      "arn:aws:iam::${local.account_id}:policy/sandbox-deletion-trigger-role-policy"
     ]
   }
   statement {
