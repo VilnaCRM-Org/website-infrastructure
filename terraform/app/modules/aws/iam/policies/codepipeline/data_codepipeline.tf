@@ -92,7 +92,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "codestar-connections:PassConnection"
     ]
     resources = ["arn:aws:codestar-connections:${var.region}:${local.account_id}:*",
-    "arn:aws:codeconnections:${var.region}:${local.account_id}:connection/*"
+      "arn:aws:codeconnections:${var.region}:${local.account_id}:connection/*"
     ]
   }
   statement {
