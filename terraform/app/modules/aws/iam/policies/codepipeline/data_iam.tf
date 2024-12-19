@@ -20,7 +20,14 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:role/${var.ci_cd_website_project_name}-codepipeline-role",
       "arn:aws:iam::${local.account_id}:role/${var.ci_cd_website_project_name}-codebuild-rollback-role",
       "arn:aws:iam::${local.account_id}:role/${var.ci_cd_website_project_name}-iam-for-lambda",
-      "arn:aws:iam::${local.account_id}:role/reports-chatbot-channel-role"
+      "arn:aws:iam::${local.account_id}:role/reports-chatbot-channel-role",
+      "arn:aws:iam::${local.account_id}:role/website-infrastructure-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/website-deploy-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/sandbox-deletion-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/sandbox-creation-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/github-actions-role",
+      "arn:aws:iam::${local.account_id}:role/website-${var.environment}-codepipeline-role-sandbox-deletion-${var.environment}",
+      "arn:aws:iam::${local.account_id}:role/website-${var.environment}-codebuild-role-sandbox-deletion-${var.environment}",
     ]
   }
   statement {
@@ -43,7 +50,10 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-codepipeline-policy",
       "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-codebuild-rollback-role-policy",
       "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-iam-policy-allow-sns-for-lambda",
-      "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-iam-policy-allow-logging-for-lambda"
+      "arn:aws:iam::${local.account_id}:policy/${var.ci_cd_website_project_name}-iam-policy-allow-logging-for-lambda",
+      "arn:aws:iam::${local.account_id}:policy/SandBoxPolicies/${var.environment}-sandbox-s3-policy",
+      "arn:aws:iam::${local.account_id}:policy/SandBoxPolicies/${var.environment}-sandbox-general-policy",
+      "arn:aws:iam::${local.account_id}:policy/GitHubTokenSecretsAccessPolicy",
     ]
   }
   statement {

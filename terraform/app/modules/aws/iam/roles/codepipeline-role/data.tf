@@ -233,6 +233,8 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
       "arn:aws:iam::${local.account_id}:role/ci-cd-infra-${var.environment}-codebuild-terraform-role",
       "arn:aws:iam::${local.account_id}:role/website-infra-${var.environment}-codebuild-terraform-role",
       "arn:aws:iam::${local.account_id}:role/ci-cd-website-${var.environment}-github-oidc-codepipeline-role",
+      "arn:aws:iam::${local.account_id}:role/sandbox-${var.environment}-codebuild-terraform-role",
+      "arn:aws:iam::${local.account_id}:role/sandbox-${var.environment}-codepipeline-role"
     ]
   }
 }
