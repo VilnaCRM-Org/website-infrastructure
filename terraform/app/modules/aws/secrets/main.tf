@@ -1,5 +1,5 @@
 resource "random_string" "secret_hash" {
-  length  = 8
+  length  = 16
   special = false
   upper   = false
   numeric = true

@@ -48,10 +48,13 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "s3:PutObject",
       "s3:DeleteObject"
     ]
-    resources = ["${var.s3_bucket_arn}/*",
+    resources = [
+      "${var.s3_bucket_arn}/*",
       "${var.s3_bucket_arn}",
       "arn:aws:s3:::${var.project_name}-${var.BRANCH_NAME}",
-    "arn:aws:s3:::${var.project_name}-${var.BRANCH_NAME}/*"]
+      "arn:aws:s3:::${var.project_name}-${var.BRANCH_NAME}/*",
+      "arn:${data.aws_partition.current.partition}:s3:::${var.project_name}-*"
+    ]
   }
 
   statement {
@@ -105,20 +108,6 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "logs:PutLogEvents"
     ]
     resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${local.account_id}:log-group:*"]
-  }
-  statement {
-    sid    = "S3PolicyArtifactBucket"
-    effect = "Allow"
-    actions = [
-      "s3:ListBucket",
-      "s3:GetObject",
-      "s3:GetObjectVersion",
-      "s3:PutObjectAcl",
-      "s3:PutObject"
-    ]
-    resources = [
-      "arn:${data.aws_partition.current.partition}:s3:::${var.project_name}-*",
-    ]
   }
 
   statement {
