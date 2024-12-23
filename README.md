@@ -167,6 +167,12 @@ After you configured everything you can deploy infrastructure by running such co
 After you deployed you can create the website infrastructure itself using.
 - `terraspace all up`
 
+Alternatively, you can use the following command to bring up the entire infrastructure stack:
+
+- `make terraspace-up stack=ci-cd-infrastructure`
+
+This command simplifies the process by targeting the ci-cd-infrastructure stack directly.
+
 **⚠️ Important Note:**  
 The deployed sandbox will be automatically **removed after 7 days**.  
 To keep it active, the developer must **commit again** to redeploy it.
