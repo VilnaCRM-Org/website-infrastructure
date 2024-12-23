@@ -131,4 +131,18 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     #checkov:skip=CKV_AWS_111:Required by AWSCC module
     resources = ["*"]
   }
+  statement {
+    sid    = "AllowSecretsManagerAccess"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:CreateSecret",
+      "secretsmanager:PutSecretValue",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetResourcePolicy"
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:github-token-*"
+    ]
+  }
 }
