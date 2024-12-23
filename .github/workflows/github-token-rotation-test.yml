@@ -78,7 +78,6 @@ jobs:
 
       - name: Rotate GitHub Token
         env:
-          SECRET_NAME: ${{ secrets.SECRET_NAME }}
           VILNACRM_APP_ID: ${{ secrets.VILNACRM_APP_ID }}
           VILNACRM_APP_PRIVATE_KEY: ${{ secrets.VILNACRM_APP_PRIVATE_KEY }}
         run: |

@@ -4,7 +4,6 @@ set -euo pipefail
 # Check required environment variables
 : "${VILNACRM_APP_ID:?Need to set VILNACRM_APP_ID}"
 : "${VILNACRM_APP_PRIVATE_KEY:?Need to set VILNACRM_APP_PRIVATE_KEY}"
-: "${SECRET_NAME:?Need to set SECRET_NAME}"
 
 echo "Generating new GitHub token..."
 
@@ -55,18 +54,25 @@ TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 SECRET_JSON=$(jq -n --arg token "$NEW_TOKEN" --arg timestamp "$TIMESTAMP" \
   '{token: $token, timestamp: $timestamp}')
 
-# Store the new JSON in AWS Secrets Manager
-if ! aws secretsmanager put-secret-value \
-  --secret-id "github-token" \
-  --secret-string "${SECRET_JSON}" \
-  --version-stage "AWSCURRENT"; then
-  echo "Error: Failed to update secret in AWS Secrets Manager"
+# Search for an active secret
+SECRET_ID=$(aws secretsmanager list-secrets \
+  --region "${AWS_REGION}" \
+  --query "SecretList[?starts_with(Name, 'github-token-') && DeletionDate==null].Name | [0]" \
+  --output text)
+
+if [ -z "$SECRET_ID" ] || [ "$SECRET_ID" = "None" ]; then
+  echo "No active secret found with prefix 'github-token-'"
   exit 1
 fi
 
-# Verify the secret was updated
-if ! aws secretsmanager describe-secret --secret-id "${SECRET_NAME}" >/dev/null 2>&1; then
-  echo "Error: Failed to verify secret update"
+echo "✅ Found secret: ${SECRET_ID}"
+
+# Store the new JSON in AWS Secrets Manager
+if ! aws secretsmanager put-secret-value \
+  --region "${AWS_REGION}" \
+  --secret-id "${SECRET_ID}" \
+  --secret-string "${SECRET_JSON}"; then
+  echo "Error: Failed to update secret in AWS Secrets Manager"
   exit 1
 fi
 
