@@ -84,6 +84,8 @@ module "sandbox_codepipeline" {
   codepipeline_role_arn   = "arn:aws:iam::${local.account_id}:role/${local.project_name}-codepipeline-role"
   codestar_connection_arn = module.codestar_connection.arn
 
+  notification_rule_suffix = "creation"
+
   tags = var.tags
 
   depends_on = [module.sandbox_codebuild, module.sandbox_s3_artifacts_bucket]

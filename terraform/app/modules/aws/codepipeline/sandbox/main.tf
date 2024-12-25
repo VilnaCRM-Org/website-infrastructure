@@ -107,7 +107,7 @@ resource "aws_codestarnotifications_notification_rule" "codepipeline_sns_rule" {
     "codepipeline-pipeline-pipeline-execution-superseded",
   ]
 
-  name     = "${var.project_name}-sns-notifications"
+  name     = "${var.project_name}-${var.notification_rule_suffix}-sns-notifications"
   resource = aws_codepipeline.pipeline.arn
 
   target {
@@ -115,4 +115,6 @@ resource "aws_codestarnotifications_notification_rule" "codepipeline_sns_rule" {
   }
 
   tags = var.tags
+
+  depends_on = [aws_sns_topic.codepipeline_notifications]
 }

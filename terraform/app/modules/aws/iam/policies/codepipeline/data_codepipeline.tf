@@ -101,7 +101,8 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     actions = [
       "codestar-notifications:CreateNotificationRule",
       "codestar-notifications:DescribeNotificationRule",
-      "codestar-notifications:DeleteNotificationRule"
+      "codestar-notifications:DeleteNotificationRule",
+      "codestar-notifications:UpdateNotificationRule"
     ]
     resources = ["arn:aws:codestar-notifications:${var.region}:${local.account_id}:notificationrule/*"]
   }

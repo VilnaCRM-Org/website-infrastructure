@@ -72,3 +72,8 @@ variable "IS_PULL_REQUEST" {
   type        = bool
   description = "Indicates if this is a pull request"
 }
+
+variable "notification_rule_suffix" {
+  type        = string
+  description = "Suffix for the notification rule to ensure uniqueness"
+}

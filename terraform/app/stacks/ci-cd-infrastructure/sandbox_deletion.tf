@@ -56,6 +56,8 @@ module "codepipeline_sandbox_deletion" {
   s3_bucket_name          = module.s3_buckets.codepipeline_bucket_name
   codestar_connection_arn = module.codestar_connection.arn
 
+  notification_rule_suffix = "deletion"
+
   tags = var.tags
 
   depends_on = [module.s3_buckets, module.codebuild_sandbox_deletion, module.iam_roles]
