@@ -39,8 +39,15 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
 
     # Authenticate with GitHub using the token retrieved directly from AWS Secrets Manager
     echo "Authenticating with GitHub..."
+
+    SECRET_ID=$(aws secretsmanager list-secrets --query 'SecretList[?contains(Name, `github-token`) && DeletedDate==null].Name' --output text)
+    if [ -z "$SECRET_ID" ]; then
+        echo "Error: No active GitHub token secret found."
+        exit 1
+    fi
+
     if ! aws secretsmanager get-secret-value \
-        --secret-id "github-token" \
+        --secret-id "$SECRET_ID" \
         --query 'SecretString' \
         --output text | jq -r '.token' | gh auth login --with-token; then
         echo "GitHub authentication failed. Please ensure the secret contains a valid JSON object with a 'token' field."

@@ -21,7 +21,12 @@ phases:
       - 'sudo apt install gh -y || { echo "Failed to install GitHub CLI"; exit 1; }'
       - |
         echo "Retrieving and using GitHub token for authentication..."
-        aws secretsmanager get-secret-value --secret-id github-token --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
+        SECRET_ID=$(aws secretsmanager list-secrets --query 'SecretList[?contains(Name, `github-token`) && DeletedDate==null].Name' --output text)
+        if [ -z "$SECRET_ID" ]; then
+          echo "Error: No active GitHub token secret found."
+          exit 1
+        fi
+        aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
           echo "GitHub authentication failed"
           exit 1
         }
@@ -31,10 +36,18 @@ phases:
       - |
         COMMENT_BODY="The deployment process for the sandbox has started.
         Please wait until the latest version is ready"
-        aws secretsmanager get-secret-value --secret-id github-token --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
+
+        SECRET_ID=$(aws secretsmanager list-secrets --query 'SecretList[?contains(Name, `github-token`) && DeletedDate==null].Name' --output text)
+        if [ -z "$SECRET_ID" ]; then
+          echo "Error: No active GitHub token secret found."
+          exit 1
+        fi
+
+        aws secretsmanager get-secret-value --secret-id "$SECRET_ID"" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
           echo "GitHub authentication failed"
           exit 1
         }
+
         if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
           echo "Failed to add comment to PR"
           exit 1

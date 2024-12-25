@@ -47,8 +47,14 @@ phases:
           "$HURL_FILE_PATH"; then
           echo "Health check failed. Adding comment to PR..."
 
+        SECRET_ID=$(aws secretsmanager list-secrets --query 'SecretList[?contains(Name, `github-token`) && DeletedDate==null].Name' --output text)
+        if [ -z "$SECRET_ID" ]; then
+          echo "Error: No active GitHub token secret found."
+          exit 1
+        fi
+
           echo "Retrieving and using GitHub token for authentication..."
-          aws secretsmanager get-secret-value --secret-id github-token --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
+          aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
             echo "GitHub authentication failed"
             exit 1
           }
