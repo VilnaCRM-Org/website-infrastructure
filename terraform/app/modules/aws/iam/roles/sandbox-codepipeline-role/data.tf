@@ -116,10 +116,11 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     actions = [
       "secretsmanager:GetSecretValue",
       "secretsmanager:CreateSecret",
-      "secretsmanager:PutSecretValue"
+      "secretsmanager:PutSecretValue",
+      "secretsmanager:ListSecrets"
     ]
     resources = [
-      "arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:${var.github_token_secret_name}*"
+      "arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:${var.github_token_secret_name}-*"
     ]
   }
 }
