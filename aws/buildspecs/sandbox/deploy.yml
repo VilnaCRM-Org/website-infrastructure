@@ -26,7 +26,7 @@ phases:
           echo "Error: No active GitHub token secret found."
           exit 1
         fi
-        aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' --raw-input | gh auth login --with-token || {
+        aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
           echo "GitHub authentication failed"
           exit 1
         }
@@ -43,7 +43,7 @@ phases:
           exit 1
         fi
 
-        aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' --raw-input | gh auth login --with-token || {
+        aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
           echo "GitHub authentication failed"
           exit 1
         }

@@ -54,7 +54,7 @@ phases:
         fi
 
           echo "Retrieving and using GitHub token for authentication..."
-          aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' --raw-input | gh auth login --with-token || {
+          aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
             echo "GitHub authentication failed"
             exit 1
           }
