@@ -29,6 +29,7 @@
             * **`repo:invite`:** Access to repository invitations.
             * **`security_events`:** Read and write access to security events in the audit log.
             * **`admin:repo_hook`:** Full control of repository webhooks (reading, writing, pinging, and deleting).
+            * **`read:org`:** Read-only access to organization membership, teams, and hook delivery data. **Required for operations like commenting on pull requests in the context of an organization.**
             * **In short, the `repo` scope provides comprehensive access, including everything required for secret management.**
 
 5. **Generate Token:**

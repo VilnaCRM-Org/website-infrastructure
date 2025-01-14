@@ -152,8 +152,8 @@ Also before running you need to set up some local variables:
 - **TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID** - ID of Slack channel where the Website alerts will be posted.
 - **TF_VAR_REPORT_SLACK_CHANNEL_ID** - ID of Slack channel where the reports of the website tests will be posted.
 - **GITHUB_OWNER** - Owner of the repositories. Default: `VilnaCRM-Org`.
-- **GITHUB_TOKEN** - Token that will be used to configure Github Provider in Terraform.
-- **TF_VAR_GITHUB_TOKEN** - Token that will be used in CodePipelines to create/recreate infrastructure etc.
+- (**GITHUB_TOKEN**)[/.github/github-pat-creation.md] - Token that will be used to configure Github Provider in Terraform.
+- (**TF_VAR_GITHUB_TOKEN**)[/.github/github-pat-creation.md] - Token that will be used in CodePipelines to create/recreate infrastructure etc.
 
 Note: if you are not using Slack Notifications, skip those variables.
 
@@ -174,7 +174,7 @@ Alternatively, you can use the following command to bring up the entire infrastr
 This command simplifies the process by targeting the ci-cd-infrastructure stack directly.
 
 **⚠️ Important Note:**  
-The deployed sandbox will be automatically **removed after 7 days**.  
+The deployed sandbox will be automatically **removed after 7 days**.
 To keep it active, the developer must **commit again** to redeploy it.
 
 ### Instructions on how to set up and run the changes in AWS
