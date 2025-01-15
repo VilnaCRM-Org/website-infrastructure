@@ -1,3 +1,4 @@
+# TODO: Remove GITHUB PAT secret and use something different
 module "github_oidc" {
   source               = "git::https://github.com/terraform-module/terraform-aws-github-oidc-provider.git?ref=65f314a780b489f56630256adf6c021315877811"
   create_oidc_provider = true
