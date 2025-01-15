@@ -5,12 +5,9 @@ import os
 CLOUDFRONT_REGION = os.environ["CLOUDFRONT_REGION"]
 
 
-def get_buckets():
-    print("Getting buckets...")
-    return {
-        "production": os.environ["BUCKET_NAME"],
-        "staging": os.environ["STAGING_BUCKET_NAME"],
-    }
+def get_bucket():
+    print("Getting bucket...")
+    return os.environ["BUCKET_NAME"]
 
 
 def fetch_distributions():
@@ -61,8 +58,8 @@ def deploy_files(bucket_name):
 
 def main():
     print("Starting main function...")
-    buckets = get_buckets()
-    print(f"Buckets: {buckets}")
+    bucket_name = get_bucket()
+    print(f"Bucket: {bucket_name}")
 
     cloudfront_distributions = fetch_distributions()
     print("CloudFront distributions fetched.")
@@ -75,12 +72,12 @@ def main():
         if origins:
             print(f"Origins: {origins}")
             if check_origins(origins):
-                deploy_files(buckets["staging"])
-                print("Files deployed to staging bucket.")
+                deploy_files(bucket_name)
+                print("Files deployed to bucket.")
                 return
 
-    deploy_files(buckets["production"])
-    print("Files deployed to production bucket.")
+    deploy_files(bucket_name)
+    print("Files deployed to bucket.")
 
     print("Main function completed.")
 

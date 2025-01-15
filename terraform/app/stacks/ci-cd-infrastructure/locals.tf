@@ -165,7 +165,6 @@ locals {
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
         "PYTHON_VERSION"                = var.runtime_versions.python,
         "BUCKET_NAME"                   = var.bucket_name,
-        "STAGING_BUCKET_NAME"           = "staging.${var.bucket_name}",
         "SCRIPT_DIR"                    = var.script_dir,
         "ALARM_NAME"                    = local.alarm_name,
         "WEBSITE_GIT_REPOSITORY_BRANCH" = var.website_repo_branch,
