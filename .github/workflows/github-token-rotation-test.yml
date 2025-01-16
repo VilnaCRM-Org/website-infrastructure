@@ -9,6 +9,9 @@ on:
   push:
     branches-ignore: [main]
 
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
 jobs:
   rotate-github-token:
     concurrency:
@@ -44,7 +47,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.AWS_GITHUB_TOKEN_ROTATION_ROLE_TO_ASSUME_TEST }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Verify AWS credentials
         run: |
