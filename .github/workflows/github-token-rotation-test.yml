@@ -44,7 +44,7 @@ jobs:
             echo "Error: Invalid format for VILNACRM_APP_PRIVATE_KEY."
             exit 1
           fi
-          if ! echo "$VILNACRM_APP_PRIVATE_KEY" | grep -q "-----END .* PRIVATE KEY-----$"; then
+          if ! echo "$VILNACRM_APP_PRIVATE_KEY" | grep -z '-----END .* PRIVATE KEY-----$'; then
             echo "Error: Invalid format for VILNACRM_APP_PRIVATE_KEY (missing END marker)."
             exit 1
           fi
