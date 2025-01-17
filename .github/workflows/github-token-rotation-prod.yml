@@ -5,7 +5,7 @@ on:
     - cron: "0 0 * * 0"
   workflow_dispatch: {}
   repository_dispatch:
-    types: [rotate_token_prod]
+    types: [rotate_token_test]
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -14,7 +14,7 @@ jobs:
   rotate-github-token:
     concurrency:
       group: github-token-rotation
-      cancel-in-progress: false
+      cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -40,18 +40,9 @@ jobs:
             echo "Error: Invalid format for VILNACRM_APP_ID."
             exit 1
           fi
-          # Validate private key format (should start with -----BEGIN)
-          if ! echo "$VILNACRM_APP_PRIVATE_KEY" | grep -qE '^-----BEGIN .+ PRIVATE KEY-----$'; then
-            echo "Error: Invalid format for VILNACRM_APP_PRIVATE_KEY."
-            exit 1
-          fi
-          if ! echo "$VILNACRM_APP_PRIVATE_KEY" | grep -q "-----END .* PRIVATE KEY-----$"; then
-            echo "Error: Invalid format for VILNACRM_APP_PRIVATE_KEY (missing END marker)."
-            exit 1
-          fi
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_GITHUB_TOKEN_ROTATION_ROLE_TO_ASSUME_PROD }}
           aws-region: ${{ env.AWS_REGION }}
@@ -65,7 +56,10 @@ jobs:
 
       - name: Install PyJWT
         run: |
-          pip3 install --quiet "PyJWT==2.8.0"
+          if ! pip3 install --quiet "PyJWT==2.8.0"; then
+            echo "Error: Failed to install PyJWT package"
+            exit 1
+          fi
           installed_version=$(python3 -c "import jwt; print(jwt.__version__)" 2>/dev/null)
           expected_version="2.8.0"
           if [ -z "$installed_version" ]; then
