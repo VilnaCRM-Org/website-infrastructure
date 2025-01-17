@@ -15,8 +15,8 @@ resource "aws_iam_policy" "github_token_secrets_access_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid      = "AllowSecretsManagerAccessForGithubToken"
-        Action   = [
+        Sid = "AllowSecretsManagerAccessForGithubToken"
+        Action = [
           "secretsmanager:GetSecretValue",
           "secretsmanager:PutSecretValue",
           "secretsmanager:DescribeSecret"
