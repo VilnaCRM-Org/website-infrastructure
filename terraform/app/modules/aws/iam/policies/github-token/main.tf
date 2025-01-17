@@ -15,13 +15,20 @@ resource "aws_iam_policy" "github_token_secrets_access_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Action = [
+        Sid      = "AllowSecretsManagerAccessForGithubToken"
+        Action   = [
           "secretsmanager:GetSecretValue",
           "secretsmanager:PutSecretValue",
           "secretsmanager:DescribeSecret"
         ],
         Effect   = "Allow",
         Resource = ["arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:github-token-*"]
+      },
+      {
+        Sid      = "AllowListingSecrets"
+        Action   = "secretsmanager:ListSecrets",
+        Effect   = "Allow",
+        Resource = "*"
       }
     ]
   })

@@ -13,7 +13,7 @@ resource "aws_iam_role" "github_actions_role" {
           Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
         },
         Condition = {
-          StringEquals = {
+          StringLike = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com",
             "token.actions.githubusercontent.com:sub" = "repo:${var.source_repo_owner}/${var.source_repo_name}:ref:refs/heads/main"
           }

@@ -6,8 +6,6 @@ on:
   workflow_dispatch: {}
   repository_dispatch:
     types: [rotate_token_test]
-  push:
-    branches-ignore: [main]
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
