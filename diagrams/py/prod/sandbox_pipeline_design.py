@@ -29,7 +29,7 @@ with Diagram(
     builders[0] >> s3
     builders[1] >> s3
 
-    gh_pr_comments = Github("Github \n PR Comments")  
+    gh_pr_comments = Github("Github \n PR Comments")
 
     builders[1] >> gh_pr_comments
     builders[2] >> gh_pr_comments
