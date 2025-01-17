@@ -230,12 +230,6 @@ locals {
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/release.yml" })
 
-    trigger = merge(local.amazonlinux2_based_build,
-      { env_variables = {
-        "PROJECT_NAME" = local.website_infra_codebuild_project_down_name,
-        }
-      },
-    { buildspec = "./aws/buildspecs/${var.website_buildspecs}/trigger.yml" })
   }
 
   website_infra_build_project_down_env_variables = {
