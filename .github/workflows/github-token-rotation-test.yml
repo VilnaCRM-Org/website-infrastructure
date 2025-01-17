@@ -44,7 +44,7 @@ jobs:
           fi
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_GITHUB_TOKEN_ROTATION_ROLE_TO_ASSUME_TEST }}
           aws-region: ${{ env.AWS_REGION }}
