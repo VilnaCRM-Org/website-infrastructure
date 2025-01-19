@@ -98,4 +98,5 @@ module "ci_cd_infra_pipeline_role" {
   github_repo  = var.source_repo_name
   branch       = var.source_repo_branch
   pipeline_arn = module.ci_cd_infra_codepipeline.arn
+  depends_on   = [module.ci_cd_infra_codepipeline]
 }
