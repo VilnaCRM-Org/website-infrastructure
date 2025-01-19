@@ -54,6 +54,12 @@ jobs:
             exit 1
           fi
 
+      - name: Setup Python and Enable Pip Cache
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+
       - name: Install PyJWT
         run: |
           if ! pip3 install --quiet "PyJWT==2.8.0"; then
