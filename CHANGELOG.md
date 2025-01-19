@@ -1,3 +1,13 @@
+## [0.3.1](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.3.0...v0.3.1) (2025-01-19)
+
+
+### Bug Fixes
+
+* **#3:** pdate up.yml ([999f3d4](https://github.com/VilnaCRM-Org/website-infrastructure/commit/999f3d4f0198ed41c2a57216f59a23a7445864a0)), closes [#3](https://github.com/VilnaCRM-Org/website-infrastructure/issues/3)
+* **#3:** update plan.yml ([ee26946](https://github.com/VilnaCRM-Org/website-infrastructure/commit/ee269465fed19569c1eda771f8da6fc83f9efac2)), closes [#3](https://github.com/VilnaCRM-Org/website-infrastructure/issues/3)
+
+
+
 # [0.3.0](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.2.0...v0.3.0) (2025-01-19)
 
 
@@ -78,15 +88,6 @@
 ### Bug Fixes
 
 * **hotfix:** update locals ([ee1651f](https://github.com/VilnaCRM-Org/website-infrastructure/commit/ee1651fd9343495a203a1427ca5eb0b00ab7da17))
-
-
-
-## [0.1.1](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.1.0...v0.1.1) (2024-07-05)
-
-
-### Bug Fixes
-
-* **hotfix:** update variables ([7580e77](https://github.com/VilnaCRM-Org/website-infrastructure/commit/7580e7763c889a026a6fbe4a892b400434630668))
 
 
 
