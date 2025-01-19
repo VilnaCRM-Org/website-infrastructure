@@ -16,7 +16,11 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.ci_cd_project_name}-pipeline",
       "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.ci_cd_project_name}-pipeline/*",
       "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.ci_cd_website_project_name}-pipeline",
-      "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.ci_cd_website_project_name}-pipeline/*"
+      "arn:aws:codepipeline:${var.region}:${local.account_id}:${var.ci_cd_website_project_name}-pipeline/*",
+      "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-deletion",
+      "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-deletion/*",
+      "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-creation",
+      "arn:aws:codepipeline:${var.region}:${local.account_id}:sandbox-creation/*"
     ]
   }
   statement {
@@ -46,6 +50,10 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-trigger",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-rollback",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-release",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-healthcheck",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-up",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-delete",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-deploy",
     ]
   }
   statement {
@@ -56,23 +64,23 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "codebuild:DeleteProject"
     ]
     resources = [
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-validate",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-plan",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-up",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-deploy",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-healthcheck",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-down",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-validate",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-plan",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-up",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-deploy",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-healthcheck",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-lhci-leak",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-unit-mutation-lint",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-pw",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-trigger",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-rollback",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-release",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-validate",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-plan",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-up",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-deploy",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-healthcheck",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-down",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-validate",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-plan",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-up",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-deploy",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-healthcheck",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-lhci-leak",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-unit-mutation-lint",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-pw",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-trigger",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-rollback",
+      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-release",
     ]
   }
   statement {
@@ -83,7 +91,9 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "codestar-connections:ListTagsForResource",
       "codestar-connections:PassConnection"
     ]
-    resources = ["arn:aws:codestar-connections:${var.region}:${local.account_id}:*"]
+    resources = ["arn:aws:codestar-connections:${var.region}:${local.account_id}:*",
+      "arn:aws:codeconnections:${var.region}:${local.account_id}:connection/*"
+    ]
   }
   statement {
     sid    = "CodeStarNotificationsPolicy"
@@ -91,7 +101,8 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     actions = [
       "codestar-notifications:CreateNotificationRule",
       "codestar-notifications:DescribeNotificationRule",
-      "codestar-notifications:DeleteNotificationRule"
+      "codestar-notifications:DeleteNotificationRule",
+      "codestar-notifications:UpdateNotificationRule"
     ]
     resources = ["arn:aws:codestar-notifications:${var.region}:${local.account_id}:notificationrule/*"]
   }
@@ -120,5 +131,19 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     #checkov:skip=CKV_AWS_356:Required by AWSCC module
     #checkov:skip=CKV_AWS_111:Required by AWSCC module
     resources = ["*"]
+  }
+  statement {
+    sid    = "AllowSecretsManagerAccess"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:CreateSecret",
+      "secretsmanager:PutSecretValue",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetResourcePolicy"
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:github-token-*"
+    ]
   }
 }

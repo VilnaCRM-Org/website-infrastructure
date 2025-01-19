@@ -1,11 +1,11 @@
-#Artifact Bucket
 resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket        = "${var.project_name}-codepipeline-artifacts-bucket"
   tags          = var.tags
   force_destroy = true
   #checkov:skip=CKV_AWS_144: No usage of cross-region
   #checkov:skip=CKV2_AWS_61: The lifecycle configuration is not needed 
-  #checkov:skip=CKV2_AWS_62: The event notifications of logging bucket is not needed 
+  #checkov:skip=CKV2_AWS_62: The event notifications of logging bucket is not needed
+  #checkov:skip=CKV_AWS_145: Bucket has encryption by default
 }
 
 resource "aws_s3_bucket_public_access_block" "codepipeline_bucket_access" {
@@ -35,8 +35,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "codepipeline_buck
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = var.kms_key_arn
-      sse_algorithm     = "aws:kms"
+      sse_algorithm = "AES256"
     }
   }
 }

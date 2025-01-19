@@ -8,7 +8,6 @@ module "website_infra_s3_artifacts_bucket" {
 
   s3_artifacts_bucket_files_deletion_days = var.s3_artifacts_bucket_files_deletion_days
 
-  kms_key_arn           = module.website_infra_codepipeline_kms.arn
   codepipeline_role_arn = module.website_infra_codepipeline_iam_role.role_arn
 
   tags = var.tags
@@ -58,7 +57,6 @@ module "website_infra_codebuild" {
 
   s3_bucket_name = module.website_infra_s3_artifacts_bucket.bucket
   role_arn       = module.website_infra_codepipeline_iam_role.role_arn
-  kms_key_arn    = module.website_infra_codepipeline_kms.arn
 
   tags = var.tags
 

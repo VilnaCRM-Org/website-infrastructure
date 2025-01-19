@@ -1,0 +1,76 @@
+version: 0.2
+
+env:
+  variables:
+    HURL_VERSION: "6.0.0"
+    HURL_DIR: "./hurl"
+    HURL_FILE: "sandbox_healthcheck.hurl"
+
+phases:
+  install:
+    commands:
+      - "echo 'Installing GitHub CLI (gh)...'"
+      - "curl -fsSL https://cli.github.com/packages/rpm/gh-cli.repo | sudo tee /etc/yum.repos.d/gh-cli.repo"
+      - "sudo yum install -y gh"
+      - "gh --version"
+      - "echo 'Installing Hurl...'"
+      - "dnf install -y pkg-config gcc openssl-devel libxml2-devel"
+      - "curl https://sh.rustup.rs -sSf | sh -s -- -y"
+      - "source $HOME/.cargo/env"
+      - "rustc --version"
+      - "cargo --version"
+      - "cargo install hurl"
+
+  build:
+    commands:
+      - |
+        if [ -z "${BRANCH_NAME}" ]; then
+          echo "Error: Required environment variable BRANCH_NAME is not set or empty."
+          exit 1
+        fi
+
+        if [ -z "${IS_PULL_REQUEST}" ]; then
+          echo "Error: Required environment variable IS_PULL_REQUEST is not set or empty."
+          exit 1
+        fi
+      - |
+        echo "## Preparing Health Check for S3 Bucket..."
+        BUCKET_URL="https://${PROJECT_NAME}-${BRANCH_NAME}.s3.${AWS_DEFAULT_REGION}.amazonaws.com"
+
+        echo "Bucket URL: $BUCKET_URL"
+
+        HURL_FILE_PATH="${CODEBUILD_SRC_DIR}/${HURL_DIR}/${HURL_FILE}"
+
+        echo "## Running Health Check with Hurl..."
+        if ! hurl --test --verbose \
+          --variable bucket_url="$BUCKET_URL" \
+          "$HURL_FILE_PATH"; then
+          echo "Health check failed. Adding comment to PR..."
+
+        SECRET_ID=$(aws secretsmanager list-secrets --query 'SecretList[?starts_with(Name, `github-token-`) && DeletedDate==null].Name' --output text)
+        if [ -z "$SECRET_ID" ]; then
+          echo "Error: No active GitHub token secret found."
+          exit 1
+        fi
+
+          echo "Retrieving and using GitHub token for authentication..."
+          aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
+            echo "GitHub authentication failed"
+            exit 1
+          }
+
+          COMMENT_BODY=":x: Health check failed for the sandbox bucket.
+          Please check the CodeBuild logs for detailed error information."
+
+          if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
+            echo "Failed to add error comment to PR"
+            exit 1
+          fi
+          exit 1
+        else
+          echo "Health check passed. Running create_pr_comment script..."
+          if ! bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_pr_comment.sh; then
+             echo "Failed to execute create_pr_comment.sh"
+             exit 1
+          fi
+        fi

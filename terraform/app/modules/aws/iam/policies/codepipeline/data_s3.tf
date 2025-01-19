@@ -44,7 +44,15 @@ data "aws_iam_policy_document" "s3_policy_doc" {
       "arn:aws:s3:::${var.ci_cd_website_project_name}-lhci-reports-bucket",
       "arn:aws:s3:::${var.ci_cd_website_project_name}-lhci-reports-bucket/*",
       "arn:aws:s3:::${var.ci_cd_website_project_name}-test-reports-bucket",
-      "arn:aws:s3:::${var.ci_cd_website_project_name}-test-reports-bucket/*"
+      "arn:aws:s3:::${var.ci_cd_website_project_name}-test-reports-bucket/*",
+      "arn:aws:s3:::${var.project_name}-access-logs-test",
+      "arn:aws:s3:::${var.project_name}-access-logs-test/*",
+      "arn:aws:s3:::sandbox-${var.environment}-codepipeline-artifacts-bucket",
+      "arn:aws:s3:::sandbox-${var.environment}-codepipeline-artifacts-bucket/*",
+      "arn:aws:s3:::${var.project_name}-codepipeline-artifacts-${var.environment}",
+      "arn:aws:s3:::${var.project_name}-codepipeline-artifacts-${var.environment}/*",
+      "arn:aws:s3:::${var.project_name}-codebuild-logs-test",
+      "arn:aws:s3:::${var.project_name}-codebuild-logs-test/*",
     ]
   }
   statement {

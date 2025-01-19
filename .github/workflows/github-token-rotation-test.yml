@@ -1,0 +1,96 @@
+name: "GitHub Token Rotation"
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [rotate_token_test]
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+jobs:
+  rotate-github-token:
+    concurrency:
+      group: github-token-rotation
+      cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Validate Environment Variables
+        env:
+          VILNACRM_APP_ID: ${{ secrets.VILNACRM_APP_ID }}
+          VILNACRM_APP_PRIVATE_KEY: ${{ secrets.VILNACRM_APP_PRIVATE_KEY }}
+        run: |
+          if [ -z "$VILNACRM_APP_ID" ] || [ -z "$VILNACRM_APP_PRIVATE_KEY" ]; then
+            if [ -z "$VILNACRM_APP_ID" ]; then
+              echo "Error: Required secret VILNACRM_APP_ID is not set."
+            fi
+            if [ -z "$VILNACRM_APP_PRIVATE_KEY" ]; then
+              echo "Error: Required secret VILNACRM_APP_PRIVATE_KEY is not set."
+            fi
+            exit 1
+          fi
+          # Validate App ID format (should be numeric)
+          if ! [[ "$VILNACRM_APP_ID" =~ ^[0-9]+$ ]]; then
+            echo "Error: Invalid format for VILNACRM_APP_ID."
+            exit 1
+          fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_TOKEN_ROTATION_ROLE_TO_ASSUME_TEST }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS credentials
+        run: |
+          if ! aws sts get-caller-identity &>/dev/null; then
+            echo "Error: Failed to configure AWS credentials. Please check the role configuration."
+            exit 1
+          fi
+
+      - name: Setup Python and Enable Pip Cache
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install PyJWT
+        run: |
+          if ! pip3 install --quiet "PyJWT==2.8.0"; then
+            echo "Error: Failed to install PyJWT package"
+            exit 1
+          fi
+          installed_version=$(python3 -c "import jwt; print(jwt.__version__)" 2>/dev/null)
+          expected_version="2.8.0"
+          if [ -z "$installed_version" ]; then
+            echo "Error: Failed to install PyJWT"
+            exit 1
+          elif [ "$installed_version" != "$expected_version" ]; then
+            echo "Error: Incorrect PyJWT version. Expected $expected_version, got $installed_version"
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Rotate GitHub Token
+        env:
+          VILNACRM_APP_ID: ${{ secrets.VILNACRM_APP_ID }}
+          VILNACRM_APP_PRIVATE_KEY: ${{ secrets.VILNACRM_APP_PRIVATE_KEY }}
+        run: |
+          SCRIPT_PATH="./aws/scripts/sh/rotate_github_token.sh"
+          if [ ! -f "$SCRIPT_PATH" ]; then
+            echo "Error: Token rotation script not found at $SCRIPT_PATH"
+            exit 1
+          fi
+          chmod +x "$SCRIPT_PATH"
+          if ! "$SCRIPT_PATH"; then
+            echo "Error: Token rotation script failed"
+            exit 1
+          fi

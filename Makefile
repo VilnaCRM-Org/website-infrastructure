@@ -1,10 +1,20 @@
 # Executables: local only
 DOCKER_COMPOSE = docker compose -f docker/docker-compose.yml run --rm
 DOCKER         = docker
-MAKE 		   = make
-BUNDLE		   = bundle
-CD 			   = cd
-TERRASPACE	   = terraspace
+MAKE           = make
+BUNDLE         = bundle
+CD             = cd
+# Terraform and related tools
+TERRAFORM      = terraform
+TERRASPACE     = terraspace
+TFENV          = tfenv
+# Common system commands
+GIT            = git
+ECHO           = echo
+CURL           = curl
+CHMOD          = chmod
+EXPORT         = export
+RM             = rm
 
 # Misc
 .DEFAULT_GOAL = help
@@ -26,8 +36,8 @@ help:
 terraform: ## Terraform enables you to safely and predictably create, change, and improve infrastructure.
 	${DOCKER_COMPOSE} terraform "$1"
 
-tf-fmt:
-	terraform fmt --recursive
+tf-fmt: ## Format terraform code recursively.
+	$(TERRAFORM) fmt --recursive
 
 terraform-compliance: ## Terraform compliance is a security and compliance focused test framework.
 	${DOCKER_COMPOSE} terraform-compliance
@@ -38,14 +48,28 @@ terraspace: ## Terraspace is a terraform framework.
 codebuild-local-set-up: ## Setting up CodeBuild Agent for testing buildspecs locally
 	$(DOCKER) pull public.ecr.aws/codebuild/amazonlinux2-x86_64-standard:5.0
 	$(DOCKER) pull public.ecr.aws/codebuild/local-builds:latest
-	curl -O https://raw.githubusercontent.com/aws/aws-codebuild-docker-images/master/local_builds/codebuild_build.sh
-	chmod +x codebuild_build.sh
+	@$(CURL) -f -O https://raw.githubusercontent.com/aws/aws-codebuild-docker-images/master/local_builds/codebuild_build.sh || \
+		{ echo "Failed to download codebuild_build.sh" >&2; exit 1; }
+	@$(CHMOD) +x codebuild_build.sh || \
+		{ echo "Failed to set executable permissions" >&2; $(RM) -f codebuild_build.sh; exit 1; }
 
 codebuild-run: ## Runnig CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'
 	./codebuild_build.sh -i $(image) -d -a codebuild_artifacts -b $(buildspec) -e .env
 
-install-terraspace:
-	$(BUNDLE) install --gemfile $(.TERRAFORM_DIR)/Gemfile
+TERRAFORM_VERSION ?= 1.4.7
+
+install-terraspace: ## Install terraspace locally.
+	@$(ECHO) "## Install OpenTofu"
+	$(CURL) --proto "=https" --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+	$(CHMOD) +x install-opentofu.sh
+	./install-opentofu.sh --install-method rpm || { $(ECHO) "Failed to install OpenTofu" && exit 1; }
+	$(RM) install-opentofu.sh
+	@$(ECHO) "## Install Terraform"
+	$(GIT) clone https://github.com/tfutils/tfenv.git ~/.tfenv
+	$(ECHO) 'export PATH="$$HOME/.tfenv/bin:$$PATH"' >>~/.bash_profile
+	$(EXPORT) PATH="$HOME/.tfenv/bin:$PATH"
+	$(TFENV) install $(TERRAFORM_VERSION) || { $(ECHO) "Failed to install Terraform" && exit 1; }
+	$(TFENV) use $(TERRAFORM_VERSION)
 
 # Terraspace All
 

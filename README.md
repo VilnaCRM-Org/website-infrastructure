@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD041 -->
 [![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://supportukrainenow.org/)
 
 # VilnaCRM Infrastructure
@@ -80,7 +81,7 @@ After creating your account you should do the following steps:
 
    After creation of user:
 
-   Press on user you just created -> Go to Security credentials -> Create access key -> Choose Local code -> Check Confirmation mark -> Next -> Enter description value -> Create access key -> Save the Access key and Secret access key credentials
+   Press on user you just created -> Go to Security credentials -> Create access key -> Choose  code -> Check Confirmation mark -> Next -> Enter description value -> Create access key -> Save the Access key and Secret access key credentials
 
 **Save them, you will need it later.**
 
@@ -98,7 +99,7 @@ If you don\`t need Slack Notification, just set `create_slack_notification` in `
 
 **Otherwise,** you will need Workspace ID and Channel ID`s from your Slack.
 
-Channels that you will need: 
+Channels that you will need:
 - Deployments Notification Channel.
 - Reports Channel.
 - CI/CD Alerts Channel.
@@ -110,7 +111,7 @@ To get them you need:
 
 2. Once you're signed in, navigate to your primary workspace page and find the URL in the top search bar.
 
-**The URL should follow this format: https://app.slack.com/client/T111111L222/C3333333ZPF**
+**The URL should follow this format: <https://app.slack.com/client/T111111L222/C3333333ZPF>**
 
 The string of letters and numbers beginning with **"T"** is your workspace ID.
 
@@ -120,7 +121,8 @@ The string of letters and numbers beginning with **"C"** is your channel ID.(Als
 
 ### Local machine software requirements
 
-Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine. You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project locally using this OS. Follow the guides specified in the links.
+Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine.
+You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project locally using this OS. Follow the guides specified in the links.
 
 Necessary Terraform Version for the Terraspace is 1.4.7.
 Please, follow this links to install  [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/) to install it.
@@ -129,18 +131,19 @@ Or you can use `make install-terraspace`.
 
 Also you need to set up the connection to your AWS Account. With the credentials you got before use `aws configure`.
 
-```
+```bash
 $aws configure
 AWS Access Key ID [None]: <Your Access Key Here>
 AWS Secret Access Key [None]: <Your Secret Key Here>
 Default region name [None]: eu-central-1
 Default output format [None]:
 ```
-In case, if you are using other region, please respecify it in the `tfvars`. Also specify your own domain name in the `tfvars`.
+
+In case you are using any other region, please respecify it in the `tfvars`. Also specify your own domain name in the `tfvars`.
 
 After you can move to the next step.
 
-### Environmental variables 
+### Environmental variables
 
 Also before running you need to set up some local variables:
 - **TF_VAR_SLACK_WORKSPACE_ID** - ID of your Slack workspace.
@@ -149,8 +152,8 @@ Also before running you need to set up some local variables:
 - **TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID** - ID of Slack channel where the Website alerts will be posted.
 - **TF_VAR_REPORT_SLACK_CHANNEL_ID** - ID of Slack channel where the reports of the website tests will be posted.
 - **GITHUB_OWNER** - Owner of the repositories. Default: `VilnaCRM-Org`.
-- **GITHUB_TOKEN** - Token that will be used to configure Github Provider in Terraform.
-- **TF_VAR_GITHUB_TOKEN** - Token that will be used in CodePipelines to create/recreate infrastructure etc.
+- [**GITHUB_TOKEN**](/.github/github-pat-creation.md) - Token that will be used to configure Github Provider in Terraform.
+- [**TF_VAR_GITHUB_TOKEN**](/.github/github-pat-creation.md) - Token that will be used in CodePipelines to create/recreate infrastructure etc.
 
 Note: if you are not using Slack Notifications, skip those variables.
 
@@ -163,6 +166,16 @@ After you configured everything you can deploy infrastructure by running such co
 
 After you deployed you can create the website infrastructure itself using.
 - `terraspace all up`
+
+Alternatively, you can use the following command to bring up the entire infrastructure stack:
+
+- `make terraspace-up stack=ci-cd-infrastructure`
+
+This command simplifies the process by targeting the ci-cd-infrastructure stack directly.
+
+**⚠️ Important Note:**  
+The deployed sandbox will be automatically **removed after 7 days**.
+To keep it active, the developer must **commit again** to redeploy it.
 
 ### Instructions on how to set up and run the changes in AWS
 
@@ -177,14 +190,13 @@ Run the command for each pipeline specifying its name, see the list of `make` po
 AWS Management Console Instructions:
 Before running, make sure you have applied the changes made earlier.
 
-Search -> Codepipeline -> Pipelines -> Select a pipeline using the checkbox on the left -> Release change -> Release 
+Search -> Codepipeline -> Pipelines -> Select a pipeline using the checkbox on the left -> Release change -> Release
 
-Follow these steps for each pipeline. 
+Follow these steps for each pipeline.
 
 ## Using make
 
 You can use `make` command to easily control and work with project locally.
-
 
 > make install
 
@@ -194,7 +206,7 @@ Execute `make` or `make help` to see the full list of project commands.
 
 The list of the `make` possibilities:
 
-```
+```bash
 
   codebuild-local-set-up         Setting up CodeBuild Agent for testing buildspecs locally
   codebuild-run                  Running CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'

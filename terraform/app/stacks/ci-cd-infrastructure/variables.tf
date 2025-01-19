@@ -4,17 +4,22 @@ variable "project_name" {
 }
 
 variable "website_infra_project_name" {
-  description = "Unique name for this Website Codepipeline"
+  description = "Unique name for this Website CodePipeline"
   type        = string
 }
 
 variable "ci_cd_infra_project_name" {
-  description = "Unique name for this CI/CD Codepipeline"
+  description = "Unique name for this CI/CD CodePipeline"
+  type        = string
+}
+
+variable "sandbox_project_name" {
+  description = "Unique name for this Sandbox CodePipeline"
   type        = string
 }
 
 variable "ci_cd_website_project_name" {
-  description = "Unique name for this Website Deploy Codepipeline"
+  description = "Unique name for this Website Deploy CodePipeline"
   type        = string
 }
 
@@ -44,17 +49,22 @@ variable "continuous_deployment_policy_header" {
 }
 
 variable "website_buildspecs" {
-  description = "Buildspecs of Website"
+  description = "Buildspecs for Website"
   type        = string
 }
 
 variable "ci_cd_infra_buildspecs" {
-  description = "Buildspecs of CI/CD infrastructure"
+  description = "Buildspecs for CI/CD infrastructure"
   type        = string
 }
 
 variable "ci_cd_website_buildspecs" {
-  description = "Buildspecs of Website Deploy"
+  description = "Buildspecs for Website Deployment"
+  type        = string
+}
+
+variable "sandbox_buildspecs" {
+  description = "Buildspecs for Sandbox Deployment"
   type        = string
 }
 
@@ -89,7 +99,7 @@ variable "github_connection_name" {
 }
 
 variable "codepipeline_iam_role_name" {
-  description = "Name of the IAM role to be used by the Codepipeline"
+  description = "Name of the IAM role to be used by the CodePipeline"
   type        = string
   default     = "codepipeline-role"
 }
@@ -100,17 +110,27 @@ variable "website_url" {
 }
 
 variable "ci_cd_infra_stage_input" {
-  description = "List of Map containing information about the stages of the CI/CD Infrastructure CodePipeline"
+  description = "List of maps containing information about the stages of the CI/CD Infrastructure CodePipeline"
   type        = list(map(string))
 }
 
 variable "website_infra_stage_input" {
-  description = "List of Map containing information about the stages of the Website Infrastructure CodePipeline"
+  description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
+  type        = list(map(string))
+}
+
+variable "sandbox_stage_input" {
+  description = "List of maps containing information about the stages of the Sandbox CodePipeline"
+  type        = list(map(string))
+}
+
+variable "sandbox_deletion_stage_input" {
+  description = "List of maps containing information about the stages of the Sandbox CodePipeline"
   type        = list(map(string))
 }
 
 variable "ci_cd_website_stage_input" {
-  description = "List of Map containing information about the stages of the Website Infrastructure CodePipeline"
+  description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
   type        = list(map(string))
 }
 
@@ -130,12 +150,12 @@ variable "bucket_name" {
 }
 
 variable "script_dir" {
-  description = "Directory for Scripts of CodeBuild"
+  description = "Directory containing scripts for CodeBuild"
   type        = string
 }
 
 variable "s3_artifacts_bucket_files_deletion_days" {
-  description = "Expiring time of files in buckets for lifecycle configuration rule"
+  description = "Expiration time of files in buckets for lifecycle configuration rule"
   type        = number
 }
 
@@ -145,7 +165,7 @@ variable "s3_logs_lifecycle_configuration" {
 }
 
 variable "cloudwatch_log_group_retention_days" {
-  description = "Retention time of Cloudwatch log group logs"
+  description = "Retention time of CloudWatch Log Group logs"
   type        = number
 }
 
@@ -160,12 +180,12 @@ variable "lambda_reserved_concurrent_executions" {
 }
 
 variable "dynamodb_table_name" {
-  description = "Dynamodb Table Name for Logs"
+  description = "DynamoDB table name for logs"
   type        = string
 }
 
 variable "create_slack_notification" {
-  description = "This responsible for creating Slack Notifications"
+  description = "Responsible for creating Slack notifications"
   type        = string
 }
 
@@ -180,17 +200,17 @@ variable "SLACK_WORKSPACE_ID" {
 }
 
 variable "CODEPIPELINE_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Notifications"
+  description = "Slack Channel ID for CodePipeline notifications"
   type        = string
 }
 
 variable "CI_CD_ALERTS_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Notifications"
+  description = "Slack Channel ID for CI/CD alerts"
   type        = string
 }
 
 variable "WEBSITE_ALERTS_SLACK_CHANNEL_ID" {
-  description = "Slack Channel ID for Notifications"
+  description = "Slack Channel ID for website alerts"
   type        = string
 }
 
@@ -199,8 +219,26 @@ variable "REPORT_SLACK_CHANNEL_ID" {
   type        = string
 }
 
-variable "GITHUB_TOKEN" {
-  description = "Token to push credentials to repositories"
+variable "BRANCH_NAME" {
+  description = "Name of the branch"
   type        = string
+  default     = ""
 }
 
+variable "PR_NUMBER" {
+  description = "Number of the pull request"
+  type        = string
+  default     = ""
+}
+
+variable "IS_PULL_REQUEST" {
+  description = "Indicates if this is a pull request"
+  type        = bool
+  default     = false
+}
+
+variable "github_token_secret_name" {
+  description = "Name of the GitHub token secret"
+  type        = string
+  default     = "github-token"
+}

@@ -8,7 +8,6 @@ module "ci_cd_infra_s3_artifacts_bucket" {
 
   s3_artifacts_bucket_files_deletion_days = var.s3_artifacts_bucket_files_deletion_days
 
-  kms_key_arn           = module.ci_cd_infra_codepipeline_kms.arn
   codepipeline_role_arn = module.ci_cd_infra_codepipeline_iam_role.role_arn
 
   tags = var.tags
@@ -55,7 +54,6 @@ module "ci_cd_infra_codebuild" {
 
   s3_bucket_name = module.ci_cd_infra_s3_artifacts_bucket.bucket
   role_arn       = module.ci_cd_infra_codepipeline_iam_role.role_arn
-  kms_key_arn    = module.ci_cd_infra_codepipeline_kms.arn
 
   region      = var.region
   environment = var.environment
@@ -91,4 +89,14 @@ module "ci_cd_infra_codepipeline" {
   tags = var.tags
 
   depends_on = [module.ci_cd_infra_codebuild, module.ci_cd_infra_s3_artifacts_bucket]
+}
+
+module "ci_cd_infra_pipeline_role" {
+  source       = "../../modules/aws/iam/oidc/pipeline-trigger-role"
+  role_name    = "ci-cd-infra-trigger-role"
+  github_owner = var.source_repo_owner
+  github_repo  = var.source_repo_name
+  branch       = var.source_repo_branch
+  pipeline_arn = module.ci_cd_infra_codepipeline.arn
+  depends_on   = [module.ci_cd_infra_codepipeline]
 }

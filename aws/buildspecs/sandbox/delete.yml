@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - |
+        if ! chmod +x ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh; then
+          echo "Failed to set execution permissions"
+          exit 1
+        fi
+      - echo "Starting sandbox deletion script..."
+      - |
+        if ! . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh; then
+          echo "Script execution failed"
+          exit 1
+        fi
+      - |
+        echo "Sandbox cleanup completed:"
+        echo "- PR: ${CODEBUILD_SOURCE_VERSION}"
+        echo "- Build: ${CODEBUILD_BUILD_ID}"
+        echo "- Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"

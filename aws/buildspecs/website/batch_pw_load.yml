@@ -2,13 +2,13 @@ batch:
   fast-fail: false
   build-list:
     - identifier: playwrightE2E
-      buildspec: './aws/buildspecs/website/batches/playwright_e2e.yml'
+      buildspec: "./aws/buildspecs/website/batches/playwright_e2e.yml"
       ignore-failure: false
 
     - identifier: playwrightVisual
-      buildspec: './aws/buildspecs/website/batches/playwright_visual.yml'
+      buildspec: "./aws/buildspecs/website/batches/playwright_visual.yml"
       ignore-failure: false
 
     - identifier: loadTests
-      buildspec: './aws/buildspecs/website/batches/load_test.yml'
+      buildspec: "./aws/buildspecs/website/batches/load_test.yml"
       ignore-failure: false

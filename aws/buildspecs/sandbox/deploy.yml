@@ -1,0 +1,57 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: $NODEJS_VERSION
+    commands:
+      - |
+        if [ -z "${BRANCH_NAME}" ]; then
+          echo "Error: Required environment variable BRANCH_NAME is not set or empty."
+          exit 1
+        fi
+
+        if [ -z "${PR_NUMBER}" ]; then
+          echo "Error: Required environment variable PR_NUMBER is not set or empty."
+          exit 1
+        fi
+      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh"
+      - "cd ${WEBSITE_DIR:-/codebuild-user/website}"
+      - "sudo apt update"
+      - 'sudo apt install gh -y || { echo "Failed to install GitHub CLI"; exit 1; }'
+      - |
+        echo "Retrieving and using GitHub token for authentication..."
+        SECRET_ID=$(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'github-token-') && DeletedDate==null].Name" --output text)
+        if [ -z "$SECRET_ID" ]; then
+          echo "Error: No active GitHub token secret found."
+          exit 1
+        fi
+        aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
+          echo "GitHub authentication failed"
+          exit 1
+        }
+
+  build:
+    commands:
+      - |
+        COMMENT_BODY="The deployment process for the sandbox has started.
+        Please wait until the latest version is ready"
+
+        SECRET_ID=$(aws secretsmanager list-secrets --query 'SecretList[?starts_with(Name, `github-token-`) && DeletedDate==null].Name' --output text)
+        if [ -z "$SECRET_ID" ]; then
+          echo "Error: No active GitHub token secret found."
+          exit 1
+        fi
+
+        aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
+          echo "GitHub authentication failed"
+          exit 1
+        }
+
+        if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
+          echo "Failed to add comment to PR"
+          exit 1
+        fi
+      - "echo #### Build Project"
+      - 'make build || { echo "Build failed"; exit 1; }'
+      - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'

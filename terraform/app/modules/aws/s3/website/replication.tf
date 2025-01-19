@@ -1,5 +1,3 @@
-// Cross-Region replication
-
 resource "aws_s3_bucket" "replication_bucket" {
   provider = aws.eu-west-1
   bucket   = "${var.s3_bucket_custom_name}-replication"

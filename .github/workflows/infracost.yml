@@ -2,7 +2,7 @@ name: costs
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   SSH_AUTH_SOCK: /tmp/ssh_agent.sock
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout base branch
         uses: actions/checkout@v3
         with:
-          ref: '${{ github.event.pull_request.base.ref }}'
+          ref: "${{ github.event.pull_request.base.ref }}"
 
       - name: Generate Infracost cost estimate baseline
         run: |

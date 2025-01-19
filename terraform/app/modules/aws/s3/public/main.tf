@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "reports_bucket" {
-  bucket = "${var.project_name}-reports-bucket"
+  bucket = var.project_name
   #checkov:skip=CKV_AWS_18:The access logging of reports bucket is not needed 
   #checkov:skip=CKV2_AWS_61:The lifecycle configuration of reports bucket is not needed 
   #checkov:skip=CKV2_AWS_62: The event notifications of reports bucket is not needed 
@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "reports_bucket" {
   force_destroy = true
 }
 
-resource "aws_s3_bucket_ownership_controls" "reports_bucket_ownership_controls" {
+resource "aws_s3_bucket_ownership_controls" "bucket_ownership_controls" {
   #checkov:skip=CKV2_AWS_65: Necessary for developer access /access control lists for S3 buckets are disabled
   bucket = aws_s3_bucket.reports_bucket.id
   rule {
@@ -20,12 +20,12 @@ resource "aws_s3_bucket_ownership_controls" "reports_bucket_ownership_controls" 
   }
 }
 
-resource "aws_s3_bucket_policy" "reports_bucket_policy" {
+resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.reports_bucket.id
   policy = data.aws_iam_policy_document.bucket_policy_doc.json
 }
 
-resource "aws_s3_bucket_public_access_block" "reports_bucket_pab" {
+resource "aws_s3_bucket_public_access_block" "bucket_pab" {
   #checkov:skip=CKV_AWS_56: Necessary for developer access /restrict_public_buckets enabled
   #checkov:skip=CKV_AWS_55: Necessary for developer access /ignore public ACLs enabled
   #checkov:skip=CKV_AWS_54: Necessary for developer access /block public policy enabled
@@ -37,25 +37,25 @@ resource "aws_s3_bucket_public_access_block" "reports_bucket_pab" {
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket_versioning" "reports_bucket_versioning" {
+resource "aws_s3_bucket_versioning" "bucket_versioning" {
   bucket = aws_s3_bucket.reports_bucket.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_acl" "reports_bucket_acl" {
+resource "aws_s3_bucket_acl" "bucket_acl" {
   #ts:skip=AC_AWS_0210 
   depends_on = [
-    aws_s3_bucket_ownership_controls.reports_bucket_ownership_controls,
-    aws_s3_bucket_public_access_block.reports_bucket_pab,
+    aws_s3_bucket_ownership_controls.bucket_ownership_controls,
+    aws_s3_bucket_public_access_block.bucket_pab,
   ]
 
   bucket = aws_s3_bucket.reports_bucket.id
   acl    = "public-read"
 }
 
-resource "aws_s3_bucket_website_configuration" "reports_bucket_website_configuration" {
+resource "aws_s3_bucket_website_configuration" "bucket_website_configuration" {
   bucket = aws_s3_bucket.reports_bucket.id
 
   index_document {
@@ -67,8 +67,8 @@ resource "aws_s3_bucket_website_configuration" "reports_bucket_website_configura
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "reports_bucket_lifecycle_configuration" {
-  depends_on = [aws_s3_bucket_versioning.reports_bucket_versioning]
+resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle_configuration" {
+  depends_on = [aws_s3_bucket_versioning.bucket_versioning]
 
   bucket = aws_s3_bucket.reports_bucket.id
 

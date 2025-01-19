@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: $PYTHON_VERSION
+    commands:
+      - |
+        if [ -z "${BRANCH_NAME}" ]; then
+          echo "Error: Required environment variable BRANCH_NAME is not set or empty."
+          exit 1
+        fi
+
+        if [ -z "${IS_PULL_REQUEST}" ]; then
+          echo "Error: Required environment variable IS_PULL_REQUEST is not set or empty."
+          exit 1
+        fi
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh"
+  build:
+    commands:
+      - "cd ${CODEBUILD_SRC_DIR}"
+      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/s3_sandbox_configuration.py"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_creation.sh"
+artifacts:
+  files:
+    - "**/*"

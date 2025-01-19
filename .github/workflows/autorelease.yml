@@ -2,9 +2,9 @@ name: generate changelog and create release
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths-ignore:
-      - 'CHANGELOG.md'
+      - "CHANGELOG.md"
 
 jobs:
   build:
@@ -17,14 +17,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: 'main'
+          ref: "main"
 
       - name: Conventional Changelog Action
         id: changelog
         uses: TriPSs/conventional-changelog-action@v4
         with:
           github-token: ${{ secrets.REPO_GITHUB_TOKEN }}
-          output-file: 'CHANGELOG.md'
+          output-file: "CHANGELOG.md"
 
       - name: Create Release
         uses: actions/create-release@v1

@@ -8,7 +8,6 @@ module "ci_cd_website_s3_artifacts_bucket" {
 
   s3_artifacts_bucket_files_deletion_days = var.s3_artifacts_bucket_files_deletion_days
 
-  kms_key_arn           = module.ci_cd_website_codepipeline_kms.arn
   codepipeline_role_arn = module.ci_cd_website_codepipeline_iam_role.role_arn
 
   tags = var.tags
@@ -56,7 +55,6 @@ module "ci_cd_website_codebuild" {
 
   s3_bucket_name = module.ci_cd_website_s3_artifacts_bucket.bucket
   role_arn       = module.ci_cd_website_codepipeline_iam_role.role_arn
-  kms_key_arn    = module.ci_cd_website_codepipeline_kms.arn
 
 
   tags = var.tags
@@ -95,4 +93,13 @@ module "ci_cd_website_codepipeline" {
   tags = var.tags
 
   depends_on = [module.ci_cd_website_codebuild, module.ci_cd_website_s3_artifacts_bucket]
+}
+
+module "ci_cd_pipeline_role" {
+  source       = "../../modules/aws/iam/oidc/pipeline-trigger-role"
+  role_name    = "${var.website_content_repo_name}-deploy-trigger-role"
+  github_owner = var.source_repo_owner
+  github_repo  = var.source_repo_name
+  branch       = var.source_repo_branch
+  pipeline_arn = module.ci_cd_website_codepipeline.arn
 }

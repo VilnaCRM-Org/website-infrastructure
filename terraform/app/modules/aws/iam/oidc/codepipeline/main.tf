@@ -1,3 +1,4 @@
+# TODO: Remove GITHUB PAT secret and use something different
 module "github_oidc" {
   source               = "git::https://github.com/terraform-module/terraform-aws-github-oidc-provider.git?ref=65f314a780b489f56630256adf6c021315877811"
   create_oidc_provider = true
@@ -19,8 +20,14 @@ resource "github_actions_secret" "aws_codepipeline_role_arn" {
   depends_on = [module.github_oidc]
 }
 
-resource "github_actions_secret" "aws_codepipeline_name" {
+resource "github_actions_secret" "aws_website_codepipeline_name" {
   repository      = var.source_repo_name
-  secret_name     = "${upper(var.environment)}_AWS_CODEPIPELINE_NAME"
+  secret_name     = "AWS_WEBSITE_CODEPIPELINE_NAME"
   plaintext_value = var.ci_cd_website_codepipeline_name
+}
+
+resource "github_actions_secret" "aws_sandbox_codepipeline_name" {
+  repository      = var.source_repo_name
+  secret_name     = "AWS_SANDBOX_CODEPIPELINE_NAME"
+  plaintext_value = var.sandbox_codepipeline_name
 }

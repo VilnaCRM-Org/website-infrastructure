@@ -2,6 +2,7 @@ project_name               = "website-prod"
 website_infra_project_name = "website-infra-prod"
 ci_cd_infra_project_name   = "ci-cd-infra-prod"
 ci_cd_website_project_name = "ci-cd-website-prod"
+sandbox_project_name       = "sandbox-prod"
 environment                = "prod"
 github_connection_name     = "Github"
 source_repo_branch         = "main"
@@ -33,4 +34,13 @@ ci_cd_website_stage_input = [
   { name = "batch-lhci-leak", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "LHCILeakOutput" },
   { name = "batch-pw-load", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "PWLoadOutput" },
   { name = "release", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "ReleaseOutput" },
+]
+
+sandbox_stage_input = [
+  { name = "up", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "UpOutput" },
+  { name = "deploy", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "DeployOutput" },
+]
+
+sandbox_deletion_stage_input = [
+  { name = "delete", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "DeleteOutput" },
 ]

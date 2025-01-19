@@ -1,5 +1,5 @@
 resource "aws_acm_certificate" "this" {
-  provider    = aws.us-east-1 # Only can be created in us-east-1
+  provider    = aws.us-east-1
   domain_name = var.domain_name
   subject_alternative_names = [
     "*.${var.domain_name}",
@@ -32,7 +32,6 @@ resource "aws_acm_certificate_validation" "this" {
   validation_record_fqdns = [for record in aws_route53_record.validation : record.fqdn]
 }
 
-# Redirect 'www' subdomain to apex
 resource "aws_route53_record" "www_domain_name" {
   type    = "CNAME"
   zone_id = data.aws_route53_zone.this.zone_id
