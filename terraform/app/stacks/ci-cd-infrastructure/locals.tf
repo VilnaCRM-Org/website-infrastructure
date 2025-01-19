@@ -253,6 +253,7 @@ locals {
     "PYTHON_VERSION"     = var.runtime_versions.python,
     "SCRIPT_DIR"         = var.script_dir,
     "PROJECT_NAME"       = var.sandbox_project_name,
+    "GITHUB_REPOSITORY"  = "${var.source_repo_owner}/${var.website_content_repo_name}",
   }
 
   sandbox_build_projects = {
@@ -277,7 +278,6 @@ locals {
             "NODEJS_VERSION"              = var.runtime_versions.nodejs,
             "BUCKET_NAME"                 = var.bucket_name,
             "WEBSITE_GIT_REPOSITORY_LINK" = "https://github.com/${var.source_repo_owner}/${var.website_content_repo_name}",
-            "GITHUB_REPOSITORY"           = "${var.source_repo_owner}/${var.website_content_repo_name}",
           }
         )
       },
@@ -289,7 +289,6 @@ locals {
           local.common_sandbox_env_variables,
           {
             "BRANCH_NAME"       = var.BRANCH_NAME,
-            "GITHUB_REPOSITORY" = "${var.source_repo_owner}/${var.website_content_repo_name}",
           }
         )
       },
@@ -302,9 +301,7 @@ locals {
       {
         project_name = "${var.project_name}-delete"
         env_variables = {
-          "PROJECT_NAME"       = var.sandbox_project_name,
           "BRANCH_NAME"        = var.BRANCH_NAME,
-          "AWS_DEFAULT_REGION" = var.region,
         }
       },
     { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/delete.yml" })
