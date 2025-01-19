@@ -300,9 +300,12 @@ locals {
       local.amazonlinux2_based_build,
       {
         project_name = "${var.project_name}-delete"
-        env_variables = {
-          "BRANCH_NAME" = var.BRANCH_NAME,
-        }
+        env_variables = merge(
+          local.common_sandbox_env_variables,
+          {
+            "BRANCH_NAME" = var.BRANCH_NAME,
+          }
+        )
       },
     { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/delete.yml" })
   }
