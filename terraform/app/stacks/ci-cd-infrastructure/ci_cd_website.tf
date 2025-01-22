@@ -100,6 +100,7 @@ module "ci_cd_pipeline_role" {
   role_name    = "${var.website_content_repo_name}-deploy-trigger-role"
   github_owner = var.source_repo_owner
   github_repo  = var.source_repo_name
+  website_repo = var.website_content_repo_name
   branch       = var.source_repo_branch
   pipeline_arn = module.ci_cd_website_codepipeline.arn
 }

@@ -96,6 +96,7 @@ module "sandbox_creation_pipeline_role" {
   role_name    = "${var.sandbox_buildspecs}-creation-trigger-role"
   github_owner = var.source_repo_owner
   github_repo  = var.source_repo_name
+  website_repo = var.website_content_repo_name
   branch       = var.source_repo_branch
   pipeline_arn = module.sandbox_codepipeline.arn
 }

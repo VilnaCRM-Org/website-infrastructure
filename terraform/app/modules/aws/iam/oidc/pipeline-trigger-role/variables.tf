@@ -13,6 +13,11 @@ variable "github_repo" {
   type        = string
 }
 
+variable "website_repo" {
+  description = "Name of the GitHub repository without owner prefix (e.g., 'website')"
+  type        = string
+}
+
 variable "branch" {
   description = "Branch to trigger the pipeline (defaults to 'main')"
   type        = string
