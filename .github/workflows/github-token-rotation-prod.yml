@@ -70,6 +70,9 @@ jobs:
             exit 1
           fi
 
+      - name: Checkout repository
+        uses: actions/checkout@v4 
+
       - name: Rotate GitHub Token
         env:
           VILNACRM_APP_ID: ${{ secrets.VILNACRM_APP_ID }}
