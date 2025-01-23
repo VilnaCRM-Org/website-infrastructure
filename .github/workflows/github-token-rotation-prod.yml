@@ -71,7 +71,7 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@v4 
+        uses: actions/checkout@v4
 
       - name: Rotate GitHub Token
         env:

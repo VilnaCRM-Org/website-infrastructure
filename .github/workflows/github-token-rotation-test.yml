@@ -69,9 +69,9 @@ jobs:
             echo "Error: Incorrect PyJWT version. Expected $expected_version, got $installed_version"
             exit 1
           fi
-      
+
       - name: Checkout repository
-        uses: actions/checkout@v4 
+        uses: actions/checkout@v4
 
       - name: Rotate GitHub Token
         env:
