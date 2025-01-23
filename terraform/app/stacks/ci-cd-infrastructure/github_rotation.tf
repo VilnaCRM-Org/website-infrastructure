@@ -11,5 +11,6 @@ module "github_actions_role" {
   source            = "../../modules/aws/iam/roles/github-token-rotation-role"
   source_repo_owner = var.source_repo_owner
   source_repo_name  = var.source_repo_name
+  website_repo_name = var.website_content_repo_name
   policy_arn        = module.github_token_policy.policy_arn
 }

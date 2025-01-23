@@ -96,6 +96,7 @@ module "ci_cd_infra_pipeline_role" {
   role_name    = "ci-cd-infra-trigger-role"
   github_owner = var.source_repo_owner
   github_repo  = var.source_repo_name
+  website_repo = var.website_content_repo_name
   branch       = var.source_repo_branch
   pipeline_arn = module.ci_cd_infra_codepipeline.arn
   depends_on   = [module.ci_cd_infra_codepipeline]

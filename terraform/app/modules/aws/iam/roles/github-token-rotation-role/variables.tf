@@ -18,3 +18,8 @@ variable "github_actions_role_name" {
   type        = string
   default     = "github-actions-role"
 }
+
+variable "website_repo_name" {
+  description = "Website GitHub repository name"
+  type        = string
+}
