@@ -60,16 +60,6 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
   }
 
   statement {
-    sid    = "AllowKMSActions"
-    effect = "Allow"
-    actions = [
-      "kms:GenerateDataKey*",
-      "kms:Decrypt"
-    ]
-    resources = ["${var.kms_key_arn}"]
-  }
-
-  statement {
     sid    = "AllowCodeBuildActions"
     effect = "Allow"
     actions = [
@@ -253,7 +243,6 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-sns-policy",
-      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-kms-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-s3-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-lambda-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-general-policy",
@@ -267,12 +256,10 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-s3-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-sns-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-lambda-policy",
-      "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-kms-policy",
       "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-cloudfront-policy",
       "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-cloudwatch-policy",
       "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-codepipeline-policy",
       "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-iam-policy",
-      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-kms-policy",
       "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-lambda-policy",
       "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-s3-policy",
       "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-group-cloudfront-policy",
