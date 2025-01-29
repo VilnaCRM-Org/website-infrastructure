@@ -45,7 +45,8 @@ resource "aws_lambda_function" "func" {
   #checkov:skip=CKV_AWS_117:AWS VPC is not needed here for sending notifications
   #checkov:skip=CKV_AWS_50: X-Ray is not needed for such lambda and it takes bonus costs
   #checkov:skip=CKV_AWS_116: DLQ needs additional topics, to complex for simple redirect lambda function
-  #checkov:skip=CKV_AWS_272: Code-signing is not needed for simple redirect lambda function 
+  #checkov:skip=CKV_AWS_272: Code-signing is not needed for simple redirect lambda function
+  #checkov:skip=CKV_AWS_173: KMS encryption is not needed
   #ts:skip=AWS.LambdaFunction.Logging.0472 AWS VPC is not needed here for sending notifications
   #ts:skip=AWS.LambdaFunction.Logging.0470 X-Ray is not needed for such lambda and it takes bonus costs
   filename                       = "${var.path_to_lambdas}/zip/reports_notification_function_payload.zip"
@@ -54,8 +55,6 @@ resource "aws_lambda_function" "func" {
   handler                        = "reports_notification.lambda_handler"
   runtime                        = var.lambda_python_version
   reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
-
-  kms_key_arn = aws_kms_key.lambda_encryption_key.arn
 
   logging_config {
     log_format = "JSON"

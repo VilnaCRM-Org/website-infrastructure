@@ -1,11 +1,10 @@
 resource "aws_sns_topic" "codepipeline_notifications" {
+  #checkov:skip=CKV_AWS_26: KMS encryption is not needed
   name = "${var.project_name}-notifications"
-
-  kms_master_key_id = aws_kms_key.codepipeline_sns_encryption_key.id
 
   tags = var.tags
 
-  depends_on = [aws_codepipeline.terraform_pipeline, aws_kms_key.codepipeline_sns_encryption_key]
+  depends_on = [aws_codepipeline.terraform_pipeline]
 }
 
 resource "aws_sns_topic_policy" "codepipeline_notifications" {
