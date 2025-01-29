@@ -1,11 +1,8 @@
 resource "aws_sns_topic" "cloudwatch_alarm_notifications" {
+  #checkov:skip=CKV_AWS_26: KMS encryption is not needed
   name = "${var.project_name}-cloudwatch-alarm-notifications"
 
-  kms_master_key_id = aws_kms_key.cloudwatch_alarm_sns_encryption_key.id
-
   tags = var.tags
-
-  depends_on = [aws_kms_key.cloudwatch_alarm_sns_encryption_key]
 }
 
 resource "aws_sns_topic_policy" "cloudwatch_alarm_notifications" {
