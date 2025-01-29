@@ -56,8 +56,6 @@ with Diagram(
     for builder in builders:
         builder >> s3
 
-    s3 >> Edge()
-
     builders[6] >> sns
 
     sns >> chatbot
