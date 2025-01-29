@@ -8,7 +8,6 @@ data "aws_iam_policy_document" "general_policy_doc" {
     effect = "Allow"
     actions = [
       "sts:GetCallerIdentity",
-      "kms:CreateKey",
       "codestar-notifications:DeleteTarget",
       "cloudtrail:DescribeTrails",
       "cloudfront:ListDistributions",
