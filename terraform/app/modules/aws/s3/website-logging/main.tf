@@ -3,7 +3,7 @@ resource "aws_s3_bucket" "logging_bucket" {
   #checkov:skip=CKV_AWS_18:The access logging of logging bucket is not needed 
   #checkov:skip=CKV2_AWS_62: The event notifications of logging bucket is not needed 
   #checkov:skip=CKV_AWS_144: Replication of logging bucket is not needed 
-  #checkov:skip=CKV_AWS_145: Bucket has encryption by default
+  #checkov:skip=CKV_AWS_145: Using AWS-managed AES256 encryption instead of KMS for cost optimization
   tags = var.tags
 
   force_destroy = local.allow_force_destroy
