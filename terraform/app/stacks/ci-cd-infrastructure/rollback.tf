@@ -29,7 +29,7 @@ module "codebuild_cloudfront_rollback" {
 
   source_configuration = local.codebuild_rollback_source_configuration
 
-  role_arn    = module.codebuild_cloudfront_rollback_iam_role.arn
+  role_arn = module.codebuild_cloudfront_rollback_iam_role.arn
 
   tags = var.tags
 
