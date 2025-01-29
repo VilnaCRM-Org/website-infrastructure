@@ -1,10 +1,8 @@
 resource "aws_cloudwatch_log_group" "s3_lambda_notification_group" {
   #checkov:skip=CKV_AWS_338: The one year is too much 
+  #checkov:skip=CKV_AWS_158: KMS encryption is not needed
   name              = "${var.project_name}-aws-s3-lambda-notification-group"
   retention_in_days = var.cloudwatch_log_group_retention_days
-  kms_key_id        = aws_kms_key.cloudwatch_encryption_key.arn
-
-  depends_on = [aws_kms_key_policy.cloudwatch_encryption_key]
 }
 
 resource "aws_cloudwatch_metric_alarm" "s3_objects_anomaly_detection" {

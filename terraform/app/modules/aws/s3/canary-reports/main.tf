@@ -1,7 +1,8 @@
 resource "aws_s3_bucket" "canaries_reports_bucket" {
   #checkov:skip=CKV_AWS_18:The access logging of logging bucket is not needed 
   #checkov:skip=CKV2_AWS_62: The event notifications of logging bucket is not needed 
-  #checkov:skip=CKV_AWS_144: Replication of logging bucket is not needed 
+  #checkov:skip=CKV_AWS_144: Replication of logging bucket is not needed
+  #checkov:skip=CKV_AWS_145: Bucket has encryption by default
   bucket        = "${var.project_name}-canaries-reports-bucket"
   force_destroy = true
 
@@ -26,8 +27,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "canaries_reports_
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.canaries_reports_bucket_encryption_key.arn
-      sse_algorithm     = "aws:kms"
+      sse_algorithm = "AES256"
     }
   }
 }
