@@ -1,7 +1,6 @@
-from diagrams import Cluster, Diagram, Edge
+from diagrams import Cluster, Diagram
 from diagrams.onprem.vcs import Github
 from diagrams.aws.devtools import Codepipeline, Codebuild
-from diagrams.aws.security import KMS
 from diagrams.aws.storage import SimpleStorageServiceS3
 from diagrams.aws.management import Chatbot
 from diagrams.aws.integration import SNS
