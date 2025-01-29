@@ -33,11 +33,6 @@ variable "tags" {
   type        = map(any)
 }
 
-variable "kms_key_arn" {
-  description = "ARN of KMS key for encryption"
-  type        = string
-}
-
 variable "role_arn" {
   description = "Codepipeline IAM role arn. "
   type        = string
