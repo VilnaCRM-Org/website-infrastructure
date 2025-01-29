@@ -17,7 +17,6 @@ with Diagram(
     codepipe = Codepipeline("AWS CodePipeline")
     s3 = SimpleStorageServiceS3("AWS S3 \n Artifact Bucket")
     ci_cd_website_codepipeline = Cluster("CI/CD Website CodePipeline")
-    kms = KMS("AWS KMS \n Encrypts all data")
     chatbot = Chatbot("AWS chatbot \n Send notifies \n to Slack")
     sns = SNS("AWS SNS \n Notify about \n pipeline progress")
 
@@ -57,7 +56,7 @@ with Diagram(
     for builder in builders:
         builder >> s3
 
-    s3 >> Edge() << kms
+    s3 >> Edge()
 
     builders[6] >> sns
 
