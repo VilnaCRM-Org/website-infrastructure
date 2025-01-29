@@ -48,7 +48,7 @@ Here you can get acquainted with our infrastructure for frontend and CD pipeline
 
 ![CI/CD Website pipeline Test Design VilnaCRM](/diagrams/img/test/ci_cd_website_pipeline_design.png)
 
-Used AWS Services: Chatbot, Cloudwatch, S3, CodeBuild, CodePipeline, CodeStar, KMS, IAM, DNS, Cloudfront, SNS, Lambda.
+Used AWS Services: Chatbot, Cloudwatch, S3, CodeBuild, CodePipeline, CodeStar, IAM, DNS, Cloudfront, SNS, Lambda.
 
 ## Installation
 
