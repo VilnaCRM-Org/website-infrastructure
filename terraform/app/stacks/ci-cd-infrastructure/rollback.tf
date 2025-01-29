@@ -1,11 +1,3 @@
-module "codebuild_cloudfront_rollback_kms" {
-  source = "../../modules/aws/kms"
-
-  codepipeline_role_arn = module.codebuild_cloudfront_rollback_iam_role.arn
-
-  tags = var.tags
-}
-
 module "codebuild_cloudfront_rollback_iam_role" {
   source = "../../modules/aws/iam/roles/rollback"
 
@@ -18,8 +10,6 @@ module "codebuild_cloudfront_rollback_iam_role" {
 
   region      = var.region
   environment = var.environment
-
-  kms_key_arn = module.codebuild_cloudfront_rollback_kms.arn
 
   codestar_connection_arn = module.codestar_connection.arn
 
@@ -40,12 +30,10 @@ module "codebuild_cloudfront_rollback" {
   source_configuration = local.codebuild_rollback_source_configuration
 
   role_arn    = module.codebuild_cloudfront_rollback_iam_role.arn
-  kms_key_arn = module.codebuild_cloudfront_rollback_kms.arn
 
   tags = var.tags
 
   depends_on = [
-    module.codebuild_cloudfront_rollback_kms,
     module.codebuild_cloudfront_rollback_iam_role,
     module.codestar_connection
   ]
