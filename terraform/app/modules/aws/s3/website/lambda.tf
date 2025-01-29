@@ -37,7 +37,8 @@ resource "aws_lambda_function" "func" {
   #checkov:skip=CKV_AWS_117:AWS VPC is not needed here for sending notifications
   #checkov:skip=CKV_AWS_50: X-Ray is not needed for such lambda and it takes bonus costs
   #checkov:skip=CKV_AWS_116: DLQ needs additional topics, to complex for simple redirect lambda function
-  #checkov:skip=CKV_AWS_272: Code-signing is not needed for simple redirect lambda function 
+  #checkov:skip=CKV_AWS_272: Code-signing is not needed for simple redirect lambda function
+  #checkov:skip=CKV_AWS_173: KMS encryption is not needed
   #ts:skip=AWS.LambdaFunction.Logging.0472 AWS VPC is not needed here for sending notifications
   #ts:skip=AWS.LambdaFunction.Logging.0470 X-Ray is not needed for such lambda and it takes bonus costs
   filename                       = "${var.path_to_lambdas}/zip/website_infra_s3_notifications_function_payload.zip"
@@ -52,7 +53,6 @@ resource "aws_lambda_function" "func" {
     log_group  = aws_cloudwatch_log_group.s3_lambda_notification_group.name
   }
 
-  kms_key_arn = aws_kms_key.lambda_encryption_key.arn
 
   environment {
     variables = {
