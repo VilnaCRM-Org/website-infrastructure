@@ -9,7 +9,6 @@ data "aws_iam_policy_document" "general_policy_doc" {
     actions = [
       "sts:GetCallerIdentity",
       "route53:ListHostedZones",
-      "kms:CreateKey",
       "cloudfront:CreateOriginAccessControl",
       "acm:RequestCertificate",
       "iam:CreateServiceLinkedRole",

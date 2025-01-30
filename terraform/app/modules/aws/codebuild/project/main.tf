@@ -1,9 +1,8 @@
 resource "aws_codebuild_project" "terraform_codebuild_project" {
 
-  name           = var.project_name
-  service_role   = var.role_arn
-  encryption_key = var.kms_key_arn
-  tags           = var.tags
+  name         = var.project_name
+  service_role = var.role_arn
+  tags         = var.tags
 
   artifacts {
     type = "NO_ARTIFACTS"

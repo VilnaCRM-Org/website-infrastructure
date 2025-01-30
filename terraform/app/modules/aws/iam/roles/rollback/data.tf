@@ -41,15 +41,6 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
       "arn:aws:cloudfront::${local.account_id}:distribution/*"
     ]
   }
-  statement {
-    sid    = "AllowKMSActions"
-    effect = "Allow"
-    actions = [
-      "kms:GenerateDataKey*",
-      "kms:Decrypt"
-    ]
-    resources = ["${var.kms_key_arn}"]
-  }
 
   statement {
     sid    = "AllowCodeBuildActions"

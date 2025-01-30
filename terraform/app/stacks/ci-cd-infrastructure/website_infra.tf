@@ -13,14 +13,6 @@ module "website_infra_s3_artifacts_bucket" {
   tags = var.tags
 }
 
-module "website_infra_codepipeline_kms" {
-  source = "../../modules/aws/kms"
-
-  codepipeline_role_arn = module.website_infra_codepipeline_iam_role.role_arn
-
-  tags = var.tags
-}
-
 module "website_infra_codepipeline_iam_role" {
   source = "../../modules/aws/iam/roles/codepipeline-role"
 
@@ -35,7 +27,6 @@ module "website_infra_codepipeline_iam_role" {
 
   website_bucket_name = var.bucket_name
 
-  kms_key_arn             = module.website_infra_codepipeline_kms.arn
   s3_bucket_arn           = module.website_infra_s3_artifacts_bucket.arn
   codestar_connection_arn = module.codestar_connection.arn
 
@@ -63,7 +54,6 @@ module "website_infra_codebuild" {
   depends_on = [
     module.website_infra_s3_artifacts_bucket,
     module.website_infra_codepipeline_iam_role,
-    module.website_infra_codepipeline_kms,
     module.codestar_connection
   ]
 }
@@ -81,15 +71,13 @@ module "website_infra_codebuild_down" {
 
   source_configuration = local.website_infra_codebuild_project_down_source_configuration
 
-  role_arn    = module.website_infra_codepipeline_iam_role.role_arn
-  kms_key_arn = module.website_infra_codepipeline_kms.arn
+  role_arn = module.website_infra_codepipeline_iam_role.role_arn
 
   tags = var.tags
 
   depends_on = [
     module.website_infra_s3_artifacts_bucket,
     module.website_infra_codepipeline_iam_role,
-    module.website_infra_codepipeline_kms,
     module.codestar_connection
   ]
 }
@@ -109,7 +97,6 @@ module "website_infra_codepipeline" {
 
   s3_bucket_name          = module.website_infra_s3_artifacts_bucket.bucket
   codepipeline_role_arn   = module.website_infra_codepipeline_iam_role.role_arn
-  kms_key_arn             = module.website_infra_codepipeline_kms.arn
   codestar_connection_arn = module.codestar_connection.arn
 
   tags = var.tags

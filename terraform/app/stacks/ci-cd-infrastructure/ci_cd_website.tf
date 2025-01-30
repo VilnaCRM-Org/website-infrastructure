@@ -13,14 +13,6 @@ module "ci_cd_website_s3_artifacts_bucket" {
   tags = var.tags
 }
 
-module "ci_cd_website_codepipeline_kms" {
-  source = "../../modules/aws/kms"
-
-  codepipeline_role_arn = module.ci_cd_website_codepipeline_iam_role.role_arn
-
-  tags = var.tags
-}
-
 module "ci_cd_website_codepipeline_iam_role" {
   source = "../../modules/aws/iam/roles/ci-cd-website-codepipeline-role"
 
@@ -35,7 +27,6 @@ module "ci_cd_website_codepipeline_iam_role" {
   region      = var.region
   environment = var.environment
 
-  kms_key_arn                    = module.ci_cd_website_codepipeline_kms.arn
   s3_bucket_arn                  = module.ci_cd_website_s3_artifacts_bucket.arn
   codestar_connection_arn        = module.codestar_connection.arn
   lhci_reports_bucket_arn        = module.lhci_reports_bucket.arn
@@ -62,7 +53,6 @@ module "ci_cd_website_codebuild" {
   depends_on = [
     module.ci_cd_website_s3_artifacts_bucket,
     module.ci_cd_website_codepipeline_iam_role,
-    module.ci_cd_website_codepipeline_kms,
     module.codestar_connection
   ]
 }
@@ -86,7 +76,6 @@ module "ci_cd_website_codepipeline" {
 
   s3_bucket_name                  = module.ci_cd_website_s3_artifacts_bucket.bucket
   codepipeline_role_arn           = module.ci_cd_website_codepipeline_iam_role.role_arn
-  kms_key_arn                     = module.ci_cd_website_codepipeline_kms.arn
   codestar_connection_arn         = module.codestar_connection.arn
   cloudwatch_alerts_sns_topic_arn = module.cloudwatch_alerts_sns.cloudwatch_alerts_sns_topic_arn
 

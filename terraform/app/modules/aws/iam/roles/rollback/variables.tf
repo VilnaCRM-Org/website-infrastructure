@@ -23,11 +23,6 @@ variable "source_repo_name" {
   type        = string
 }
 
-variable "kms_key_arn" {
-  description = "ARN of KMS key for encryption"
-  type        = string
-}
-
 variable "codestar_connection_arn" {
   description = "The ARN of the CodeStar connection"
   type        = string

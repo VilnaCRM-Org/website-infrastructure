@@ -2,6 +2,7 @@ resource "aws_s3_bucket" "logging_bucket" {
   #checkov:skip=CKV_AWS_18:The access logging of logging bucket is not needed 
   #checkov:skip=CKV2_AWS_62: The event notifications of logging bucket is not needed 
   #checkov:skip=CKV_AWS_144: Replication of logging bucket is not needed 
+  #checkov:skip=CKV_AWS_145: Bucket has encryption by default
   bucket        = "${var.project_name}-logging-bucket"
   force_destroy = true
 
@@ -68,8 +69,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logging_bucket_se
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.s3_kms_key.arn
-      sse_algorithm     = "aws:kms"
+      sse_algorithm = "AES256"
     }
   }
 }
