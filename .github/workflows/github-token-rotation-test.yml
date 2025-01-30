@@ -1,6 +1,9 @@
 name: "GitHub Token Rotation"
 
 on:
+  push:
+    branches:
+      - 29-token-rotation-update 
   schedule:
     - cron: "0 0 * * 0"
   workflow_dispatch: {}
