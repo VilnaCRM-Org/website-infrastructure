@@ -1,3 +1,12 @@
+# [0.4.0](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.3.1...v0.4.0) (2025-01-30)
+
+
+### Features
+
+* **#27:** remove all kms keys ([#28](https://github.com/VilnaCRM-Org/website-infrastructure/issues/28)) ([bf9f079](https://github.com/VilnaCRM-Org/website-infrastructure/commit/bf9f079f8ed3c2e05dec9ae738f938756bf5e184)), closes [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#26](https://github.com/VilnaCRM-Org/website-infrastructure/issues/26) [#3](https://github.com/VilnaCRM-Org/website-infrastructure/issues/3) [#3](https://github.com/VilnaCRM-Org/website-infrastructure/issues/3) [#3](https://github.com/VilnaCRM-Org/website-infrastructure/issues/3) [#3](https://github.com/VilnaCRM-Org/website-infrastructure/issues/3) [#3](https://github.com/VilnaCRM-Org/website-infrastructure/issues/3) [#3](https://github.com/VilnaCRM-Org/website-infrastructure/issues/3) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27) [#27](https://github.com/VilnaCRM-Org/website-infrastructure/issues/27)
+
+
+
 ## [0.3.1](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.3.0...v0.3.1) (2025-01-19)
 
 
@@ -79,15 +88,6 @@
 ### Bug Fixes
 
 * **hotfix:** update create env ([04733a7](https://github.com/VilnaCRM-Org/website-infrastructure/commit/04733a70480ba784cf495a57c6d480ec5afd6bdd))
-
-
-
-## [0.1.2](https://github.com/VilnaCRM-Org/website-infrastructure/compare/v0.1.1...v0.1.2) (2024-07-05)
-
-
-### Bug Fixes
-
-* **hotfix:** update locals ([ee1651f](https://github.com/VilnaCRM-Org/website-infrastructure/commit/ee1651fd9343495a203a1427ca5eb0b00ab7da17))
 
 
 
