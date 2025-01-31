@@ -54,8 +54,11 @@ if [ -z "$TOKEN_EXPIRATION" ] || [ "$TOKEN_EXPIRATION" = "null" ]; then
 fi
 
 # Create a JSON object with the token and expiration time
-SECRET_JSON=$(jq -n --arg token "$NEW_TOKEN" --arg expires_at "$TOKEN_EXPIRATION" \
+if ! SECRET_JSON=$(jq -n --arg token "$NEW_TOKEN" --arg expires_at "$TOKEN_EXPIRATION" \
   '{token: $token, expires_at: $expires_at}')
+  echo "Error: Generated JSON is missing required fields"
+  exit 1
+fi
 
 # Search for an active secret
 SECRET_ID=$(aws secretsmanager list-secrets \
