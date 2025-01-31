@@ -55,7 +55,7 @@ fi
 
 # Create a JSON object with the token and expiration time
 if ! SECRET_JSON=$(jq -n --arg token "$NEW_TOKEN" --arg expires_at "$TOKEN_EXPIRATION" \
-  '{token: $token, expires_at: $expires_at}')
+  '{token: $token, expires_at: $expires_at}'); then
   echo "Error: Generated JSON is missing required fields"
   exit 1
 fi
