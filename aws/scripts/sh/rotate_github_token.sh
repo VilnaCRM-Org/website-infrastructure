@@ -41,18 +41,24 @@ token_response=$(curl -s -X POST \
   "https://api.github.com/app/installations/$installation_id/access_tokens")
 
 NEW_TOKEN=$(echo "$token_response" | jq -r '.token')
+TOKEN_EXPIRATION=$(echo "$token_response" | jq -r '.expires_at')
 
 if [ -z "$NEW_TOKEN" ] || [ "$NEW_TOKEN" = "null" ]; then
   echo "Failed to generate new token"
   exit 1
 fi
 
-# Get the current timestamp
-TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+if [ -z "$TOKEN_EXPIRATION" ] || [ "$TOKEN_EXPIRATION" = "null" ]; then
+  echo "Failed to retrieve token expiration time"
+  exit 1
+fi
 
-# Create a JSON object with the token and timestamp
-SECRET_JSON=$(jq -n --arg token "$NEW_TOKEN" --arg timestamp "$TIMESTAMP" \
-  '{token: $token, timestamp: $timestamp}')
+# Create a JSON object with the token and expiration time
+if ! SECRET_JSON=$(jq -n --arg token "$NEW_TOKEN" --arg expires_at "$TOKEN_EXPIRATION" \
+  '{token: $token, expires_at: $expires_at}'); then
+  echo "Error: Generated JSON is missing required fields"
+  exit 1
+fi
 
 # Search for an active secret
 SECRET_ID=$(aws secretsmanager list-secrets \
