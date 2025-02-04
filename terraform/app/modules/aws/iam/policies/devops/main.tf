@@ -56,7 +56,7 @@ resource "aws_iam_policy" "kms_policy" {
   name        = "${var.policy_prefix}-kms-policy"
   policy      = data.aws_iam_policy_document.kms_policy_doc.json
   path        = "/DevOpsPolicies/"
-  description = "Policy to allow to read KMS resources"
+  description = "Policy providing read-only access to KMS resources"
 
   tags = var.tags
 }
