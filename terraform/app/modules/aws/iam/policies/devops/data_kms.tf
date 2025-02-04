@@ -11,7 +11,8 @@ data "aws_iam_policy_document" "kms_policy_doc" {
       "kms:ListKeys",
     ]
     resources = [
-      "arn:aws:kms::${local.account_id}:*"
+      "arn:aws:kms::${local.account_id}:*",
+      "arn:aws:kms:us-east-1:${local.account_id}:key/*"
     ]
   }
 }
