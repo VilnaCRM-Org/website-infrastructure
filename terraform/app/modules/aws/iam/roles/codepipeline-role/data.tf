@@ -137,6 +137,17 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
   }
 
   statement {
+    sid    = "KMSGetSecretPolicy"
+    effect = "Allow"
+    actions = [
+      "kms:GetSecretValue",
+    ]
+    resources = [
+      "arn:aws:kms:${var.region}:${local.account_id}:secret:github-token-*"
+    ]
+  }
+
+  statement {
     sid    = "TerraformStateGetS3Policy"
     effect = "Allow"
     actions = [
@@ -314,6 +325,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:ListPolicyVersions",
       "iam:CreatePolicyVersion",
       "iam:TagPolicy",
+      "iam:GetRole"
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-codepipeline-role-policy",
@@ -323,6 +335,11 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-codepipeline-role-policy",
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-terraform-role-ci-cd-policy",
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-terraform-role-iam-policy",
+      "arn:aws:iam::${local.account_id}:role/website-infrastructure-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/website-deploy-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/sandbox-deletion-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/sandbox-creation-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/github-actions-role",
     ]
   }
 
