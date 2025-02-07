@@ -147,10 +147,10 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
   }
 
   statement {
-    sid    = "KMSGetSecretPolicy"
+    sid    = "AllowSecretsManagerAccess"
     effect = "Allow"
     actions = [
-      "kms:GetSecretValue",
+      "secretsmanager:GetSecretValue",
     ]
     resources = [
       "arn:aws:kms:${var.region}:${local.account_id}:secret:github-token-*"
