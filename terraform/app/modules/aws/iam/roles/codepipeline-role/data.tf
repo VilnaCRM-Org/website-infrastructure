@@ -153,7 +153,7 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
       "secretsmanager:GetSecretValue",
     ]
     resources = [
-      "arn:aws:kms:${var.region}:${local.account_id}:secret:github-token-*"
+      "arn:aws:secretsmanager:${var.region}:${local.account_id}:secret:github-token-*"
     ]
   }
 
