@@ -25,6 +25,7 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:role/website-deploy-trigger-role",
       "arn:aws:iam::${local.account_id}:role/sandbox-deletion-trigger-role",
       "arn:aws:iam::${local.account_id}:role/sandbox-creation-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/ci-cd-infra-trigger-role",
       "arn:aws:iam::${local.account_id}:role/github-actions-role",
       "arn:aws:iam::${local.account_id}:role/website-${var.environment}-codepipeline-role-sandbox-deletion-${var.environment}",
       "arn:aws:iam::${local.account_id}:role/website-${var.environment}-codebuild-role-sandbox-deletion-${var.environment}",

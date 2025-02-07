@@ -349,6 +349,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "arn:aws:iam::${local.account_id}:role/website-deploy-trigger-role",
       "arn:aws:iam::${local.account_id}:role/sandbox-deletion-trigger-role",
       "arn:aws:iam::${local.account_id}:role/sandbox-creation-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/ci-cd-infra-trigger-role",
       "arn:aws:iam::${local.account_id}:role/github-actions-role",
     ]
   }
