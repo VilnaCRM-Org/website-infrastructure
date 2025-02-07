@@ -102,6 +102,16 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${local.account_id}:log-group:*"]
   }
+
+  statement {
+    sid    = "AllowSecretsManagerAccess"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:GetSecretValue",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:github-token-*"]
+  }
 }
 
 data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
