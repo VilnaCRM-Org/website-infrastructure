@@ -16,6 +16,7 @@ phases:
       - "cd ${CODEBUILD_SRC_DIR}"
       - "echo ## TERRASPACE Init : Initialize all providers and modules"
       - "make terraspace-all-init"
+      - export GITHUB_TOKEN_VALUE=$(echo "$GITHUB_TOKEN" | jq -r '.token')
       - "echo ## TERRASPACE PLAN : Generate the Terraform Plan"
       - 'make terraspace-plan-file stack="ci-cd-infrastructure" out="ci-cd-infrastructure.plan"'
       - 'make terraspace-plan-file stack="ci-cd-iam" out="ci-cd-iam.plan"'
