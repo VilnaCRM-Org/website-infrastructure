@@ -3,7 +3,7 @@ data "aws_secretsmanager_secret" "github_token" {
 }
 
 data "aws_secretsmanager_secret_version" "github_token" {
-  secret_id    = data.aws_secretsmanager_secret.github_token.name
+  secret_id     = data.aws_secretsmanager_secret.github_token.name
   version_stage = "AWSCURRENT"
 }
 
