@@ -32,3 +32,8 @@ variable "build_projects" {
   description = "List of Names of the CodeBuild projects to be created"
   type        = map(any)
 }
+
+variable "github_token_arn" {
+  description = "ARN of the GitHub token"
+  type        = string
+}

@@ -48,6 +48,7 @@ module "website_infra_codebuild" {
 
   s3_bucket_name = module.website_infra_s3_artifacts_bucket.bucket
   role_arn       = module.website_infra_codepipeline_iam_role.role_arn
+  github_token_arn = module.github_token_secret.secret_arn
 
   tags = var.tags
 
