@@ -34,7 +34,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
     environment_variable {
       name  = "GITHUB_TOKEN"
       value = jsondecode(data.aws_secretsmanager_secret_version.github_token.secret_string)["token"]
-      type  = "PLAINTEXT"
+      type  = "SECRETS_MANAGER"
     }
 
     dynamic "environment_variable" {
