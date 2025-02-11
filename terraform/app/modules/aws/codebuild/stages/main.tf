@@ -9,6 +9,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
   artifacts {
     type      = each.value.build_project_source
     packaging = "NONE"
+    encryption_disabled = true
   }
   environment {
     compute_type                = each.value.builder_compute_type

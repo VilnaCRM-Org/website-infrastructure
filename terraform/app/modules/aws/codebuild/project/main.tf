@@ -6,6 +6,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
 
   artifacts {
     type = "NO_ARTIFACTS"
+    encryption_disabled = true
   }
 
   environment {
