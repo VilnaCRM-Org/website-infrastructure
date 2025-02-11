@@ -44,8 +44,8 @@ module "ci_cd_website_codebuild" {
   region      = var.region
   environment = var.environment
 
-  s3_bucket_name   = module.ci_cd_website_s3_artifacts_bucket.bucket
-  role_arn         = module.ci_cd_website_codepipeline_iam_role.role_arn
+  s3_bucket_name = module.ci_cd_website_s3_artifacts_bucket.bucket
+  role_arn       = module.ci_cd_website_codepipeline_iam_role.role_arn
 
 
   tags = var.tags
