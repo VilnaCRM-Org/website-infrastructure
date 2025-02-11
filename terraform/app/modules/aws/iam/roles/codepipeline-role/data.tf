@@ -157,6 +157,17 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
     ]
   }
 
+    statement {
+    sid    = "AllowSecretsManagerListSecrets"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:ListSecrets",
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
   statement {
     sid    = "TerraformStateGetS3Policy"
     effect = "Allow"
