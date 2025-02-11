@@ -28,7 +28,6 @@ module "codebuild_sandbox_deletion" {
   region         = var.region
   tags           = var.tags
 
-  github_token_arn = module.github_token_secret.secret_arn
 
   depends_on = [module.iam_roles, module.s3_buckets]
 }

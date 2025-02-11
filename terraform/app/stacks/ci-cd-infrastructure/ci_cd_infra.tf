@@ -45,7 +45,6 @@ module "ci_cd_infra_codebuild" {
 
   s3_bucket_name   = module.ci_cd_infra_s3_artifacts_bucket.bucket
   role_arn         = module.ci_cd_infra_codepipeline_iam_role.role_arn
-  github_token_arn = module.github_token_secret.secret_arn
 
   region      = var.region
   environment = var.environment

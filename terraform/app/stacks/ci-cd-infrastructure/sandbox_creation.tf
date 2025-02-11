@@ -51,7 +51,6 @@ module "sandbox_codebuild" {
   region      = local.region
   environment = var.environment
 
-  github_token_arn = module.github_token_secret.secret_arn
 
   tags = var.tags
 

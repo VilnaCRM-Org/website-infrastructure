@@ -1,12 +1,3 @@
-data "aws_secretsmanager_secret" "github_token" {
-  name = var.github_token_arn
-}
-
-data "aws_secretsmanager_secret_version" "github_token" {
-  secret_id     = data.aws_secretsmanager_secret.github_token.arn
-  version_stage = "AWSCURRENT"
-}
-
 resource "aws_codebuild_project" "terraform_codebuild_project" {
   # checkov:skip=CKV_AWS_147: Codebuild project has encryption by default
   for_each = var.build_projects
@@ -29,12 +20,6 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
     environment_variable {
       name  = "SESSION_NAME"
       value = "${var.project_name}-${each.key}-session"
-    }
-
-    environment_variable {
-      name  = "GITHUB_TOKEN"
-      value = jsondecode(data.aws_secretsmanager_secret_version.github_token.secret_string)["token"]
-      type  = "SECRETS_MANAGER"
     }
 
     dynamic "environment_variable" {
