@@ -7,8 +7,8 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
   tags         = var.tags
 
   artifacts {
-    type      = each.value.build_project_source
-    packaging = "NONE"
+    type                = each.value.build_project_source
+    packaging           = "NONE"
     encryption_disabled = true
   }
   environment {

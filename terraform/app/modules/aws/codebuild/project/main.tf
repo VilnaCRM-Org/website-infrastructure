@@ -5,7 +5,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
   tags         = var.tags
 
   artifacts {
-    type = "NO_ARTIFACTS"
+    type                = "NO_ARTIFACTS"
     encryption_disabled = true
   }
 
