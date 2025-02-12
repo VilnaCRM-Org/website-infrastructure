@@ -1,5 +1,6 @@
 resource "aws_codebuild_project" "terraform_codebuild_project" {
   # checkov:skip=CKV_AWS_147: Codebuild project has encryption by default
+  # checkov:skip=CKV_AWS_78: Encryption of codebuild project is not needed 
   for_each = var.build_projects
 
   name         = "${var.project_name}-${replace(each.key, "_", "-")}"
