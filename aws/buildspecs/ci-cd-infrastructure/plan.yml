@@ -16,6 +16,8 @@ phases:
       - "cd ${CODEBUILD_SRC_DIR}"
       - "echo ## TERRASPACE Init : Initialize all providers and modules"
       - "make terraspace-all-init"
+      - "echo ## Getting Token from Secrets Manager"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/retrieve_token.sh"
       - "echo ## TERRASPACE PLAN : Generate the Terraform Plan"
       - 'make terraspace-plan-file stack="ci-cd-infrastructure" out="ci-cd-infrastructure.plan"'
       - 'make terraspace-plan-file stack="ci-cd-iam" out="ci-cd-iam.plan"'

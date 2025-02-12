@@ -28,6 +28,7 @@ module "codebuild_sandbox_deletion" {
   region         = var.region
   tags           = var.tags
 
+
   depends_on = [module.iam_roles, module.s3_buckets]
 }
 

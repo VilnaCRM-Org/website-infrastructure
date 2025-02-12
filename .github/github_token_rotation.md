@@ -51,8 +51,9 @@ that sensitive tokens are regularly refreshed to maintain security best practice
      - **Repository Permissions**:
        - **Metadata**: Read-only (essential for basic API access).
        - **Contents**: Read-only (required for workflow operations).
-       - **Administration**: Read – Enables the app to manage repository settings, which may be useful for specific token-related configurations.
+       - **Administration**: Read and Write – Enables the app to manage repository settings, including token-related configurations.
        - **Actions**: Read – Allows the app to read GitHub Actions settings, enabling better integration with workflow-related processes.
+       - **Secrets**: Read & write – Required to manage repository secrets, allowing secure storage and updates of sensitive credentials.
      - **Organization Permissions**:
        - **Members**: Read – Necessary if the app needs to verify organization membership for additional security checks or access controls.
      - **User Permissions**: None required.

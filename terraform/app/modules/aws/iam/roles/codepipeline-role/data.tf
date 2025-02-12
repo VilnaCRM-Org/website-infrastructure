@@ -102,6 +102,16 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${local.account_id}:log-group:*"]
   }
+
+  statement {
+    sid    = "AllowSecretsManagerAccess"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:GetSecretValue",
+    ]
+    resources = [
+    "arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${local.account_id}:secret:github-token-*"]
+  }
 }
 
 data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
@@ -134,6 +144,28 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
       "dynamodb:DeleteItem"
     ]
     resources = ["arn:aws:dynamodb:${var.region}:${local.account_id}:table/terraform_locks"]
+  }
+
+  statement {
+    sid    = "AllowSecretsManagerAccess"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:GetSecretValue",
+    ]
+    resources = [
+      "arn:aws:secretsmanager:${var.region}:${local.account_id}:secret:github-token-*"
+    ]
+  }
+
+  statement {
+    sid    = "AllowSecretsManagerListSecrets"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:ListSecrets",
+    ]
+    resources = [
+      "*"
+    ]
   }
 
   statement {
@@ -314,6 +346,9 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:ListPolicyVersions",
       "iam:CreatePolicyVersion",
       "iam:TagPolicy",
+      "iam:GetRole",
+      "iam:ListAttachedRolePolicies",
+      "iam:ListRolePolicies"
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-codepipeline-role-policy",
@@ -323,6 +358,13 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-codepipeline-role-policy",
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-terraform-role-ci-cd-policy",
       "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-terraform-role-iam-policy",
+      "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-trigger-role-policy",
+      "arn:aws:iam::${local.account_id}:role/website-infrastructure-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/website-deploy-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/sandbox-deletion-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/sandbox-creation-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/ci-cd-infra-trigger-role",
+      "arn:aws:iam::${local.account_id}:role/github-actions-role",
     ]
   }
 
