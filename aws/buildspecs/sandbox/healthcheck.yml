@@ -43,7 +43,7 @@ phases:
         export BRANCH_NAME="$sanitized_branch"
       - |
         echo "## Preparing Health Check for S3 Bucket..."
-        BUCKET_URL="https://${PROJECT_NAME}-${BRANCH_NAME}.s3.${AWS_DEFAULT_REGION}.amazonaws.com"
+        BUCKET_URL="https://s3.${AWS_DEFAULT_REGION}.amazonaws.com/${PROJECT_NAME}-${BRANCH_NAME}"
 
         echo "Bucket URL: $BUCKET_URL"
 
