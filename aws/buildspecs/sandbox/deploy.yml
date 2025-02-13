@@ -15,7 +15,14 @@ phases:
           echo "Error: Required environment variable PR_NUMBER is not set or empty."
           exit 1
         fi
-      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/change_bucket_name.sh"
+      - |
+        sanitized_branch=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9.-]//g' | sed -E 's/^[.-]+|[.-]+$//g')
+
+        if [[ ${#sanitized_branch} -gt 60 ]]; then
+          sanitized_branch="${sanitized_branch:0:60}"
+        fi
+
+        export BRANCH_NAME="$sanitized_branch"
       - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh"
       - "cd ${WEBSITE_DIR:-/codebuild-user/website}"
       - "sudo apt update"
