@@ -33,6 +33,10 @@ phases:
           echo "Error: Required environment variable IS_PULL_REQUEST is not set or empty."
           exit 1
         fi
+        if [ -z "${PROJECT_NAME}" ]; then
+          echo "Error: Required environment variable PROJECT_NAME is not set or empty."
+          exit 1
+        fi
       - |
         sanitized_branch=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9.-]//g' | sed -E 's/^[.-]+|[.-]+$//g')
 
@@ -43,7 +47,14 @@ phases:
         export BRANCH_NAME="$sanitized_branch"
       - |
         echo "## Preparing Health Check for S3 Bucket..."
-        BUCKET_URL="https://s3.${AWS_DEFAULT_REGION}.amazonaws.com/${PROJECT_NAME}-${BRANCH_NAME}"
+        
+        bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
+        if [[ ${#bucket_name} -gt 60 ]]; then
+          echo "Error: Total bucket name length exceeds 60 characters."
+          exit 1
+        fi
+
+        BUCKET_URL="https://s3.${AWS_DEFAULT_REGION}.amazonaws.com/${bucket_name}"
 
         echo "Bucket URL: $BUCKET_URL"
 
