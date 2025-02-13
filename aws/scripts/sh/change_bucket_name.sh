@@ -11,6 +11,7 @@ if [[ ${#sanitized_branch} -gt 60 ]]; then
   sanitized_branch="${sanitized_branch:0:60}"
 fi
 
-BRANCH_NAME="$sanitized_branch"
-export BRANCH_NAME
-echo "Sanitized BRANCH_NAME: $BRANCH_NAME"
+echo "Sanitized BRANCH_NAME: $sanitized_branch"
+
+# Сохраняем очищенное имя в файл
+echo $sanitized_branch > sanitized_branch.txt

@@ -15,11 +15,13 @@ phases:
           echo "Error: Required environment variable IS_PULL_REQUEST is not set or empty."
           exit 1
         fi
+      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/change_bucket_name.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh"
   build:
+    environment_variables:
+      BRANCH_NAME: "$(cat sanitized_branch.txt)"
     commands:
       - "cd ${CODEBUILD_SRC_DIR}"
-      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/change_bucket_name.sh"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/s3_sandbox_configuration.py"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_creation.sh"
 artifacts:
