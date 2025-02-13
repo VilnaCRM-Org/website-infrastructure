@@ -33,6 +33,7 @@ phases:
           echo "Error: Required environment variable IS_PULL_REQUEST is not set or empty."
           exit 1
         fi
+      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/change_bucket_name.sh"
       - |
         echo "## Preparing Health Check for S3 Bucket..."
         BUCKET_URL="https://${PROJECT_NAME}-${BRANCH_NAME}.s3.${AWS_DEFAULT_REGION}.amazonaws.com"

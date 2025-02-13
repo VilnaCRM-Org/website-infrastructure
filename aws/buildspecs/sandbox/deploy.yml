@@ -15,6 +15,7 @@ phases:
           echo "Error: Required environment variable PR_NUMBER is not set or empty."
           exit 1
         fi
+      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/change_bucket_name.sh"
       - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh"
       - "cd ${WEBSITE_DIR:-/codebuild-user/website}"
       - "sudo apt update"
