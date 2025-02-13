@@ -47,7 +47,7 @@ phases:
         export BRANCH_NAME="$sanitized_branch"
       - |
         echo "## Preparing Health Check for S3 Bucket..."
-        
+
         bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
         if [[ ${#bucket_name} -gt 60 ]]; then
           echo "Error: Total bucket name length exceeds 60 characters."
