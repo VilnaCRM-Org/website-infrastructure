@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "logs:CreateLogDelivery",
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
-      "logs:DisaccosiateKmsKey",
+      "logs:DisassociateKmsKey",
       "synthetics:*"
     ]
     #checkov:skip=CKV_AWS_356:Required by AWSCC module and wafv2 logging
