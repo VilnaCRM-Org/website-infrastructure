@@ -54,6 +54,5 @@ phases:
         fi
       - "echo #### Build Project"
       - 'make build || { echo "Build failed"; exit 1; }'
-      - "chmod +x ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
       - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
