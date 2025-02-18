@@ -15,7 +15,7 @@ phases:
           echo "Error: Required environment variable IS_PULL_REQUEST is not set or empty."
           exit 1
         fi
-      - source ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh
+      - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/credentials.sh"
   build:
     commands:
