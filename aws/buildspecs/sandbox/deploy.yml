@@ -54,12 +54,5 @@ phases:
         fi
       - "echo #### Build Project"
       - 'make build || { echo "Build failed"; exit 1; }'
-      - |
-        sanitized_branch=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9.-]//g' | sed -E 's/^[.-]+|[.-]+$//g')
-
-        if [[ ${#sanitized_branch} -gt 60 ]]; then
-          sanitized_branch="${sanitized_branch:0:60}"
-        fi
-
-        export BRANCH_NAME="$sanitized_branch"
+      - source ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanize_branch.sh
       - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
