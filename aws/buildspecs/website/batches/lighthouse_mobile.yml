@@ -15,7 +15,7 @@ phases:
       - "cd /codebuild-user/website"
       - "npm install -g @lhci/cli@0.13.x"
       - "npm install -g pnpm"
-      - "pnpm install"
+      - "pnpm install --no-cache"
       - "echo #### Owner Change"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
 
@@ -43,4 +43,3 @@ cache:
     - "/codebuild-user/website/node_modules"
     - "/root/.cache"
     - "/usr/local/bundle"
-    - "/root/.npm"
