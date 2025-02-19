@@ -23,6 +23,8 @@ phases:
       - "echo #### Set up environment"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - "env"
+      - "echo #### Checking Chrome version"
+      - "google-chrome --version"
       - "echo #### Test LightHouse Mobile"
       - "export LHCI_MOBILE_RUN=true && make lighthouse-mobile"
     finally:

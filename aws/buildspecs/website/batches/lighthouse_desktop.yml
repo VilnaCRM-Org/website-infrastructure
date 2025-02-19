@@ -22,6 +22,8 @@ phases:
     commands:
       - "echo #### Set up environment"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
+      - "echo #### Checking Chrome version"
+      - "google-chrome --version"
       - "echo #### Test LightHouse Desktop"
       - "export LHCI_DESKTOP_RUN=true && make lighthouse-desktop"
     finally:
