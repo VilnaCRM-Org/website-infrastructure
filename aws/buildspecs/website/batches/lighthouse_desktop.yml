@@ -14,6 +14,8 @@ phases:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
       - "cd /codebuild-user/website"
       - "npm install -g @lhci/cli@0.13.x"
+      - "npm install -g pnpm"
+      - "pnpm install"
       - "echo #### Owner Change"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
 
@@ -23,8 +25,7 @@ phases:
       - "echo #### Set up environment"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - "echo #### Test LightHouse Desktop"
-      - "sleep 10"
-      - "export LHCI_DESKTOP_RUN=true && make lighthouse-desktop"
+      - "export LHCI_DESKTOP_RUN=true && pnpm run lighthouse:desktop"
     finally:
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
@@ -40,3 +41,4 @@ cache:
     - "/codebuild-user/website/node_modules"
     - "/root/.cache"
     - "/usr/local/bundle"
+    - "/root/.npm"
