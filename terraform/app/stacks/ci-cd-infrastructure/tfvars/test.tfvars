@@ -6,7 +6,7 @@ sandbox_project_name       = "sandbox-test"
 environment                = "test"
 github_connection_name     = "Github"
 source_repo_branch         = "3-implement-sandbox-infrastructure"
-website_repo_branch        = "main"
+website_repo_branch        = "131-fix-lighthouse-tests"
 website_url                = "vilnacrmtest.com"
 bucket_name                = "vilnacrmtest.com"
 
