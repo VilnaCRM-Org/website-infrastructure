@@ -22,10 +22,8 @@ phases:
     commands:
       - "echo #### Set up environment"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - "echo #### Checking Chrome version"
-      - "google-chrome --version"
       - "echo #### Test LightHouse Desktop"
-      - "export LHCI_DESKTOP_RUN=true && make lighthouse-desktop"
+      - "export LHCI_DESKTOP_RUN=true && CHROME_FLAGS='--no-sandbox --disable-setuid-sandbox --headless --disable-crash-reporter --disable-gpu' make lighthouse-desktop"
     finally:
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
