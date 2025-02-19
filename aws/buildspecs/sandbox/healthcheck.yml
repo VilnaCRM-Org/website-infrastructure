@@ -33,9 +33,21 @@ phases:
           echo "Error: Required environment variable IS_PULL_REQUEST is not set or empty."
           exit 1
         fi
+        if [ -z "${PROJECT_NAME}" ]; then
+          echo "Error: Required environment variable PROJECT_NAME is not set or empty."
+          exit 1
+        fi
+      - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
       - |
         echo "## Preparing Health Check for S3 Bucket..."
-        BUCKET_URL="https://${PROJECT_NAME}-${BRANCH_NAME}.s3.${AWS_DEFAULT_REGION}.amazonaws.com"
+
+        bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
+        if [[ ${#bucket_name} -gt 60 ]]; then
+          echo "Error: Total bucket name length exceeds 60 characters."
+          exit 1
+        fi
+
+        BUCKET_URL="https://s3.${AWS_DEFAULT_REGION}.amazonaws.com/${bucket_name}"
 
         echo "Bucket URL: $BUCKET_URL"
 
