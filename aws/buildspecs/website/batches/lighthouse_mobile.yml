@@ -13,6 +13,7 @@ phases:
       - "apt install -y ./google-chrome*.deb"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
       - "cd /codebuild-user/website"
+      - sudo chown -R 1000:1000 "/root/.npm"
       - "npm install -g pnpm"
       - "pnpm install --no-cache"
       - "echo #### Owner Change"
