@@ -13,7 +13,6 @@ phases:
       - "apt install -y ./google-chrome*.deb"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
       - "cd /codebuild-user/website"
-      - sudo chown -R 1000:1000 "/root/.npm"
       - "pnpm install --no-cache"
       - "echo #### Owner Change"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
@@ -27,6 +26,7 @@ phases:
       - "echo #### Test LightHouse Mobile"
       - "sleep 10"
       - "export LHCI_MOBILE_RUN=true && pnpm run lighthouse:mobile"
+      - sudo chown -R 1000:1000 "/root/.npm"
     finally:
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
