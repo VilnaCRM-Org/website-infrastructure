@@ -15,7 +15,7 @@ phases:
       - "cd /codebuild-user/website"
       - "npm install -g @lhci/cli@0.13.x"
       - "npm install -g pnpm"
-      - "sudo rm -rf /root/.npm" 
+      - "sudo rm -rf /root/.npm"
       - "mkdir -p ~/.npm"
       - "npm config set cache ~/.npm"
       - "npm config set prefix ~/.npm-global"
