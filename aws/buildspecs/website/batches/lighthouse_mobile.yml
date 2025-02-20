@@ -14,7 +14,7 @@ phases:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
       - "cd /codebuild-user/website"
       - "npm install -g pnpm"
-      - "pnpm install --no-cache"
+      - "pnpm install --frozen-lockfile"
       - "echo #### Owner Change"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
 
@@ -25,7 +25,6 @@ phases:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - "env"
       - "echo #### Test LightHouse Mobile"
-      - "sleep 10"
       - "export LHCI_MOBILE_RUN=true && pnpm run lighthouse:mobile"
     finally:
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
