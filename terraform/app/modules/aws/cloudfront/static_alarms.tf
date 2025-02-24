@@ -75,26 +75,6 @@ resource "aws_cloudwatch_metric_alarm" "wafv2_high_rate_blocked_requests" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "wafv2_sql_injection_alarm" {
-  provider            = aws.us-east-1
-  alarm_name          = "${var.project_name}-wafv2-sql-injection-alarm"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = 5
-  metric_name         = "BlockedRequests"
-  namespace           = "AWS/WAFV2"
-  period              = 60
-  statistic           = "Average"
-  threshold           = 10
-  alarm_description   = "Alert on SQL injection attempts"
-  treat_missing_data  = "notBreaching"
-  actions_enabled     = true
-  alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
-  dimensions = {
-    Rule   = "AWS-AWSManagedRulesSQLiRuleSet"
-    WebACL = "wafv2-web-acl"
-  }
-}
-
 resource "aws_cloudwatch_metric_alarm" "wafv2_scanning_alarm" {
   provider            = aws.us-east-1
   alarm_name          = "${var.project_name}-wafv2-scanning-alarm"
@@ -111,26 +91,6 @@ resource "aws_cloudwatch_metric_alarm" "wafv2_scanning_alarm" {
   alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
   dimensions = {
     Rule   = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
-    WebACL = "wafv2-web-acl"
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "wafv2_anonymous_alarm" {
-  provider            = aws.us-east-1
-  alarm_name          = "${var.project_name}-wafv2-anonymous-alarm"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = 5
-  metric_name         = "BlockedRequests"
-  namespace           = "AWS/WAFV2"
-  period              = 60
-  statistic           = "Average"
-  threshold           = 20
-  alarm_description   = "Alert on Anonymous attempts to access Website"
-  treat_missing_data  = "notBreaching"
-  actions_enabled     = true
-  alarm_actions       = [aws_sns_topic.cloudwatch_alarm_notifications.arn]
-  dimensions = {
-    Rule   = "AWS-AWSManagedRulesAnonymousIpList"
     WebACL = "wafv2-web-acl"
   }
 }
