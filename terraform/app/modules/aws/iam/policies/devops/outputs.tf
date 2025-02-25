@@ -7,6 +7,7 @@ output "policy_arns" {
     devops_iam_policy          = { arn = "${aws_iam_policy.iam_policy.arn}" }
     devops_lambda_policy       = { arn = "${aws_iam_policy.lambda_policy.arn}" }
     devops_kms_policy          = { arn = "${aws_iam_policy.kms_policy.arn}" }
+    billing_readonly_policy    = { arn = "${aws_iam_policy.billing_readonly_policy.arn}" }
   }
   description = "ARNs of policies"
 }
