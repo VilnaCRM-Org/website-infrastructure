@@ -125,6 +125,17 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
   }
 
   statement {
+    sid    = "AllowCloudFrontFunctionManagement"
+    effect = "Allow"
+    actions = [
+      "cloudfront:UpdateFunction",
+      "cloudfront:DescribeFunction",
+      "cloudfront:GetFunction"
+    ]
+    resources = ["arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:function/routing-function"]
+  }
+
+  statement {
     sid    = "TerraformStateListS3Policy"
     effect = "Allow"
     actions = [
@@ -295,6 +306,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-lambda-policy",
       "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-s3-policy",
       "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-kms-policy",
+      "arn:aws:iam::${local.account_id}:policy/DevOpsPolicies/${var.environment}-devops-group-billing-readonly-policy",
       "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-group-cloudfront-policy",
       "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-group-cloudwatch-policy",
       "arn:aws:iam::${local.account_id}:policy/QAPolicies/${var.environment}-qa-group-codepipeline-policy",

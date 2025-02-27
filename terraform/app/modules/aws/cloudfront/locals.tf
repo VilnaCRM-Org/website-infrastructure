@@ -5,13 +5,8 @@ locals {
 
   waf_rules = {
     common_rule               = "AWS-AWSManagedRulesCommonRuleSet"
-    linux_rule                = "AWS-AWSManagedRulesLinuxRuleSet"
     amazon_ip_reputation_rule = "AWS-AWSManagedRulesAmazonIpReputationList"
-    anonymous_rule            = "AWS-AWSManagedRulesAnonymousIpList"
-    sql_rule                  = "AWS-AWSManagedRulesSQLiRuleSet"
     bad_inputs_rule           = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
-    unix_rule                 = "AWS-AWSManagedRulesUnixRuleSet"
-    windows_rule              = "AWS-AWSManagedRulesWindowsRuleSet"
     rate_limit_rule           = "AWS-RateLimitRuleSet"
   }
 }
