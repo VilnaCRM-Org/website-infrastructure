@@ -124,6 +124,16 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
     resources = ["*"]
   }
 
+    statement {
+    effect = "Allow"
+    actions = [
+      "cloudfront:UpdateFunction",
+      "cloudfront:DescribeFunction",
+      "cloudfront:GetFunction"
+    ]
+    resources = ["arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:function/routing-function"]
+  }
+
   statement {
     sid    = "TerraformStateListS3Policy"
     effect = "Allow"
