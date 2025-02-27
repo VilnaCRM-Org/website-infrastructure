@@ -81,11 +81,25 @@ data "aws_iam_policy_document" "general_policy_doc" {
     effect = "Allow"
     actions = [
       "cloudwatch:DescribeAlarms",
+      "cloudwatch:DeleteAlarms",
+      "cloudwatch:ListTagsForResource"
     ]
     resources = [
       "arn:aws:cloudwatch:*:*:alarm:*"
     ]
   }
+
+  statement {
+    sid = "AllowCloudFrontFunctionManagement"
+    effect = "Allow"
+    actions = [
+      "cloudfront:UpdateFunction",
+      "cloudfront:DescribeFunction",
+      "cloudfront:GetFunction"
+    ]
+    resources = ["arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:function/routing-function"]
+  }
+
   statement {
     sid    = "CloudwatchAlarmsReadWritePolicy"
     effect = "Allow"
