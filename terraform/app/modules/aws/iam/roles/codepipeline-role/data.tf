@@ -125,6 +125,7 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
   }
 
   statement {
+    sid = "AllowCloudFrontFunctionManagement"
     effect = "Allow"
     actions = [
       "cloudfront:UpdateFunction",
