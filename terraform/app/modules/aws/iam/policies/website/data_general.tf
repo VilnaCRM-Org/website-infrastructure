@@ -90,7 +90,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
   }
 
   statement {
-    sid = "AllowCloudFrontFunctionManagement"
+    sid    = "AllowCloudFrontFunctionManagement"
     effect = "Allow"
     actions = [
       "cloudfront:UpdateFunction",
