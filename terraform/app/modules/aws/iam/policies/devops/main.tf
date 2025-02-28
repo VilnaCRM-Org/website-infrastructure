@@ -60,3 +60,12 @@ resource "aws_iam_policy" "kms_policy" {
 
   tags = var.tags
 }
+
+resource "aws_iam_policy" "billing_readonly_policy" {
+  name        = "${var.policy_prefix}-billing-readonly-policy"
+  policy      = data.aws_iam_policy_document.billing_readonly_policy_doc.json
+  path        = "/DevOpsPolicies/"
+  description = "Allows read-only access to AWS Billing"
+
+  tags = var.tags
+}
