@@ -81,6 +81,7 @@ locals {
         "SCRIPT_DIR"                             = var.script_dir,
         "CI_CD_WEBSITE_PIPELINE_NAME"            = "${var.ci_cd_website_project_name}-pipeline",
         "CLOUDFRONT_REGION"                      = var.cloudfront_configuration.region,
+        "WEBSITE_GIT_REPOSITORY_LINK"            = "git@github.com:${var.source_repo_owner}/${var.website_content_repo_name}.git",
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/up.yml" })

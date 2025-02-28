@@ -18,6 +18,17 @@ phases:
       - 'make terraspace-output-file stack="website" out=".terraform.env"'
       - "cd terraform"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py"
+      - "echo Cloning website repository..."
+      - "git clone $WEBSITE_GIT_REPOSITORY_LINK"
+      - "echo Copying CloudFront routing script from cloned repo..."
+      - "cp website/scripts/cloudfront_routing.js ./output/cloudfront_routing.js"
+      - echo "Updating CloudFront function..."
+      - aws cloudfront update-function --name routing-function \
+          --function-config "Comment=Routing logic for CloudFront,Runtime=cloudfront-js-1.0" \
+          --if-match $(aws cloudfront describe-function --name routing-function --query 'ETag' --output text) \
+          --function-code fileb://cloudfront_routing.js
+      - echo "Cleaning up..."
+      - rm -rf website
       - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME"
 
 artifacts:
