@@ -4,5 +4,5 @@ resource "aws_cloudfront_function" "routing_function" {
   comment = "Routing logic for CloudFront"
   publish = true
 
-  code = file("./output/cloudfront_routing.js")
+  code = "console.log('CloudFront Function initialized');"
 }
