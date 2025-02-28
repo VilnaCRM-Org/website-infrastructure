@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "cloudfront:GetFunction",
       "cloudfront:CreateFunction",
       "cloudfront:PublishFunction",
-			"cloudfront:DeleteFunction"
+      "cloudfront:DeleteFunction"
     ]
     resources = ["arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:function/routing-function"]
   }
