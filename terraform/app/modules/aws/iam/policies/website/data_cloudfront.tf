@@ -74,7 +74,8 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     actions = [
       "wafv2:CreateWebACL",
       "wafv2:GetWebACL",
-      "wafv2:DeleteWebACL"
+      "wafv2:DeleteWebACL",
+      "wafv2:UpdateWebACL"
     ]
     resources = [
       "arn:aws:wafv2:us-east-1:${local.account_id}:CLOUDFRONT/ipset/wafv2-web-acl/*",
@@ -90,7 +91,8 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     actions = [
       "wafv2:CreateWebACL",
       "wafv2:GetWebACL",
-      "wafv2:DeleteWebACL"
+      "wafv2:DeleteWebACL",
+      "wafv2:UpdateWebACL"
     ]
     resources = [
       "arn:aws:wafv2:us-east-1:${local.account_id}:global/managedruleset/*/*",
@@ -102,7 +104,9 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
     effect = "Allow"
     actions = [
       "wafv2:GetWebACL",
-      "wafv2:DeleteWebACL"
+      "wafv2:DeleteWebACL",
+      "wafv2:CreateWebACL",
+      "wafv2:UpdateWebACL"
     ]
     resources = [
       "arn:aws:wafv2:us-east-1:${local.account_id}:CLOUDFRONT/webacl/wafv2-web-acl/*"
