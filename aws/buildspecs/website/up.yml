@@ -19,7 +19,8 @@ phases:
       - "cd terraform"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py"
       - "echo Cloning website repository..."
-      - "git clone $WEBSITE_GIT_REPOSITORY_LINK"
+      - "git clone --branch 133-cloudfront-routing $WEBSITE_GIT_REPOSITORY_LINK"
+      - "ls -R website"
       - "echo Copying CloudFront routing script from cloned repo..."
       - "cp website/scripts/cloudfront_routing.js ./output/cloudfront_routing.js"
       - "echo Updating CloudFront function..."
@@ -42,8 +43,6 @@ phases:
           exit 1
         fi
       - "echo Function published successfully"
-      - "echo Cleaning up..."
-      - "rm -rf website"
       - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME"
 
 artifacts:
