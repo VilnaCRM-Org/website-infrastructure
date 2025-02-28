@@ -22,7 +22,7 @@ phases:
       - "git clone --branch 133-cloudfront-routing $WEBSITE_GIT_REPOSITORY_LINK"
       - "ls -R website"
       - "echo Copying CloudFront routing script from cloned repo..."
-      - "cat website/scripts/cloudfront_routing.js > cloudfront_routing.js"
+      - "cp website/scripts/cloudfront_routing.js > cloudfront_routing.js"
       - "echo Updating CloudFront function..."
       - |
         aws cloudfront update-function --name routing-function \
@@ -39,8 +39,12 @@ phases:
       - |
         aws cloudfront publish-function --name routing-function \
           --if-match $(aws cloudfront describe-function --name routing-function --query 'ETag' --output text)
+        if [ $? -ne 0 ]; then
+          echo "Error publishing CloudFront function"
+          exit 1
+        fi
       - "echo Function published successfully"
-      - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME"
+      - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME || { echo 'Error starting CodePipeline'; exit 1; }"
 
 artifacts:
   files:
