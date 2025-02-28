@@ -37,11 +37,8 @@ phases:
       - "rm -rf website"
       - "echo Publishing the updated function..."
       - |
-        aws cloudfront publish-function --name routing-function
-        if [ $? -ne 0 ]; then
-          echo "Error publishing CloudFront function"
-          exit 1
-        fi
+        aws cloudfront publish-function --name routing-function \
+          --if-match $(aws cloudfront describe-function --name routing-function --query 'ETag' --output text)
       - "echo Function published successfully"
       - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME"
 
