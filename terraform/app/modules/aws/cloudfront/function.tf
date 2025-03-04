@@ -1,5 +1,5 @@
 data "http" "routing_function_source" {
-  url = "https://raw.githubusercontent.com/VilnaCRM-Org/website/133-cloudfront-routing/scripts/cloudfront_routing.js"
+  url = var.cloudfront_routing_function_url
 }
 
 resource "aws_cloudfront_function" "routing_function" {
