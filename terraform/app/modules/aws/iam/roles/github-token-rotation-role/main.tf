@@ -17,7 +17,8 @@ resource "aws_iam_role" "github_actions_role" {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com",
             "token.actions.githubusercontent.com:sub" = [
               "repo:${var.source_repo_owner}/${var.source_repo_name}:ref:refs/heads/main",
-              "repo:${var.source_repo_owner}/${var.website_repo_name}:ref:refs/heads/*"
+              "repo:${var.source_repo_owner}/${var.website_repo_name}:ref:refs/heads/*",
+              "repo:${var.source_repo_owner}/${var.source_repo_name}:pull_request"
             ]
           }
         }
