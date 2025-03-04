@@ -352,7 +352,8 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:GetRole",
       "iam:ListAttachedRolePolicies",
       "iam:ListRolePolicies",
-      "iam:DeletePolicyVersion"
+      "iam:DeletePolicyVersion",
+      "iam:UpdateAssumeRolePolicy"
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-codepipeline-role-policy",
