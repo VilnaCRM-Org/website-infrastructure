@@ -71,6 +71,11 @@ resource "aws_cloudfront_distribution" "this" {
 
     compress = true
 
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.routing_function.arn
+    }
+
   }
 
   price_class = var.cloudfront_configuration.price_class
@@ -101,7 +106,7 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
-  wait_for_deployment = false
+  wait_for_deployment = true
 
   depends_on = [aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy]
 
@@ -177,6 +182,11 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
 
     compress = true
 
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.routing_function.arn
+    }
+
   }
 
   price_class = var.cloudfront_configuration.price_class
@@ -207,6 +217,6 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
     }
   }
 
-  wait_for_deployment = false
+  wait_for_deployment = true
 }
 

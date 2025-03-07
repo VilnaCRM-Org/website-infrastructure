@@ -18,7 +18,8 @@ phases:
       - 'make terraspace-output-file stack="website" out=".terraform.env"'
       - "cd terraform"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py"
-      - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME"
+      - "echo Triggering CI-CD Website Pipeline"
+      - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME || { echo 'Error starting CodePipeline'; exit 1; }"
 
 artifacts:
   files:

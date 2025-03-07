@@ -272,6 +272,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:GetPolicyVersion",
       "iam:ListPolicyVersions",
       "iam:TagPolicy",
+      "iam:DeletePolicyVersion"
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-sns-policy",
@@ -350,7 +351,9 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:TagPolicy",
       "iam:GetRole",
       "iam:ListAttachedRolePolicies",
-      "iam:ListRolePolicies"
+      "iam:ListRolePolicies",
+      "iam:DeletePolicyVersion",
+      "iam:UpdateAssumeRolePolicy"
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-${var.environment}-codepipeline-role-policy",
