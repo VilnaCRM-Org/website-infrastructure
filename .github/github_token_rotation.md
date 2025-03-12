@@ -32,15 +32,18 @@ that sensitive tokens are regularly refreshed to maintain security best practice
 
 1. **GitHub Repository Configuration**
 
-   Configure necessary secrets in your GitHub repository for secure AWS and GitHub integration:
+   Configure necessary secrets and variables in your GitHub repository for secure AWS and GitHub integration:
 
-   - Navigate to **Settings > Secrets and Variables > Actions** in your GitHub repository.
-   - Add the following secrets:
-     - `GITHUB_TOKEN_ROTATION_ROLE_TO_ASSUME_TEST`: The ARN of the AWS role for token rotation.
-     - `GITHUB_TOKEN_ROTATION_ROLE_TO_ASSUME_PROD`: The ARN of the AWS role for token rotation for prod environment.
-     - `AWS_REGION`: AWS region for Secrets Manager.
-     - `VILNACRM_APP_ID`: GitHub App ID (found under **Settings > Applications > Configure your GitHub App > App Settings**).
-     - `VILNACRM_APP_PRIVATE_KEY`: GitHub App private key (generated in App settings and stored securely).
+- Navigate to **Settings > Secrets and Variables > Actions** in your GitHub repository.
+- Add the following secrets:
+  - `AWS_REGION`: AWS region for Secrets Manager.
+  - `VILNACRM_APP_ID`: GitHub App ID (found under **Settings > Applications > Configure your GitHub App > App Settings**).
+  - `VILNACRM_APP_PRIVATE_KEY`: GitHub App private key (generated in App settings and stored securely).
+
+- Navigate to **Settings > Variables** in your GitHub organization.
+- Add the following variables:
+  - `TEST_AWS_ACCOUNT_ID`: The ID of the AWS account for token rotation in the test environment.
+  - `PROD_AWS_ACCOUNT_ID`: The ID of the AWS account for token rotation in the prod environment.
 
 2. **GitHub App Configuration**
 
@@ -89,7 +92,7 @@ that sensitive tokens are regularly refreshed to maintain security best practice
 
 3. **Workflow Schedule Configuration**
 
-   This workflow is set to rotate the token every Sunday at midnight (0 0 \* \* 0) and can be manually triggered using `workflow_dispatch`.
+   This workflow is set to rotate the token every hour \(0 \* \* \* \*\) and can be manually triggered using `workflow_dispatch`.
 
    - To modify the schedule, adjust the cron expression under `schedule` in the YAML file to your preferred rotation frequency.
 
@@ -246,7 +249,7 @@ curl -s -X GET \
 
 ## Token Configuration and Best Practices
 
-- **Token Expiration**: Set token expiration to a maximum of 7 days to limit exposure.
+- **Token Expiration**: Token expiration by default is 1 hour to limit exposure.
 - **Required Permissions**: Limit token scopes to `metadata:read` and `contents:read`.
 - **Naming Conventions**: Name tokens with a clear structure (e.g., `github-rotation-token-<timestamp>`) for better audit trails.
 

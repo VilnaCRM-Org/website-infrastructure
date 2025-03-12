@@ -152,8 +152,7 @@ Also before running you need to set up some local variables:
 - **TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID** - ID of Slack channel where the Website alerts will be posted.
 - **TF_VAR_REPORT_SLACK_CHANNEL_ID** - ID of Slack channel where the reports of the website tests will be posted.
 - **GITHUB_OWNER** - Owner of the repositories. Default: `VilnaCRM-Org`.
-- [**GITHUB_TOKEN**](/.github/github-pat-creation.md) - Token that will be used to configure Github Provider in Terraform.
-- [**TF_VAR_GITHUB_TOKEN**](/.github/github-pat-creation.md) - Token that will be used in CodePipelines to create/recreate infrastructure etc.
+- [**GITHUB_TOKEN**](/.github/github-token-usage.md) - Token that will be used both to configure the GitHub Provider in Terraform and in CodePipelines for creating, recreating infrastructure, and other tasks.
 
 Note: if you are not using Slack Notifications, skip those variables.
 
