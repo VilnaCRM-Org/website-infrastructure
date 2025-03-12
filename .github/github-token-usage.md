@@ -4,8 +4,8 @@ Objective: Use a GitHub-generated token (ghs_*) for automating tasks that requir
 
 ## Table of contents
 
-- [Using GitHub-Generated Tokens (ghs_*)](#using-github-generated-tokens-ghs)
-- [Storing the Token in AWS Secrets Manager](#storing-the-token-in-aws-secrets-manager)
+- [Using GitHub-Generated Tokens (ghs_*)](#1-using-github-generated-tokens-ghs_)
+- [Storing the Token in AWS Secrets Manager](#2-storing-the-token-in-aws-secrets-manager)
   - [Retrieve the Token](#retrieve-the-token)
   - [Store the Token in AWS Secrets Manager](#store-the-token-in-aws-secrets-manager)
   - [Access the Token in Your Infrastructure Code](#access-the-token-in-your-infrastructure-code)
@@ -18,16 +18,19 @@ Objective: Use a GitHub-generated token (ghs_*) for automating tasks that requir
 GitHub now provides automatically generated authentication tokens (ghs_* tokens) instead of manually created Personal Access Tokens (PATs). These tokens enhance security and are stored securely in AWS Secrets Manager.
 
 ### 2. Storing the Token in AWS Secrets Manager
-#### Retrieve the Token:
+
+#### Retrieve the Token
 
 Generate a GitHub token with the required permissions by using the [GitHub token generation script](aws/scripts/sh/rotate_github_token.sh).
 
-To run this script, you can simply use the workflow_dispatch event, which allows you to manually trigger the workflow through the GitHub UI. This is especially useful for scenarios where you want to perform token rotation on-demand without waiting for the scheduled cron job. You can trigger this event directly from the GitHub Actions interface, providing flexibility in managing token rotation at any time.
+To run this script, you can simply use the workflow_dispatch event, which allows you to manually trigger the workflow through the GitHub UI. 
+This is especially useful for scenarios where you want to perform token rotation on-demand without waiting for the scheduled cron job. 
+You can trigger this event directly from the GitHub Actions interface, providing flexibility in managing token rotation at any time.
 
-- For test environment: [GitHub Token Rotation (test)](.github/workflows/github-token-rotation-test.yml)
-- For prod environment: [GitHub Token Rotation (prod)](.github/workflows/github-token-rotation-prod.yml)
+- For test environment: [GitHub Token Rotation (test)](workflows/github-token-rotation-test.yml)
+- For prod environment: [GitHub Token Rotation (prod)](workflows/github-token-rotation-prod.yml)
 
-#### Store the Token in AWS Secrets Manager:
+#### Store the Token in AWS Secrets Manager
 
 Once the token is generated, the script stores it securely in AWS Secrets Manager using the following AWS CLI command:
 
@@ -38,7 +41,7 @@ aws secretsmanager put-secret-value \
   --secret-string "${SECRET_JSON}";
 ```
 
-#### Access the Token in Your Infrastructure Code:
+#### Access the Token in Your Infrastructure Code
 
 Example usage in Terraform to access the token:
 
