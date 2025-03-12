@@ -18,7 +18,7 @@ Objective: Use a GitHub-generated token (ghs_*) for automating tasks that requir
 GitHub now provides automatically generated authentication tokens (ghs_* tokens) instead of manually created Personal Access Tokens (PATs). These tokens enhance security and are stored securely in AWS Secrets Manager.
 
 ### 2. Storing the Token in AWS Secrets Manager
-Retrieve the Token:
+#### Retrieve the Token:
 
 Generate a GitHub token with the required permissions by using the [GitHub token generation script](aws/scripts/sh/rotate_github_token.sh).
 
@@ -27,7 +27,7 @@ To run this script, you can simply use the workflow_dispatch event, which allows
 - For test environment: [GitHub Token Rotation (test)](.github/workflows/github-token-rotation-test.yml)
 - For prod environment: [GitHub Token Rotation (prod)](.github/workflows/github-token-rotation-prod.yml)
 
-Store the Token in AWS Secrets Manager:
+#### Store the Token in AWS Secrets Manager:
 
 Once the token is generated, the script stores it securely in AWS Secrets Manager using the following AWS CLI command:
 
@@ -38,7 +38,7 @@ aws secretsmanager put-secret-value \
   --secret-string "${SECRET_JSON}";
 ```
 
-Access the Token in Your Infrastructure Code:
+#### Access the Token in Your Infrastructure Code:
 
 Example usage in Terraform to access the token:
 
