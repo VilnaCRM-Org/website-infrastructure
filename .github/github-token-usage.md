@@ -23,8 +23,8 @@ GitHub now provides automatically generated authentication tokens (ghs_* tokens)
 
 Generate a GitHub token with the required permissions by using the [GitHub token generation script](aws/scripts/sh/rotate_github_token.sh).
 
-To run this script, you can simply use the workflow_dispatch event, which allows you to manually trigger the workflow through the GitHub UI. 
-This is especially useful for scenarios where you want to perform token rotation on-demand without waiting for the scheduled cron job. 
+To run this script, you can simply use the workflow_dispatch event, which allows you to manually trigger the workflow through the GitHub UI.
+This is especially useful for scenarios where you want to perform token rotation on-demand without waiting for the scheduled cron job.
 You can trigger this event directly from the GitHub Actions interface, providing flexibility in managing token rotation at any time.
 
 - For test environment: [GitHub Token Rotation (test)](workflows/github-token-rotation-test.yml)
