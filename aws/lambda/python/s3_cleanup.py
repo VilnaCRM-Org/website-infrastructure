@@ -14,23 +14,16 @@ lifecycle_config = {
         {
             "ID": "Delete objects after 10 minutes",
             "Status": "Enabled",
-            "Expiration": {
-                "Days": 1
-            },
-            "NoncurrentVersionExpiration": {
-                "NoncurrentDays": 1
-            },
-            "AbortIncompleteMultipartUpload": {
-                "DaysAfterInitiation": 1
-            }
+            "Expiration": {"Days": 1},
+            "NoncurrentVersionExpiration": {"NoncurrentDays": 1},
+            "AbortIncompleteMultipartUpload": {"DaysAfterInitiation": 1},
         }
     ]
 }
 
 try:
     s3.put_bucket_lifecycle_configuration(
-        Bucket=bucket_name,
-        LifecycleConfiguration=lifecycle_config
+        Bucket=bucket_name, LifecycleConfiguration=lifecycle_config
     )
     print(f"Lifecycle policy set for {bucket_name}")
 except Exception as e:
@@ -44,7 +37,7 @@ try:
     if "Contents" in objects:
         s3.delete_objects(
             Bucket=bucket_name,
-            Delete={"Objects": [{"Key": obj["Key"]} for obj in objects["Contents"]]}
+            Delete={"Objects": [{"Key": obj["Key"]} for obj in objects["Contents"]]},
         )
     print(f"All objects deleted from {bucket_name}")
 except Exception as e:
