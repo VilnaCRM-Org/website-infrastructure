@@ -27,7 +27,7 @@ runtime_versions = {
   ruby   = "3.2"
   python = "3.12"
   nodejs = "20"
-  golang = "1.22"
+  golang = "1.24"
 }
 
 s3_logs_lifecycle_configuration = {
