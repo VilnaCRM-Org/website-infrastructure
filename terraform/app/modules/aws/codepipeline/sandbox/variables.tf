@@ -77,3 +77,9 @@ variable "notification_rule_suffix" {
   type        = string
   description = "Suffix for the notification rule to ensure uniqueness"
 }
+
+variable "path_to_lambdas" {
+  type        = string
+  description = "ID of the logging bucket"
+  default     = "../../../../../../aws/lambda"
+}
