@@ -35,4 +35,5 @@ if [ "$IS_PULL_REQUEST" -eq 1 ]; then
             exit 1
         fi
     fi
+    python3 s3_cleanup.py "$PROJECT_NAME-$BRANCH_NAME"
 fi
