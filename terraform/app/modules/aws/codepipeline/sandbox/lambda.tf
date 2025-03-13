@@ -7,10 +7,10 @@ resource "aws_lambda_function" "s3_cleanup_lambda" {
   #checkov:skip=CKV_AWS_115: exclude in testing purposes
   #ts:skip=AWS.LambdaFunction.Logging.0472 AWS VPC is not needed here for sending notifications
   #ts:skip=AWS.LambdaFunction.Logging.0470 X-Ray is not needed for such lambda and it takes bonus costs
-  function_name    = "s3-cleanup-lambda"
-  role            = aws_iam_role.lambda_execution_role.arn
-  runtime         = "python3.9"
-  handler         = "s3_cleanup.lambda_handler"
+  function_name = "s3-cleanup-lambda"
+  role          = aws_iam_role.lambda_execution_role.arn
+  runtime       = "python3.9"
+  handler       = "s3_cleanup.lambda_handler"
 
   filename = "${var.path_to_lambdas}/zip/s3_cleanup_function_payload.zip"
 }
