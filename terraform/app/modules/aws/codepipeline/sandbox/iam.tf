@@ -16,13 +16,13 @@ resource "aws_iam_role" "lambda_execution_role" {
 resource "aws_iam_policy" "s3_cleanup_policy" {
   name        = "s3_cleanup_policy"
   description = "Allows Lambda to manage S3 buckets and objects"
-  
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "s3:ListBucket",
           "s3:GetBucketLifecycleConfiguration",
           "s3:PutBucketLifecycleConfiguration",
@@ -36,8 +36,8 @@ resource "aws_iam_policy" "s3_cleanup_policy" {
         ]
       },
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents"
