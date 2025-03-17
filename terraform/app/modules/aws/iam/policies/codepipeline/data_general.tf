@@ -149,12 +149,12 @@ data "aws_iam_policy_document" "general_policy_doc" {
   statement {
     sid    = "EventBridgePolicy"
     effect = "Allow"
-    actions = [ 
+    actions = [
       "events:DeleteRule",
       "events:PutTargets",
       "events:RemoveTargets",
       "events:DescribeRule"
-     ]
+    ]
     resources = [
       "arn:aws:events:${var.region}:${local.account_id}:rule/*"
     ]
