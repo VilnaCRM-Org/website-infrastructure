@@ -1,50 +1,34 @@
 import boto3
+import os
 import sys
-import time
 
-if len(sys.argv) < 2:
-    print("Usage: python3 s3_cleanup.py <bucket_name>")
-    sys.exit(1)
+def delete_s3_bucket(bucket_name):
+    s3 = boto3.client("s3")
+    try:
+        print(f"Deleting all objects in bucket: {bucket_name}")
+        objects = s3.list_objects_v2(Bucket=bucket_name)
+        if "Contents" in objects:
+            for obj in objects["Contents"]:
+                s3.delete_object(Bucket=bucket_name, Key=obj["Key"])
 
-bucket_name = sys.argv[1]
-s3 = boto3.client("s3")
+        print(f"Deleting bucket: {bucket_name}")
+        s3.delete_bucket(Bucket=bucket_name)
+        print(f"Bucket {bucket_name} deleted successfully.")
+    except Exception as e:
+        print(f"Error deleting bucket {bucket_name}: {str(e)}")
 
-lifecycle_config = {
-    "Rules": [
-        {
-            "ID": "Delete objects after 10 minutes",
-            "Status": "Enabled",
-            "Expiration": {"Days": 1},
-            "NoncurrentVersionExpiration": {"NoncurrentDays": 1},
-            "AbortIncompleteMultipartUpload": {"DaysAfterInitiation": 1},
-        }
-    ]
-}
+def lambda_handler(event, context):
+    bucket_name = os.environ.get("BUCKET_NAME")
+    if not bucket_name:
+        print("Error: BUCKET_NAME environment variable is not set")
+        return
 
-try:
-    s3.put_bucket_lifecycle_configuration(
-        Bucket=bucket_name, LifecycleConfiguration=lifecycle_config
-    )
-    print(f"Lifecycle policy set for {bucket_name}")
-except Exception as e:
-    print(f"Error setting lifecycle policy: {e}")
+    delete_s3_bucket(bucket_name)
 
-print(f"Waiting 10 minutes before deleting bucket: {bucket_name}...")
-time.sleep(600)
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python3 s3_cleanup.py <bucket_name>")
+        sys.exit(1)
 
-try:
-    objects = s3.list_objects_v2(Bucket=bucket_name)
-    if "Contents" in objects:
-        s3.delete_objects(
-            Bucket=bucket_name,
-            Delete={"Objects": [{"Key": obj["Key"]} for obj in objects["Contents"]]},
-        )
-    print(f"All objects deleted from {bucket_name}")
-except Exception as e:
-    print(f"Error deleting objects: {e}")
-
-try:
-    s3.delete_bucket(Bucket=bucket_name)
-    print(f"Bucket {bucket_name} deleted successfully.")
-except Exception as e:
-    print(f"Error deleting bucket {bucket_name}: {e}")
+    bucket_name = sys.argv[1]
+    delete_s3_bucket(bucket_name)

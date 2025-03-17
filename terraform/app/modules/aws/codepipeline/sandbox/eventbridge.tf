@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_event_rule" "s3_cleanup_rule" {
   name                = "s3-cleanup-rule"
-  description         = "Triggers Lambda to delete S3 bucket after 10 minutes"
+  description         = "Triggers Lambda to delete S3 buckets"
   schedule_expression = "rate(10 minutes)"
 }
 
