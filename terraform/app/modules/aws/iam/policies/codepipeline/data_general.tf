@@ -157,7 +157,8 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "events:PutRule",
       "events:ListTagsForResource",
       "events:EnableRule",
-      "events:DisableRule"
+      "events:DisableRule",
+      "events:ListTargetsByRule"
     ]
     resources = [
       "arn:aws:events:${var.region}:${local.account_id}:rule/s3-cleanup-rule"
