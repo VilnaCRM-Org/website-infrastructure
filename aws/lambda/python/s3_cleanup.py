@@ -2,6 +2,7 @@ import boto3
 import os
 import sys
 
+
 def delete_s3_bucket(bucket_name):
     s3 = boto3.client("s3")
     try:
@@ -17,6 +18,7 @@ def delete_s3_bucket(bucket_name):
     except Exception as e:
         print(f"Error deleting bucket {bucket_name}: {str(e)}")
 
+
 def lambda_handler(event, context):
     bucket_name = os.environ.get("BUCKET_NAME")
     if not bucket_name:
@@ -24,6 +26,7 @@ def lambda_handler(event, context):
         return
 
     delete_s3_bucket(bucket_name)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
