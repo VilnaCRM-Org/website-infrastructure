@@ -282,6 +282,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-iam-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-codepipeline-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/ci-cd-website-${var.environment}-oidc-codepipeline-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-ci-cd-infra-iam-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-dns-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-iam-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-general-policy",

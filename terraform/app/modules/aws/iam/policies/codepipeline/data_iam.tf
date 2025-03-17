@@ -29,6 +29,7 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:role/github-actions-role",
       "arn:aws:iam::${local.account_id}:role/website-${var.environment}-codepipeline-role-sandbox-deletion-${var.environment}",
       "arn:aws:iam::${local.account_id}:role/website-${var.environment}-codebuild-role-sandbox-deletion-${var.environment}",
+      "arn:aws:iam::${local.account_id}:role/s3-cleanup-lambda-role"
     ]
   }
   statement {
@@ -61,7 +62,8 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:policy/website-infrastructure-trigger-role-policy",
       "arn:aws:iam::${local.account_id}:policy/sandbox-${var.environment}-codepipeline-role-policy",
       "arn:aws:iam::${local.account_id}:policy/sandbox-creation-trigger-role-policy",
-      "arn:aws:iam::${local.account_id}:policy/sandbox-deletion-trigger-role-policy"
+      "arn:aws:iam::${local.account_id}:policy/sandbox-deletion-trigger-role-policy",
+      "arn:aws:iam::${local.account_id}:policy/s3-cleanup-policy"
     ]
   }
   statement {

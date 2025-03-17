@@ -145,4 +145,29 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "arn:aws:cloudfront::${local.account_id}:continuous-deployment-policy/*"
     ]
   }
+
+  statement {
+    sid    = "EventBridgePolicy"
+    effect = "Allow"
+    actions = [ 
+      "events:DeleteRule",
+      "events:PutTargets",
+      "events:RemoveTargets",
+      "events:DescribeRule"
+     ]
+    resources = [
+      "arn:aws:events:${var.region}:${local.account_id}:rule/*"
+    ]
+  }
+
+  statement {
+    sid    = "EventBridge"
+    effect = "Allow"
+    actions = [
+      "events:PutRule",
+    ]
+    resources = [
+      "*"
+    ]
+  }
 } 
