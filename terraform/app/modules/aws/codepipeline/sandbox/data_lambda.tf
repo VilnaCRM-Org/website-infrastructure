@@ -11,6 +11,10 @@ resource "aws_iam_role" "lambda_cleanup_function_role" {
       }
     }]
   })
+
+  lifecycle {
+    prevent_destroy = false
+  }
 }
 
 resource "aws_iam_policy" "s3_cleanup_function_policy" {
@@ -47,6 +51,10 @@ resource "aws_iam_policy" "s3_cleanup_function_policy" {
       }
     ]
   })
+
+  lifecycle {
+    prevent_destroy = false
+  }
 }
 resource "aws_iam_role_policy_attachment" "lambda_s3_cleanup_attach" {
   role       = aws_iam_role.lambda_cleanup_function_role.name
