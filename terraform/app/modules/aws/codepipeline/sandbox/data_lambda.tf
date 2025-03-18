@@ -1,5 +1,5 @@
-resource "aws_iam_role" "lambda_execution_role" {
-  name = "s3-cleanup-function-lambda-role"
+resource "aws_iam_role" "lambda_cleanup_function_role" {
+  name = "s3-cleanup-function-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -13,8 +13,8 @@ resource "aws_iam_role" "lambda_execution_role" {
   })
 }
 
-resource "aws_iam_policy" "s3_cleanup_policy" {
-  name        = "s3-cleanup-function-lambda-policy"
+resource "aws_iam_policy" "s3_cleanup_function_policy" {
+  name        = "s3-cleanup-function-policy"
   description = "Allows Lambda to manage S3 buckets and objects"
 
   policy = jsonencode({
