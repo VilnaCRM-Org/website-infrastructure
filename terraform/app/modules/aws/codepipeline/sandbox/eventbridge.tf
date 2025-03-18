@@ -12,6 +12,8 @@ resource "aws_cloudwatch_event_target" "s3_cleanup_target" {
   rule      = aws_cloudwatch_event_rule.s3_cleanup_rule.name
   target_id = "s3-cleanup-lambda"
   arn       = aws_lambda_function.s3_cleanup_lambda.arn
+
+  depends_on = [aws_lambda_function.s3_cleanup_lambda]
 }
 
 resource "aws_lambda_permission" "allow_eventbridge" {

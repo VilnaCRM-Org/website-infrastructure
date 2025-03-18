@@ -11,10 +11,6 @@ resource "aws_iam_role" "lambda_cleanup_function_role" {
       }
     }]
   })
-
-  lifecycle {
-    prevent_destroy = false
-  }
 }
 
 resource "aws_iam_policy" "s3_cleanup_function_policy" {
@@ -28,8 +24,6 @@ resource "aws_iam_policy" "s3_cleanup_function_policy" {
         Effect = "Allow"
         Action = [
           "s3:ListBucket",
-          "s3:GetBucketLifecycleConfiguration",
-          "s3:PutBucketLifecycleConfiguration",
           "s3:DeleteBucket",
           "s3:DeleteObject",
           "s3:ListBucketVersions",
@@ -51,10 +45,6 @@ resource "aws_iam_policy" "s3_cleanup_function_policy" {
       }
     ]
   })
-
-  lifecycle {
-    prevent_destroy = false
-  }
 }
 resource "aws_iam_role_policy_attachment" "lambda_s3_cleanup_attach" {
   role       = aws_iam_role.lambda_cleanup_function_role.name
