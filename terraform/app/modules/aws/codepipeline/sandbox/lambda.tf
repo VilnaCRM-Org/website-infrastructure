@@ -8,7 +8,7 @@ resource "aws_lambda_function" "s3_cleanup_lambda" {
   #ts:skip=AWS.LambdaFunction.Logging.0472 AWS VPC is not needed here for sending notifications
   #ts:skip=AWS.LambdaFunction.Logging.0470 X-Ray is not needed for such lambda and it takes bonus costs
   function_name = "s3-cleanup-lambda"
-  role          = aws_iam_role.lambda_execution_role.arn
+  role          = var.codepipeline_role_arn
   runtime       = "python3.9"
   handler       = "s3_cleanup.lambda_handler"
 
