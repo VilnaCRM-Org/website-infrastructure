@@ -1,5 +1,4 @@
 import boto3
-import json
 import sys
 
 def delete_s3_bucket(bucket_name):

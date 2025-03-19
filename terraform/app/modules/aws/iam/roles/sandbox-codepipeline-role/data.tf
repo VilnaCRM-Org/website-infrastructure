@@ -133,7 +133,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
   }
 
   statement {
-    sid = "AllowSendEvents"
+    sid    = "AllowSendEvents"
     effect = "Allow"
     actions = [
       "events:PutEvents"
