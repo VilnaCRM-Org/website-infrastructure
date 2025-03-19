@@ -45,6 +45,8 @@ resource "aws_iam_policy" "s3_cleanup_function_policy" {
       }
     ]
   })
+  
+  depends_on = [aws_iam_role.lambda_cleanup_function_role]
 }
 resource "aws_iam_role_policy_attachment" "lambda_s3_cleanup_attach" {
   role       = aws_iam_role.lambda_cleanup_function_role.name
