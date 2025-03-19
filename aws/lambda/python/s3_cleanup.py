@@ -1,7 +1,6 @@
 import boto3
-import os
+import json
 import sys
-
 
 def delete_s3_bucket(bucket_name):
     s3 = boto3.client("s3")
@@ -18,15 +17,15 @@ def delete_s3_bucket(bucket_name):
     except Exception as e:
         print(f"Error deleting bucket {bucket_name}: {str(e)}")
 
-
 def lambda_handler(event, context):
-    bucket_name = os.environ.get("BUCKET_NAME")
+    bucket_name = event.get("detail", {}).get("bucket_name")
+    
     if not bucket_name:
-        print("Error: BUCKET_NAME environment variable is not set")
+        print("Error: No bucket name provided in the event")
         return
 
+    print(f"Received bucket name: {bucket_name}")
     delete_s3_bucket(bucket_name)
-
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
