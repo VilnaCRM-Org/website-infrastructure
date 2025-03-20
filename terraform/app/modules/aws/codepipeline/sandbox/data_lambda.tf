@@ -22,8 +22,8 @@ resource "aws_iam_policy" "s3_cleanup_function_policy" {
 
 data "aws_iam_policy_document" "s3_cleanup_function_policy" {
   statement {
-    sid     = "AllowS3BucketManagement"
-    effect  = "Allow"
+    sid    = "AllowS3BucketManagement"
+    effect = "Allow"
     actions = [
       "s3:ListBucket",
       "s3:DeleteBucket",
@@ -38,8 +38,8 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
   }
 
   statement {
-    sid     = "AllowCloudWatchLogs"
-    effect  = "Allow"
+    sid    = "AllowCloudWatchLogs"
+    effect = "Allow"
     actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
@@ -49,16 +49,16 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
   }
 
   statement {
-  sid     = "AllowEventBridgeRuleManagement"
-  effect  = "Allow"
-  actions = [
-    "events:RemoveTargets",
-    "events:DeleteRule"
-  ]
-  resources = [
-    "arn:aws:events:${data.aws_region.current.id}:${local.account_id}:rule/s3-cleanup-*"
-  ]
-}
+    sid    = "AllowEventBridgeRuleManagement"
+    effect = "Allow"
+    actions = [
+      "events:RemoveTargets",
+      "events:DeleteRule"
+    ]
+    resources = [
+      "arn:aws:events:${data.aws_region.current.id}:${local.account_id}:rule/s3-cleanup-*"
+    ]
+  }
 
   depends_on = [aws_iam_role.lambda_cleanup_function_role]
 }
