@@ -136,6 +136,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     sid    = "AllowSendEvents"
     effect = "Allow"
     actions = [
+      "events:PutEvents",
       "events:PutRule",
       "events:PutTargets",
       "events:RemoveTargets",
