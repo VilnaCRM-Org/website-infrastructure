@@ -45,7 +45,9 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
-    resources = "arn:aws:logs:*:*:*"
+    resources = [
+      "arn:aws:logs:*:*:*"
+    ]
   }
 
   statement {
