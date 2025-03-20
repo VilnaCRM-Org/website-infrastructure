@@ -136,8 +136,20 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     sid    = "AllowSendEvents"
     effect = "Allow"
     actions = [
-      "events:PutEvents"
+      "events:PutRule",
+      "events:PutTargets",
+      "events:RemoveTargets",
+      "events:DeleteRule",
+      "events:DescribeRule"
     ]
     resources = ["arn:aws:events:${data.aws_region.current.id}:${local.account_id}:event-bus/default"]
+  }
+  statement {
+    sid    = "AllowGetCallerIdentity"
+    effect = "Allow"
+    actions = [
+      "sts:GetCallerIdentity"
+    ]
+    resources = ["*"]
   }
 }
