@@ -1,12 +1,10 @@
 #!/bin/bash
 set -e
 
-if [ -z "$1" ]; then
-  echo "Error: PROJECT_NAME parameter is not provided!"
+if [ -z "$PROJECT_NAME" ]; then
+  echo "Error: PROJECT_NAME environment variable is not set!"
   exit 1
 fi
-
-PROJECT_NAME="$1"
 
 if [ -z "$BRANCH_NAME" ]; then
   echo "Error: BRANCH_NAME environment variable is not set!"
