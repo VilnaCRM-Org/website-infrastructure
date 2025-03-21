@@ -1,6 +1,7 @@
 import json
 import boto3
 
+
 def lambda_handler(event, context):
     bucket_name = event.get("bucket_name")
 
@@ -34,8 +35,7 @@ def lambda_handler(event, context):
             for statement in policy_doc.get("Statement", []):
                 if "Sid" in statement and rule_name in statement["Sid"]:
                     lambda_client.remove_permission(
-                        FunctionName="s3-cleanup-lambda",
-                        StatementId=statement["Sid"]
+                        FunctionName="s3-cleanup-lambda", StatementId=statement["Sid"]
                     )
                     print(f"Removed Lambda permission: {statement['Sid']}")
 
@@ -47,11 +47,10 @@ def lambda_handler(event, context):
 
         return {
             "statusCode": 200,
-            "body": json.dumps(f"Bucket {bucket_name} deleted. EventBridge rule removed.")
+            "body": json.dumps(
+                f"Bucket {bucket_name} deleted. EventBridge rule removed."
+            ),
         }
 
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "body": json.dumps(f"Error: {str(e)}")
-        }
+        return {"statusCode": 500, "body": json.dumps(f"Error: {str(e)}")}
