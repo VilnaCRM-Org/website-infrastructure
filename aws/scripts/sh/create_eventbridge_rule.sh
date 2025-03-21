@@ -16,7 +16,7 @@ rule_name="s3-cleanup-$bucket_name"
 region="eu-central-1"
 
 # Generating unique target ID using uuidgen
-unique_id=$(uuidgen)
+unique_id=$((RANDOM % 900 + 100))
 
 # Creating EventBridge rule
 echo "🔧 Creating EventBridge rule for: $bucket_name"
