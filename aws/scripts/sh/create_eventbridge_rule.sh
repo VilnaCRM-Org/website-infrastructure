@@ -20,7 +20,6 @@ minute=$(echo "$start_time" | awk '{print $1}')
 hour=$(echo "$start_time" | awk '{print $2}')
 day=$(echo "$start_time" | awk '{print $3}')
 month=$(echo "$start_time" | awk '{print $4}')
-weekday=$(echo "$start_time" | awk '{print $5}')
 year=$(echo "$start_time" | awk '{print $6}')
 
 cron_expr="cron($minute $hour $day $month ? $year)"  
