@@ -13,7 +13,17 @@ fi
 
 bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
 rule_name="s3-cleanup-$bucket_name"
-region="eu-central-1"
+region=${AWS_REGION:-$(aws configure get region)}
+
+start_time=$(date -u -d "+10 minutes" +"%M %H %d %m %u %Y")
+minute=$(echo "$start_time" | awk '{print $1}')
+hour=$(echo "$start_time" | awk '{print $2}')
+day=$(echo "$start_time" | awk '{print $3}')
+month=$(echo "$start_time" | awk '{print $4}')
+weekday=$(echo "$start_time" | awk '{print $5}')
+year=$(echo "$start_time" | awk '{print $6}')
+
+cron_expr="cron($minute $hour $day $month ? $year)"  
 
 # Generate a random number for the unique id in the target
 unique_id=$((RANDOM % 9000 + 1000))
@@ -28,7 +38,7 @@ if [ -z "$existing_rule" ]; then
   echo "EventBridge rule does not exist. Creating new rule: $rule_name"
   aws events put-rule \
     --name "$rule_name" \
-    --schedule-expression "rate(10 minutes)" \
+    --schedule-expression "$cron_expr" \
     --state ENABLED
 else
   # Rule exists, so update it (for example, changing schedule expression)
