@@ -11,6 +11,7 @@ resource "aws_lambda_function" "s3_cleanup_lambda" {
   role          = aws_iam_role.lambda_cleanup_function_role.arn
   runtime       = "python3.9"
   handler       = "s3_cleanup.lambda_handler"
+  timeout       = 15
 
   filename = "${var.path_to_lambdas}/zip/s3_cleanup_function_payload.zip"
 

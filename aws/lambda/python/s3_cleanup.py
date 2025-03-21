@@ -23,8 +23,18 @@ def lambda_handler(event, context):
         s3.delete_bucket(Bucket=bucket_name)
 
         rule_name = f"s3-cleanup-{bucket_name}"
-        events.remove_targets(Rule=rule_name, Ids=["1"])
+
+        response = events.list_targets_by_rule(Rule=rule_name)
+
+        if response["Targets"]:
+            target_id = response["Targets"][0]["Id"]
+            print(f"Removing target with ID: {target_id}")
+
+            events.remove_targets(Rule=rule_name, Ids=[target_id])
+            print(f"Target with ID: {target_id} removed.")
+
         events.delete_rule(Name=rule_name)
+        print(f"EventBridge rule {rule_name} deleted.")
 
         return {
             "statusCode": 200,

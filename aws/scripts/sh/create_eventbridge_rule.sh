@@ -15,22 +15,33 @@ bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
 rule_name="s3-cleanup-$bucket_name"
 region="eu-central-1"
 
-# Generating unique target ID using uuidgen
+# Generate a random number for the unique id in the target
 unique_id=$((RANDOM % 900 + 100))
 
-# Creating EventBridge rule
-echo "🔧 Creating EventBridge rule for: $bucket_name"
+echo "🔧 Creating or updating EventBridge rule for: $bucket_name"
 
-aws events put-rule \
-  --name "$rule_name" \
-  --schedule-expression "rate(10 minutes)" \
-  --state ENABLED
+# Check if the rule already exists
+existing_rule=$(aws events describe-rule --name "$rule_name" 2>/dev/null || true)
 
-echo "✅ EventBridge rule created: $rule_name"
+if [ -z "$existing_rule" ]; then
+  # Rule does not exist, so create it
+  echo "EventBridge rule does not exist. Creating new rule: $rule_name"
+  aws events put-rule \
+    --name "$rule_name" \
+    --schedule-expression "rate(10 minutes)" \
+    --state ENABLED
+else
+  # Rule exists, so update it (for example, changing schedule expression)
+  echo "EventBridge rule exists. Updating rule: $rule_name"
+  aws events put-rule \
+    --name "$rule_name" \
+    --schedule-expression "rate(10 minutes)" \
+    --state ENABLED
+fi
 
 account_id=$(aws sts get-caller-identity --query "Account" --output text)
 
-# Adding Lambda as target to EventBridge rule with unique ID
+# Add target (Lambda) to the rule
 aws events put-targets \
   --rule "$rule_name" \
   --targets "[{
@@ -42,9 +53,9 @@ aws events put-targets \
       }
   }]"
 
-echo "✅ Lambda added as a target in EventBridge rule with unique ID: $unique_id"
+echo "Lambda added as target in EventBridge rule"
 
-# Checking if permission already exists for EventBridge to invoke Lambda
+# Check if the permission for EventBridge to invoke Lambda already exists
 existing_permission=$(aws lambda get-policy --function-name s3-cleanup-lambda 2>/dev/null | grep "$rule_name" || true)
 
 if [ -z "$existing_permission" ]; then
@@ -59,4 +70,4 @@ else
   echo "Lambda already has permission for EventBridge rule."
 fi
 
-echo "Done! Lambda will now be invoked automatically after 10 minutes."
+echo "Ready! Lambda is now triggered automatically every 10 minutes."
