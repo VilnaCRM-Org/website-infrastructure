@@ -62,6 +62,17 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
     ]
   }
 
+  statement {
+    sid    = "AllowEventBridgeInvokeFunction"
+    effect = "Allow"
+    actions = [
+      "lambda:InvokeFunction",
+    ]
+    resources = [
+      "arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:s3-cleanup-lambda"
+    ]
+  }
+
   depends_on = [aws_iam_role.lambda_cleanup_function_role]
 }
 

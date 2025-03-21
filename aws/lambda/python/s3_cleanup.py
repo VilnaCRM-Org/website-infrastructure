@@ -2,7 +2,7 @@ import json
 import boto3
 
 
-def lambda_handler(event):
+def lambda_handler(event, context):
     bucket_name = event.get("bucket_name")
 
     if not bucket_name:
