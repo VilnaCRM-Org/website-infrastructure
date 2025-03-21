@@ -16,7 +16,7 @@ rule_name="s3-cleanup-$bucket_name"
 region="eu-central-1"
 
 # Generate a random number for the unique id in the target
-unique_id=$((RANDOM % 900 + 100))
+unique_id=$((RANDOM % 9000 + 1000))
 
 echo "🔧 Creating or updating EventBridge rule for: $bucket_name"
 
@@ -60,10 +60,11 @@ existing_permission=$(aws lambda get-policy --function-name s3-cleanup-lambda 2>
 
 if [ -z "$existing_permission" ]; then
   echo "🔒 Granting permission for EventBridge to invoke Lambda..."
+  statement_id="AllowEventBridgeInvoke-${rule_name}-$(date +%s)"
   aws lambda add-permission \
     --function-name s3-cleanup-lambda \
     --statement-id "AllowEventBridgeInvoke-$rule_name" \
-    --action "lambda:InvokeFunction" \
+    --action "$statement_id" \
     --principal events.amazonaws.com \
     --source-arn "arn:aws:events:$region:$account_id:rule/$rule_name"
 else

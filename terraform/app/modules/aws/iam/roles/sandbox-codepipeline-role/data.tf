@@ -156,4 +156,13 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     ]
     resources = ["*"]
   }
+
+  statement {
+    sid    = "AllowAddLambdaPermission"
+    effect = "Allow"
+    actions = [
+      "lambda:AddPermission"
+    ]
+    resources = ["arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:s3-cleanup-lambda"]
+  }
 }
