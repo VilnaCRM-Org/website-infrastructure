@@ -60,11 +60,11 @@ existing_permission=$(aws lambda get-policy --function-name s3-cleanup-lambda 2>
 
 if [ -z "$existing_permission" ]; then
   echo "🔒 Granting permission for EventBridge to invoke Lambda..."
-  statement_id="AllowEventBridgeInvoke-${rule_name//[^a-zA-Z0-9-]/}-$(date +%s)"
+  statement_id="AllowEventBridgeInvoke-${sanitized_rule_name}-$(date +%s)"
   aws lambda add-permission \
     --function-name s3-cleanup-lambda \
-    --statement-id "AllowEventBridgeInvoke-$rule_name" \
-    --action "$statement_id" \
+    --statement-id "$statement_id" \
+    --action "lambda:InvokeFunction" \
     --principal events.amazonaws.com \
     --source-arn "arn:aws:events:$region:$account_id:rule/$rule_name"
 else
