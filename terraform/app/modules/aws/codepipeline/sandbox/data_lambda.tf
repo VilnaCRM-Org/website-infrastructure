@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
     actions = [
       "events:RemoveTargets",
       "events:DeleteRule",
-			"events:ListTargetsByRule"
+      "events:ListTargetsByRule"
     ]
     resources = [
       "arn:aws:events:${data.aws_region.current.id}:${local.account_id}:rule/s3-cleanup-*"
@@ -52,11 +52,11 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
     ]
   }
 
-    statement {
+  statement {
     sid    = "AllowEventBridgeListRules"
     effect = "Allow"
     actions = [
-			"events:ListRules"
+      "events:ListRules"
     ]
     resources = [
       "arn:aws:events:${data.aws_region.current.id}:${local.account_id}:rule/*"
