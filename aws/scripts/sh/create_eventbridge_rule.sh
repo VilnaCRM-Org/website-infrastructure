@@ -44,7 +44,7 @@ else
   echo "EventBridge rule exists. Updating rule: $rule_name"
   aws events put-rule \
     --name "$rule_name" \
-    --schedule-expression "rate(10 minutes)" \
+    --schedule-expression "$cron_expr" \
     --state ENABLED
 fi
 
