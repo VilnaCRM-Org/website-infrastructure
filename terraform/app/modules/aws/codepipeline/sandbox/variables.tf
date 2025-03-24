@@ -83,3 +83,13 @@ variable "path_to_lambdas" {
   description = "ID of the logging bucket"
   default     = "../../../../../../aws/lambda"
 }
+
+variable "lambda_reserved_concurrent_executions" {
+  description = "Function-level concurrent execution Limit for Lambda"
+  type        = number
+}
+
+variable "lambda_python_version" {
+  description = "Python version for Lambda"
+  type        = string
+}
