@@ -74,7 +74,7 @@ module "sandbox_codepipeline" {
   IS_PULL_REQUEST = var.IS_PULL_REQUEST
   PR_NUMBER       = var.PR_NUMBER
   BRANCH_NAME     = var.BRANCH_NAME
-  
+
   lambda_python_version                 = var.lambda_python_version
   lambda_reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
 

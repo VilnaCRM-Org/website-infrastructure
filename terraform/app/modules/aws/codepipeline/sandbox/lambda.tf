@@ -6,11 +6,11 @@ resource "aws_lambda_function" "s3_cleanup_lambda" {
   #checkov:skip=CKV_AWS_173: KMS encryption is not needed
   #ts:skip=AWS.LambdaFunction.Logging.0472 AWS VPC is not needed here for sending notifications
   #ts:skip=AWS.LambdaFunction.Logging.0470 X-Ray is not needed for such lambda and it takes bonus costs
-  function_name = "s3-cleanup-lambda"
-  role          = aws_iam_role.lambda_cleanup_function_role.arn
-  runtime       = var.lambda_python_version
-  handler       = "s3_cleanup.lambda_handler"
-  timeout       = 300
+  function_name                  = "s3-cleanup-lambda"
+  role                           = aws_iam_role.lambda_cleanup_function_role.arn
+  runtime                        = var.lambda_python_version
+  handler                        = "s3_cleanup.lambda_handler"
+  timeout                        = 300
   reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
 
   filename = "${var.path_to_lambdas}/zip/s3_cleanup_function_payload.zip"
