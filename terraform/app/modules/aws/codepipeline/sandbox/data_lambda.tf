@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "s3_cleanup_function_policy" {
+data "aws_iam_policy_document" "sandbox_cleanup_function_policy" {
   statement {
     sid    = "AllowS3BucketManagement"
     effect = "Allow"
@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
       "logs:PutLogEvents"
     ]
     resources = [
-      "arn:aws:logs:${data.aws_region.current.id}:${local.account_id}:log-group:/aws/lambda/s3-cleanup-lambda:*"
+      "arn:aws:logs:${data.aws_region.current.id}:${local.account_id}:log-group:/aws/lambda/sandbox-cleanup-lambda:*"
     ]
   }
 
@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
       "events:ListTargetsByRule"
     ]
     resources = [
-      "arn:aws:events:${data.aws_region.current.id}:${local.account_id}:rule/s3-cleanup-*"
+      "arn:aws:events:${data.aws_region.current.id}:${local.account_id}:rule/sandbox-cleanup-*"
     ]
   }
 
@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
       "lambda:InvokeFunction",
     ]
     resources = [
-      "arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:s3-cleanup-lambda"
+      "arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:sandbox-cleanup-lambda"
     ]
   }
 
@@ -63,5 +63,5 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
     ]
   }
 
-  depends_on = [aws_iam_role.lambda_cleanup_function_role]
+  depends_on = [aws_iam_role.sandbox_cleanup_function_role]
 }

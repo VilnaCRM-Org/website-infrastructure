@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
     ]
     resources = [
       "arn:aws:lambda:${var.region}:${local.account_id}:function:${var.ci_cd_website_project_name}-reports-notification",
-      "arn:aws:lambda:${var.region}:${local.account_id}:function:s3-cleanup-lambda",
+      "arn:aws:lambda:${var.region}:${local.account_id}:function:sandbox-cleanup-lambda",
     ]
   }
 } 
