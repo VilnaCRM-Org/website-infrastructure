@@ -47,6 +47,9 @@ module "codepipeline_sandbox_deletion" {
   BRANCH_NAME     = var.BRANCH_NAME
   IS_PULL_REQUEST = var.IS_PULL_REQUEST
 
+  lambda_python_version                 = var.lambda_python_version
+  lambda_reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
+  
   detect_changes = false
 
   stages = var.sandbox_deletion_stage_input
