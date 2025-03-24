@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -o pipefail
 
 if [ -z "$PROJECT_NAME" ]; then
   echo "Error: PROJECT_NAME environment variable is not set!"
@@ -12,10 +12,10 @@ if [ -z "$BRANCH_NAME" ]; then
 fi
 
 bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
-rule_name="s3-cleanup-$bucket_name"
+rule_name="sandbox-cleanup-$bucket_name"
 region=${AWS_REGION:-$(aws configure get region)}
 
-start_time=$(date -u -d "+10 minutes" +"%M %H %d %m %u %Y")
+start_time=$(date -u -d "+7 days" +"%M %H %d %m %Y")
 minute=$(echo "$start_time" | awk '{print $1}')
 hour=$(echo "$start_time" | awk '{print $2}')
 day=$(echo "$start_time" | awk '{print $3}')
@@ -55,7 +55,7 @@ aws events put-targets \
   --rule "$rule_name" \
   --targets "[{
       \"Id\": \"$unique_id\",
-      \"Arn\": \"arn:aws:lambda:$region:$account_id:function:s3-cleanup-lambda\",
+      \"Arn\": \"arn:aws:lambda:$region:$account_id:function:sandbox-cleanup-lambda\",
       \"InputTransformer\": {
         \"InputPathsMap\": {},
         \"InputTemplate\": \"{ \\\"bucket_name\\\": \\\"$bucket_name\\\" }\"
@@ -65,13 +65,13 @@ aws events put-targets \
 echo "Lambda added as target in EventBridge rule"
 
 # Check if the permission for EventBridge to invoke Lambda already exists
-existing_permission=$(aws lambda get-policy --function-name s3-cleanup-lambda 2>/dev/null | grep "$rule_name" || true)
+existing_permission=$(aws lambda get-policy --function-name sandbox-cleanup-lambda 2>/dev/null | grep "$rule_name" || true)
 
 if [ -z "$existing_permission" ]; then
   echo "🔒 Granting permission for EventBridge to invoke Lambda..."
   statement_id="AllowEventBridgeInvoke-${rule_name}-$(date +%s)"
   aws lambda add-permission \
-    --function-name s3-cleanup-lambda \
+    --function-name sandbox-cleanup-lambda \
     --statement-id "$statement_id" \
     --action "lambda:InvokeFunction" \
     --principal events.amazonaws.com \
@@ -80,4 +80,4 @@ else
   echo "Lambda already has permission for EventBridge rule."
 fi
 
-echo "Ready! Lambda is now triggered automatically every 10 minutes."
+echo "Ready! Lambda will be triggered automatically after 10 minutes."
