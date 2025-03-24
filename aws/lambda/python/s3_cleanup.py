@@ -1,6 +1,6 @@
 import json
 import boto3
-
+import time
 
 def lambda_handler(event, context):
     bucket_name = event.get("bucket_name")
@@ -13,44 +13,72 @@ def lambda_handler(event, context):
     lambda_client = boto3.client("lambda")
 
     try:
+        print(f"Listing objects in bucket: {bucket_name}")
         objects = s3.list_objects_v2(Bucket=bucket_name)
         if "Contents" in objects:
             delete_objects = {
                 "Objects": [{"Key": obj["Key"]} for obj in objects["Contents"]]
             }
             s3.delete_objects(Bucket=bucket_name, Delete=delete_objects)
+            print(f"Deleted objects from {bucket_name}")
+
         s3.delete_bucket(Bucket=bucket_name)
+        print(f"Deleted bucket: {bucket_name}")
 
-        rule_name = f"s3-cleanup-{bucket_name}"
+        rule_name = f"sandbox-cleanup-{bucket_name}"
 
+        print("Fetching all available rules...")
+        rules = events.list_rules()
+        found_rule = any(rule["Name"] == rule_name for rule in rules.get("Rules", []))
+
+        if not found_rule:
+            print(f"Rule {rule_name} not found in EventBridge!")
+            return {
+                "statusCode": 404,
+                "body": json.dumps(f"Rule {rule_name} not found. Maybe it was already deleted?")
+            }
+
+        print(f"Fetching targets for rule: {rule_name}")
         response = events.list_targets_by_rule(Rule=rule_name)
-        if response["Targets"]:
-            target_id = response["Targets"][0]["Id"]
-            events.remove_targets(Rule=rule_name, Ids=[target_id])
+        targets = response.get("Targets", [])
+
+        if targets:
+            target_ids = [target["Id"] for target in targets]
+            print(f"Found targets to remove: {target_ids}")
+
+            try:
+                events.remove_targets(Rule=rule_name, Ids=target_ids)
+                print(f"Removed targets from rule: {rule_name}")
+
+                time.sleep(2)
+            except Exception as e:
+                print(f"Error removing targets from rule: {str(e)}")
+                return {
+                    "statusCode": 500,
+                    "body": json.dumps(f"Error removing targets: {str(e)}")
+                }
+        else:
+            print(f"No targets found for rule: {rule_name}")
 
         try:
-            lambda_policy = lambda_client.get_policy(FunctionName="s3-cleanup-lambda")
-            policy_doc = json.loads(lambda_policy["Policy"])
-
-            for statement in policy_doc.get("Statement", []):
-                if "Sid" in statement and rule_name in statement["Sid"]:
-                    lambda_client.remove_permission(
-                        FunctionName="s3-cleanup-lambda", StatementId=statement["Sid"]
-                    )
-                    print(f"Removed Lambda permission: {statement['Sid']}")
-
-        except lambda_client.exceptions.ResourceNotFoundException:
-            print("No existing permissions found. Skipping.")
-
-        events.delete_rule(Name=rule_name)
-        print(f"Deleted EventBridge rule: {rule_name}")
+            print(f"Attempting to delete rule: {rule_name}")
+            events.delete_rule(Name=rule_name)
+            print(f"Deleted rule: {rule_name}")
+        except Exception as e:
+            print(f"Error deleting rule: {str(e)}")
+            return {
+                "statusCode": 500,
+                "body": json.dumps(f"Error deleting rule: {str(e)}")
+            }
 
         return {
             "statusCode": 200,
-            "body": json.dumps(
-                f"Bucket {bucket_name} deleted. EventBridge rule removed."
-            ),
+            "body": json.dumps(f"Bucket {bucket_name} deleted. EventBridge rule removed.")
         }
 
     except Exception as e:
-        return {"statusCode": 500, "body": json.dumps(f"Error: {str(e)}")}
+        print(f"General error: {str(e)}")
+        return {
+            "statusCode": 500,
+            "body": json.dumps(f"Error: {str(e)}")
+        }
