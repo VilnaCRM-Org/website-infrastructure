@@ -32,3 +32,9 @@ variable "build_projects" {
   description = "List of Names of the CodeBuild projects to be created"
   type        = map(any)
 }
+
+variable "build_timeout" {
+  description = "Timeout for the CodeBuild project"
+  type        = number
+  default     = 15
+}
