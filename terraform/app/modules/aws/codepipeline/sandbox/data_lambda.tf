@@ -55,7 +55,8 @@ data "aws_iam_policy_document" "s3_cleanup_function_policy" {
     effect = "Allow"
     actions = [
       "events:RemoveTargets",
-      "events:DeleteRule"
+      "events:DeleteRule",
+      "events:ListRules"
     ]
     resources = [
       "arn:aws:events:${data.aws_region.current.id}:${local.account_id}:rule/s3-cleanup-*"
