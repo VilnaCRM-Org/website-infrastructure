@@ -2,6 +2,7 @@ import json
 import boto3
 import time
 
+
 def lambda_handler(event, context):
     bucket_name = event.get("bucket_name")
 
@@ -34,7 +35,9 @@ def lambda_handler(event, context):
             print(f"Rule {rule_name} not found in EventBridge!")
             return {
                 "statusCode": 404,
-                "body": json.dumps(f"Rule {rule_name} not found. Maybe it was already deleted?")
+                "body": json.dumps(
+                    f"Rule {rule_name} not found. Maybe it was already deleted?"
+                ),
             }
 
         print(f"Fetching targets for rule: {rule_name}")
@@ -54,7 +57,7 @@ def lambda_handler(event, context):
                 print(f"Error removing targets from rule: {str(e)}")
                 return {
                     "statusCode": 500,
-                    "body": json.dumps(f"Error removing targets: {str(e)}")
+                    "body": json.dumps(f"Error removing targets: {str(e)}"),
                 }
         else:
             print(f"No targets found for rule: {rule_name}")
@@ -67,17 +70,16 @@ def lambda_handler(event, context):
             print(f"Error deleting rule: {str(e)}")
             return {
                 "statusCode": 500,
-                "body": json.dumps(f"Error deleting rule: {str(e)}")
+                "body": json.dumps(f"Error deleting rule: {str(e)}"),
             }
 
         return {
             "statusCode": 200,
-            "body": json.dumps(f"Bucket {bucket_name} deleted. EventBridge rule removed.")
+            "body": json.dumps(
+                f"Bucket {bucket_name} deleted. EventBridge rule removed."
+            ),
         }
 
     except Exception as e:
         print(f"General error: {str(e)}")
-        return {
-            "statusCode": 500,
-            "body": json.dumps(f"Error: {str(e)}")
-        }
+        return {"statusCode": 500, "body": json.dumps(f"Error: {str(e)}")}
