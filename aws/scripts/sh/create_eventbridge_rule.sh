@@ -15,7 +15,7 @@ bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
 rule_name="sandbox-cleanup-$bucket_name"
 region=${AWS_REGION:-$(aws configure get region)}
 
-start_time=$(date -u -d "+10 minutes" +"%M %H %d %m %Y")
+start_time=$(date -u -d "+7 days" +"%M %H %d %m %Y")
 minute=$(echo "$start_time" | awk '{print $1}')
 hour=$(echo "$start_time" | awk '{print $2}')
 day=$(echo "$start_time" | awk '{print $3}')
