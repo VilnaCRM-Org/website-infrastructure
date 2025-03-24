@@ -10,7 +10,6 @@ def lambda_handler(event, context):
 
     s3 = boto3.client("s3")
     events = boto3.client("events")
-    lambda_client = boto3.client("lambda")
 
     try:
         print(f"Listing objects in bucket: {bucket_name}")
