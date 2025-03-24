@@ -49,7 +49,7 @@ module "codepipeline_sandbox_deletion" {
 
   lambda_python_version                 = var.lambda_python_version
   lambda_reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
-  
+
   detect_changes = false
 
   stages = var.sandbox_deletion_stage_input
