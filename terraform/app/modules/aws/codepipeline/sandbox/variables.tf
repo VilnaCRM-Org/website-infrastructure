@@ -80,7 +80,7 @@ variable "notification_rule_suffix" {
 
 variable "path_to_lambdas" {
   type        = string
-  description = "ID of the logging bucket"
+  description = "Path to the lambdas folder"
   default     = "../../../../../../aws/lambda"
 }
 
