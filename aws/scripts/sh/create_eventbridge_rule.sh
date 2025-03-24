@@ -1,5 +1,5 @@
 #!/bin/bash
-set -o pipefail
+set -e
 
 if [ -z "$PROJECT_NAME" ]; then
   echo "Error: PROJECT_NAME environment variable is not set!"
@@ -15,12 +15,12 @@ bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
 rule_name="sandbox-cleanup-$bucket_name"
 region=${AWS_REGION:-$(aws configure get region)}
 
-start_time=$(date -u -d "+7 days" +"%M %H %d %m %Y")
+start_time=$(date -u -d "+10 minutes" +"%M %H %d %m %Y")
 minute=$(echo "$start_time" | awk '{print $1}')
 hour=$(echo "$start_time" | awk '{print $2}')
 day=$(echo "$start_time" | awk '{print $3}')
 month=$(echo "$start_time" | awk '{print $4}')
-year=$(echo "$start_time" | awk '{print $6}')
+year=$(echo "$start_time" | awk '{print $5}')
 
 cron_expr="cron($minute $hour $day $month ? $year)"  
 
@@ -70,14 +70,18 @@ existing_permission=$(aws lambda get-policy --function-name sandbox-cleanup-lamb
 if [ -z "$existing_permission" ]; then
   echo "🔒 Granting permission for EventBridge to invoke Lambda..."
   statement_id="AllowEventBridgeInvoke-${rule_name}-$(date +%s)"
-  aws lambda add-permission \
+  if ! aws lambda add-permission \
     --function-name sandbox-cleanup-lambda \
     --statement-id "$statement_id" \
     --action "lambda:InvokeFunction" \
     --principal events.amazonaws.com \
-    --source-arn "arn:aws:events:$region:$account_id:rule/$rule_name"
+    --source-arn "arn:aws:events:$region:$account_id:rule/$rule_name"; then
+    echo "Failed to grant permission for EventBridge to invoke Lambda."
+    exit 1
+  fi
+  echo "Permission granted for EventBridge to invoke Lambda."
 else
   echo "Lambda already has permission for EventBridge rule."
 fi
 
-echo "Ready! Lambda will be triggered automatically after 10 minutes."
+echo "Ready! Lambda will be triggered automatically after 7 days."
