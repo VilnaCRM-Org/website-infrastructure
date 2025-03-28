@@ -1,6 +1,5 @@
 import json
 import boto3
-import time
 
 
 def lambda_handler(event, context):
@@ -17,7 +16,7 @@ def lambda_handler(event, context):
         objects = s3.list_objects_v2(Bucket=bucket_name)
         if "Contents" in objects:
             delete_objects = {
-                "Objects": [{"Key": obj["Key"]} for obj in objects["Contents"]]
+                "Objects": [{"Key": obj["Key"]} for obj in objects["Contents"]],
             }
             s3.delete_objects(Bucket=bucket_name, Delete=delete_objects)
             print(f"Deleted objects from {bucket_name}")
@@ -36,7 +35,7 @@ def lambda_handler(event, context):
             return {
                 "statusCode": 404,
                 "body": json.dumps(
-                    f"Rule {rule_name} not found. Maybe it was already deleted?"
+                    f"Rule {rule_name} not found. Maybe it was already deleted?",
                 ),
             }
 
@@ -75,7 +74,7 @@ def lambda_handler(event, context):
         return {
             "statusCode": 200,
             "body": json.dumps(
-                f"Bucket {bucket_name} deleted. EventBridge rule removed."
+                f"Bucket {bucket_name} deleted. EventBridge rule removed.",
             ),
         }
 
