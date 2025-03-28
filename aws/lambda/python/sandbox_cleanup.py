@@ -52,7 +52,6 @@ def lambda_handler(event, context):
                 events.remove_targets(Rule=rule_name, Ids=target_ids)
                 print(f"Removed targets from rule: {rule_name}")
 
-                time.sleep(2)
             except Exception as e:
                 print(f"Error removing targets from rule: {str(e)}")
                 return {
