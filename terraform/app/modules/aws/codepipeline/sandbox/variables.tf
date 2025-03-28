@@ -77,3 +77,19 @@ variable "notification_rule_suffix" {
   type        = string
   description = "Suffix for the notification rule to ensure uniqueness"
 }
+
+variable "path_to_lambdas" {
+  type        = string
+  description = "Path to the lambdas folder"
+  default     = "../../../../../../aws/lambda"
+}
+
+variable "lambda_reserved_concurrent_executions" {
+  description = "Function-level concurrent execution Limit for Lambda"
+  type        = number
+}
+
+variable "lambda_python_version" {
+  description = "Python version for Lambda"
+  type        = string
+}

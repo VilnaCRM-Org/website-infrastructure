@@ -7,6 +7,8 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
   service_role = var.role_arn
   tags         = var.tags
 
+  build_timeout = var.build_timeout
+
   artifacts {
     type                = each.value.build_project_source
     packaging           = "NONE"

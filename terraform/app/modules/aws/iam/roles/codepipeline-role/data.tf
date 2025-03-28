@@ -275,11 +275,9 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:DeletePolicyVersion"
     ]
     resources = [
-      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-sns-policy",
-      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-s3-policy",
-      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-lambda-policy",
-      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-general-policy",
-      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-iam-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-*-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-ci-cd-infra-iam-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-ci-cd-infra-general-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.environment}-codepipeline-user-codepipeline-policy",
       "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/ci-cd-website-${var.environment}-oidc-codepipeline-policy",
       "arn:aws:iam::${local.account_id}:policy/WebsitePolicies/${var.environment}-website-user-dns-policy",
