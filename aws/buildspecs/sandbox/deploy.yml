@@ -54,7 +54,7 @@ phases:
         fi
       - "echo #### Build Project"
       - 'make build || { echo "Build failed"; exit 1; }'
-      - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
+      - "bash ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
       - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
       - "echo #### Create EventBridge Rule"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh"

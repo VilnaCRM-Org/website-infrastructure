@@ -8,7 +8,7 @@ phases:
           echo "Failed to set execution permissions"
           exit 1
         fi
-      - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
+      - "bash ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
       - echo "Starting sandbox deletion script..."
       - |
         if ! . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_deletion.sh; then
