@@ -2,7 +2,7 @@
 set -e
 
 # Convert BRANCH_NAME to lowercase and remove invalid characters
-sanitized_branch=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9.-]//g' | sed -E 's/^[.-]+|[.-]+$//g')
+sanitized_branch=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9.-]//g' | sed -E 's/^[.-]+|[.-]+$//g' | tr '.' '-')
 
 # If the sanitized branch name is longer than 60 characters, truncate it
 if [[ ${#sanitized_branch} -gt 60 ]]; then
