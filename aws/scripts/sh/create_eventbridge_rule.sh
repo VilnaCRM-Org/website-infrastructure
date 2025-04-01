@@ -12,7 +12,7 @@ if [ -z "$BRANCH_NAME" ]; then
 fi
 
 bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
-rule_name="sandbox-cleanup-$(echo "$bucket_name" | sed 's/\./-/g')"
+rule_name="sandbox-cleanup-$(echo "$bucket_name" | sed 's/\./-/g' | cut -c1-60)"
 region=${AWS_REGION:-$(aws configure get region)}
 
 start_time=$(date -u -d "+7 days" +"%M %H %d %m %Y")
