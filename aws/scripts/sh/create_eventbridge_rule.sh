@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 if [ -z "$PROJECT_NAME" ]; then
@@ -12,7 +12,7 @@ if [ -z "$BRANCH_NAME" ]; then
 fi
 
 bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
-rule_name="sandbox-cleanup-$bucket_name"
+rule_name="sandbox-cleanup-$(echo "$bucket_name" | sed 's/\./-/g' | cut -c1-44)"
 region=${AWS_REGION:-$(aws configure get region)}
 
 start_time=$(date -u -d "+7 days" +"%M %H %d %m %Y")
@@ -25,7 +25,7 @@ year=$(echo "$start_time" | awk '{print $5}')
 cron_expr="cron($minute $hour $day $month ? $year)"  
 
 # Generate a random number for the unique id in the target
-unique_id=$((RANDOM % 9000 + 1000))
+unique_id=$(awk 'BEGIN { srand(); print int(rand() * 9000) + 1000 }')
 
 echo "🔧 Creating or updating EventBridge rule for: $bucket_name"
 
