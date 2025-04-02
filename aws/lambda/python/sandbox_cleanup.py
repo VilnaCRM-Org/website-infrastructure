@@ -24,7 +24,8 @@ def lambda_handler(event, context):
         s3.delete_bucket(Bucket=bucket_name)
         print(f"Deleted bucket: {bucket_name}")
 
-        rule_name = f"sandbox-cleanup-{bucket_name}"
+        sanitized_bucket_name = bucket_name.replace(".", "-")[:44]
+        rule_name = f"sandbox-cleanup-{sanitized_bucket_name}"
 
         print("Fetching all available rules...")
         rules = events.list_rules()

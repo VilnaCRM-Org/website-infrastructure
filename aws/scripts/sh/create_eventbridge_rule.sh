@@ -25,7 +25,7 @@ year=$(echo "$start_time" | awk '{print $5}')
 cron_expr="cron($minute $hour $day $month ? $year)"  
 
 # Generate a random number for the unique id in the target
-unique_id=$((RANDOM % 9000 + 1000))
+unique_id=$(awk 'BEGIN { srand(); print int(rand() * 9000) + 1000 }')
 
 echo "🔧 Creating or updating EventBridge rule for: $bucket_name"
 
