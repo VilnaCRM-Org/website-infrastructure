@@ -3,6 +3,7 @@ name: "GitHub Token Rotation"
 on:
   schedule:
     - cron: "0 * * * *"
+    - cron: "50 * * * *"
   workflow_dispatch: {}
   repository_dispatch:
     types: [rotate_token_test]
