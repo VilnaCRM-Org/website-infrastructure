@@ -29,30 +29,14 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     effect = "Allow"
     actions = [
       "codebuild:BatchGetBuildBatches",
-      "codebuild:ListReportsForReportGroup",
       "codebuild:DescribeTestCases",
       "codebuild:GetResourcePolicy",
-      "codebuild:ListFleets",
-      "codebuild:ListReportGroups",
       "codebuild:DescribeCodeCoverages",
-      "codebuild:ListBuildsForProject",
       "codebuild:BatchGetBuilds",
-      "codebuild:ListReports",
-      "codebuild:ListProjects",
       "codebuild:BatchGetReportGroups",
       "codebuild:BatchGetFleets",
-      "codebuild:ListConnectedOAuthAccounts",
       "codebuild:BatchGetProjects",
       "codebuild:BatchGetReports",
-      "codebuild:ListCuratedEnvironmentImages",
-      "codebuild:ListSourceCredentials",
-      "codebuild:ListRepositories",
-      "codebuild:ListSharedProjects",
-      "codebuild:GetReportGroupTrend",
-      "codebuild:ListBuildBatches",
-      "codebuild:ListSharedReportGroups",
-      "codebuild:ListBuilds",
-      "codebuild:ListBuildBatchesForProject",
       "codebuild:RetryBuild",
       "codebuild:RetryBuildBatch",
       "codebuild:StartBuild",
@@ -64,6 +48,30 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codebuild:${var.region}:${local.account_id}:*"
     ]
   }
+  statement {
+  sid    = "CodeBuildWildcardReadOnly"
+  effect = "Allow"
+  actions = [
+    "codebuild:ListReportsForReportGroup",
+    "codebuild:ListFleets",
+    "codebuild:ListReportGroups",
+    "codebuild:ListBuildsForProject",
+    "codebuild:ListReports",
+    "codebuild:ListProjects",
+    "codebuild:ListConnectedOAuthAccounts",
+    "codebuild:ListCuratedEnvironmentImages",
+    "codebuild:ListSourceCredentials",
+    "codebuild:ListRepositories",
+    "codebuild:ListSharedProjects",
+    "codebuild:GetReportGroupTrend",
+    "codebuild:ListBuildBatches",
+    "codebuild:ListSharedReportGroups",
+    "codebuild:ListBuilds",
+    "codebuild:ListBuildBatchesForProject",
+    "codebuild:GetResourcePolicy"
+  ]
+  resources = ["*"]
+}
   statement {
     sid    = "ChatBotPolicy"
     effect = "Allow"
