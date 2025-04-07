@@ -49,29 +49,29 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     ]
   }
   statement {
-  sid    = "CodeBuildWildcardReadOnly"
-  effect = "Allow"
-  actions = [
-    "codebuild:ListReportsForReportGroup",
-    "codebuild:ListFleets",
-    "codebuild:ListReportGroups",
-    "codebuild:ListBuildsForProject",
-    "codebuild:ListReports",
-    "codebuild:ListProjects",
-    "codebuild:ListConnectedOAuthAccounts",
-    "codebuild:ListCuratedEnvironmentImages",
-    "codebuild:ListSourceCredentials",
-    "codebuild:ListRepositories",
-    "codebuild:ListSharedProjects",
-    "codebuild:GetReportGroupTrend",
-    "codebuild:ListBuildBatches",
-    "codebuild:ListSharedReportGroups",
-    "codebuild:ListBuilds",
-    "codebuild:ListBuildBatchesForProject",
-    "codebuild:GetResourcePolicy"
-  ]
-  resources = ["*"]
-}
+    sid    = "CodeBuildWildcardReadOnly"
+    effect = "Allow"
+    actions = [
+      "codebuild:ListReportsForReportGroup",
+      "codebuild:ListFleets",
+      "codebuild:ListReportGroups",
+      "codebuild:ListBuildsForProject",
+      "codebuild:ListReports",
+      "codebuild:ListProjects",
+      "codebuild:ListConnectedOAuthAccounts",
+      "codebuild:ListCuratedEnvironmentImages",
+      "codebuild:ListSourceCredentials",
+      "codebuild:ListRepositories",
+      "codebuild:ListSharedProjects",
+      "codebuild:GetReportGroupTrend",
+      "codebuild:ListBuildBatches",
+      "codebuild:ListSharedReportGroups",
+      "codebuild:ListBuilds",
+      "codebuild:ListBuildBatchesForProject",
+      "codebuild:GetResourcePolicy"
+    ]
+    resources = ["*"]
+  }
   statement {
     sid    = "ChatBotPolicy"
     effect = "Allow"
