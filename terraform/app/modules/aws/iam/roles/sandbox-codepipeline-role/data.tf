@@ -141,7 +141,8 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "events:PutTargets",
       "events:RemoveTargets",
       "events:DeleteRule",
-      "events:DescribeRule"
+      "events:DescribeRule",
+      "events:ListTargetsByRule"
     ]
     resources = [
       "arn:aws:events:${data.aws_region.current.id}:${local.account_id}:event-bus/default",
@@ -161,7 +162,8 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     sid    = "AllowAddLambdaPermission"
     effect = "Allow"
     actions = [
-      "lambda:AddPermission"
+      "lambda:AddPermission",
+      "lambda:GetPolicy"
     ]
     resources = ["arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:sandbox-cleanup-lambda"]
   }

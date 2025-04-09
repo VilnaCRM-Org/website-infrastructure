@@ -50,7 +50,16 @@ fi
 
 account_id=$(aws sts get-caller-identity --query "Account" --output text)
 
-# Add target (Lambda) to the rule
+# 💣 Clean up old targets first to avoid hitting the limit
+existing_targets=$(aws events list-targets-by-rule --rule "$rule_name" --query "Targets[].Id" --output text)
+if [ -n "$existing_targets" ]; then
+  echo "Removing existing targets to avoid hitting target limit..."
+  # shellcheck disable=SC2086 # Intentionally unquoted to split multiple target IDs into separate CLI args
+  set -- $existing_targets
+  aws events remove-targets --rule "$rule_name" --ids "$@"
+fi
+
+# ✅ Add new target
 aws events put-targets \
   --rule "$rule_name" \
   --targets "[{
