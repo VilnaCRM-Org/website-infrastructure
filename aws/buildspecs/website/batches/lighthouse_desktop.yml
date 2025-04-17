@@ -1,29 +1,26 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      nodejs: $NODEJS_VERSION
-      python: $PYTHON_VERSION
-
+  pre_build:
     commands:
-      - "apt update -y"
-      - "apt install -y libxss1 libappindicator3-1 libindicator7 fonts-liberation libdbus-1-3"
-      - "wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
-      - "apt install -y ./google-chrome*.deb"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
-      - "cd /codebuild-user/website"
-      - "npm install -g @lhci/cli@0.13.x"
-      - "echo #### Owner Change"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
+      - echo "Run docker daemon"
+      - dockerd-entrypoint.sh &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+
+      - echo "Check Docker Compose existence"
+      - docker-compose --version || (echo "Docker Compose is missing!" && exit 1)
+
+      - echo "cd to website folder"
+      - cd /codebuild-user/website
 
   build:
-    run-as: "codebuild-user"
+    run-as: codebuild-user
     commands:
-      - "echo #### Set up environment"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - "echo #### Test LightHouse Desktop"
-      - "export LHCI_DESKTOP_RUN=true && make lighthouse-desktop"
+      - echo "Running Lighthouse Desktop tests"
+      - export LHCI_DESKTOP_RUN=true
+      - export CI=1
+      - make lighthouse-desktop
+
     finally:
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'

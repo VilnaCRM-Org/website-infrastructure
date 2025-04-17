@@ -37,6 +37,15 @@ locals {
     build_project_source                = var.codebuild_environment.default_build_project_source
     privileged_mode                     = false
   }
+
+  ecr_based_build = {
+    builder_compute_type                = var.codebuild_environment.default_builder_compute_type
+    builder_image                       = var.codebuild_environment.ecr_builder_image
+    builder_type                        = var.codebuild_environment.default_builder_type
+    builder_image_pull_credentials_type = var.codebuild_environment.default_builder_image_pull_credentials_type
+    build_project_source                = var.codebuild_environment.default_build_project_source
+    privileged_mode                     = false
+  }
 }
 
 locals {
@@ -203,7 +212,7 @@ locals {
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_pw_load.yml" })
 
-    batch_lhci_leak = merge(local.ubuntu_based_build,
+    batch_lhci_leak = merge(local.ecr_based_build,
       { env_variables = {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
