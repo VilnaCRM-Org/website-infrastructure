@@ -7,8 +7,9 @@ phases:
       - dockerd-entrypoint.sh &
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
 
-      - echo "Check Docker Compose existence"
-      - docker-compose --version || (echo "Docker Compose is missing!" && exit 1)
+      - echo "Check Docker Compose availability"
+      - (docker compose version || docker-compose --version) || \
+        (echo "Docker Compose is missing! Install the Compose plugin or legacy CLI." && exit 1)
 
       - echo "cd to website folder"
       - cd /codebuild-user/website
