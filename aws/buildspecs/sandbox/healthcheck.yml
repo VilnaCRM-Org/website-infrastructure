@@ -9,17 +9,22 @@ env:
 phases:
   install:
     commands:
-      - "echo 'Installing GitHub CLI (gh)...'"
-      - "curl -fsSL https://cli.github.com/packages/rpm/gh-cli.repo | sudo tee /etc/yum.repos.d/gh-cli.repo"
-      - "sudo yum install -y gh"
-      - "gh --version"
-      - "echo 'Installing Hurl...'"
-      - "yum install -y pkgconfig gcc openssl-devel libxml2-devel"
-      - "curl https://sh.rustup.rs -sSf | sh -s -- -y"
-      - "source $HOME/.cargo/env"
-      - "rustc --version"
-      - "cargo --version"
-      - "cargo install hurl"
+      - echo 'Installing GitHub CLI (gh)...'
+      - curl -fsSL https://cli.github.com/packages/rpm/gh-cli.repo | sudo tee /etc/yum.repos.d/gh-cli.repo
+      - sudo yum install -y gh
+      - gh --version
+      - echo 'Installing dependencies for Hurl...'
+      - yum groupinstall -y "Development Tools"
+      - yum install -y pkgconfig gcc openssl-devel libxml2-devel clang llvm llvm-devel cmake
+      - echo 'Installing Rust...'
+      - curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - source $HOME/.cargo/env
+      - rustc --version
+      - cargo --version
+      - echo 'Setting LIBCLANG_PATH...'
+      - export LIBCLANG_PATH=/usr/lib64
+      - echo 'Installing Hurl via cargo...'
+      - cargo install hurl
 
   build:
     commands:

@@ -9,11 +9,13 @@ env:
 phases:
   install:
     commands:
-      - "yum install -y pkgconfig gcc openssl-devel libxml2-devel"
+      - "yum groupinstall -y 'Development Tools'"
+      - "yum install -y pkgconfig gcc openssl-devel libxml2-devel clang llvm llvm-devel cmake"
       - "curl https://sh.rustup.rs -sSf | sh -s -- -y"
       - "source $HOME/.cargo/env"
       - "rustc --version"
       - "cargo --version"
+      - "export LIBCLANG_PATH=/usr/lib64"
       - "cargo install hurl"
   build:
     commands:
