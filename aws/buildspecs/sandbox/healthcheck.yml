@@ -14,7 +14,7 @@ phases:
       - "sudo yum install -y gh"
       - "gh --version"
       - "echo 'Installing Hurl...'"
-      - "dnf install -y pkg-config gcc openssl-devel libxml2-devel"
+      - "yum install -y pkgconfig gcc openssl-devel libxml2-devel"
       - "curl https://sh.rustup.rs -sSf | sh -s -- -y"
       - "source $HOME/.cargo/env"
       - "rustc --version"
