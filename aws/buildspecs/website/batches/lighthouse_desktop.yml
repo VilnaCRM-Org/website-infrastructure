@@ -19,7 +19,6 @@ phases:
     commands:
       - echo "Running Lighthouse Desktop tests"
       - export LHCI_DESKTOP_RUN=true
-      - export CI=1
       - make lighthouse-desktop
 
     finally:
