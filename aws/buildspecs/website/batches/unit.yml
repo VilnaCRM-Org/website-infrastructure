@@ -8,7 +8,7 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
 
       - echo "cd to website folder"
-      - cd /codebuild-user/website
+      - cd /$CODEBUILD_SRC_DIR/website
 
   build:
     run-as: codebuild-user
