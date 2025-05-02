@@ -7,10 +7,15 @@ env:
 phases:
   pre_build:
     commands:
-      - echo "Checking Docker status"
-      - docker info || (echo "Docker daemon not available. Please check configuration." && exit 1)
+      - echo "Skip docker daemon startup — already running"
+
+      - echo "Prepare working directory"
+      - mkdir -p /codebuild-user/website
+      - cp -r $CODEBUILD_SRC_DIR/* /codebuild-user/website/
+
       - echo "cd to website folder"
-      - cd /codebuild-user/website || exit 1
+      - cd /codebuild-user/website
+
 
   build:
     run-as: codebuild-user
