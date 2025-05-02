@@ -7,8 +7,12 @@ phases:
       - dockerd-entrypoint.sh &
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
 
+      - echo "Prepare working directory"
+      - mkdir -p /codebuild-user/website
+      - cp -r $CODEBUILD_SRC_DIR/* /codebuild-user/website/
+
       - echo "cd to website folder"
-      - cd /$CODEBUILD_SRC_DIR/website
+      - cd /codebuild-user/website
 
   build:
     run-as: codebuild-user
@@ -16,11 +20,16 @@ phases:
       - echo "Running Mutation Test"
       - export MUTATION_RUN=true
       - make test-mutation
-      - mv /codebuild-user/website/reports/mutation/mutation.html /codebuild-user/website/reports/mutation/index.html
+      - mv /codebuild-user/website/reports/mutation/mutation.html /codebuild-user/website/reports/mutation/index.html || true
 
     finally:
       - python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py
-      - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
+      - |
+        aws lambda invoke \
+          --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" \
+          --cli-binary-format raw-in-base64-out \
+          --payload file://payload.json \
+          output.txt
 
 artifacts:
   files:
