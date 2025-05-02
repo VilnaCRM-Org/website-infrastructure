@@ -16,7 +16,6 @@ phases:
       - echo "cd to website folder"
       - cd /codebuild-user/website
 
-
   build:
     run-as: codebuild-user
     commands:
