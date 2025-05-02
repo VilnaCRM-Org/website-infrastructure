@@ -1,26 +1,24 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      nodejs: $NODEJS_VERSION
-      python: $PYTHON_VERSION
+  pre_build:
     commands:
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
-      - "cd /codebuild-user/website"
-      - "echo #### Owner Change"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
+      - echo "Run docker daemon"
+      - dockerd-entrypoint.sh &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+
+      - echo "cd to website folder"
+      - cd /codebuild-user/website
 
   build:
-    run-as: "codebuild-user"
+    run-as: codebuild-user
     commands:
-      - "echo #### Set up environment"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - "echo #### Running Unit Test" # Reports folder: coverage/lcov-report/
-      - "export UNIT_RUN=true && make test-unit"
+      - echo "Running Unit Tests"
+      - export UNIT_RUN=true
+      - make test-unit-all
 
     finally:
-      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
+      - python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py
       - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
 
 artifacts:
