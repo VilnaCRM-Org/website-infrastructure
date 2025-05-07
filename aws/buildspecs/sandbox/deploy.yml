@@ -1,5 +1,7 @@
 version: 0.2
 
+privileged: true
+
 phases:
   install:
     runtime-versions:
@@ -58,3 +60,7 @@ phases:
       - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
       - "echo #### Create EventBridge Rule"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh"
+
+artifacts:
+  files:
+    - out/**/*
