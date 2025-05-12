@@ -20,4 +20,4 @@ phases:
 
 artifacts:
   files:
-    - "${CODEBUILD_SRC_DIR}/website/coverage/**/*"
+    - website/coverage/**/*

@@ -2,8 +2,9 @@
 echo #### Install Software
 n install "${NODEJS_VERSION:?Node.js version is not set}"
 n "${NODEJS_VERSION:?Node.js version is not set}"
-git clone -b "$WEBSITE_GIT_REPOSITORY_BRANCH" "$WEBSITE_GIT_REPOSITORY_LINK.git" /codebuild-user/website
-cd /codebuild-user/website/ || {
+mkdir -p $CODEBUILD_SRC_DIR/website
+git clone -b "$WEBSITE_GIT_REPOSITORY_BRANCH" "$WEBSITE_GIT_REPOSITORY_LINK.git" $CODEBUILD_SRC_DIR/website
+cd $CODEBUILD_SRC_DIR/website/ || {
     echo "Error: Failed to change directory to website folder" >&2
     exit 1
 }

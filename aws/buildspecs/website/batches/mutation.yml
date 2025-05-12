@@ -13,8 +13,6 @@ phases:
       - "echo #### Set up environment"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - echo "Running Mutation Test"
-      - "export DOCKER_CONFIG=$HOME/.docker"
-      - "mkdir -p $DOCKER_CONFIG"
       - make test-mutation || { echo "Mutation test failed"; exit 1; }
       - "mv ${CODEBUILD_SRC_DIR}/website/reports/mutation/mutation.html ${CODEBUILD_SRC_DIR}/website/reports/mutation/index.html"
 
