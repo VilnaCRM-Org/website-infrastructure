@@ -35,7 +35,7 @@ locals {
     builder_type                        = var.codebuild_environment.default_builder_type
     builder_image_pull_credentials_type = var.codebuild_environment.default_builder_image_pull_credentials_type
     build_project_source                = var.codebuild_environment.default_build_project_source
-    privileged_mode                     = true
+    privileged_mode                     = false
   }
 
   ecr_based_build = {
@@ -278,7 +278,7 @@ locals {
       },
     { buildspec = "./aws/buildspecs/${var.sandbox_buildspecs}/up.yml" })
 
-    deploy = merge(local.ubuntu_based_build,
+    deploy = merge(local.ecr_based_build,
       {
         env_variables = merge(
           local.common_sandbox_env_variables,
