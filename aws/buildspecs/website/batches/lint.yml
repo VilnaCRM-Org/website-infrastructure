@@ -10,12 +10,12 @@ phases:
   build:
     run-as: "codebuild-user"
     commands:
-      - 'mkdir -p "${CODEBUILD_SRC_DIR}/website/lint-logs"'
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/website/lint-logs"
       - "echo #### Running Lint"
-      - "make lint-next 2>&1 | tee lint-logs/next.log"
-      - "make lint-tsc | tee lint-logs/tsc.log"
-      - "make lint-md | tee lint-logs/md.log"
+      - "make lint-next 2>&1 | tee ${CODEBUILD_SRC_DIR}/website/lint-logs/next.log"
+      - "make lint-tsc | tee ${CODEBUILD_SRC_DIR}/website/lint-logs/tsc.log"
+      - "make lint-md | tee ${CODEBUILD_SRC_DIR}/website/lint-logs/md.log"
 
 artifacts:
   files:
-    - "${CODEBUILD_SRC_DIR}/website/lint-logs/**/*"
+    - website/lint-logs/**/*
