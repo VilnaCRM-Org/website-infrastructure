@@ -2,10 +2,9 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      nodejs: $NODEJS_VERSION
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
+      - "cd ${CODEBUILD_SRC_DIR}/website"
       - "echo #### Owner Change"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
 

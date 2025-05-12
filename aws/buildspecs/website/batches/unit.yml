@@ -1,21 +1,24 @@
 version: 0.2
 
 phases:
-  build:
-    run-as: codebuild-user
+  install:
     commands:
-      - echo "Running Unit Tests"
-      - make test-unit-all || echo "No unit test target to run"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
+      - "cd ${CODEBUILD_SRC_DIR}/website"
+      - "echo #### Owner Change"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
+
+  build:
+    run-as: "codebuild-user"
+    commands:
+      - "echo #### Set up environment"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
+      - "make test-unit-all"
 
     finally:
-      - echo "Running reports script"
-      - python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py || echo "Report script failed but build will continue"
-      - |
-        aws lambda invoke \
-          --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" \
-          --cli-binary-format raw-in-base64-out \
-          --payload file://payload.json output.txt || echo "Lambda notification failed"
+      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
+      - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
 
 artifacts:
   files:
-    - "${CODEBUILD_SRC_DIR}/coverage/**/*"
+    - "website/coverage/**/*"
