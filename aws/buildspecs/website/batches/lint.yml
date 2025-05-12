@@ -10,7 +10,7 @@ phases:
   build:
     run-as: "codebuild-user"
     commands:
-      - "mkdir -p \"${CODEBUILD_SRC_DIR}/website/lint-logs\""
+      - 'mkdir -p "${CODEBUILD_SRC_DIR}/website/lint-logs"'
       - "echo #### Running Lint"
       - "make lint-next 2>&1 | tee lint-logs/next.log"
       - "make lint-tsc | tee lint-logs/tsc.log"
