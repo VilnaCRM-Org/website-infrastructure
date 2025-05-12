@@ -59,6 +59,8 @@ phases:
       - cd $WEBSITE_DIR
       - 'make build-out || { echo "Build failed"; exit 1; }'
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
+      - find ${CODEBUILD_SRC_DIR} -type d -name "out"
+      - find ${WEBSITE_DIR} -type d -name "out"
       - 'aws s3 sync out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
       - "echo #### Create EventBridge Rule"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh"
