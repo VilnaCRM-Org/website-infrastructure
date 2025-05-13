@@ -178,7 +178,7 @@ def main():
     tests = []
     reports = []
 
-    repository_dir = "/codebuild-user/website"
+    repository_dir = os.path.join(os.environ["CODEBUILD_SRC_DIR"], "website")
 
     test_configs = {
         "LHCI_DESKTOP_RUN": (

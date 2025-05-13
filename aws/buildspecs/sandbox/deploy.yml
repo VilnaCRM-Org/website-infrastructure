@@ -1,5 +1,7 @@
 version: 0.2
 
+privileged: true
+
 phases:
   install:
     runtime-versions:
@@ -53,8 +55,25 @@ phases:
           exit 1
         fi
       - "echo #### Build Project"
-      - 'make build || { echo "Build failed"; exit 1; }'
+      - export WEBSITE_DIR=${WEBSITE_DIR:-/codebuild-user/website}
+      - cd $WEBSITE_DIR
+      - 'make build-out || { echo "Build failed"; exit 1; }'
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
-      - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
+      - find ${CODEBUILD_SRC_DIR} -type d -name "out"
+      - find ${WEBSITE_DIR} -type d -name "out"|
+      - echo "=== Root directory ==="
+      - ls -alh /
+      - echo "=== Current working directory ==="
+      - pwd
+      - ls -alh .
+      - echo "=== CODEBUILD_SRC_DIR (${CODEBUILD_SRC_DIR}) ==="
+      - ls -alh ${CODEBUILD_SRC_DIR}
+      - echo "=== WEBSITE_DIR (${WEBSITE_DIR}) ==="
+      - ls -alh ${WEBSITE_DIR}
+      - 'aws s3 sync out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
       - "echo #### Create EventBridge Rule"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh"
+
+artifacts:
+  files:
+    - "**/*"

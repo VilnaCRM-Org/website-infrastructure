@@ -2,12 +2,8 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      nodejs: $NODEJS_VERSION
-      python: $PYTHON_VERSION
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
-      - "cd /codebuild-user/website"
       - "echo #### Owner Change"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
 
@@ -16,8 +12,7 @@ phases:
     commands:
       - "echo #### Set up environment"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - "echo #### Running Unit Test" # Reports folder: coverage/lcov-report/
-      - "export UNIT_RUN=true && make test-unit"
+      - "make test-unit-all"
 
     finally:
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
@@ -25,12 +20,4 @@ phases:
 
 artifacts:
   files:
-    - "/codebuild-user/website/coverage/**/*"
-
-cache:
-  paths:
-    - "/bin"
-    - "/usr/local/bin"
-    - "/codebuild-user/website/node_modules"
-    - "/root/.cache"
-    - "/usr/local/bundle"
+    - website/coverage/**/*
