@@ -15,15 +15,8 @@ phases:
       - echo "Running Mutation Test"
       - make test-mutation || { echo "Mutation test failed"; exit 1; }
       - "mv ${CODEBUILD_SRC_DIR}/website/reports/mutation/mutation.html ${CODEBUILD_SRC_DIR}/website/reports/mutation/index.html"
-
     finally:
-      - python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py
-      - |
-        aws lambda invoke \
-          --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" \
-          --cli-binary-format raw-in-base64-out \
-          --payload file://payload.json \
-          output.txt
+      - "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:

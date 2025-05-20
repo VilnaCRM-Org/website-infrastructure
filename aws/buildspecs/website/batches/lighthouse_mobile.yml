@@ -1,38 +1,23 @@
 version: 0.2
 
 phases:
-  pre_build:
+  install:
     commands:
-      - echo "Run docker daemon"
-      - dockerd-entrypoint.sh &
-      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
-
-      - echo "Check Docker Compose availability"
-      - (docker compose version || docker-compose --version) || \
-        (echo "Docker Compose is missing! Install the Compose plugin or legacy CLI." && exit 1)
-
-      - echo "cd to website folder"
-      - cd /codebuild-user/website
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
+      - "cd ${CODEBUILD_SRC_DIR}/website"
+      - "echo #### Owner Change"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
 
   build:
-    run-as: codebuild-user
+    run-as: "codebuild-user"
     commands:
-      - echo "Running Lighthouse Mobile tests"
-      - export LHCI_MOBILE_RUN=true
-      - make lighthouse-mobile
-
+      - "echo #### Set up environment"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
+      - "echo #### Test LightHouse Mobile"
+      - "make lighthouse-mobile"
     finally:
-      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
-      - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
+      - "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:
-    - "/codebuild-user/website/lhci-reports-mobile/**/*"
-
-cache:
-  paths:
-    - "/bin"
-    - "/usr/local/bin"
-    - "/codebuild-user/website/node_modules"
-    - "/root/.cache"
-    - "/usr/local/bundle"
+    - "${CODEBUILD_SRC_DIR}/website/lhci-reports-mobile/**/*"
