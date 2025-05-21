@@ -15,7 +15,14 @@ bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
 rule_name="sandbox-cleanup-$(echo "$bucket_name" | sed 's/\./-/g' | cut -c1-44)"
 region=${AWS_REGION:-$(aws configure get region)}
 
-start_time=$(date -u -d "+7 days" +"%M %H %d %m %Y")
+# Calculate date 7 days from now using Alpine-compatible date command
+# Get current date in seconds since epoch
+current_time=$(date -u +%s)
+# Add 7 days in seconds (7 days * 24 hours * 60 minutes * 60 seconds)
+future_time=$((current_time + 7*24*60*60))
+# Convert back to date format
+start_time=$(date -u -d "@$future_time" +"%M %H %d %m %Y" 2>/dev/null || date -u -r "$future_time" +"%M %H %d %m %Y")
+
 minute=$(echo "$start_time" | awk '{print $1}')
 hour=$(echo "$start_time" | awk '{print $2}')
 day=$(echo "$start_time" | awk '{print $3}')
