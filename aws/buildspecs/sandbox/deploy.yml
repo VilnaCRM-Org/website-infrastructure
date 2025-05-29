@@ -15,12 +15,15 @@ phases:
           echo "Error: Required environment variable PR_NUMBER is not set or empty."
           exit 1
         fi
-      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/sandbox_installation.sh"
-      - "cd ${WEBSITE_DIR:-/codebuild-user/website}"
-      - "sudo apt update"
-      - 'sudo apt install gh -y || { echo "Failed to install GitHub CLI"; exit 1; }'
+      - apk add --no-cache docker-cli docker-compose bash git make nodejs npm curl unzip jq aws-cli tar github-cli
+      - npm install -g n
+      - n 23.10.0
+      - echo "Starting Docker daemon..."
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+      - timeout 15 sh -c "until docker info; do echo 'Waiting for Docker to start...'; sleep 1; done"
+      - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_installation.sh"
+      - echo "Retrieving and using GitHub token for authentication..."
       - |
-        echo "Retrieving and using GitHub token for authentication..."
         SECRET_ID=$(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'github-token-') && DeletedDate==null].Name" --output text)
         if [ -z "$SECRET_ID" ]; then
           echo "Error: No active GitHub token secret found."
@@ -53,8 +56,23 @@ phases:
           exit 1
         fi
       - "echo #### Build Project"
-      - 'make build || { echo "Build failed"; exit 1; }'
+      - export WEBSITE_DIR=${WEBSITE_DIR:-/codebuild-user/website}
+      - cd "$WEBSITE_DIR"
+      - echo "=== Building Docker image ==="
+      - docker build -t next-build -f Dockerfile --target build .
+      - echo "=== Creating temporary container ==="
+      - container_id=$(docker create next-build)
+      - echo "=== Copying artifacts from container ==="
+      - docker cp "$container_id":/app/out ./out
+      - echo "=== Cleaning up container ==="
+      - docker rm "$container_id"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
-      - 'aws s3 sync ./out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
+      - echo "=== Verifying build output ==="
+      - ls -la ./out
+      - 'aws s3 sync out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
       - "echo #### Create EventBridge Rule"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh"
+
+artifacts:
+  files:
+    - "**/*"
