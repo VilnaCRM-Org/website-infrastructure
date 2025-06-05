@@ -2,7 +2,6 @@
 
 # GitHub Authentication Script
 # This script handles GitHub CLI authentication using AWS Secrets Manager
-# Usage: source gh_auth_login.sh [exit_on_failure]
 
 set -e
 
