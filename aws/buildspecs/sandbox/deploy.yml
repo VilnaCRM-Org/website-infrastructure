@@ -73,6 +73,34 @@ phases:
       - "echo #### Create EventBridge Rule"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh"
 
+  post_build:
+    commands:
+      - |
+        echo "Post-build phase: Checking if build failed to post comment..."
+
+        if [ "$CODEBUILD_BUILD_SUCCEEDING" != "1" ]; then
+          # Get GitHub token for authentication
+          SECRET_ID=$(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'github-token-') && DeletedDate==null].Name" --output text)
+          if [ -z "$SECRET_ID" ]; then
+            echo "Error: No active GitHub token secret found for post-build comment."
+          else
+            aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token
+
+            COMMENT_BODY="❌ Sandbox Deployment Failed
+            The deployment to the sandbox environment has failed.
+            Please review the CodeBuild logs and try again. 🔧"
+            
+            # Post the comment to the PR
+            if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
+              echo "Failed to add failure comment to PR, but not failing the build for this."
+            else
+              echo "Successfully posted build failure comment to PR #$PR_NUMBER"
+            fi
+          fi
+        else
+          echo "Build succeeded - no failure comment needed."
+        fi
+
 artifacts:
   files:
     - "**/*"
