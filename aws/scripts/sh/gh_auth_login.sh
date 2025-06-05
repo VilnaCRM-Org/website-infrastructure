@@ -16,7 +16,6 @@ echo "Retrieving GitHub token for authentication..."
 
 # Configure git to handle CodeBuild environment ownership issues
 git config --global --add safe.directory "${CODEBUILD_SRC_DIR}" 2>/dev/null || true
-git config --global --add safe.directory "*" 2>/dev/null || true
 
 # Get the GitHub token secret ID
 SECRET_ID=$(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'github-token-') && DeletedDate==null].Name" --output text)
@@ -27,20 +26,20 @@ if [ -z "$SECRET_ID" ]; then
     exit 1
   else
     echo "Continuing without GitHub authentication..."
-    return 1
+    exit 1
   fi
 fi
 
 # Retrieve and use the token for GitHub CLI authentication
 if aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token; then
   echo "GitHub authentication successful."
-  return 0
+  exit 0
 else
   echo "GitHub authentication failed."
   if [ "$EXIT_ON_FAILURE" = "true" ]; then
     exit 1
   else
     echo "Continuing without GitHub authentication..."
-    return 1
+    exit 1
   fi
 fi 
