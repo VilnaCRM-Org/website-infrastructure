@@ -72,7 +72,7 @@ phases:
           echo "Health check failed. Adding comment to PR..."
 
           # Use the GitHub authentication script
-          . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh
+          . "${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh"
 
           COMMENT_BODY=":x: Health check failed for the sandbox bucket.
           Please check the CodeBuild logs for detailed error information."

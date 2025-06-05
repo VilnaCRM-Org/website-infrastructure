@@ -16,7 +16,7 @@ echo "Retrieving GitHub token for authentication..."
 
 # Configure git to handle CodeBuild environment ownership issues
 git config --global --add safe.directory /codebuild/output/srcDownload/src 2>/dev/null || true
-git config --global --add safe.directory ${CODEBUILD_SRC_DIR} 2>/dev/null || true
+git config --global --add safe.directory "${CODEBUILD_SRC_DIR}" 2>/dev/null || true
 git config --global --add safe.directory "*" 2>/dev/null || true
 
 # Get the GitHub token secret ID
