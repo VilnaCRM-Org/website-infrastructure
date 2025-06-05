@@ -22,17 +22,7 @@ phases:
       - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
       - timeout 15 sh -c "until docker info; do echo 'Waiting for Docker to start...'; sleep 1; done"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_installation.sh"
-      - echo "Retrieving and using GitHub token for authentication..."
-      - |
-        SECRET_ID=$(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'github-token-') && DeletedDate==null].Name" --output text)
-        if [ -z "$SECRET_ID" ]; then
-          echo "Error: No active GitHub token secret found."
-          exit 1
-        fi
-        aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
-          echo "GitHub authentication failed"
-          exit 1
-        }
+      - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh"
 
   build:
     commands:
@@ -40,16 +30,7 @@ phases:
         COMMENT_BODY="The deployment process for the sandbox has started.
         Please wait until the latest version is ready"
 
-        SECRET_ID=$(aws secretsmanager list-secrets --query 'SecretList[?starts_with(Name, `github-token-`) && DeletedDate==null].Name' --output text)
-        if [ -z "$SECRET_ID" ]; then
-          echo "Error: No active GitHub token secret found."
-          exit 1
-        fi
-
-        aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
-          echo "GitHub authentication failed"
-          exit 1
-        }
+        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh
 
         if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
           echo "Failed to add comment to PR"
@@ -72,6 +53,29 @@ phases:
       - 'aws s3 sync out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
       - "echo #### Create EventBridge Rule"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh"
+
+  post_build:
+    commands:
+      - |
+        echo "Post-build phase: Checking if build failed to post comment..."
+
+        if [ "$CODEBUILD_BUILD_SUCCEEDING" != "1" ]; then
+          # Use the GitHub auth script with non-exit behavior for post-build
+          if . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh false; then
+            COMMENT_BODY="❌ Sandbox Deployment Failed"$'\n'"The deployment to the sandbox environment has failed."$'\n'"Please review the CodeBuild logs and try again. 🔧"
+
+            # Post the comment to the PR
+            if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
+              echo "Failed to add failure comment to PR, but not failing the build for this."
+            else
+              echo "Successfully posted build failure comment to PR #$PR_NUMBER"
+            fi
+          else
+            echo "GitHub authentication failed - skipping failure comment."
+          fi
+        else
+          echo "Build succeeded - no failure comment needed."
+        fi
 
 artifacts:
   files:
