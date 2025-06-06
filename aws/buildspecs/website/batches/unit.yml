@@ -10,7 +10,6 @@ phases:
       - "echo #### Set up environment"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - "cd ${CODEBUILD_SRC_DIR}/website"
-      - "pnpm install --frozen-lockfile"
       - "DIND=1 make test-unit-all"
     finally:
       - "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
