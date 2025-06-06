@@ -11,7 +11,7 @@ phases:
       - "echo #### Set up environment"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - "echo #### Running E2E Test" # Reports folder: playwright-e2e-reports/
-      - "make test-e2e"
+      - "DIND=1 make test-e2e"
     finally:
       - "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
