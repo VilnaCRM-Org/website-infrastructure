@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/k6_installation.sh"
+      - "export DIND=1 && . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/k6_installation.sh"
       - "cd ${CODEBUILD_SRC_DIR}/website"
 
   build:
@@ -12,7 +12,7 @@ phases:
       - "echo #### Set up environment"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - "echo #### Running Load Test" # Reports folder: src/test/load/results/
-      - "make load-tests"
+      - "DIND=1 make load-tests"
     finally:
       - "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 

@@ -35,11 +35,6 @@ npm install -g pnpm || {
 
 echo #### Applying true DinD modifications for CodeBuild environment
 
-# Backup original files
-cp Makefile Makefile.backup
-cp docker-compose.yml docker-compose.yml.backup
-cp docker-compose.test.yml docker-compose.test.yml.backup
-
 # Add DIND variable
 if ! grep -q "DIND" Makefile; then
     sed -i '/^CI[[:space:]]*?= 0$/a DIND                        ?= 0' Makefile
@@ -67,8 +62,7 @@ sed -i '/^  prod:$/a \    container_name: website-prod' docker-compose.test.yml
 sed -i '/^  playwright:$/a \    container_name: website-playwright' docker-compose.test.yml
 sed -i '/^  apollo:$/a \    container_name: website-apollo' docker-compose.test.yml
 sed -i '/^  mockoon:$/a \    container_name: website-mockoon' docker-compose.test.yml
-
-# Add networks section to all test services
+sed -i '/^  k6:$/a \    container_name: website-k6' docker-compose.test.yml
 sed -i '/^    healthcheck:$/i \    networks:\n      - website-network' docker-compose.test.yml
 
 # Add networks section at the end of test compose file
@@ -137,6 +131,12 @@ sed -i '/^test-visual-ui:/,/^[a-zA-Z][a-zA-Z-]*:/{
 
 sed -i '/^test-visual-update:/,/^[a-zA-Z][a-zA-Z-]*:/{
     /^test-visual-update:/d
+    /^[a-zA-Z][a-zA-Z-]*:/!d
+}' Makefile
+
+# Remove existing load-tests target if it exists
+sed -i '/^load-tests:/,/^[a-zA-Z][a-zA-Z-]*:/{
+    /^load-tests:/d
     /^[a-zA-Z][a-zA-Z-]*:/!d
 }' Makefile
 
@@ -725,5 +725,173 @@ ifeq ($(DIND), 1)
 	@echo "🎉 Visual snapshots updated successfully in true DinD mode!"
 else
 	$(playwright-test) $(TEST_DIR_VISUAL) --update-snapshots
+endif
+
+lighthouse-desktop: ## Run a Lighthouse audit using desktop viewport settings to evaluate performance and best practices
+ifeq ($(DIND), 1)
+	@echo "🐳 Running Lighthouse Desktop audit in true Docker-in-Docker mode"
+	@echo "Setting up Docker network..."
+	make setup-dind-network
+	@echo "Building production environment for lighthouse..."
+	$(DOCKER_COMPOSE) $(COMMON_HEALTHCHECKS_FILE) $(DOCKER_COMPOSE_TEST_FILE) build
+	@echo "📝 Creating temporary docker-compose override with memory settings for Chrome..."
+	@printf 'services:\n  prod:\n    mem_limit: 2g\n    mem_reservation: 1g\n    shm_size: 2gb\n' > docker-compose.memory-override.yml
+	@echo "🚀 Starting production services with increased memory..."
+	$(DOCKER_COMPOSE) $(COMMON_HEALTHCHECKS_FILE) $(DOCKER_COMPOSE_TEST_FILE) -f docker-compose.memory-override.yml up -d
+	@rm -f docker-compose.memory-override.yml
+	@echo "⏳ Waiting for production services to be ready..."
+	@for i in $$(seq 1 60); do \
+		if docker ps --filter "name=website-prod" --filter "status=running" --format "{{.Names}}" | grep -q "website-prod"; then \
+			if docker exec website-prod sh -c "curl -f http://localhost:$(NEXT_PUBLIC_PROD_PORT) >/dev/null 2>&1"; then \
+				echo "✅ Production service is ready on port $(NEXT_PUBLIC_PROD_PORT)!"; \
+				break; \
+			fi; \
+		fi; \
+		echo "Attempt $$i: Production service not ready yet..."; \
+		sleep 3; \
+		if [ $$i -eq 60 ]; then \
+			echo "❌ Production service failed to start within 180 seconds"; \
+			exit 1; \
+		fi; \
+	done
+	@echo "📦 Installing Chrome and Lighthouse CLI in container..."
+	@if docker exec website-prod sh -c "apk add --no-cache chromium chromium-chromedriver && npm install -g @lhci/cli@0.14.0"; then \
+		echo "✅ Chrome and Lighthouse CLI installed successfully"; \
+	else \
+		echo "❌ Failed to install Chrome and Lighthouse CLI"; \
+		exit 1; \
+	fi
+	@echo "📂 Copying Lighthouse config files..."
+	@if docker cp lighthouserc.desktop.js website-prod:/app/; then \
+		echo "✅ Lighthouse config files copied successfully"; \
+	else \
+		echo "❌ Failed to copy Lighthouse config files"; \
+		exit 1; \
+	fi
+	@echo "🧪 Testing Chrome installation..."
+	@if docker exec website-prod /usr/bin/chromium-browser --version; then \
+		echo "✅ Chrome is installed and working"; \
+	else \
+		echo "❌ Chrome installation test failed"; \
+		exit 1; \
+	fi
+	@echo "🧪 Testing Chrome headless mode..."
+	@if docker exec website-prod timeout 10 /usr/bin/chromium-browser --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --virtual-time-budget=1000 --dump-dom http://localhost:$(NEXT_PUBLIC_PROD_PORT); then \
+		echo "✅ Chrome headless mode works"; \
+	else \
+		echo "❌ Chrome headless mode failed"; \
+	fi
+	@echo "🏃 Running Lighthouse Desktop audit..."
+	@if docker exec -w /app website-prod lhci autorun --config=lighthouserc.desktop.js --collect.url=http://localhost:$(NEXT_PUBLIC_PROD_PORT) --collect.chromePath=/usr/bin/chromium-browser --collect.chromeFlags="--no-sandbox --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding"; then \
+		echo "✅ Lighthouse Desktop audit PASSED"; \
+	else \
+		echo "❌ Lighthouse Desktop audit FAILED"; \
+		docker logs website-prod --tail 30; \
+		exit 1; \
+	fi
+	@echo "📂 Copying lighthouse results..."
+	@mkdir -p lhci-reports-desktop
+	@docker cp website-prod:/app/lhci-reports-desktop/. lhci-reports-desktop/ 2>/dev/null || echo "No lighthouse desktop results to copy"
+	@echo "🎉 Lighthouse Desktop audit completed successfully in true DinD mode!"
+else
+	$(LHCI_DESKTOP)
+endif
+
+lighthouse-mobile: ## Run a Lighthouse audit using mobile viewport settings to evaluate mobile UX and performance  
+ifeq ($(DIND), 1)
+	@echo "🐳 Running Lighthouse Mobile audit in true Docker-in-Docker mode"
+	@echo "Setting up Docker network..."
+	make setup-dind-network
+	@echo "Building production environment for lighthouse..."
+	$(DOCKER_COMPOSE) $(COMMON_HEALTHCHECKS_FILE) $(DOCKER_COMPOSE_TEST_FILE) build
+	@echo "📝 Creating temporary docker-compose override with memory settings for Chrome..."
+	@printf 'services:\n  prod:\n    mem_limit: 2g\n    mem_reservation: 1g\n    shm_size: 2gb\n' > docker-compose.memory-override.yml
+	@echo "🚀 Starting production services with increased memory..."
+	$(DOCKER_COMPOSE) $(COMMON_HEALTHCHECKS_FILE) $(DOCKER_COMPOSE_TEST_FILE) -f docker-compose.memory-override.yml up -d
+	@rm -f docker-compose.memory-override.yml
+	@echo "⏳ Waiting for production services to be ready..."
+	@for i in $$(seq 1 60); do \
+		if docker ps --filter "name=website-prod" --filter "status=running" --format "{{.Names}}" | grep -q "website-prod"; then \
+			if docker exec website-prod sh -c "curl -f http://localhost:$(NEXT_PUBLIC_PROD_PORT) >/dev/null 2>&1"; then \
+				echo "✅ Production service is ready on port $(NEXT_PUBLIC_PROD_PORT)!"; \
+				break; \
+			fi; \
+		fi; \
+		echo "Attempt $$i: Production service not ready yet..."; \
+		sleep 3; \
+		if [ $$i -eq 60 ]; then \
+			echo "❌ Production service failed to start within 180 seconds"; \
+			exit 1; \
+		fi; \
+	done
+	@echo "📦 Installing Chrome and Lighthouse CLI in container..."
+	@if docker exec website-prod sh -c "apk add --no-cache chromium chromium-chromedriver && npm install -g @lhci/cli@0.14.0"; then \
+		echo "✅ Chrome and Lighthouse CLI installed successfully"; \
+	else \
+		echo "❌ Failed to install Chrome and Lighthouse CLI"; \
+		exit 1; \
+	fi
+	@echo "📂 Copying Lighthouse config files..."
+	@if docker cp lighthouserc.mobile.js website-prod:/app/; then \
+		echo "✅ Lighthouse config files copied successfully"; \
+	else \
+		echo "❌ Failed to copy Lighthouse config files"; \
+		exit 1; \
+	fi
+	@echo "🏃 Running Lighthouse Mobile audit..."
+	@if docker exec -w /app website-prod lhci autorun --config=lighthouserc.mobile.js --collect.url=http://localhost:$(NEXT_PUBLIC_PROD_PORT) --collect.chromePath=/usr/bin/chromium-browser --collect.chromeFlags="--no-sandbox --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding"; then \
+		echo "✅ Lighthouse Mobile audit PASSED"; \
+	else \
+		echo "❌ Lighthouse Mobile audit FAILED"; \
+		docker logs website-prod --tail 30; \
+		exit 1; \
+	fi
+	@echo "📂 Copying lighthouse results..."
+	@mkdir -p lhci-reports-mobile
+	@docker cp website-prod:/app/lhci-reports-mobile/. lhci-reports-mobile/ 2>/dev/null || echo "No lighthouse mobile results to copy"
+	@echo "🎉 Lighthouse Mobile audit completed successfully in true DinD mode!"
+else
+	$(LHCI_MOBILE)
+endif
+
+load-tests: start-prod wait-for-prod-health ## This command executes load tests using K6 library in DinD mode
+ifeq ($(DIND), 1)
+	@echo "🐳 Running Load tests in true Docker-in-Docker mode"
+	@echo "Setting up Docker network..."
+	make setup-dind-network
+	@echo "Building k6 container image..."
+	$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_TEST_FILE) --profile load build k6
+	@echo "🧹 Cleaning up any existing k6 containers..."
+	@docker rm -f website-k6-temp 2>/dev/null || true
+	@echo "📂 Creating results directory..."
+	@mkdir -p src/test/load/results
+	@echo "🛠️ Starting k6 container in background for file operations..."
+	@docker run -d --name website-k6-temp --network website-network --entrypoint=/bin/sh website-k6 -c "while true; do sleep 60; done"
+	@echo "📂 Copying load test files into k6 container..."
+	@if docker cp src/test/load/. website-k6-temp:/loadTests/; then \
+		echo "✅ Load test files copied successfully"; \
+	else \
+		echo "❌ Failed to copy load test files"; \
+		docker rm -f website-k6-temp; \
+		exit 1; \
+	fi
+	@echo "📂 Verifying load test files..."
+	@docker exec website-k6-temp /bin/sh -c "ls -la /loadTests/ && head -5 /loadTests/homepage.js"
+	@echo "🚀 Running K6 load tests..."
+	@if docker exec -w /loadTests website-k6-temp /bin/k6 run --summary-trend-stats='avg,min,med,max,p(95),p(99)' --out 'web-dashboard=period=1s&export=/loadTests/results/homepage.html' homepage.js; then \
+		echo "✅ Load tests PASSED"; \
+	else \
+		echo "❌ Load tests FAILED"; \
+		docker logs website-k6-temp --tail 30; \
+		docker rm -f website-k6-temp; \
+		exit 1; \
+	fi
+	@echo "📂 Copying load test results back..."
+	@docker cp website-k6-temp:/loadTests/results/. src/test/load/results/ 2>/dev/null || echo "No load test results to copy"
+	@echo "🧹 Cleaning up k6 container..."
+	@docker rm -f website-k6-temp
+	@echo "🎉 Load tests completed successfully in true DinD mode!"
+else
+	$(LOAD_TESTS_RUN)
 endif
 EOF
