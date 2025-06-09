@@ -24,7 +24,6 @@ phases:
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_installation.sh"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh"
 
-
   build:
     commands:
       - |
