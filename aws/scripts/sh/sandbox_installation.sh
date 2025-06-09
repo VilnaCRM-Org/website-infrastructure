@@ -14,4 +14,3 @@ cd /codebuild-user/website/ || exit 1
 
 echo #### Install pnpm
 npm install -g pnpm || { echo "Error: Failed to install pnpm" >&2; exit 1; }
-

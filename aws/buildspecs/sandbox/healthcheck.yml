@@ -41,6 +41,14 @@ phases:
           echo "Error: Required environment variable PROJECT_NAME is not set or empty."
           exit 1
         fi
+        if [ -z "${PR_NUMBER}" ]; then
+          echo "Error: Required environment variable PR_NUMBER is not set or empty."
+          exit 1
+        fi
+        if [ -z "${GITHUB_REPOSITORY}" ]; then
+          echo "Error: Required environment variable GITHUB_REPOSITORY is not set or empty."
+          exit 1
+        fi
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
       - |
         echo "## Preparing Health Check for S3 Bucket..."
@@ -63,17 +71,8 @@ phases:
           "$HURL_FILE_PATH"; then
           echo "Health check failed. Adding comment to PR..."
 
-        SECRET_ID=$(aws secretsmanager list-secrets --query 'SecretList[?starts_with(Name, `github-token-`) && DeletedDate==null].Name' --output text)
-        if [ -z "$SECRET_ID" ]; then
-          echo "Error: No active GitHub token secret found."
-          exit 1
-        fi
-
-          echo "Retrieving and using GitHub token for authentication..."
-          aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token || {
-            echo "GitHub authentication failed"
-            exit 1
-          }
+          # Use the GitHub authentication script
+          . "${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh"
 
           COMMENT_BODY=":x: Health check failed for the sandbox bucket.
           Please check the CodeBuild logs for detailed error information."
