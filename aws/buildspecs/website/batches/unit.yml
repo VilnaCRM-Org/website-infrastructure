@@ -1,5 +1,13 @@
 version: 0.2
 
+env:
+  variables:
+    ACCOUNT_ID: $ACCOUNT_ID
+    ENVIRONMENT: $ENVIRONMENT
+    TEST_REPORTS_BUCKET: $TEST_REPORTS_BUCKET
+    LHCI_REPORTS_BUCKET: $LHCI_REPORTS_BUCKET
+    WEBSITE_GIT_REPOSITORY_LINK: $WEBSITE_GIT_REPOSITORY_LINK
+
 phases:
   install:
     commands:
@@ -12,8 +20,8 @@ phases:
       - "cd ${CODEBUILD_SRC_DIR}/website"
       - "DIND=1 make test-unit-all"
     finally:
-      - "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:
-    - website/coverage/**/*
+    - "${CODEBUILD_SRC_DIR}/website/**/*"
