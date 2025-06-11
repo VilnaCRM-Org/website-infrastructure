@@ -8,6 +8,8 @@ apk add --no-cache \
     npm \
     make \
     sed \
+    docker-cli \
+    docker-compose \
     || {
         echo "Error: Failed to install required packages" >&2
         exit 1
@@ -32,6 +34,10 @@ npm install -g pnpm || {
     echo "Error: Failed to install pnpm" >&2
     exit 1
 }
+
+echo #### Starting Docker daemon...
+nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+timeout 15 sh -c 'until docker info; do echo \"Waiting for Docker to start...\"; sleep 1; done'
 
 echo #### Applying true DinD modifications for CodeBuild environment
 
@@ -74,71 +80,10 @@ networks:
     name: website-network
 EOF
 
-# Remove existing test-unit-all target
-sed -i '/^test-unit-all:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^test-unit-all:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-# Remove existing test-mutation target if it exists
-sed -i '/^test-mutation:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^test-mutation:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-# Remove existing lint targets if they exist
-sed -i '/^lint-next:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^lint-next:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-sed -i '/^lint-tsc:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^lint-tsc:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-sed -i '/^lint-md:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^lint-md:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-# Remove existing E2E test targets if they exist
-sed -i '/^test-e2e:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^test-e2e:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-sed -i '/^start-prod:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^start-prod:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-sed -i '/^wait-for-prod:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^wait-for-prod:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-# Remove existing visual test targets if they exist
-sed -i '/^test-visual:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^test-visual:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-sed -i '/^test-visual-ui:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^test-visual-ui:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-sed -i '/^test-visual-update:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^test-visual-update:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
-
-# Remove existing load-tests target if it exists
-sed -i '/^load-tests:/,/^[a-zA-Z][a-zA-Z-]*:/{
-    /^load-tests:/d
-    /^[a-zA-Z][a-zA-Z-]*:/!d
-}' Makefile
+# Remove existing tests targets
+for t in test-unit-all test-mutation lint-next lint-tsc lint-md test-e2e start-prod wait-for-prod test-visual test-visual-ui test-visual-update load-tests; do
+  sed -i "/^${t}:/,/^[a-zA-Z][a-zA-Z-]*:/d" Makefile
+done
 
 # Add true DinD-aware targets
 cat >> Makefile << 'EOF'
