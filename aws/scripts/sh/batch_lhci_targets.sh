@@ -7,8 +7,9 @@ set -e
 
 echo "#### Adding lighthouse and memory leak test targets to Makefile"
 
-# Add Memory Leak Test Target
-cat >> Makefile << 'MEMORY_LEAK_TARGET'
+# Add all targets to Makefile using grouped redirects
+{
+cat << 'MEMORY_LEAK_TARGET'
 
 test-memory-leak: ## Execute memory leak tests in true DinD mode using Memlab
 ifeq ($(DIND), 1)
@@ -86,8 +87,7 @@ endif
 
 MEMORY_LEAK_TARGET
 
-# Add Lighthouse Desktop Target
-cat >> Makefile << 'LIGHTHOUSE_DESKTOP_TARGET'
+cat << 'LIGHTHOUSE_DESKTOP_TARGET'
 
 lighthouse-desktop: ## Run a Lighthouse audit using desktop viewport settings to evaluate performance and best practices
 ifeq ($(DIND), 1)
@@ -161,8 +161,7 @@ endif
 
 LIGHTHOUSE_DESKTOP_TARGET
 
-# Add Lighthouse Mobile Target
-cat >> Makefile << 'LIGHTHOUSE_MOBILE_TARGET'
+cat << 'LIGHTHOUSE_MOBILE_TARGET'
 
 lighthouse-mobile: ## Run a Lighthouse audit using mobile viewport settings to evaluate mobile UX and performance  
 ifeq ($(DIND), 1)
@@ -205,6 +204,19 @@ ifeq ($(DIND), 1)
 		echo "❌ Failed to copy Lighthouse config files"; \
 		exit 1; \
 	fi
+	@echo "🧪 Testing Chrome installation..."
+	@if docker exec website-prod /usr/bin/chromium-browser --version; then \
+		echo "✅ Chrome is installed and working"; \
+	else \
+		echo "❌ Chrome installation test failed"; \
+		exit 1; \
+	fi
+	@echo "🧪 Testing Chrome headless mode..."
+	@if docker exec website-prod timeout 10 /usr/bin/chromium-browser --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --virtual-time-budget=1000 --dump-dom http://localhost:$(NEXT_PUBLIC_PROD_PORT); then \
+		echo "✅ Chrome headless mode works"; \
+	else \
+		echo "❌ Chrome headless mode failed"; \
+	fi
 	@echo "🏃 Running Lighthouse Mobile audit..."
 	@if docker exec -w /app website-prod lhci autorun --config=lighthouserc.mobile.js --collect.url=http://localhost:$(NEXT_PUBLIC_PROD_PORT) --collect.chromePath=/usr/bin/chromium-browser --collect.chromeFlags="--no-sandbox --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding"; then \
 		echo "✅ Lighthouse Mobile audit PASSED"; \
@@ -222,5 +234,6 @@ else
 endif
 
 LIGHTHOUSE_MOBILE_TARGET
+} >> Makefile
 
 echo "✅ Lighthouse and memory leak test targets added successfully" 
