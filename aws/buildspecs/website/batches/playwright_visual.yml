@@ -11,7 +11,13 @@ env:
 phases:
   install:
     commands:
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/install_packages.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/configure_dind.sh"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_makefile_targets.sh"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/add_prod_targets.sh"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/batch_pw_load_targets.sh"
       - "cd ${CODEBUILD_SRC_DIR}/website"
 
   build:
@@ -25,4 +31,4 @@ phases:
 
 artifacts:
   files:
-    - "${CODEBUILD_SRC_DIR}/website/playwright-visual-reports/**/*"
+    - "website/playwright-visual-reports/**/*"
