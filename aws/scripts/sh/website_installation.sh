@@ -46,6 +46,13 @@ if ! grep -q "DIND" Makefile; then
     sed -i '/^CI[[:space:]]*?= 0$/a DIND                        ?= 0' Makefile
 fi
 
+# Modify Dockerfile to use latest package versions
+echo "#### Modifying Dockerfile to use latest package versions..."
+sed -i 's/python3=3.12.10-r1/python3/g' Dockerfile
+sed -i 's/make=4.4.1-r2/make/g' Dockerfile
+sed -i 's/g++=14.2.0-r4/g++/g' Dockerfile
+sed -i 's/curl=8.12.1-r1/curl/g' Dockerfile
+
 # Modify docker-compose.yml for true DinD networking
 # Add container name for dev service
 sed -i '/^  dev:$/a \    container_name: website-dev' docker-compose.yml
