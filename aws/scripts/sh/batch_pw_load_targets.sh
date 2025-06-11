@@ -7,8 +7,9 @@ set -e
 
 echo "#### Adding Playwright and load test targets to Makefile"
 
-# Add E2E Test Target
-cat >> Makefile << 'E2E_TARGET'
+# Add all targets to Makefile using grouped redirects
+{
+cat << 'E2E_TARGET'
 
 test-e2e: start-prod ## Start production and run E2E tests (Playwright)
 ifeq ($(DIND), 1)
@@ -50,8 +51,7 @@ endif
 
 E2E_TARGET
 
-# Add Visual Test Targets
-cat >> Makefile << 'VISUAL_TARGETS'
+cat << 'VISUAL_TARGETS'
 
 test-visual: start-prod ## Start production and run visual tests (Playwright)
 ifeq ($(DIND), 1)
@@ -163,8 +163,7 @@ endif
 
 VISUAL_TARGETS
 
-# Add Load Test Target
-cat >> Makefile << 'LOAD_TARGET'
+cat << 'LOAD_TARGET'
 
 load-tests: start-prod wait-for-prod-health ## This command executes load tests using K6 library in DinD mode
 ifeq ($(DIND), 1)
@@ -198,15 +197,18 @@ ifeq ($(DIND), 1)
 		docker rm -f website-k6-temp; \
 		exit 1; \
 	fi
-	@echo "📂 Copying load test results back..."
+	@echo "📂 Copying K6 load test results..."
+	@mkdir -p src/test/load/results
 	@docker cp website-k6-temp:/loadTests/results/. src/test/load/results/ 2>/dev/null || echo "No load test results to copy"
-	@echo "🧹 Cleaning up k6 container..."
+	@echo "🧹 Cleaning up K6 container..."
 	@docker rm -f website-k6-temp
 	@echo "🎉 Load tests completed successfully in true DinD mode!"
+	@echo "📊 Summary: K6 load testing completed with performance metrics"
 else
-	$(LOAD_TESTS_RUN)
+	$(LOAD_TEST_CMD)
 endif
 
 LOAD_TARGET
+} >> Makefile
 
 echo "✅ Playwright and load test targets added successfully" 

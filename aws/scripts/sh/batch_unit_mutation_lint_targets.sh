@@ -7,8 +7,9 @@ set -e
 
 echo "#### Adding unit, mutation, and lint test targets to Makefile"
 
-# Add Unit Test Target
-cat >> Makefile << 'UNIT_TEST_TARGET'
+# Add all targets to Makefile using grouped redirects
+{
+cat << 'UNIT_TEST_TARGET'
 
 test-unit-all: ## Execute all unit tests in true DinD mode
 ifeq ($(DIND), 1)
@@ -68,8 +69,7 @@ endif
 
 UNIT_TEST_TARGET
 
-# Add Mutation Test Target
-cat >> Makefile << 'MUTATION_TARGET'
+cat << 'MUTATION_TARGET'
 
 test-mutation: build ## Run mutation tests using Stryker in true DinD mode
 ifeq ($(DIND), 1)
@@ -145,8 +145,7 @@ endif
 
 MUTATION_TARGET
 
-# Add Lint Targets
-cat >> Makefile << 'LINT_TARGETS'
+cat << 'LINT_TARGETS'
 
 lint-next: ## This command executes ESLint
 ifeq ($(DIND), 1)
@@ -201,7 +200,7 @@ ifeq ($(DIND), 1)
 	$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_DEV_FILE) build dev
 	@echo "🧹 Cleaning up any existing containers..."
 	@docker rm -f website-dev-lint-tsc 2>/dev/null || true
-	@echo "🛠️ Starting container for TypeScript checking..."
+	@echo "🛠️ Starting container for TypeScript linting..."
 	docker run -d --name website-dev-lint-tsc --network website-network website-dev tail -f /dev/null
 	@echo "📂 Copying source files into container..."
 	@if docker cp . website-dev-lint-tsc:/app/; then \
@@ -221,7 +220,7 @@ ifeq ($(DIND), 1)
 		exit 1; \
 	fi
 	@echo "🔍 Running TypeScript check..."
-	@if docker exec website-dev-lint-tsc sh -c "cd /app && ./node_modules/.bin/tsc"; then \
+	@if docker exec website-dev-lint-tsc sh -c "cd /app && ./node_modules/.bin/tsc --noEmit"; then \
 		echo "✅ TypeScript check PASSED"; \
 	else \
 		echo "❌ TypeScript check FAILED"; \
@@ -229,16 +228,16 @@ ifeq ($(DIND), 1)
 		docker rm -f website-dev-lint-tsc; \
 		exit 1; \
 	fi
-	@echo "🧹 Cleaning up lint container..."
+	@echo "🧹 Cleaning up TypeScript lint container..."
 	@docker rm -f website-dev-lint-tsc
 	@echo "🎉 TypeScript check completed successfully in true DinD mode!"
 else
-	$(PNPM_EXEC) $(TS_BIN)
+	$(TSC_CMD)
 endif
 
-lint-md: ## This command executes Markdown linter
+lint-md: ## This command executes markdownlint for .md files
 ifeq ($(DIND), 1)
-	@echo "🐳 Running Markdown lint in true Docker-in-Docker mode"
+	@echo "🐳 Running Markdown linting in true Docker-in-Docker mode"
 	@echo "Setting up Docker network..."
 	make setup-dind-network
 	@echo "Building container image..."
@@ -264,22 +263,23 @@ ifeq ($(DIND), 1)
 		docker rm -f website-dev-lint-md; \
 		exit 1; \
 	fi
-	@echo "🔍 Running Markdown lint..."
-	@if docker exec website-dev-lint-md sh -c "cd /app && ./node_modules/.bin/markdownlint -i CHANGELOG.md -i \"test-results/**/*.md\" -i \"playwright-report/data/**/*.md\" \"**/*.md\""; then \
-		echo "✅ Markdown lint PASSED"; \
+	@echo "🔍 Running Markdown linting..."
+	@if docker exec website-dev-lint-md sh -c "cd /app && npx markdownlint-cli2 '**/*.md' '#node_modules' '#.next'"; then \
+		echo "✅ Markdown linting PASSED"; \
 	else \
-		echo "❌ Markdown lint FAILED"; \
+		echo "❌ Markdown linting FAILED"; \
 		docker logs website-dev-lint-md --tail 30; \
 		docker rm -f website-dev-lint-md; \
 		exit 1; \
 	fi
-	@echo "🧹 Cleaning up lint container..."
+	@echo "🧹 Cleaning up Markdown lint container..."
 	@docker rm -f website-dev-lint-md
-	@echo "🎉 Markdown lint completed successfully in true DinD mode!"
+	@echo "🎉 Markdown linting completed successfully in true DinD mode!"
 else
-	$(MARKDOWNLINT_BIN) $(MD_LINT_ARGS) "**/*.md"
+	$(MARKDOWNLINT_CMD)
 endif
 
 LINT_TARGETS
+} >> Makefile
 
 echo "✅ Unit, mutation, and lint test targets added successfully" 
