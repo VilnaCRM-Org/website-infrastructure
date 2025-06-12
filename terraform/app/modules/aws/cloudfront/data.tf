@@ -24,7 +24,6 @@ data "aws_iam_policy_document" "cloudwatch_alarm_sns_topic_doc" {
         "${aws_cloudwatch_metric_alarm.cloudfront_staging_500_errors.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_staging_origin_latency.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_requests_anomaly_detection.arn}",
-        "${aws_cloudwatch_metric_alarm.wafv2_allowed_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_blocked_requests_anomaly_detection.arn}",
         "${aws_cloudwatch_metric_alarm.wafv2_country_blocked_requests.arn}",
         "${aws_cloudwatch_metric_alarm.cloudfront_requests_flood_alarm.arn}",

@@ -136,7 +136,6 @@ data "aws_iam_policy_document" "cloudfront_policy_doc" {
       "cloudwatch:DeleteAlarms"
     ]
     resources = [
-      "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-allowed-requests-anomaly-detection",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-blocked-requests-anomaly-detection",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-country-blocked-requests",
       "arn:aws:cloudwatch:us-east-1:${local.account_id}:alarm:${var.project_name}-wafv2-high-rate-blocked-requests",
