@@ -53,6 +53,7 @@ codebuild-local-set-up: ## Setting up CodeBuild Agent for testing buildspecs loc
 	@$(CHMOD) +x codebuild_build.sh || \
 		{ echo "Failed to set executable permissions" >&2; $(RM) -f codebuild_build.sh; exit 1; }
 
+
 codebuild-run: ## Running CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'
 	./codebuild_build.sh -i $(image) -d -a codebuild_artifacts -b $(buildspec) -e .env -m
 
