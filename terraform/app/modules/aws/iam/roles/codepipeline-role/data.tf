@@ -333,6 +333,7 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:ListPolicyVersions",
       "iam:CreatePolicyVersion",
       "iam:TagPolicy",
+      "iam:DeletePolicyVersion"
     ]
     resources = local.policy_arns
   }
