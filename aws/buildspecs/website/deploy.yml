@@ -20,7 +20,7 @@ phases:
       - echo "=== Cleaning up container ==="
       - docker rm "$container_id"
       - "echo #### Deploy Project"
-      - "echo #### Turn Of Alarm Actions"
+      - "echo #### Turn Off Alarm Actions"
       - "aws cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/deploy_content.py"
       - "echo #### Invalidate CloudFront Cache"
