@@ -12,8 +12,3 @@ npm install -g pnpm || {
     echo "Error: Failed to install pnpm" >&2
     exit 1
 }
-echo #### Install dependencies
-make install || {
-    echo "Error: Failed to install dependencies" >&2
-    exit 1
-}

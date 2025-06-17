@@ -136,6 +136,9 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
       "cloudfront:ListTagsForResource",
       "cloudfront:UpdateDistribution",
       "cloudfront:TagResource",
+      "cloudfront:CreateInvalidation",
+      "cloudfront:GetInvalidation",
+      "cloudfront:ListInvalidations"
     ]
     resources = [
       "arn:aws:cloudfront::${local.account_id}:distribution/*"
