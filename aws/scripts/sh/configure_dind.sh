@@ -20,12 +20,24 @@ sed -i '/^  dev:$/a \    container_name: website-dev' docker-compose.yml
 sed -i '/^    volumes:$/i \    networks:\n      - website-network' docker-compose.yml
 
 # Modify docker-compose.test.yml for true DinD networking
-# Add container names and networks for test services
-sed -i '/^  prod:$/a \    container_name: website-prod' docker-compose.test.yml
-sed -i '/^  playwright:$/a \    container_name: website-playwright' docker-compose.test.yml
-sed -i '/^  apollo:$/a \    container_name: website-apollo' docker-compose.test.yml
-sed -i '/^  mockoon:$/a \    container_name: website-mockoon' docker-compose.test.yml
-sed -i '/^  k6:$/a \    container_name: website-k6' docker-compose.test.yml
-sed -i '/^    healthcheck:$/i \    networks:\n      - website-network' docker-compose.test.yml
+# Define services that need container names and networks
+services="prod playwright apollo mockoon k6"
+
+for service in $services; do
+    # Add container name if not already present
+    if ! grep -q "container_name: website-$service" docker-compose.test.yml; then
+        sed -i "/^  $service:$/a \\    container_name: website-$service" docker-compose.test.yml
+    fi
+    
+    # Add networks section if not already present for this service
+    if ! sed -n "/^  $service:/,/^  [a-zA-Z]/p" docker-compose.test.yml | grep -q "networks:"; then
+        # Find the appropriate place to insert networks (before volumes, ports, environment, healthcheck, or depends_on)
+        sed -i "/^  $service:/,/^  [a-zA-Z]/ {
+            /^    \(volumes\|ports\|environment\|healthcheck\|depends_on\):/i \\    networks:\\n      - website-network
+            t
+            /^  [a-zA-Z]/i \\    networks:\\n      - website-network
+        }" docker-compose.test.yml
+    fi
+done
 
 echo "✅ DinD configuration completed successfully" 
