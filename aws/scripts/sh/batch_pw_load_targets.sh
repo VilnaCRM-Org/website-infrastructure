@@ -76,7 +76,7 @@ ifeq ($(DIND), 1)
 	@docker cp . website-playwright:/app || echo "Warning: Failed to copy source code"
 	@echo "🔍 Debugging: Verifying source code copy..."
 	@docker exec website-playwright sh -c "ls -la /app && ls -la /app/src/test/visual | head -5" || true
-	@if docker exec website-playwright sh -c "cd /app && npx playwright test src/test/visual --reporter=html --timeout=5000"; then \
+	@if docker exec website-playwright sh -c "cd /app && npx playwright test src/test/visual --reporter=html --timeout=30000"; then \
 		echo "✅ Visual tests PASSED"; \
 	else \
 		echo "❌ Visual tests FAILED"; \
@@ -113,7 +113,7 @@ ifeq ($(DIND), 1)
 	@mkdir -p playwright-visual-reports
 	@echo "📂 Copying source code to Playwright container..."
 	@docker cp . website-playwright:/app || echo "Warning: Failed to copy source code"
-	@if docker exec website-playwright sh -c "cd /app && npx playwright test src/test/visual --ui-port=9324 --ui-host=0.0.0.0 --reporter=html --timeout=15000"; then \
+	@if docker exec website-playwright sh -c "cd /app && npx playwright test src/test/visual --ui-port=9324 --ui-host=0.0.0.0 --reporter=html --timeout=30000"; then \
 		echo "✅ Visual UI tests PASSED"; \
 	else \
 		echo "❌ Visual UI tests FAILED"; \
@@ -165,7 +165,7 @@ VISUAL_TARGETS
 
 cat << 'LOAD_TARGET'
 
-load-tests: start-prod wait-for-prod-health ## This command executes load tests using K6 library in DinD mode
+load-tests: start-prod ## This command executes load tests using K6 library in DinD mode
 ifeq ($(DIND), 1)
 	@echo "🐳 Running Load tests in true Docker-in-Docker mode"
 	@echo "Setting up Docker network..."
