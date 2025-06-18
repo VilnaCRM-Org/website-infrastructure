@@ -16,4 +16,4 @@ if timeout 15 sh -c 'until docker info; do echo "Waiting for Docker to start..."
 else
     echo "❌ Docker daemon failed to start within 15 seconds"
     exit 1
-fi 
+fi
