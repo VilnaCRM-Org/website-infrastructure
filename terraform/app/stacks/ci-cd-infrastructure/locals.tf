@@ -151,7 +151,7 @@ locals {
   }
 
   ci_cd_website_build_projects = {
-    batch_unit_mutation_lint = merge(local.ubuntu_based_build,
+    batch_unit_mutation_lint = merge(local.ecr_based_build,
       { env_variables = {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
@@ -192,7 +192,7 @@ locals {
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/healthcheck.yml" })
 
-    batch_pw_load = merge(local.ubuntu_based_build,
+    batch_pw_load = merge(local.ecr_based_build,
       { env_variables = {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
@@ -212,7 +212,7 @@ locals {
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_pw_load.yml" })
 
-    batch_lhci_leak = merge(local.ubuntu_based_build,
+    batch_lhci_leak = merge(local.ecr_based_build,
       { env_variables = {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
