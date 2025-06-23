@@ -25,12 +25,11 @@ phases:
       - echo "🧬 Running mutation tests with built-in DIND support"
       - cd ${CODEBUILD_SRC_DIR}/website
       - DIND=1 make test-mutation || { echo 'Mutation test failed'; exit 1; }
-      - mkdir -p reports/mutation
-      - mv reports/mutation/mutation.html reports/mutation/index.html 2>/dev/null || echo "No mutation report to rename"
+      - mkdir -p "reports/mutation"
+      - mv "reports/mutation/mutation.html" "reports/mutation/index.html" 2>/dev/null || echo "No mutation report to rename"
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:
     - "website/reports/**/*"
-    - "reports/**/*"
