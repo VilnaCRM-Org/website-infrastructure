@@ -18,10 +18,10 @@ phases:
 
   build:
     commands:
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - "mkdir -p ${CODEBUILD_SRC_DIR}/website/memory-leak-logs"
       - echo "🚀 Running Memory Leak tests with built-in DIND support"
       - cd ${CODEBUILD_SRC_DIR}/website
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - "DIND=1 make test-memory-leak 2>&1 | tee ${CODEBUILD_SRC_DIR}/website/memory-leak-logs/memory-leak.log"
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"

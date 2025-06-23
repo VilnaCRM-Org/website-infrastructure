@@ -18,9 +18,9 @@ phases:
 
   build:
     commands:
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - echo "🚀 Running Lighthouse Mobile audit with built-in DIND support"
       - cd ${CODEBUILD_SRC_DIR}/website
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - DIND=1 make lighthouse-mobile
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
