@@ -6,7 +6,7 @@ sandbox_project_name       = "sandbox-test"
 environment                = "test"
 github_connection_name     = "Github"
 source_repo_branch         = "3-implement-sandbox-infrastructure"
-website_repo_branch        = "203-fix-docker-compose-setup"
+website_repo_branch        = "203-ci-pipeline-control-moved"
 website_url                = "vilnacrmtest.com"
 bucket_name                = "vilnacrmtest.com"
 
