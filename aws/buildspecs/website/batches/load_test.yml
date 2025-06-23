@@ -15,7 +15,9 @@ phases:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh"
       - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/configure-dind.sh"
-
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/setup_makefile_targets.sh"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/add_prod_targets.sh"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_pw_load_targets.sh"
   build:
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
