@@ -40,13 +40,7 @@ phases:
       - export WEBSITE_DIR=${WEBSITE_DIR:-/codebuild-user/website}
       - cd "$WEBSITE_DIR"
       - echo "=== Building Docker image ==="
-      - docker build -t next-build -f Dockerfile --target build .
-      - echo "=== Creating temporary container ==="
-      - container_id=$(docker create next-build)
-      - echo "=== Copying artifacts from container ==="
-      - docker cp "$container_id":/app/out ./out
-      - echo "=== Cleaning up container ==="
-      - docker rm "$container_id"
+      - "make build-out"
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
       - echo "=== Verifying build output ==="
       - ls -la ./out
