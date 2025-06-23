@@ -29,7 +29,7 @@ def fetch_and_filter_distributions(distribution_ids):
     print("Fetching and filtering distribution configurations...")
     filtered_configs = []
     filtered_ids = []
-    
+
     for distribution_id in distribution_ids:
         config_result = subprocess.check_output(
             [
@@ -44,17 +44,19 @@ def fetch_and_filter_distributions(distribution_ids):
             ]
         )
         config = json.loads(config_result.decode())
-        
+
         # Filter out distributions with "app." prefix in aliases
         aliases = config["DistributionConfig"].get("Aliases", {}).get("Items", [])
         has_app_prefix = any(alias.startswith("app.") for alias in aliases)
-        
+
         if not has_app_prefix:
             filtered_configs.append(config)
             filtered_ids.append(distribution_id)
         else:
-            print(f"Skipping distribution {distribution_id} with app. prefix aliases: {aliases}")
-    
+            print(
+                f"Skipping distribution {distribution_id} with app. prefix aliases: {aliases}"
+            )
+
     print(f"Filtered to {len(filtered_configs)} distributions without app. prefix")
     return filtered_ids, filtered_configs
 
@@ -112,7 +114,9 @@ def update_distribution_configs(distribution_ids, distribution_configs):
 def main():
     print("Starting main function...")
     distribution_ids = fetch_distributions_ids()
-    filtered_distribution_ids, distribution_configs = fetch_and_filter_distributions(distribution_ids)
+    filtered_distribution_ids, distribution_configs = fetch_and_filter_distributions(
+        distribution_ids
+    )
     updated_configs = swap_origins(distribution_configs)
     update_distribution_configs(filtered_distribution_ids, updated_configs)
     print("Main function completed.")
