@@ -14,18 +14,14 @@ phases:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/install_packages.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/configure_dind.sh"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_makefile_targets.sh"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/add_prod_targets.sh"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/batch_pw_load_targets.sh"
-      - "cd ${CODEBUILD_SRC_DIR}/website"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/configure-dind.sh"
 
   build:
     commands:
-      - "echo #### Set up environment"
+      - echo "🚀 Running Playwright Visual tests with built-in DIND support"
+      - cd ${CODEBUILD_SRC_DIR}/website
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - "echo #### Running Visual Test" # Reports folder: playwright-visual-reports/
-      - "DIND=1 make test-visual"
+      - DIND=1 make test-visual
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
