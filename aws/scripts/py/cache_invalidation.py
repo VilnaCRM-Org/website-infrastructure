@@ -47,11 +47,11 @@ def classify_distribution(dist: Dict[str, Any]) -> Environment | None:
         "staging" in domain.lower() and "app." not in domain
         for domain in origin_domains
     )
-    
+
     if is_staging_dist or has_staging_origin:
         print(f"Found staging distribution: {dist['Id']} (origins: {origin_domains})")
         return Environment.STAGING
-    
+
     print(f"Found production distribution: {dist['Id']} (origins: {origin_domains})")
     return Environment.PRODUCTION
 
@@ -76,7 +76,7 @@ def get_distributions_by_environment() -> Dict[Environment, Dict[str, Any]]:
         )
 
     env_distributions = {}
-    
+
     for dist in distributions:
         env = classify_distribution(dist)
         if env and env not in env_distributions:
@@ -90,9 +90,11 @@ def get_distributions_by_environment() -> Dict[Environment, Dict[str, Any]]:
                 "Ensure the distribution is enabled and properly configured."
             )
 
-    print(f"Found distributions - Staging: {env_distributions[Environment.STAGING]['Id']}, "
-          f"Production: {env_distributions[Environment.PRODUCTION]['Id']}")
-    
+    print(
+        f"Found distributions - Staging: {env_distributions[Environment.STAGING]['Id']}, "
+        f"Production: {env_distributions[Environment.PRODUCTION]['Id']}"
+    )
+
     return env_distributions
 
 
@@ -148,16 +150,16 @@ def main() -> None:
 
     try:
         distributions = get_distributions_by_environment()
-        
+
         # Process environments in order: staging first, then production
         environments = [Environment.STAGING, Environment.PRODUCTION]
-        
+
         for step, env in enumerate(environments, 1):
             dist = distributions[env]
             print(f"\nStep {step}: Invalidating {env.value} distribution...")
             invalidation = invalidate_cache(dist, env)
             wait_for_invalidation(dist, invalidation["Id"])
-            
+
             # Add stabilization wait between environments
             if env == Environment.STAGING:
                 print(f"\nWaiting for {env.value} to stabilize...")
