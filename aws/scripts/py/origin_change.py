@@ -74,13 +74,13 @@ def fetch_and_filter_distributions(distribution_ids) -> tuple[list[str], list[di
                 )
 
     print(f"Filtered to {len(filtered_configs)} distributions without app. prefix")
-    
+
     if len(filtered_configs) != 2:
         raise ValueError(
             f"Expected exactly 2 distributions after filtering, but found {len(filtered_configs)}. "
             "Cannot perform origin swap."
         )
-    
+
     return filtered_ids, filtered_configs
 
 
