@@ -25,7 +25,7 @@ def fetch_distributions_ids():
     return distribution_ids
 
 
-def fetch_and_filter_distributions(distribution_ids):
+def fetch_and_filter_distributions(distribution_ids) -> tuple[list[str], list[dict]]:
     print("Fetching and filtering distribution configurations...")
     filtered_configs = []
     filtered_ids = []
@@ -61,7 +61,7 @@ def fetch_and_filter_distributions(distribution_ids):
         else:
             if has_app_alias:
                 print(
-                    f"Skipping distribution {distribution_id} with app. prefix aliases: {aliases}"
+                    f"Skipping distribution {distribution_id} with app. prefix aliases: {aliases}",
                 )
             if has_app_origin:
                 app_origins = [
@@ -70,10 +70,14 @@ def fetch_and_filter_distributions(distribution_ids):
                     if "app." in origin.get("DomainName", "")
                 ]
                 print(
-                    f"Skipping distribution {distribution_id} with app. in origins: {app_origins}"
+                    f"Skipping distribution {distribution_id} with app. in origins: {app_origins}",
                 )
 
     print(f"Filtered to {len(filtered_configs)} distributions without app. prefix")
+    
+    if len(filtered_configs) != 2:
+        raise ValueError(f"Expected exactly 2 distributions after filtering, but found {len(filtered_configs)}. Cannot perform origin swap.")
+    
     return filtered_ids, filtered_configs
 
 
@@ -131,7 +135,7 @@ def main():
     print("Starting main function...")
     distribution_ids = fetch_distributions_ids()
     filtered_distribution_ids, distribution_configs = fetch_and_filter_distributions(
-        distribution_ids
+        distribution_ids,
     )
     updated_configs = swap_origins(distribution_configs)
     update_distribution_configs(filtered_distribution_ids, updated_configs)
