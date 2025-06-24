@@ -1,12 +1,18 @@
 import boto3
 import time
-from typing import Dict, Any
+from enum import Enum
+from typing import Dict, Any, List
 from botocore.exceptions import ClientError, NoCredentialsError, PartialCredentialsError
 
 try:
     from mypy_boto3_cloudfront import CloudFrontClient
 except ImportError:
     CloudFrontClient = Any
+
+
+class Environment(Enum):
+    STAGING = "staging"
+    PRODUCTION = "production"
 
 
 def get_cloudfront_client() -> CloudFrontClient:
@@ -19,8 +25,8 @@ def get_cloudfront_client() -> CloudFrontClient:
         raise RuntimeError("Failed to create CloudFront client") from err
 
 
-def _classify_distribution(dist: Dict[str, Any]) -> str | None:
-    """Classify a distribution as 'staging', 'production', or None (skip)"""
+def classify_distribution(dist: Dict[str, Any]) -> Environment | None:
+    """Classify a distribution as staging, production, or None (skip)"""
     if not dist.get("Enabled", False):
         print(f"Skipping disabled distribution: {dist['Id']}")
         return None
@@ -30,48 +36,38 @@ def _classify_distribution(dist: Dict[str, Any]) -> str | None:
         for origin in dist.get("Origins", {}).get("Items", [])
     ]
 
+    # Skip app distributions
     if any("app." in domain for domain in origin_domains):
         print(f"Skipping app distribution: {dist['Id']} (origins: {origin_domains})")
         return None
 
-    if dist.get("IsStagingDistribution", False):
-        print(
-            f"Found staging distribution: {dist['Id']} "
-            f"(IsStagingDistribution: true, origins: {origin_domains})"
-        )
-        return "staging"
-    elif any(
+    # Check for staging indicators
+    is_staging_dist = dist.get("IsStagingDistribution", False)
+    has_staging_origin = any(
         "staging" in domain.lower() and "app." not in domain
         for domain in origin_domains
-    ):
-        print(
-            f"Found staging distribution: {dist['Id']} "
-            f"(staging pattern in origins: {origin_domains})"
-        )
-        return "staging"
-    else:
-        print(
-            f"Found production distribution: {dist['Id']} "
-            f"(IsStagingDistribution: false, origins: {origin_domains})"
-        )
-        return "production"
+    )
+    
+    if is_staging_dist or has_staging_origin:
+        print(f"Found staging distribution: {dist['Id']} (origins: {origin_domains})")
+        return Environment.STAGING
+    
+    print(f"Found production distribution: {dist['Id']} (origins: {origin_domains})")
+    return Environment.PRODUCTION
 
 
-def get_cloudfront_distributions() -> tuple[Dict[str, Any], Dict[str, Any]]:
-    """Get CloudFront distributions and find both staging and production distributions"""
+def get_distributions_by_environment() -> Dict[Environment, Dict[str, Any]]:
+    """Get CloudFront distributions mapped by environment"""
     print("Fetching CloudFront distributions...")
 
     cloudfront = get_cloudfront_client()
 
     try:
         paginator = cloudfront.get_paginator("list_distributions")
-        distributions: list[dict] = []
+        distributions: List[Dict] = []
         for page in paginator.paginate():
             distributions.extend(page.get("DistributionList", {}).get("Items", []))
-        print(
-            f"CloudFront distributions fetched. "
-            f"Found {len(distributions)} total distributions."
-        )
+        print(f"Found {len(distributions)} total distributions.")
     except ClientError as e:
         error_code = e.response["Error"]["Code"]
         error_message = e.response["Error"]["Message"]
@@ -79,71 +75,49 @@ def get_cloudfront_distributions() -> tuple[Dict[str, Any], Dict[str, Any]]:
             f"Failed to list CloudFront distributions: {error_code} - {error_message}"
         )
 
-    print("\nDebugging all distributions:")
-    for i, dist in enumerate(distributions):
-        enabled = dist.get("Enabled", False)
-        is_staging = dist.get("IsStagingDistribution", False)
-        origin_domains = [
-            origin.get("DomainName", "")
-            for origin in dist.get("Origins", {}).get("Items", [])
-        ]
-        print(
-            f"  {i+1}. ID: {dist['Id']}, Enabled: {enabled}, "
-            f"IsStagingDistribution: {is_staging}, Origins: {origin_domains}"
-        )
-
-    staging_dist = None
-    production_dist = None
-
+    env_distributions = {}
+    
     for dist in distributions:
-        classification = _classify_distribution(dist)
+        env = classify_distribution(dist)
+        if env and env not in env_distributions:
+            env_distributions[env] = dist
 
-        if classification == "staging" and not staging_dist:
-            staging_dist = dist
-        elif classification == "production" and not production_dist:
-            production_dist = dist
+    # Verify we found both environments
+    for env in Environment:
+        if env not in env_distributions:
+            raise RuntimeError(
+                f"Unable to locate {env.value} CloudFront distribution. "
+                "Ensure the distribution is enabled and properly configured."
+            )
 
-    staging_id = staging_dist["Id"] if staging_dist else "None"
-    production_id = production_dist["Id"] if production_dist else "None"
-    print(f"\nFinal result: Staging={staging_id}, Production={production_id}")
-
-    if not staging_dist or not production_dist:
-        raise RuntimeError(
-            "Unable to locate both staging and production CloudFront distributions. "
-            f"Found staging: {'Yes' if staging_dist else 'No'}, "
-            f"Found production: {'Yes' if production_dist else 'No'}. "
-            "Ensure both distributions are enabled and properly configured."
-        )
-
-    return staging_dist, production_dist
+    print(f"Found distributions - Staging: {env_distributions[Environment.STAGING]['Id']}, "
+          f"Production: {env_distributions[Environment.PRODUCTION]['Id']}")
+    
+    return env_distributions
 
 
-def invalidate_cache(
-    distribution: Dict[str, Any], *, is_staging: bool = True
-) -> Dict[str, Any]:
+def invalidate_cache(distribution: Dict[str, Any], env: Environment) -> Dict[str, Any]:
     """Create a cache invalidation for the given distribution"""
-    env_name = "staging" if is_staging else "production"
-    print(f"Creating invalidation for {env_name} distribution: {distribution['Id']}")
+    print(f"Creating invalidation for {env.value} distribution: {distribution['Id']}")
 
     cloudfront = get_cloudfront_client()
 
     try:
-        env = "staging" if is_staging else "production"
         response = cloudfront.create_invalidation(
             DistributionId=distribution["Id"],
             InvalidationBatch={
                 "Paths": {"Quantity": 1, "Items": ["/*"]},
-                "CallerReference": f"blue-green-invalidation-{env}-{int(time.time())}",
+                "CallerReference": f"blue-green-invalidation-{env.value}-{int(time.time())}",
             },
         )
         invalidation = response["Invalidation"]
-        print(f"Created invalidation for {env}: {invalidation['Id']}")
+        print(f"Created invalidation for {env.value}: {invalidation['Id']}")
         return invalidation
     except ClientError as e:
         error_code = e.response["Error"]["Code"]
         error_message = e.response["Error"]["Message"]
         raise RuntimeError(
-            f"Failed to create invalidation for {env}: {error_code} - {error_message}"
+            f"Failed to create invalidation for {env.value}: {error_code} - {error_message}"
         )
 
 
@@ -169,21 +143,25 @@ def wait_for_invalidation(
 
 
 def main() -> None:
+    """Execute blue-green cache invalidation"""
     print("Starting blue-green cache invalidation...")
 
     try:
-        staging_dist, production_dist = get_cloudfront_distributions()
-
-        print("\nStep 1: Invalidating staging distribution...")
-        staging_invalidation = invalidate_cache(staging_dist, is_staging=True)
-        wait_for_invalidation(staging_dist, staging_invalidation["Id"])
-
-        print("\nStep 2: Waiting for staging to stabilize...")
-        time.sleep(30)
-
-        print("\nStep 3: Invalidating production distribution...")
-        production_invalidation = invalidate_cache(production_dist, is_staging=False)
-        wait_for_invalidation(production_dist, production_invalidation["Id"])
+        distributions = get_distributions_by_environment()
+        
+        # Process environments in order: staging first, then production
+        environments = [Environment.STAGING, Environment.PRODUCTION]
+        
+        for step, env in enumerate(environments, 1):
+            dist = distributions[env]
+            print(f"\nStep {step}: Invalidating {env.value} distribution...")
+            invalidation = invalidate_cache(dist, env)
+            wait_for_invalidation(dist, invalidation["Id"])
+            
+            # Add stabilization wait between environments
+            if env == Environment.STAGING:
+                print(f"\nWaiting for {env.value} to stabilize...")
+                time.sleep(30)
 
         print("\nBlue-green cache invalidation completed successfully.")
 
