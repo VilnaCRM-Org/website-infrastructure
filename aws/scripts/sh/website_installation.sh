@@ -1,19 +1,30 @@
 #!/bin/bash
-echo #### Install Software
-n install "${NODEJS_VERSION:?Node.js version is not set}"
-n "${NODEJS_VERSION:?Node.js version is not set}"
-git clone -b "$WEBSITE_GIT_REPOSITORY_BRANCH" "$WEBSITE_GIT_REPOSITORY_LINK.git" /codebuild-user/website
-cd /codebuild-user/website/ || {
+
+# Website Installation Script
+# Handles git repository cloning and pnpm installation
+
+set -e
+
+echo "#### Website Installation and Setup"
+
+# Clean up existing directory if it exists
+if [ -d "$CODEBUILD_SRC_DIR/website" ]; then
+    echo "Cleaning up existing website directory..."
+    rm -rf "$CODEBUILD_SRC_DIR/website"
+fi
+
+# Clone the website repository
+mkdir -p "$CODEBUILD_SRC_DIR"/website
+git clone -b "$WEBSITE_GIT_REPOSITORY_BRANCH" "$WEBSITE_GIT_REPOSITORY_LINK.git" "$CODEBUILD_SRC_DIR"/website
+cd "$CODEBUILD_SRC_DIR"/website/ || {
     echo "Error: Failed to change directory to website folder" >&2
     exit 1
 }
-echo #### Install pnpm
+
+echo "#### Installing pnpm"
 npm install -g pnpm || {
     echo "Error: Failed to install pnpm" >&2
     exit 1
 }
-echo #### Install dependencies
-make install || {
-    echo "Error: Failed to install dependencies" >&2
-    exit 1
-}
+
+echo "✅ Website installation completed successfully" 
