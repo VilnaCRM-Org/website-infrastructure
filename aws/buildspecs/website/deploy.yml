@@ -7,12 +7,12 @@ phases:
       python: $PYTHON_VERSION
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
-      - "cd /codebuild-user/website"
+      - "cd ${CODEBUILD_SRC_DIR}/website"
 
   build:
     commands:
       - "echo #### Build Project"
-      - "make build"
+      - "make build-out"
       - "echo #### Deploy Project"
       - "echo #### Turn Of Alarm Actions"
       - "aws cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME"

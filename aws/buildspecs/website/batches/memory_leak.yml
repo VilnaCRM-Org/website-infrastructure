@@ -1,38 +1,34 @@
 version: 0.2
 
+env:
+  variables:
+    ACCOUNT_ID: $ACCOUNT_ID
+    ENVIRONMENT: $ENVIRONMENT
+    TEST_REPORTS_BUCKET: $TEST_REPORTS_BUCKET
+    LHCI_REPORTS_BUCKET: $LHCI_REPORTS_BUCKET
+    WEBSITE_GIT_REPOSITORY_LINK: $WEBSITE_GIT_REPOSITORY_LINK
+
 phases:
   install:
-    runtime-versions:
-      nodejs: $NODEJS_VERSION
-      python: $PYTHON_VERSION
     commands:
-      - "apt update -y"
-      - "apt install -y ca-certificates fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release wget xdg-utils"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/install_packages.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
-      - "cd /codebuild-user/website"
-      - "echo #### Owner Change"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/codebuild_user_owner_change.sh"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/configure-dind.sh"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/setup_makefile_targets.sh"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/add_prod_targets.sh"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_lhci_targets.sh"
 
   build:
-    run-as: "codebuild-user"
     commands:
-      - "mkdir /codebuild-user/website/memory-leak-logs"
-      - "echo #### Set up environment"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - "echo #### Running Memory Leak Test" # No Reports folder
-      - "export MEMORY_LEAK_RUN=true && make test-memory-leak 2>&1 | tee memory-leak-logs/memory-leak.log"
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/website/memory-leak-logs"
+      - echo "🚀 Running Memory Leak tests with built-in DIND support"
+      - cd ${CODEBUILD_SRC_DIR}/website
+      - "DIND=1 make test-memory-leak 2>&1 | tee ${CODEBUILD_SRC_DIR}/website/memory-leak-logs/memory-leak.log"
     finally:
-      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/reports.py"
-      - 'aws lambda invoke --function-name "ci-cd-website-$ENVIRONMENT-reports-notification" --cli-binary-format raw-in-base64-out --payload file://payload.json output.txt'
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:
-    - "/codebuild-user/website/memory-leak-logs/**/*"
-
-cache:
-  paths:
-    - "/bin"
-    - "/usr/local/bin"
-    - "/root/.cache"
-    - "/codebuild-user/website/node_modules"
-    - "/usr/local/bundle"
+    - "website/memory-leak-logs/**/*"
