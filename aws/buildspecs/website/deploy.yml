@@ -7,20 +7,14 @@ phases:
       python: $PYTHON_VERSION
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
-      - "cd /codebuild-user/website"
+      - "cd ${CODEBUILD_SRC_DIR}/website"
 
   build:
     commands:
       - "echo #### Build Project"
-      - "docker build -t next-build -f Dockerfile --target production ."
-      - echo "=== Creating temporary container ==="
-      - container_id=$(docker create next-build)
-      - echo "=== Copying artifacts from container ==="
-      - docker cp "$container_id":/app/out ./out
-      - echo "=== Cleaning up container ==="
-      - docker rm "$container_id"
+      - "make build-out"
       - "echo #### Deploy Project"
-      - "echo #### Turn Off Alarm Actions"
+      - "echo #### Turn Of Alarm Actions"
       - "aws cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/deploy_content.py"
       - "echo #### Invalidate CloudFront Cache"
