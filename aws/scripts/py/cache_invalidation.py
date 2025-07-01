@@ -1,7 +1,18 @@
+#!/usr/bin/env python3
+"""
+CloudFront Cache Invalidation Script
+
+Performs blue-green cache invalidation for CloudFront distributions.
+Processes staging distributions first, then production distributions.
+"""
+
 import boto3
+import logging
+import os
+import sys
 import time
 from enum import Enum
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from botocore.exceptions import ClientError, NoCredentialsError, PartialCredentialsError
 
 try:
@@ -11,165 +22,280 @@ except ImportError:
 
 
 class Environment(Enum):
+    """Deployment environments"""
     STAGING = "staging"
     PRODUCTION = "production"
 
 
-def get_cloudfront_client() -> CloudFrontClient:
-    """Get CloudFront client with error handling"""
-    try:
-        return boto3.client("cloudfront")
-    except (NoCredentialsError, PartialCredentialsError) as err:
-        raise RuntimeError("AWS credentials not found or incomplete") from err
-    except Exception as err:
-        raise RuntimeError("Failed to create CloudFront client") from err
+class CloudFrontInvalidationError(Exception):
+    """CloudFront invalidation operation error"""
+    pass
 
 
-def classify_distribution(dist: Dict[str, Any]) -> Environment | None:
-    """Classify a distribution as staging, production, or None (skip)"""
-    if not dist.get("Enabled", False):
-        print(f"Skipping disabled distribution: {dist['Id']}")
-        return None
+class CloudFrontCacheInvalidator:
+    """Handles CloudFront cache invalidation operations"""
 
-    origin_domains = [
-        origin.get("DomainName", "")
-        for origin in dist.get("Origins", {}).get("Items", [])
-    ]
+    def __init__(self):
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self._client: Optional[CloudFrontClient] = None
+        self._load_config_from_environment()
 
-    # Skip app distributions
-    if any("app." in domain for domain in origin_domains):
-        print(f"Skipping app distribution: {dist['Id']} (origins: {origin_domains})")
-        return None
+    def _load_config_from_environment(self) -> None:
+        """Load configuration from environment variables with sensible defaults"""
+        self.timeout_seconds = int(os.getenv('INVALIDATION_TIMEOUT_SECONDS', '900'))
+        self.waiter_delay_seconds = int(os.getenv('INVALIDATION_WAITER_DELAY_SECONDS', '10'))
+        self.stabilization_wait_seconds = int(os.getenv('INVALIDATION_STABILIZATION_WAIT_SECONDS', '30'))
+        self.invalidation_path = os.getenv('INVALIDATION_PATH', '/*')
 
-    # Check for staging indicators
-    is_staging_dist = dist.get("IsStagingDistribution", False)
-    has_staging_origin = any(
-        "staging" in domain.lower() and "app." not in domain
-        for domain in origin_domains
-    )
+    @property
+    def client(self) -> CloudFrontClient:
+        """Get CloudFront client, creating it if needed"""
+        if self._client is None:
+            self._client = self._create_cloudfront_client()
+        return self._client
 
-    if is_staging_dist or has_staging_origin:
-        print(f"Found staging distribution: {dist['Id']} (origins: {origin_domains})")
-        return Environment.STAGING
+    def _create_cloudfront_client(self) -> CloudFrontClient:
+        """Create and configure CloudFront client"""
+        try:
+            client = boto3.client("cloudfront")
+            self.logger.debug("CloudFront client created successfully")
+            return client
+        except (NoCredentialsError, PartialCredentialsError) as err:
+            raise CloudFrontInvalidationError(
+                "AWS credentials not found. Please configure your credentials."
+            ) from err
+        except Exception as err:
+            raise CloudFrontInvalidationError("Failed to create CloudFront client") from err
 
-    print(f"Found production distribution: {dist['Id']} (origins: {origin_domains})")
-    return Environment.PRODUCTION
+    def _is_app_distribution(self, origin_domains: List[str]) -> bool:
+        """Check if this is an app distribution (should be skipped)"""
+        return any("app." in domain for domain in origin_domains)
 
+    def _is_staging_distribution(self, distribution: Dict[str, Any], origin_domains: List[str]) -> bool:
+        """Check if this is a staging distribution"""
+        # Check staging flag
+        if distribution.get("IsStagingDistribution", False):
+            return True
+        
+        # Check for staging in origin domains (but not app domains)
+        staging_origins = [
+            domain for domain in origin_domains 
+            if "staging" in domain.lower() and "app." not in domain
+        ]
+        return len(staging_origins) > 0
 
-def get_distributions_by_environment() -> Dict[Environment, Dict[str, Any]]:
-    """Get CloudFront distributions mapped by environment"""
-    print("Fetching CloudFront distributions...")
+    def _classify_distribution(self, distribution: Dict[str, Any]) -> Optional[Environment]:
+        """Determine if distribution is staging, production, or should be skipped"""
+        dist_id = distribution.get('Id', 'Unknown')
+        
+        # Skip disabled distributions
+        if not distribution.get("Enabled", False):
+            self.logger.info(f"Skipping disabled distribution: {dist_id}")
+            return None
 
-    cloudfront = get_cloudfront_client()
+        origin_domains = [
+            origin.get("DomainName", "")
+            for origin in distribution.get("Origins", {}).get("Items", [])
+        ]
 
-    try:
-        paginator = cloudfront.get_paginator("list_distributions")
-        distributions: List[Dict] = []
-        for page in paginator.paginate():
-            distributions.extend(page.get("DistributionList", {}).get("Items", []))
-        print(f"Found {len(distributions)} total distributions.")
-    except ClientError as e:
-        error_code = e.response["Error"]["Code"]
-        error_message = e.response["Error"]["Message"]
-        raise RuntimeError(
-            f"Failed to list CloudFront distributions: {error_code} - {error_message}"
-        )
+        # Skip app distributions
+        if self._is_app_distribution(origin_domains):
+            self.logger.info(f"Skipping app distribution: {dist_id}")
+            return None
 
-    env_distributions = {}
+        # Classify as staging or production
+        if self._is_staging_distribution(distribution, origin_domains):
+            self.logger.info(f"Found staging distribution: {dist_id}")
+            return Environment.STAGING
+        else:
+            self.logger.info(f"Found production distribution: {dist_id}")
+            return Environment.PRODUCTION
 
-    for dist in distributions:
-        env = classify_distribution(dist)
-        if env and env not in env_distributions:
-            env_distributions[env] = dist
+    def _fetch_all_distributions(self) -> List[Dict[str, Any]]:
+        """Fetch all CloudFront distributions from AWS"""
+        self.logger.info("Fetching CloudFront distributions...")
+        
+        try:
+            paginator = self.client.get_paginator("list_distributions")
+            all_distributions: List[Dict[str, Any]] = []
+            
+            for page in paginator.paginate():
+                page_distributions = page.get("DistributionList", {}).get("Items", [])
+                all_distributions.extend(page_distributions)
+                
+            self.logger.info(f"Retrieved {len(all_distributions)} total distributions")
+            return all_distributions
+            
+        except ClientError as e:
+            error_code = e.response["Error"]["Code"]
+            error_message = e.response["Error"]["Message"]
+            raise CloudFrontInvalidationError(
+                f"Failed to list distributions: {error_code} - {error_message}"
+            ) from e
 
-    # Verify we found both environments
-    for env in Environment:
-        if env not in env_distributions:
-            raise RuntimeError(
-                f"Unable to locate {env.value} CloudFront distribution. "
-                "Ensure the distribution is enabled and properly configured."
+    def find_distributions_by_environment(self) -> Dict[Environment, Dict[str, Any]]:
+        """Find one distribution for each environment (staging and production)"""
+        all_distributions = self._fetch_all_distributions()
+        
+        env_distributions: Dict[Environment, Dict[str, Any]] = {}
+
+        # Classify each distribution and keep the first one found for each environment
+        for distribution in all_distributions:
+            environment = self._classify_distribution(distribution)
+            if environment and environment not in env_distributions:
+                env_distributions[environment] = distribution
+
+        # Make sure we found both environments
+        self._validate_required_environments_found(env_distributions)
+        
+        self._log_found_distributions(env_distributions)
+        return env_distributions
+
+    def _validate_required_environments_found(self, env_distributions: Dict[Environment, Dict[str, Any]]) -> None:
+        """Ensure we found distributions for all required environments"""
+        missing_environments = [env for env in Environment if env not in env_distributions]
+        if missing_environments:
+            missing_names = [env.value for env in missing_environments]
+            raise CloudFrontInvalidationError(
+                f"Could not find distributions for: {missing_names}. "
+                "Make sure distributions are enabled and properly configured."
             )
 
-    print(
-        f"Found distributions - Staging: {env_distributions[Environment.STAGING]['Id']}, "
-        f"Production: {env_distributions[Environment.PRODUCTION]['Id']}"
-    )
+    def _log_found_distributions(self, env_distributions: Dict[Environment, Dict[str, Any]]) -> None:
+        """Log the distributions we found for each environment"""
+        staging_id = env_distributions[Environment.STAGING]['Id']
+        production_id = env_distributions[Environment.PRODUCTION]['Id']
+        self.logger.info(f"Using distributions - Staging: {staging_id}, Production: {production_id}")
 
-    return env_distributions
+    def create_invalidation(self, distribution: Dict[str, Any], environment: Environment) -> str:
+        """Create cache invalidation and return the invalidation ID"""
+        dist_id = distribution["Id"]
+        self.logger.info(f"Creating invalidation for {environment.value} distribution: {dist_id}")
 
-
-def invalidate_cache(distribution: Dict[str, Any], env: Environment) -> Dict[str, Any]:
-    """Create a cache invalidation for the given distribution"""
-    print(f"Creating invalidation for {env.value} distribution: {distribution['Id']}")
-
-    cloudfront = get_cloudfront_client()
-
-    try:
-        response = cloudfront.create_invalidation(
-            DistributionId=distribution["Id"],
-            InvalidationBatch={
-                "Paths": {"Quantity": 1, "Items": ["/*"]},
-                "CallerReference": f"blue-green-invalidation-{env.value}-{int(time.time())}",
+        invalidation_request = {
+            "DistributionId": dist_id,
+            "InvalidationBatch": {
+                "Paths": {"Quantity": 1, "Items": [self.invalidation_path]},
+                "CallerReference": f"blue-green-invalidation-{environment.value}-{int(time.time())}",
             },
-        )
-        invalidation = response["Invalidation"]
-        print(f"Created invalidation for {env.value}: {invalidation['Id']}")
-        return invalidation
-    except ClientError as e:
-        error_code = e.response["Error"]["Code"]
-        error_message = e.response["Error"]["Message"]
-        raise RuntimeError(
-            f"Failed to create invalidation for {env.value}: {error_code} - {error_message}"
-        )
+        }
+
+        try:
+            response = self.client.create_invalidation(**invalidation_request)
+            invalidation_id = response["Invalidation"]["Id"]
+            self.logger.info(f"Created invalidation {invalidation_id} for {environment.value}")
+            return invalidation_id
+            
+        except ClientError as e:
+            error_code = e.response["Error"]["Code"]
+            error_message = e.response["Error"]["Message"]
+            raise CloudFrontInvalidationError(
+                f"Failed to create invalidation for {environment.value}: {error_code} - {error_message}"
+            ) from e
+
+    def wait_for_invalidation(self, distribution: Dict[str, Any], invalidation_id: str) -> None:
+        """Wait for invalidation to complete"""
+        dist_id = distribution["Id"]
+        self.logger.info(f"Waiting for invalidation {invalidation_id} to complete...")
+
+        max_attempts = self.timeout_seconds // self.waiter_delay_seconds
+        waiter_config = {
+            "Delay": self.waiter_delay_seconds,
+            "MaxAttempts": max_attempts
+        }
+
+        try:
+            waiter = self.client.get_waiter("invalidation_completed")
+            waiter.wait(
+                DistributionId=dist_id,
+                Id=invalidation_id,
+                WaiterConfig=waiter_config
+            )
+            self.logger.info(f"Invalidation {invalidation_id} completed successfully")
+            
+        except Exception as err:
+            raise CloudFrontInvalidationError(
+                f"Invalidation {invalidation_id} failed or timed out after {self.timeout_seconds} seconds"
+            ) from err
+
+    def _wait_for_stabilization(self, environment: Environment) -> None:
+        """Wait for environment to stabilize before proceeding"""
+        if self.stabilization_wait_seconds > 0:
+            self.logger.info(f"Waiting {self.stabilization_wait_seconds}s for {environment.value} to stabilize...")
+            time.sleep(self.stabilization_wait_seconds)
+
+    def _invalidate_environment(self, distribution: Dict[str, Any], environment: Environment) -> None:
+        """Invalidate a single environment and wait for completion"""
+        self.logger.info(f"Processing {environment.value} environment...")
+        
+        invalidation_id = self.create_invalidation(distribution, environment)
+        self.wait_for_invalidation(distribution, invalidation_id)
+        
+        # Only wait for stabilization after staging
+        if environment == Environment.STAGING:
+            self._wait_for_stabilization(environment)
+
+    def execute_blue_green_invalidation(self) -> None:
+        """Execute the complete blue-green cache invalidation process"""
+        self.logger.info("Starting blue-green cache invalidation...")
+
+        try:
+            # Find the distributions we need
+            distributions = self.find_distributions_by_environment()
+            
+            # Process staging first, then production
+            environments_to_process = [Environment.STAGING, Environment.PRODUCTION]
+            
+            for step, environment in enumerate(environments_to_process, 1):
+                self.logger.info(f"Step {step}/{len(environments_to_process)}: {environment.value}")
+                distribution = distributions[environment]
+                self._invalidate_environment(distribution, environment)
+
+            self.logger.info("Blue-green cache invalidation completed successfully")
+
+        except Exception as e:
+            self.logger.error(f"Cache invalidation failed: {e}")
+            raise
 
 
-def wait_for_invalidation(
-    distribution: Dict[str, Any], invalidation_id: str, *, timeout: int = 900
-) -> None:
-    """Wait for the invalidation to complete"""
-    print(f"Waiting for invalidation {invalidation_id} to complete...")
-
-    try:
-        client = get_cloudfront_client()
-        waiter = client.get_waiter("invalidation_completed")
-        waiter.wait(
-            DistributionId=distribution["Id"],
-            Id=invalidation_id,
-            WaiterConfig={"Delay": 10, "MaxAttempts": timeout // 10},
-        )
-        print(f"Invalidation {invalidation_id} completed")
-    except Exception as err:
-        raise RuntimeError(
-            f"Invalidation {invalidation_id} failed or timed out"
-        ) from err
+def setup_logging(log_level: str = "INFO") -> None:
+    """Configure logging with a clean format"""
+    logging.basicConfig(
+        level=getattr(logging, log_level.upper()),
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
+    )
 
 
 def main() -> None:
-    """Execute blue-green cache invalidation"""
-    print("Starting blue-green cache invalidation...")
-
+    """Run the cache invalidation process"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="CloudFront blue-green cache invalidation")
+    parser.add_argument(
+        "--log-level",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR"],
+        default="INFO",
+        help="Set the logging level (default: INFO)"
+    )
+    
+    args = parser.parse_args()
+    setup_logging(args.log_level)
+    logger = logging.getLogger(__name__)
+    
     try:
-        distributions = get_distributions_by_environment()
-
-        # Process environments in order: staging first, then production
-        environments = [Environment.STAGING, Environment.PRODUCTION]
-
-        for step, env in enumerate(environments, 1):
-            dist = distributions[env]
-            print(f"\nStep {step}: Invalidating {env.value} distribution...")
-            invalidation = invalidate_cache(dist, env)
-            wait_for_invalidation(dist, invalidation["Id"])
-
-            # Add stabilization wait between environments
-            if env == Environment.STAGING:
-                print(f"\nWaiting for {env.value} to stabilize...")
-                time.sleep(30)
-
-        print("\nBlue-green cache invalidation completed successfully.")
-
+        invalidator = CloudFrontCacheInvalidator()
+        invalidator.execute_blue_green_invalidation()
+        
+    except CloudFrontInvalidationError as e:
+        logger.error(f"CloudFront invalidation error: {e}")
+        sys.exit(1)
+    except KeyboardInterrupt:
+        logger.warning("Process interrupted by user")
+        sys.exit(130)
     except Exception as e:
-        print(f"\nError during cache invalidation: {e}")
-        raise
+        logger.error(f"Unexpected error: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
