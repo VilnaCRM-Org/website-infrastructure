@@ -17,6 +17,8 @@ phases:
       - "echo #### Turn Of Alarm Actions"
       - "aws cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/deploy_content.py"
+      - "echo #### Invalidate CloudFront Cache"
+      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/cache_invalidation.py"
       - "echo #### Turn On Alarm Actions"
       - "aws cloudwatch enable-alarm-actions --alarm-names $ALARM_NAME"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/continuous_deployment_switch.py"
