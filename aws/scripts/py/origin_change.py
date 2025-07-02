@@ -13,7 +13,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
 class CloudFrontOriginSwapError(Exception):
@@ -32,16 +32,16 @@ class CloudFrontOriginSwapper:
         region = os.environ.get("CLOUDFRONT_REGION")
         if not region:
             raise CloudFrontOriginSwapError(
-                "CLOUDFRONT_REGION environment variable is required"
+                "CLOUDFRONT_REGION environment variable is required",
             )
         return region
 
-    def _run_aws_command(self, command: List[str]) -> Dict[str, Any]:
+    def _run_aws_command(self, command: list[str]) -> dict[str, Any]:
         """Run AWS CLI command and return parsed JSON result"""
         try:
             self.logger.debug("Running: %s", " ".join(command))
             result = subprocess.check_output(
-                command, stderr=subprocess.STDOUT, text=True
+                command, stderr=subprocess.STDOUT, text=True,
             )
             return json.loads(result)
         except subprocess.CalledProcessError as e:
@@ -49,7 +49,7 @@ class CloudFrontOriginSwapper:
         except json.JSONDecodeError as e:
             raise CloudFrontOriginSwapError("Failed to parse AWS CLI response") from e
 
-    def _fetch_distribution_ids(self) -> List[str]:
+    def _fetch_distribution_ids(self) -> list[str]:
         """Fetch all CloudFront distribution IDs"""
         self.logger.info("Fetching distribution IDs...")
 
@@ -61,14 +61,14 @@ class CloudFrontOriginSwapper:
                 "--region",
                 self.region,
                 "--no-cli-pager",
-            ]
+            ],
         )
 
         distribution_ids = [item["Id"] for item in result["DistributionList"]["Items"]]
         self.logger.info("Found %d distributions", len(distribution_ids))
         return distribution_ids
 
-    def _fetch_distribution_config(self, distribution_id: str) -> Dict[str, Any]:
+    def _fetch_distribution_config(self, distribution_id: str) -> dict[str, Any]:
         """Fetch configuration for a single distribution"""
         return self._run_aws_command(
             [
@@ -80,11 +80,11 @@ class CloudFrontOriginSwapper:
                 "--region",
                 self.region,
                 "--no-cli-pager",
-            ]
+            ],
         )
 
     def _should_skip_distribution(
-        self, distribution_id: str, config: Dict[str, Any]
+        self, distribution_id: str, config: dict[str, Any]
     ) -> bool:
         """Check if distribution should be skipped (has app. prefix)"""
         dist_config = config["DistributionConfig"]
@@ -106,7 +106,7 @@ class CloudFrontOriginSwapper:
             return True
         return False
 
-    def _filter_distributions(self) -> Tuple[List[str], List[Dict[str, Any]]]:
+    def _filter_distributions(self) -> tuple[list[str], list[dict[str, Any]]]:
         """Fetch and filter distributions, excluding app distributions"""
         self.logger.info("Filtering distributions...")
 
@@ -123,12 +123,12 @@ class CloudFrontOriginSwapper:
 
         if len(filtered_configs) != 2:
             raise CloudFrontOriginSwapError(
-                f"Expected 2 distributions, found {len(filtered_configs)}. Cannot swap."
+                f"Expected 2 distributions, found {len(filtered_configs)}. Cannot swap.",
             )
 
         return filtered_ids, filtered_configs
 
-    def _swap_origins(self, configs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _swap_origins(self, configs: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Swap origins between two distribution configurations"""
         self.logger.info("Swapping origins...")
 
@@ -147,7 +147,7 @@ class CloudFrontOriginSwapper:
         return configs
 
     def _update_distribution(
-        self, distribution_id: str, config: Dict[str, Any]
+        self, distribution_id: str, config: dict[str, Any]
     ) -> None:
         """Update a single distribution configuration"""
         etag = config["ETag"]
@@ -170,7 +170,7 @@ class CloudFrontOriginSwapper:
                     self.region,
                     "--if-match",
                     etag,
-                ]
+                ],
             )
             self.logger.info("Updated distribution %s", distribution_id)
         finally:
@@ -194,8 +194,8 @@ class CloudFrontOriginSwapper:
 
             self.logger.info("Origin swap completed successfully")
 
-        except Exception:
-            self.logger.exception("Origin swap failed")
+        except Exception as e:
+            self.logger.exception("Origin swap failed: %s", type(e).__name__)
             raise
 
 
@@ -235,8 +235,8 @@ def main() -> None:
     except KeyboardInterrupt:
         logger.warning("Process interrupted")
         sys.exit(130)
-    except Exception:
-        logger.exception("Unexpected error")
+    except Exception as e:
+        logger.exception("Unexpected error: %s", type(e).__name__)
         sys.exit(1)
 
 
