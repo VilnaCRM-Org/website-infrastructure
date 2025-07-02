@@ -292,8 +292,8 @@ class CloudFrontCacheInvalidator:
 
             self.logger.info("Blue-green cache invalidation completed successfully")
 
-        except Exception as e:
-            self.logger.exception("Cache invalidation failed: %s", e)
+        except Exception:
+            self.logger.exception("Cache invalidation failed")
             raise
 
 
@@ -328,14 +328,14 @@ def main() -> None:
         invalidator = CloudFrontCacheInvalidator()
         invalidator.execute_blue_green_invalidation()
 
-    except CloudFrontInvalidationError as e:
-        logger.exception("CloudFront invalidation error: %s", e)
+    except CloudFrontInvalidationError:
+        logger.exception("CloudFront invalidation error")
         sys.exit(1)
     except KeyboardInterrupt:
         logger.warning("Process interrupted by user")
         sys.exit(130)
-    except Exception as e:
-        logger.exception("Unexpected error: %s", e)
+    except Exception:
+        logger.exception("Unexpected error")
         sys.exit(1)
 
 
