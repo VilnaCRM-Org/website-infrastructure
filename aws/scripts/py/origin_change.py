@@ -41,7 +41,9 @@ class CloudFrontOriginSwapper:
         try:
             self.logger.debug("Running: %s", " ".join(command))
             result = subprocess.check_output(
-                command, stderr=subprocess.STDOUT, text=True,
+                command,
+                stderr=subprocess.STDOUT,
+                text=True,
             )
             return json.loads(result)
         except subprocess.CalledProcessError as e:
