@@ -86,7 +86,7 @@ class CloudFrontOriginSwapper:
         )
 
     def _should_skip_distribution(
-        self, distribution_id: str, config: dict[str, Any]
+        self, distribution_id: str, config: dict[str, Any],
     ) -> bool:
         """Check if distribution should be skipped (has app. prefix)"""
         dist_config = config["DistributionConfig"]
@@ -103,7 +103,7 @@ class CloudFrontOriginSwapper:
 
         if has_app_alias or has_app_origin:
             self.logger.info(
-                "Skipping distribution %s (has app. prefix)", distribution_id
+                "Skipping distribution %s (has app. prefix)", distribution_id,
             )
             return True
         return False
@@ -125,7 +125,8 @@ class CloudFrontOriginSwapper:
 
         if len(filtered_configs) != 2:
             raise CloudFrontOriginSwapError(
-                f"Expected 2 distributions, found {len(filtered_configs)}. Cannot swap.",
+                f"Expected exactly 2 distributions for origin swap (excluding app distributions), "
+                f"but found {len(filtered_configs)}. Check your CloudFront configuration.",
             )
 
         return filtered_ids, filtered_configs
@@ -133,9 +134,6 @@ class CloudFrontOriginSwapper:
     def _swap_origins(self, configs: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Swap origins between two distribution configurations"""
         self.logger.info("Swapping origins...")
-
-        if len(configs) != 2:
-            raise CloudFrontOriginSwapError("Exactly two configurations required")
 
         config1, config2 = configs
         origins1 = config1["DistributionConfig"].get("Origins")
@@ -149,7 +147,7 @@ class CloudFrontOriginSwapper:
         return configs
 
     def _update_distribution(
-        self, distribution_id: str, config: dict[str, Any]
+        self, distribution_id: str, config: dict[str, Any],
     ) -> None:
         """Update a single distribution configuration"""
         etag = config["ETag"]
@@ -215,7 +213,7 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="CloudFront origin swap for blue-green deployments"
+        description="CloudFront origin swap for blue-green deployments",
     )
     parser.add_argument(
         "--log-level",
