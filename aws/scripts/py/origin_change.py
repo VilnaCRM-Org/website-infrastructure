@@ -86,7 +86,9 @@ class CloudFrontOriginSwapper:
         )
 
     def _should_skip_distribution(
-        self, distribution_id: str, config: dict[str, Any],
+        self,
+        distribution_id: str,
+        config: dict[str, Any],
     ) -> bool:
         """Check if distribution should be skipped (has app. prefix)"""
         dist_config = config["DistributionConfig"]
@@ -103,7 +105,8 @@ class CloudFrontOriginSwapper:
 
         if has_app_alias or has_app_origin:
             self.logger.info(
-                "Skipping distribution %s (has app. prefix)", distribution_id,
+                "Skipping distribution %s (has app. prefix)",
+                distribution_id,
             )
             return True
         return False
@@ -147,7 +150,9 @@ class CloudFrontOriginSwapper:
         return configs
 
     def _update_distribution(
-        self, distribution_id: str, config: dict[str, Any],
+        self,
+        distribution_id: str,
+        config: dict[str, Any],
     ) -> None:
         """Update a single distribution configuration"""
         etag = config["ETag"]
