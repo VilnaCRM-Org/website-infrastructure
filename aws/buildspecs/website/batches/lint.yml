@@ -1,24 +1,30 @@
 version: 0.2
 
+env:
+  variables:
+    DIND: 1
+    ACCOUNT_ID: $ACCOUNT_ID
+    ENVIRONMENT: $ENVIRONMENT
+    TEST_REPORTS_BUCKET: $TEST_REPORTS_BUCKET
+    LHCI_REPORTS_BUCKET: $LHCI_REPORTS_BUCKET
+    WEBSITE_GIT_REPOSITORY_LINK: $WEBSITE_GIT_REPOSITORY_LINK
+
 phases:
   install:
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/install_packages.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/configure-dind.sh"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/setup_makefile_targets.sh"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/add_prod_targets.sh"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_unit_mutation_lint_targets.sh"
 
   build:
     commands:
-      - echo "🔍 Running lint checks with built-in DIND support"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
+      - echo "🔍 Running linting checks with standalone DIND script"
       - cd ${CODEBUILD_SRC_DIR}/website
-      - mkdir -p lint-logs
-      - DIND=1 make lint-next 2>&1 | tee lint-logs/next.log
-      - DIND=1 make lint-tsc 2>&1 | tee lint-logs/tsc.log
-      - DIND=1 make lint-md 2>&1 | tee lint-logs/md.log
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/setup-dind-environment.sh lint-all"
+    finally:
+      - echo "📊 Generating test reports"
+      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:
