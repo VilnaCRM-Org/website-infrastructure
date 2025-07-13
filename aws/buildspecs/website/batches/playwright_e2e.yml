@@ -19,13 +19,12 @@ phases:
   build:
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - echo "🎭 Running Playwright E2E tests with standalone DIND script"
+      - echo "🎭 Running E2E tests with standalone DIND script"
       - cd ${CODEBUILD_SRC_DIR}/website
       - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/setup-dind-environment.sh test-e2e"
     finally:
-      - echo "📊 Generating test reports"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:
-    - "website/playwright-e2e-reports/**/*"
+    - "website/playwright-report/**/*"
