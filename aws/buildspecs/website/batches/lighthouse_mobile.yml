@@ -19,13 +19,13 @@ phases:
   build:
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - echo "📱 Running Lighthouse mobile tests with standalone DIND script"
       - cd ${CODEBUILD_SRC_DIR}/website
+      - echo "📱 Running Lighthouse mobile tests using centralized script"
       - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/setup-dind-environment.sh lighthouse-mobile"
-    finally:
       - echo "📊 Generating test reports"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:
-    - "website/lhci-reports-mobile/**/*"
+    - website/lhci-reports-mobile/**/*
+  name: lighthouse-mobile-reports

@@ -19,13 +19,12 @@ phases:
   build:
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - echo "🎨 Running Playwright Visual tests with standalone DIND script"
+      - echo "🎨 Running Visual tests with standalone DIND script"
       - cd ${CODEBUILD_SRC_DIR}/website
       - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/setup-dind-environment.sh test-visual"
     finally:
-      - echo "📊 Generating test reports"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:
-    - "website/playwright-visual-reports/**/*"
+    - "website/playwright-report/**/*"
