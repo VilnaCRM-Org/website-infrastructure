@@ -2,12 +2,12 @@ version: 0.2
 
 env:
   variables:
-    DIND: 1
     ACCOUNT_ID: $ACCOUNT_ID
     ENVIRONMENT: $ENVIRONMENT
     TEST_REPORTS_BUCKET: $TEST_REPORTS_BUCKET
     LHCI_REPORTS_BUCKET: $LHCI_REPORTS_BUCKET
     WEBSITE_GIT_REPOSITORY_LINK: $WEBSITE_GIT_REPOSITORY_LINK
+    DIND: "1"
 
 phases:
   install:
@@ -19,13 +19,13 @@ phases:
   build:
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - cd ${CODEBUILD_SRC_DIR}/website
-      - echo "🔦 Running Lighthouse desktop tests using centralized script"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/setup-dind-environment.sh lighthouse-desktop"
-      - echo "📊 Generating test reports"
+      - "echo 'Running Lighthouse Desktop tests with new batch script'"
+      - "cd ${CODEBUILD_SRC_DIR}/website"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_lhci_leak.sh lighthouse-desktop"
+    finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:
-    - website/lhci-reports-desktop/**/*
-  name: lighthouse-desktop-reports
+    - "website/lhci-reports-desktop/**/*"
+    - "website/**/*"
