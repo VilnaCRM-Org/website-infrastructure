@@ -7,7 +7,7 @@ env:
     TEST_REPORTS_BUCKET: $TEST_REPORTS_BUCKET
     LHCI_REPORTS_BUCKET: $LHCI_REPORTS_BUCKET
     WEBSITE_GIT_REPOSITORY_LINK: $WEBSITE_GIT_REPOSITORY_LINK
-    DIND: 1
+    DIND: "1"
 
 phases:
   install:
@@ -19,9 +19,9 @@ phases:
   build:
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - "echo 'Running unit tests with standalone DIND script'"
+      - "echo 'Running unit tests with new batch script'"
       - "cd ${CODEBUILD_SRC_DIR}/website"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/setup-dind-environment.sh test-unit"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_unit_mutation_lint.sh test-unit"
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
