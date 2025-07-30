@@ -21,7 +21,7 @@ phases:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - echo "🔍 Running linting checks with new batch script"
       - cd ${CODEBUILD_SRC_DIR}/website
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_unit_mutation_lint.sh lint-all"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_unit_mutation_lint.sh test-lint"
     finally:
       - echo "📊 Generating test reports"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
