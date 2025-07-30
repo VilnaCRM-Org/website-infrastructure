@@ -93,11 +93,9 @@ class CloudFrontOriginSwapper:
         """Check if distribution should be skipped (has app. prefix)"""
         dist_config = config["DistributionConfig"]
 
-        # Check aliases
         aliases = dist_config.get("Aliases", {}).get("Items", [])
         has_app_alias = any(alias.startswith("app.") for alias in aliases)
 
-        # Check origins
         origins = dist_config.get("Origins", {}).get("Items", [])
         has_app_origin = any(
             "app." in origin.get("DomainName", "") for origin in origins
@@ -138,13 +136,13 @@ class CloudFrontOriginSwapper:
         """Swap origins between two distribution configurations"""
         self.logger.info("Swapping origins...")
 
-        config1, config2 = configs
-        origins1 = config1["DistributionConfig"].get("Origins")
-        origins2 = config2["DistributionConfig"].get("Origins")
+        first_config, second_config = configs
+        first_origins = first_config["DistributionConfig"].get("Origins")
+        second_origins = second_config["DistributionConfig"].get("Origins")
 
-        if origins1 and origins2:
-            config1["DistributionConfig"]["Origins"] = origins2
-            config2["DistributionConfig"]["Origins"] = origins1
+        if first_origins and second_origins:
+            first_config["DistributionConfig"]["Origins"] = second_origins
+            second_config["DistributionConfig"]["Origins"] = first_origins
 
         self.logger.info("Origins swapped successfully")
         return configs
@@ -186,13 +184,10 @@ class CloudFrontOriginSwapper:
         self.logger.info("Starting CloudFront origin swap...")
 
         try:
-            # Get filtered distributions
             distribution_ids, configs = self._filter_distributions()
 
-            # Swap origins
             updated_configs = self._swap_origins(configs)
 
-            # Update distributions
             self.logger.info("Updating distributions...")
             for dist_id, config in zip(distribution_ids, updated_configs):
                 self._update_distribution(dist_id, config)
