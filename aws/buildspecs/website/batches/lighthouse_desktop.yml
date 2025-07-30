@@ -21,7 +21,7 @@ phases:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
       - "echo 'Running Lighthouse Desktop tests with new batch script'"
       - "cd ${CODEBUILD_SRC_DIR}/website"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_lhci_leak.sh lighthouse-desktop"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_lhci_leak.sh test-lighthouse-desktop"
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
