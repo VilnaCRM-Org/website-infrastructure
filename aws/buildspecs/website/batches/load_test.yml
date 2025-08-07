@@ -7,6 +7,7 @@ env:
     TEST_REPORTS_BUCKET: $TEST_REPORTS_BUCKET
     LHCI_REPORTS_BUCKET: $LHCI_REPORTS_BUCKET
     WEBSITE_GIT_REPOSITORY_LINK: $WEBSITE_GIT_REPOSITORY_LINK
+    DIND: "1"
 
 phases:
   install:
@@ -14,19 +15,17 @@ phases:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/install_packages.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/configure-dind.sh"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/setup_makefile_targets.sh"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/add_prod_targets.sh"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_pw_load_targets.sh"
+
   build:
     commands:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - echo "🚀 Running Load tests with built-in DIND support"
-      - cd ${CODEBUILD_SRC_DIR}/website
-      - DIND=1 make load-tests
+      - "echo 'Running Load tests with new batch script'"
+      - "cd ${CODEBUILD_SRC_DIR}/website"
+      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_pw_load.sh test-load"
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
 artifacts:
   files:
-    - "website/src/test/load/results/**/*"
+    - "website/src/test/load/reports/**/*"
+    - "website/**/*"
