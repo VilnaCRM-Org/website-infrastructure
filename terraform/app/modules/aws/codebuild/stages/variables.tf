@@ -36,5 +36,5 @@ variable "build_projects" {
 variable "build_timeout" {
   description = "Timeout for the CodeBuild project"
   type        = number
-  default     = 25
+  default     = 35
 }
