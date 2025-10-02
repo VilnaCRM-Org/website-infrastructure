@@ -49,35 +49,70 @@ def check_origins(origins):
     return False
 
 
-def deploy_files(bucket_name):
-    print(f"Deploying files to bucket: {bucket_name}")
-    return subprocess.check_output(
-        ["aws", "s3", "sync", "./out", f"s3://{bucket_name}"]
-    )
+def deploy_files(target_bucket):
+    print(f"Deploying files to target bucket: {target_bucket}")
+    try:
+        result = subprocess.check_output(
+            ["aws", "s3", "sync", "./out", f"s3://{target_bucket}"]
+        )
+        print(f"Successfully deployed to bucket: {target_bucket}")
+        return result
+    except subprocess.CalledProcessError as e:
+        print(f"Error deploying to bucket {target_bucket}: {e}")
+        raise
 
+
+def determine_deployment_target(bucket_name):
+    """
+    Determine which bucket to deploy to based on current production setup.
+    Deploy to the environment that is NOT currently serving production traffic.
+    """
+    print("Determining deployment target for blue-green deployment...")
+    
+    cloudfront_distributions = fetch_distributions()
+    
+    # Find production distribution (the one with aliases)
+    production_distribution = None
+    for dist in cloudfront_distributions["DistributionList"]["Items"]:
+        if dist.get("Aliases", {}).get("Quantity", 0) > 0:
+            # This is the production distribution
+            production_distribution = dist
+            break
+    
+    if not production_distribution:
+        print("Could not find production distribution, defaulting to staging bucket")
+        return f"staging.{bucket_name}"
+    
+    # Check which bucket production is currently pointing to
+    origins = production_distribution["Origins"]["Items"]
+    current_prod_origin = origins[0]["DomainName"]
+    
+    print(f"Production currently points to: {current_prod_origin}")
+    
+    if "staging." in current_prod_origin:
+        # Production is on Green (staging bucket), deploy to Blue (main bucket)
+        target_bucket = bucket_name
+        environment = "Blue"
+    else:
+        # Production is on Blue (main bucket), deploy to Green (staging bucket)
+        target_bucket = f"staging.{bucket_name}"
+        environment = "Green"
+    
+    print(f"Deploying to {environment} environment: {target_bucket}")
+    return target_bucket
 
 def main():
-    print("Starting main function...")
+    print("Starting blue-green deployment...")
     bucket_name = get_bucket()
-    print(f"Bucket: {bucket_name}")
+    print(f"Base bucket name: {bucket_name}")
 
-    cloudfront_distributions = fetch_distributions()
-    print("CloudFront distributions fetched.")
-
-    staging_distribution = get_staging_distribution(cloudfront_distributions)
-    if staging_distribution:
-        print(f"Staging distribution: {staging_distribution}")
-
-        origins = get_origins(staging_distribution)
-        if origins:
-            print(f"Origins: {origins}")
-            if check_origins(origins):
-                deploy_files(bucket_name)
-                print("Files deployed to bucket.")
-                return
-
-    deploy_files(bucket_name)
-    print("Files deployed to bucket.")
+    # Determine which environment to deploy to (the non-production one)
+    target_bucket = determine_deployment_target(bucket_name)
+    
+    # Deploy to the target environment only
+    deploy_files(target_bucket)
+    print(f"Blue-green deployment completed. New version deployed to: {target_bucket}")
+    print("Use the release pipeline to promote this version to production.")
 
     print("Main function completed.")
 
