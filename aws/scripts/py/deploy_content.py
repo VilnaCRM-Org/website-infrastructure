@@ -68,20 +68,17 @@ def find_project_distributions(bucket_name):
     Filters out distributions from other projects like app.vilnacrm.com.
     """
     print(f"Finding distributions for project with bucket: {bucket_name}")
-    
+
     cloudfront_distributions = fetch_distributions()
-    project_distributions = {
-        "production": None,
-        "staging": None
-    }
-    
+    project_distributions = {"production": None, "staging": None}
+
     for dist in cloudfront_distributions["DistributionList"]["Items"]:
         aliases = dist.get("Aliases", {}).get("Items", [])
         origins = dist.get("Origins", {}).get("Items", [])
-        
+
         # Check if this distribution belongs to our project
         is_our_project = False
-        
+
         # Method 1: Check if any alias matches our domain exactly
         domain_from_bucket = bucket_name  # e.g., "vilnacrm.com"
         for alias in aliases:
@@ -89,21 +86,23 @@ def find_project_distributions(bucket_name):
                 is_our_project = True
                 print(f"Distribution {dist['Id']} matches domain: {alias}")
                 break
-        
+
         # Method 2: Check if origins point to our specific buckets
         if not is_our_project:
             for origin in origins:
                 origin_domain = origin.get("DomainName", "")
-                if (f"{bucket_name}.s3." in origin_domain or 
-                    f"staging.{bucket_name}.s3." in origin_domain):
+                if (
+                    f"{bucket_name}.s3." in origin_domain
+                    or f"staging.{bucket_name}.s3." in origin_domain
+                ):
                     is_our_project = True
                     print(f"Distribution {dist['Id']} matches origin: {origin_domain}")
                     break
-        
+
         if not is_our_project:
             print(f"Skipping distribution {dist['Id']} - not for project {bucket_name}")
             continue
-            
+
         # Determine if this is production or staging distribution
         if dist.get("Staging", False):
             project_distributions["staging"] = dist
@@ -111,8 +110,9 @@ def find_project_distributions(bucket_name):
         elif aliases:  # Production has aliases (domain names)
             project_distributions["production"] = dist
             print(f"Found production distribution: {dist['Id']}")
-    
+
     return project_distributions
+
 
 def determine_deployment_target(bucket_name):
     """
@@ -121,12 +121,12 @@ def determine_deployment_target(bucket_name):
     Only considers distributions for this specific project.
     """
     print("Determining deployment target for blue-green deployment...")
-    
+
     project_distributions = find_project_distributions(bucket_name)
-    
+
     production_distribution = project_distributions["production"]
     staging_distribution = project_distributions["staging"]
-    
+
     if not production_distribution:
         print(f"ERROR: Could not find production distribution for {bucket_name}")
         print("This might happen if:")
@@ -134,18 +134,20 @@ def determine_deployment_target(bucket_name):
         print("2. The distribution origins don't point to the expected buckets")
         print("3. Multiple projects exist and filtering failed")
         raise ValueError(f"No production distribution found for {bucket_name}")
-    
+
     if not staging_distribution:
         print(f"WARNING: Could not find staging distribution for {bucket_name}")
         print("Defaulting to staging bucket")
         return f"staging.{bucket_name}"
-    
+
     # Check which bucket production is currently pointing to
     origins = production_distribution["Origins"]["Items"]
     current_prod_origin = origins[0]["DomainName"]
-    
-    print(f"Production distribution {production_distribution['Id']} points to: {current_prod_origin}")
-    
+
+    print(
+        f"Production distribution {production_distribution['Id']} points to: {current_prod_origin}"
+    )
+
     if "staging." in current_prod_origin:
         # Production is on Green (staging bucket), deploy to Blue (main bucket)
         target_bucket = bucket_name
@@ -156,7 +158,7 @@ def determine_deployment_target(bucket_name):
         target_bucket = f"staging.{bucket_name}"
         environment = "Green"
         print("Production is currently on Blue, deploying to Green")
-    
+
     print(f"Deploying to {environment} environment: {target_bucket}")
     return target_bucket
 
