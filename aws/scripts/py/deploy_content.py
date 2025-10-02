@@ -53,8 +53,7 @@ def deploy_files(target_bucket):
     print(f"Deploying files to target bucket: {target_bucket}")
     try:
         result = subprocess.check_output(
-            ["aws", "s3", "sync", "./out", f"s3://{target_bucket}"],
-            text=True
+            ["aws", "s3", "sync", "./out", f"s3://{target_bucket}"], text=True
         )
         print(f"Successfully deployed to bucket: {target_bucket}")
         print(f"Deploy output: {result}")
