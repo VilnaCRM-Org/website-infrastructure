@@ -49,35 +49,135 @@ def check_origins(origins):
     return False
 
 
-def deploy_files(bucket_name):
-    print(f"Deploying files to bucket: {bucket_name}")
-    return subprocess.check_output(
-        ["aws", "s3", "sync", "./out", f"s3://{bucket_name}"]
+def deploy_files(target_bucket):
+    print(f"Deploying files to target bucket: {target_bucket}")
+    try:
+        result = subprocess.check_output(
+            ["aws", "s3", "sync", "./out", f"s3://{target_bucket}"], text=True
+        )
+        print(f"Successfully deployed to bucket: {target_bucket}")
+        print(f"Deploy output: {result}")
+        return result
+    except subprocess.CalledProcessError as e:
+        print(f"Error deploying to bucket {target_bucket}: {e}")
+        print(f"Command output: {e.output}")
+        print(f"Return code: {e.returncode}")
+        raise
+
+
+def find_project_distributions(bucket_name):
+    """
+    Find the specific distributions for this project based on bucket name.
+    Filters out distributions from other projects like app.vilnacrm.com.
+    """
+    print(f"Finding distributions for project with bucket: {bucket_name}")
+
+    cloudfront_distributions = fetch_distributions()
+    project_distributions = {"production": None, "staging": None}
+
+    for dist in cloudfront_distributions["DistributionList"]["Items"]:
+        aliases = dist.get("Aliases", {}).get("Items", [])
+        origins = dist.get("Origins", {}).get("Items", [])
+
+        # Check if this distribution belongs to our project
+        is_our_project = False
+
+        # Method 1: Check if any alias matches our domain exactly
+        domain_from_bucket = bucket_name  # e.g., "vilnacrm.com"
+        for alias in aliases:
+            if alias == domain_from_bucket or alias == f"www.{domain_from_bucket}":
+                is_our_project = True
+                print(f"Distribution {dist['Id']} matches domain: {alias}")
+                break
+
+        # Method 2: Check if origins point to our specific buckets
+        if not is_our_project:
+            for origin in origins:
+                origin_domain = origin.get("DomainName", "")
+                if (
+                    f"{bucket_name}.s3." in origin_domain
+                    or f"staging.{bucket_name}.s3." in origin_domain
+                ):
+                    is_our_project = True
+                    print(f"Distribution {dist['Id']} matches origin: {origin_domain}")
+                    break
+
+        if not is_our_project:
+            print(f"Skipping distribution {dist['Id']} - not for project {bucket_name}")
+            continue
+
+        # Determine if this is production or staging distribution
+        if dist.get("Staging", False):
+            project_distributions["staging"] = dist
+            print(f"Found staging distribution: {dist['Id']}")
+        elif aliases:  # Production has aliases (domain names)
+            project_distributions["production"] = dist
+            print(f"Found production distribution: {dist['Id']}")
+
+    return project_distributions
+
+
+def determine_deployment_target(bucket_name):
+    """
+    Determine which bucket to deploy to based on current production setup.
+    Deploy to the environment that is NOT currently serving production traffic.
+    Only considers distributions for this specific project.
+    """
+    print("Determining deployment target for blue-green deployment...")
+
+    project_distributions = find_project_distributions(bucket_name)
+
+    production_distribution = project_distributions["production"]
+    staging_distribution = project_distributions["staging"]
+
+    if not production_distribution:
+        print(f"ERROR: Could not find production distribution for {bucket_name}")
+        print("This might happen if:")
+        print("1. The distribution aliases don't match the bucket name")
+        print("2. The distribution origins don't point to the expected buckets")
+        print("3. Multiple projects exist and filtering failed")
+        raise ValueError(f"No production distribution found for {bucket_name}")
+
+    if not staging_distribution:
+        print(f"WARNING: Could not find staging distribution for {bucket_name}")
+        print("Defaulting to staging bucket")
+        return f"staging.{bucket_name}"
+
+    # Check which bucket production is currently pointing to
+    origins = production_distribution["Origins"]["Items"]
+    current_prod_origin = origins[0]["DomainName"]
+
+    print(
+        f"Production distribution {production_distribution['Id']} points to: {current_prod_origin}"
     )
+
+    if "staging." in current_prod_origin:
+        # Production is on Green (staging bucket), deploy to Blue (main bucket)
+        target_bucket = bucket_name
+        environment = "Blue"
+        print("Production is currently on Green, deploying to Blue")
+    else:
+        # Production is on Blue (main bucket), deploy to Green (staging bucket)
+        target_bucket = f"staging.{bucket_name}"
+        environment = "Green"
+        print("Production is currently on Blue, deploying to Green")
+
+    print(f"Deploying to {environment} environment: {target_bucket}")
+    return target_bucket
 
 
 def main():
-    print("Starting main function...")
+    print("Starting blue-green deployment...")
     bucket_name = get_bucket()
-    print(f"Bucket: {bucket_name}")
+    print(f"Base bucket name: {bucket_name}")
 
-    cloudfront_distributions = fetch_distributions()
-    print("CloudFront distributions fetched.")
+    # Determine which environment to deploy to (the non-production one)
+    target_bucket = determine_deployment_target(bucket_name)
 
-    staging_distribution = get_staging_distribution(cloudfront_distributions)
-    if staging_distribution:
-        print(f"Staging distribution: {staging_distribution}")
-
-        origins = get_origins(staging_distribution)
-        if origins:
-            print(f"Origins: {origins}")
-            if check_origins(origins):
-                deploy_files(bucket_name)
-                print("Files deployed to bucket.")
-                return
-
-    deploy_files(bucket_name)
-    print("Files deployed to bucket.")
+    # Deploy to the target environment only
+    deploy_files(target_bucket)
+    print(f"Blue-green deployment completed. New version deployed to: {target_bucket}")
+    print("Use the release pipeline to promote this version to production.")
 
     print("Main function completed.")
 
