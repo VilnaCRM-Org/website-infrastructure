@@ -150,12 +150,12 @@ def determine_deployment_target(bucket_name):
         # Production is on Green (staging bucket), deploy to Blue (main bucket)
         target_bucket = bucket_name
         environment = "Blue"
-        print(f"Production is currently on Green, deploying to Blue")
+        print("Production is currently on Green, deploying to Blue")
     else:
         # Production is on Blue (main bucket), deploy to Green (staging bucket)
         target_bucket = f"staging.{bucket_name}"
         environment = "Green"
-        print(f"Production is currently on Blue, deploying to Green")
+        print("Production is currently on Blue, deploying to Green")
     
     print(f"Deploying to {environment} environment: {target_bucket}")
     return target_bucket
