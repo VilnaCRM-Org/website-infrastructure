@@ -6,7 +6,7 @@ sandbox_project_name       = "sandbox-test"
 environment                = "test"
 github_connection_name     = "Github"
 source_repo_branch         = "3-implement-sandbox-infrastructure"
-website_repo_branch        = "229-fix-cloudfront-500-error-on-non-existent-paths"
+website_repo_branch        = "235-safari-browser-downloads-404-responses-instead-of-displaying-error-pages"
 website_url                = "vilnacrmtest.com"
 bucket_name                = "vilnacrmtest.com"
 
