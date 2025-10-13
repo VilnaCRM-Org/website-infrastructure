@@ -22,7 +22,7 @@ resource "aws_iam_policy" "github_token_secrets_access_policy" {
           "secretsmanager:DescribeSecret"
         ],
         Effect   = "Allow",
-        Resource = ["arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:github-token-*"]
+        Resource = ["arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:secret:github-token-*"]
       },
       {
         Sid      = "AllowListingSecrets"
