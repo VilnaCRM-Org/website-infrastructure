@@ -6,6 +6,9 @@ resource "awscc_chatbot_slack_channel_configuration" "slack_channel_configuratio
   sns_topic_arns     = var.sns_topic_arns
 }
 
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
 #checkov:skip=CKV_AWS_356:Chatbot requires wildcard access to discover and read all pipelines for monitoring purposes
 data "aws_iam_policy_document" "chatbot_codepipeline_policy" {
   statement {
@@ -20,7 +23,9 @@ data "aws_iam_policy_document" "chatbot_codepipeline_policy" {
       "codepipeline:ListActionExecutions",
       "codepipeline:ListTagsForResource"
     ]
-    resources = ["*"]
+    resources = [
+      "arn:aws:codepipeline:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+    ]
   }
 }
 

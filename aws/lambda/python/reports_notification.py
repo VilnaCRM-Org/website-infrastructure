@@ -40,6 +40,8 @@ def lambda_handler(event, context):
     github_commit_sha = data["github"]["sha"]
 
     project_name = data.get("project_name", "Unknown")
+    if project_name == "Unknown":
+        print("Warning: project_name not found in input data, using default 'Unknown'")
 
     codebuild_logs_link = f"<{codebuild_link}|CodeBuild Logs>"
     github_commit_link = f"<{gh_link}|{github_commit_sha[:7]}>"
