@@ -63,7 +63,8 @@ def lambda_handler(event, context):
     build_succeeding_message = generate_build_succeeding_message(tests)
 
     description = (
-        f"{build_succeeding_message} \n CodeBuild Project: {project_name} \n Commit info: \n Author: {github_commit_author} "
+        f"{build_succeeding_message} \n CodeBuild Project: {project_name} \n "
+        f"Commit info: \n Author: {github_commit_author} "
         f"\n Name: {github_commit_name} \n SHA: {github_commit_link} \n "
         f"{codebuild_logs_link} {reports_message}"
     )

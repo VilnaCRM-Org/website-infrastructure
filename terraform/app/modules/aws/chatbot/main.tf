@@ -6,6 +6,7 @@ resource "awscc_chatbot_slack_channel_configuration" "slack_channel_configuratio
   sns_topic_arns     = var.sns_topic_arns
 }
 
+#checkov:skip=CKV_AWS_356:Chatbot requires wildcard access to discover and read all pipelines for monitoring purposes
 data "aws_iam_policy_document" "chatbot_codepipeline_policy" {
   statement {
     sid    = "CodePipelineReadOnly"
