@@ -21,5 +21,9 @@ resource "awscc_iam_role" "chatbot_role" {
       },
     ]
   })
-  managed_policy_arns = ["arn:aws:iam::aws:policy/AWSResourceExplorerReadOnlyAccess"]
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AWSResourceExplorerReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AWSCodePipelineReadOnlyAccess",
+    "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
+  ]
 }
