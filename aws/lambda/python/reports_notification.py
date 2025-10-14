@@ -38,7 +38,7 @@ def lambda_handler(event, context):
     github_commit_author = data["github"]["author"]
     github_commit_name = data["github"]["name"]
     github_commit_sha = data["github"]["sha"]
-    
+
     project_name = data.get("project_name", "Unknown")
 
     codebuild_logs_link = f"<{codebuild_link}|CodeBuild Logs>"

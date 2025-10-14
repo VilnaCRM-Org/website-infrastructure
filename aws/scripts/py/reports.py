@@ -139,7 +139,9 @@ def process_test(run, config, repository_dir, region, build_id):
     )
 
 
-def compile_data(build_succeeding, codebuild_link, git_info, tests, reports, project_name):
+def compile_data(
+    build_succeeding, codebuild_link, git_info, tests, reports, project_name
+):
     data = {
         "build_succeeding": build_succeeding,
         "codebuild_link": codebuild_link,
@@ -235,7 +237,7 @@ def main():
 
     # Extract project name from build ID (format: "project-name:build-uuid")
     project_name = env_variables["build_id"].split(":")[0]
-    
+
     data = compile_data(
         env_variables["build_succeeding"],
         generate_codebuild_link(
