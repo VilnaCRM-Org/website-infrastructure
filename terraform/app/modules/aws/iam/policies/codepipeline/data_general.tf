@@ -16,6 +16,20 @@ data "aws_iam_policy_document" "general_policy_doc" {
   }
 
   statement {
+    sid    = "CloudFormationPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudformation:CreateResource",
+      "cloudformation:DeleteResource",
+      "cloudformation:GetResource",
+      "cloudformation:GetResourceRequestStatus",
+      "cloudformation:ListResources",
+      "cloudformation:UpdateResource"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
     sid    = "TerraformStateListS3Policy"
     effect = "Allow"
     actions = [
