@@ -39,6 +39,10 @@ def lambda_handler(event, context):
     github_commit_name = data["github"]["name"]
     github_commit_sha = data["github"]["sha"]
 
+    project_name = data.get("project_name", "Unknown")
+    if project_name == "Unknown":
+        print("Warning: project_name not found in input data, using default 'Unknown'")
+
     codebuild_logs_link = f"<{codebuild_link}|CodeBuild Logs>"
     github_commit_link = f"<{gh_link}|{github_commit_sha[:7]}>"
 
@@ -61,7 +65,8 @@ def lambda_handler(event, context):
     build_succeeding_message = generate_build_succeeding_message(tests)
 
     description = (
-        f"{build_succeeding_message} \n Commit info: \n Author: {github_commit_author} "
+        f"{build_succeeding_message} \n CodeBuild Project: {project_name} \n "
+        f"Commit info: \n Author: {github_commit_author} "
         f"\n Name: {github_commit_name} \n SHA: {github_commit_link} \n "
         f"{codebuild_logs_link} {reports_message}"
     )
