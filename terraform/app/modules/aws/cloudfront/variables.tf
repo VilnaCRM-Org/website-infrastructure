@@ -51,7 +51,7 @@ variable "cloudfront_configuration" {
 variable "cloudfront_routing_function_url" {
   type        = string
   description = "CloudFront Routing Function URL"
-  default     = "https://raw.githubusercontent.com/VilnaCRM-Org/website/229-fix-cloudfront-500-error-on-non-existent-paths/scripts/cloudfront_routing.js"
+  default     = "https://raw.githubusercontent.com/VilnaCRM-Org/website/249-add-missing-body-field-to-cloudfront-404-response-to-prevent-5xx-errors/scripts/cloudfront_routing.js"
 }
 
 variable "cloudfront_custom_error_responses" {
