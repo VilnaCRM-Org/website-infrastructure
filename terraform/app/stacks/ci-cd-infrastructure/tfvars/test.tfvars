@@ -6,7 +6,7 @@ sandbox_project_name       = "sandbox-test"
 environment                = "test"
 github_connection_name     = "Github"
 source_repo_branch         = "3-implement-sandbox-infrastructure"
-website_repo_branch        = "249-add-missing-body-field-to-cloudfront-404-response-to-prevent-5xx-errors"
+website_repo_branch        = "253-add-public-ecr-usage-into-the-dockerfiles"
 website_url                = "vilnacrmtest.com"
 bucket_name                = "vilnacrmtest.com"
 
