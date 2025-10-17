@@ -27,6 +27,18 @@ data "aws_iam_policy_document" "chatbot_codepipeline_policy" {
       "arn:aws:codepipeline:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
     ]
   }
+
+  statement {
+    sid    = "CodePipelineExecutionControl"
+    effect = "Allow"
+    actions = [
+      "codepipeline:StartPipelineExecution",
+      "codepipeline:StopPipelineExecution"
+    ]
+    resources = [
+      "arn:aws:codepipeline:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+    ]
+  }
 }
 
 resource "awscc_iam_role" "chatbot_role" {
