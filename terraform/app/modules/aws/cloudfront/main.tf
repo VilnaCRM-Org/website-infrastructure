@@ -87,13 +87,10 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
-  dynamic "viewer_certificate" {
-    for_each = [var.aws_acm_certificate_id]
-    content {
-      acm_certificate_arn      = var.aws_acm_certificate_arn
-      ssl_support_method       = "sni-only"
-      minimum_protocol_version = "TLSv1.2_2021"
-    }
+  viewer_certificate {
+    acm_certificate_arn      = var.aws_acm_certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   dynamic "custom_error_response" {
@@ -198,13 +195,10 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
     }
   }
 
-  dynamic "viewer_certificate" {
-    for_each = [var.aws_acm_certificate_id]
-    content {
-      acm_certificate_arn      = var.aws_acm_certificate_arn
-      ssl_support_method       = "sni-only"
-      minimum_protocol_version = "TLSv1.2_2021"
-    }
+  viewer_certificate {
+    acm_certificate_arn      = var.aws_acm_certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   dynamic "custom_error_response" {
