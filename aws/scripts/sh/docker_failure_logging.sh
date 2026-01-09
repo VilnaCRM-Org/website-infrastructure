@@ -30,7 +30,6 @@ docker_failure_logs() {
 
     docker_failure_cleanup() {
         unset DOCKER_FAILURE_LOGGING_IN_PROGRESS
-        unset DOCKER_FAILURE_LOGGED
         if [ "$errexit_was_set" -eq 1 ]; then
             set -e
         else
@@ -80,6 +79,10 @@ enable_docker_failure_logging() {
     set -E
     trap 'docker_failure_logs $? "${BASH_COMMAND:-unknown}"' ERR
     trap 'docker_failure_logs $? "${BASH_COMMAND:-unknown}"' EXIT
+}
+
+reset_docker_failure_logging() {
+    unset DOCKER_FAILURE_LOGGED
 }
 
 if [ -n "${CODEBUILD_BUILD_ID:-}" ]; then

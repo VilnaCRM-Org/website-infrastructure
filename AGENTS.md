@@ -1,10 +1,12 @@
 # AGENTS.md
 
+
 ## Project overview
 
 - AWS infrastructure for VilnaCRM, managed with Terraform + Terraspace.
 - CI/CD uses CodePipeline/CodeBuild with buildspecs in `aws/buildspecs`.
 - Common automation scripts live in `aws/scripts` (shell + Python).
+
 
 ## Key paths
 
@@ -16,6 +18,7 @@
 - `task/`, `hurl/`: Task runner and healthcheck assets.
 - `.github/workflows/`: GitHub Actions.
 
+
 ## Common commands
 
 - `make help`: list available targets.
@@ -26,11 +29,13 @@
 - `make codebuild-local-set-up`: download CodeBuild local tools.
 - `make codebuild-run buildspec=<path> image=<image>`: run a buildspec locally.
 
+
 ## Environment and config
 
 - Terraspace uses `TS_ENV` or `env=<env>` in make targets.
 - Terraform variables are typically provided via tfvars and `TF_VAR_*`.
 - Local CodeBuild runs expect `.env` for environment variables.
+
 
 ## Safety and expectations
 
