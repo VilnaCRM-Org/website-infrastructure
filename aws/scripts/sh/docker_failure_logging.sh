@@ -6,10 +6,19 @@ docker_failure_logs() {
     local exit_code="$1"
     local failed_command="$2"
 
+    if [ "$exit_code" -eq 0 ]; then
+        return
+    fi
+
+    if [ -n "${DOCKER_FAILURE_LOGGED:-}" ]; then
+        return
+    fi
+
     if [ -n "${DOCKER_FAILURE_LOGGING_IN_PROGRESS:-}" ]; then
         return
     fi
 
+    export DOCKER_FAILURE_LOGGED=1
     export DOCKER_FAILURE_LOGGING_IN_PROGRESS=1
     set +e
 
@@ -59,4 +68,5 @@ enable_docker_failure_logging() {
     export DOCKER_FAILURE_LOGGING_ENABLED=1
     set -E
     trap 'docker_failure_logs $? "${BASH_COMMAND:-unknown}"' ERR
+    trap 'docker_failure_logs $? "${BASH_COMMAND:-unknown}"' EXIT
 }
