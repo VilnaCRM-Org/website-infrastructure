@@ -21,8 +21,6 @@ phases:
   build:
     commands:
       - |
-        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/docker_failure_logging.sh
-        enable_docker_failure_logging
         . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh
         echo "Running Lighthouse Desktop tests with new batch script"
         cd ${CODEBUILD_SRC_DIR}/website

@@ -6,6 +6,7 @@ docker_failure_logs() {
     local exit_code="$1"
     local failed_command="$2"
     local errexit_was_set=0
+    local log_lines="${DOCKER_FAILURE_LOG_LINES:-200}"
 
     if [ "$exit_code" -eq 0 ]; then
         return
@@ -64,7 +65,7 @@ docker_failure_logs() {
 
     for container_id in $container_ids; do
         echo "#### Docker logs for ${container_id}"
-        docker logs --tail 200 "$container_id" || true
+        docker logs --tail "$log_lines" "$container_id" || true
     done
 
     docker_failure_cleanup
