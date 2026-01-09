@@ -92,7 +92,7 @@ resource "aws_cloudfront_distribution" "this" {
     content {
       acm_certificate_arn      = var.aws_acm_certificate_arn
       ssl_support_method       = "sni-only"
-      minimum_protocol_version = var.cloudfront_configuration.minimum_protocol_version
+      minimum_protocol_version = "TLSv1.2_2021"
     }
   }
 
@@ -203,7 +203,7 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
     content {
       acm_certificate_arn      = var.aws_acm_certificate_arn
       ssl_support_method       = "sni-only"
-      minimum_protocol_version = var.cloudfront_configuration.minimum_protocol_version
+      minimum_protocol_version = "TLSv1.2_2021"
     }
   }
 
@@ -219,4 +219,3 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
 
   wait_for_deployment = true
 }
-
