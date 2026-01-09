@@ -17,5 +17,4 @@ jobs:
         uses: bridgecrewio/checkov-action@master
         with:
           directory: terraform
-          download_external_modules: true
-          skip_path: .*/\\.external_modules/.*
+          download_external_modules: false
