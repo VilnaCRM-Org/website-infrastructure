@@ -5,6 +5,7 @@
 docker_failure_logs() {
     local exit_code="$1"
     local failed_command="$2"
+    local errexit_was_set=0
 
     if [ "$exit_code" -eq 0 ]; then
         return
@@ -18,13 +19,22 @@ docker_failure_logs() {
         return
     fi
 
+    case $- in
+        *e*) errexit_was_set=1 ;;
+    esac
+
     export DOCKER_FAILURE_LOGGED=1
     export DOCKER_FAILURE_LOGGING_IN_PROGRESS=1
     set +e
 
     docker_failure_cleanup() {
         unset DOCKER_FAILURE_LOGGING_IN_PROGRESS
-        set -e
+        unset DOCKER_FAILURE_LOGGED
+        if [ "$errexit_was_set" -eq 1 ]; then
+            set -e
+        else
+            set +e
+        fi
     }
 
     echo "#### Command failed (exit ${exit_code}): ${failed_command}"
@@ -70,3 +80,7 @@ enable_docker_failure_logging() {
     trap 'docker_failure_logs $? "${BASH_COMMAND:-unknown}"' ERR
     trap 'docker_failure_logs $? "${BASH_COMMAND:-unknown}"' EXIT
 }
+
+if [ -n "${CODEBUILD_BUILD_ID:-}" ]; then
+    enable_docker_failure_logging
+fi

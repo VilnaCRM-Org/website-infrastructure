@@ -30,7 +30,6 @@ phases:
     commands:
       - |
         . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/docker_failure_logging.sh
-        enable_docker_failure_logging
         COMMENT_BODY="The deployment process for the sandbox has started.
         Please wait until the latest version is ready"
 
