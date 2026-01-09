@@ -18,3 +18,4 @@ jobs:
         with:
           directory: terraform
           download_external_modules: true
+          skip_path: terraform/.external_modules
