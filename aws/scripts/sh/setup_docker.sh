@@ -5,6 +5,11 @@
 
 set -e
 
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "${script_dir}/docker_failure_logging.sh"
+
+enable_docker_failure_logging
+
 echo "#### Starting Docker daemon..."
 
 # Start Docker daemon in background

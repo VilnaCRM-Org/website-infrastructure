@@ -2,6 +2,7 @@ version: 0.2
 
 env:
   variables:
+    BASH_ENV: "aws/scripts/sh/docker_failure_logging.sh"
     ACCOUNT_ID: $ACCOUNT_ID
     ENVIRONMENT: $ENVIRONMENT
     TEST_REPORTS_BUCKET: $TEST_REPORTS_BUCKET
@@ -12,16 +13,20 @@ env:
 phases:
   install:
     commands:
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/install_packages.sh"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh"
+      - |
+        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/install_packages.sh
+        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh
+        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh
 
   build:
     commands:
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - "echo 'Running Lighthouse Mobile tests with new batch script'"
-      - "cd ${CODEBUILD_SRC_DIR}/website"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_lhci_leak.sh test-lighthouse-mobile"
+      - |
+        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/docker_failure_logging.sh
+        enable_docker_failure_logging
+        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh
+        echo "Running Lighthouse Mobile tests with new batch script"
+        cd ${CODEBUILD_SRC_DIR}/website
+        . ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_lhci_leak.sh test-lighthouse-mobile
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 
