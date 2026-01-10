@@ -2,14 +2,14 @@ version: "3.8"
 
 services:
   terraform:
-    image: hashicorp/terraform:1.10.5
+    image: hashicorp/terraform:1.14.3
     volumes:
       - ../terraform:/infra
       - ~/.aws:/root/.aws:ro
     working_dir: /infra
 
   terraspace:
-    image: vilnacrm-terraspace:1.10.5
+    image: vilnacrm-terraspace:1.14.3
     build:
       context: ..
       dockerfile: docker/terraspace.Dockerfile

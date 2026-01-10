@@ -56,7 +56,7 @@ codebuild-local-set-up: ## Setting up CodeBuild Agent for testing buildspecs loc
 codebuild-run: ## Running CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'
 	./codebuild_build.sh -i $(image) -d -a codebuild_artifacts -b $(buildspec) -e .env -m
 
-TERRAFORM_VERSION ?= 1.10.5
+TERRAFORM_VERSION ?= 1.14.3
 
 install-terraspace: ## Install terraspace locally.
 	@$(ECHO) "## Install OpenTofu"

@@ -23,7 +23,7 @@ fi
 rm install-opentofu.sh
 
 echo "## Install Terraform"
-TERRAFORM_VERSION="${TERRAFORM_VERSION:-1.10.5}"
+TERRAFORM_VERSION="${TERRAFORM_VERSION:-1.14.3}"
 if ! git clone https://github.com/tfutils/tfenv.git ~/.tfenv; then
     echo "Failed to clone tfenv repository"
     exit 1
