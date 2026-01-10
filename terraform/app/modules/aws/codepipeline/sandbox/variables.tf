@@ -36,6 +36,7 @@ variable "account_id" {
 variable "partition" {
   description = "AWS partition for this project"
   type        = string
+  default     = "aws"
 }
 
 variable "s3_bucket_name" {

@@ -36,6 +36,10 @@ variable "aws_acm_certificate_id" {
 variable "aws_acm_certificate_arn" {
   type        = string
   description = "ARN of ACM Certificate"
+  validation {
+    condition     = length(trimspace(var.aws_acm_certificate_arn)) > 0
+    error_message = "aws_acm_certificate_arn must not be empty."
+  }
 }
 
 variable "enable_cloudfront_staging" {

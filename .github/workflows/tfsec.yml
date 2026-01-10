@@ -19,9 +19,8 @@ jobs:
 
       - name: Run tfsec
         uses: aquasecurity/tfsec-sarif-action@9a83b5c3524f825c020e356335855741fd02745f
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          github_token: ${{ github.token }}
           sarif_file: tfsec.sarif
 
       - name: Upload SARIF file

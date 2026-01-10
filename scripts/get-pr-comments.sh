@@ -34,6 +34,8 @@ REPO=""
 GITHUB_HOST="${GITHUB_HOST:-github.com}"
 INCLUDE_OUTDATED="${INCLUDE_OUTDATED:-true}"
 VERBOSE="${VERBOSE:-false}"
+TEMP_FILES=()
+CLEANUP_TRAP_SET=0
 
 # Help functions
 show_usage() {
@@ -56,6 +58,30 @@ show_usage() {
     echo "  $0 123 markdown                       # Explicit PR #123"
     echo "  INCLUDE_OUTDATED=true $0 123 json     # Include outdated comments"
     echo "  VERBOSE=true $0 123 text              # Show verbose output"
+}
+
+cleanup_temp_files() {
+    if [[ "${#TEMP_FILES[@]}" -eq 0 ]]; then
+        return
+    fi
+    for f in "${TEMP_FILES[@]}"; do
+        [[ -n "${f:-}" ]] && rm -f "$f"
+    done
+    TEMP_FILES=()
+}
+
+ensure_cleanup_trap() {
+    if [[ "$CLEANUP_TRAP_SET" -eq 1 ]]; then
+        return
+    fi
+    trap cleanup_temp_files EXIT INT TERM
+    CLEANUP_TRAP_SET=1
+}
+
+register_temp_file() {
+    local file="$1"
+    ensure_cleanup_trap
+    TEMP_FILES+=("$file")
 }
 
 # Check prerequisites
@@ -141,10 +167,7 @@ fetch_all_review_threads() {
 
     local temp_file
     temp_file=$(mktemp)
-    cleanup_temp_file() {
-        rm -f "$temp_file"
-    }
-    trap cleanup_temp_file EXIT INT TERM
+    register_temp_file "$temp_file"
     echo "[]" > "$temp_file"
 
     local has_next_page=true
@@ -230,8 +253,7 @@ fetch_all_review_threads() {
 
     local all_threads
     all_threads=$(cat "$temp_file")
-    cleanup_temp_file
-    trap - EXIT INT TERM
+    rm -f "$temp_file"
 
     echo " Fetched total $(echo "$all_threads" | jq 'length') review threads" >&2
     echo "$all_threads"
