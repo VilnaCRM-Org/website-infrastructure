@@ -21,16 +21,19 @@ variable "source_repo_branch" {
 variable "region" {
   description = "Region for this project"
   type        = string
+  default     = null
 }
 
 variable "account_id" {
   description = "AWS account ID for this project"
   type        = string
+  default     = null
 }
 
 variable "partition" {
   description = "AWS partition for this project"
   type        = string
+  default     = null
 }
 
 variable "s3_bucket_name" {

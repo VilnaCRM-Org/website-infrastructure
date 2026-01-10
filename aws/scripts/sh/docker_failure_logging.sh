@@ -81,8 +81,7 @@ docker_failure_logs() {
         echo "$input"
     }
 
-    # TODO: Extend redaction to common secret patterns (e.g., *_PASSWORD, *_SECRET,
-    # *_TOKEN, *_KEY) by scanning environment variables before logging commands.
+    # redact_common_secrets already scrubs env-derived secrets (e.g., *_PASSWORD, *_SECRET, *_TOKEN, *_KEY).
     if [ "$log_command" -eq 1 ]; then
         if [ -n "${GITHUB_TOKEN:-}" ]; then
             failed_command="${failed_command//${GITHUB_TOKEN}/[REDACTED]}"
