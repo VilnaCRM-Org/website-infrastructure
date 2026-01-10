@@ -384,11 +384,11 @@ get_pr_comments() {
 calculate_category_counts() {
     local comments="$1"
     echo "$comments" | jq -r '
-        [
-            [.[] | select(.category == "committable")] | length,
-            [.[] | select(.category == "llm-prompt")] | length,
-            [.[] | select(.category == "question")] | length,
-            [.[] | select(.category == "feedback")] | length
+        (if type == "array" then . else [] end) as $all | [
+            [$all[] | select(.category == "committable")] | length,
+            [$all[] | select(.category == "llm-prompt")] | length,
+            [$all[] | select(.category == "question")] | length,
+            [$all[] | select(.category == "feedback")] | length
         ] | map(tostring) | join("|")
     '
 }
