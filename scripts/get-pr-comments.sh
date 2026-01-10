@@ -198,6 +198,7 @@ fetch_all_review_threads() {
     }
   }
 }"
+        # NOTE: Review threads with more than 100 comments are truncated.
 
         # Fetch data
         local gh_args=()
@@ -331,9 +332,12 @@ get_pr_comments() {
         echo "No unresolved comments found for PR #$pr_number" >&2
         if [[ "$format" == "json" ]]; then
             output_json "[]" "$pr_number" "$comment_count"
-            return
+            return 0
+        elif [[ "$format" == "markdown" ]]; then
+            echo "# No Unresolved Comments for PR #$pr_number"
+            return 0
         fi
-        exit 0
+        return 0
     fi
 
     # Output in requested format

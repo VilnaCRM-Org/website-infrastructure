@@ -56,7 +56,7 @@ codebuild-local-set-up: ## Setting up CodeBuild Agent for testing buildspecs loc
 codebuild-run: ## Running CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'
 	./codebuild_build.sh -i $(image) -d -a codebuild_artifacts -b $(buildspec) -e .env -m
 
-TERRAFORM_VERSION ?= 1.10.6
+TERRAFORM_VERSION ?= 1.10.5
 
 install-terraspace: ## Install terraspace locally.
 	@$(ECHO) "## Install OpenTofu"
@@ -140,16 +140,6 @@ terraspace-down: ## Down the stack. Variables: env, stack.
 	$(EXEC_TS) down $(stack) -y
 
 pr-comments: ## Retrieve unresolved PR review comments (auto-detects current PR). Variables: PR, FORMAT.
-	@if ! command -v gh >/dev/null 2>&1; then \
-		echo "Error: GitHub CLI (gh) is required but not installed."; \
-		echo "Visit: https://cli.github.com/ for installation instructions"; \
-		exit 1; \
-	fi
-	@if ! command -v jq >/dev/null 2>&1; then \
-		echo "Error: jq is required but not installed."; \
-		echo "Install via your package manager (e.g., apt-get install jq, brew install jq)"; \
-		exit 1; \
-	fi
 ifdef PR
 	@GITHUB_HOST="$(GITHUB_HOST)" INCLUDE_OUTDATED="true" \
 		./scripts/get-pr-comments.sh "$(PR)" "$${FORMAT:-text}"
