@@ -2,6 +2,10 @@
 
 # Docker failure logging utilities for CodeBuild command execution.
 
+reset_docker_failure_logging() {
+    unset DOCKER_FAILURE_LOGGED
+}
+
 docker_failure_logs() {
     local exit_code="$1"
     local failed_command="$2"
@@ -48,7 +52,7 @@ docker_failure_logs() {
 
     docker_failure_cleanup() {
         unset DOCKER_FAILURE_LOGGING_IN_PROGRESS
-        unset DOCKER_FAILURE_LOGGED
+        reset_docker_failure_logging
         if [ "$errexit_was_set" -eq 1 ]; then
             set -e
         else
