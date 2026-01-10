@@ -1,6 +1,7 @@
-data "aws_region" "current" {}
-data "aws_caller_identity" "current" {}
-data "aws_partition" "current" {}
+locals {
+  cloudwatch_alerts_topic_name = "${var.project_name}-cloudwatch-alerts-notifications"
+  cloudwatch_alerts_topic_arn  = "arn:${var.partition}:sns:${var.region}:${var.account_id}:${local.cloudwatch_alerts_topic_name}"
+}
 
 data "aws_iam_policy_document" "cloudwatch_alerts_sns_topic_doc" {
   statement {
@@ -13,7 +14,7 @@ data "aws_iam_policy_document" "cloudwatch_alerts_sns_topic_doc" {
       identifiers = ["cloudwatch.amazonaws.com"]
     }
 
-    resources = ["${aws_sns_topic.cloudwatch_alerts_notifications.arn}"]
+    resources = [local.cloudwatch_alerts_topic_arn]
 
     condition {
       test     = "ArnLike"

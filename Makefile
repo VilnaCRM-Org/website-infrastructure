@@ -126,6 +126,12 @@ terraspace-up: ## Up the stack. Variables: env, stack.
 terraspace-up-plan: ## Up the stack from plan. Variables: env, stack, plan.
 	$(EXEC_TS) up $(stack) --plan $(plan) -y 
 
+terraspace-docker-plan: ## Plan the stack via docker compose (uses host env vars from shell, incl. ~/.bashrc). Variables: env, stack.
+	bash -lc "source ~/.bashrc >/dev/null 2>&1; TS_ENV=$(if $(env),$(env),$(TS_ENV)) docker compose -f docker/docker-compose.yml run --rm --entrypoint /bin/bash terraspace -lc 'terraspace plan $(stack)'"
+
+terraspace-docker-up: ## Up the stack via docker compose (uses host env vars from shell, incl. ~/.bashrc). Variables: env, stack.
+	bash -lc "source ~/.bashrc >/dev/null 2>&1; TS_ENV=$(if $(env),$(env),$(TS_ENV)) docker compose -f docker/docker-compose.yml run --rm --entrypoint /bin/bash terraspace -lc 'terraspace up $(stack) -y'"
+
 # Terraspace Output
 
 terraspace-output: ## Output the stack variables. Variables: env, stack.

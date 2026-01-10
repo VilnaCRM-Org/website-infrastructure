@@ -23,6 +23,16 @@ variable "region" {
   type        = string
 }
 
+variable "account_id" {
+  description = "AWS account ID for this project"
+  type        = string
+}
+
+variable "partition" {
+  description = "AWS partition for this project"
+  type        = string
+}
+
 variable "s3_bucket_name" {
   description = "S3 bucket name to be used for storing the artifacts"
   type        = string

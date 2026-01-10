@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "sandbox_cleanup_function_policy" {
       "logs:PutLogEvents"
     ]
     resources = [
-      "arn:aws:logs:${data.aws_region.current.id}:${local.account_id}:log-group:/aws/lambda/sandbox-cleanup-lambda:*"
+      "arn:aws:logs:${var.region}:${local.account_id}:log-group:/aws/lambda/sandbox-cleanup-lambda:*"
     ]
   }
 
@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "sandbox_cleanup_function_policy" {
       "events:ListTargetsByRule"
     ]
     resources = [
-      "arn:aws:events:${data.aws_region.current.id}:${local.account_id}:rule/sandbox-cleanup-*"
+      "arn:aws:events:${var.region}:${local.account_id}:rule/sandbox-cleanup-*"
     ]
   }
 
@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "sandbox_cleanup_function_policy" {
       "lambda:InvokeFunction",
     ]
     resources = [
-      "arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:sandbox-cleanup-lambda"
+      "arn:aws:lambda:${var.region}:${local.account_id}:function:sandbox-cleanup-lambda"
     ]
   }
 
@@ -59,9 +59,8 @@ data "aws_iam_policy_document" "sandbox_cleanup_function_policy" {
       "events:ListRules"
     ]
     resources = [
-      "arn:aws:events:${data.aws_region.current.id}:${local.account_id}:rule/*"
+      "arn:aws:events:${var.region}:${local.account_id}:rule/*"
     ]
   }
 
-  depends_on = [aws_iam_role.sandbox_cleanup_function_role]
 }

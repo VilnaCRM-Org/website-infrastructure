@@ -72,7 +72,9 @@ module "ci_cd_website_codepipeline" {
 
   stages = var.ci_cd_website_stage_input
 
-  region = var.region
+  region     = var.region
+  account_id = local.account_id
+  partition  = local.partition
 
   s3_bucket_name                  = module.ci_cd_website_s3_artifacts_bucket.bucket
   codepipeline_role_arn           = module.ci_cd_website_codepipeline_iam_role.role_arn

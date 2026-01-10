@@ -54,7 +54,9 @@ module "codepipeline_sandbox_deletion" {
 
   stages = var.sandbox_deletion_stage_input
 
-  region = local.region
+  region     = local.region
+  account_id = local.account_id
+  partition  = local.partition
 
   codepipeline_role_arn   = module.iam_roles.codepipeline_role_arn
   s3_bucket_name          = module.s3_buckets.codepipeline_bucket_name

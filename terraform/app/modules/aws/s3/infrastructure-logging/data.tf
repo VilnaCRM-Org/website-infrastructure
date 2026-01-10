@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "logging_bucket_policy_doc" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = ["arn:${data.aws_partition.current.partition}:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/${var.project_name}-dynamodb-cloudtrail"]
+      values   = ["arn:${data.aws_partition.current.partition}:cloudtrail:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:trail/${var.project_name}-dynamodb-cloudtrail"]
     }
   }
 
@@ -41,8 +41,7 @@ data "aws_iam_policy_document" "logging_bucket_policy_doc" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = ["arn:${data.aws_partition.current.partition}:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/${var.project_name}-dynamodb-cloudtrail"]
+      values   = ["arn:${data.aws_partition.current.partition}:cloudtrail:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:trail/${var.project_name}-dynamodb-cloudtrail"]
     }
   }
 }
-

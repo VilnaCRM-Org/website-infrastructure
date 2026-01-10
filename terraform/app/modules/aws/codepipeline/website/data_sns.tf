@@ -7,12 +7,12 @@ data "aws_iam_policy_document" "reports_sns_topic_doc" {
     }
     effect    = "Allow"
     actions   = ["sns:Publish"]
-    resources = ["${aws_sns_topic.reports_notifications.arn}"]
+    resources = [local.reports_notifications_topic_arn]
 
     condition {
       test     = "ArnLike"
       variable = "AWS:SourceArn"
-      values   = [aws_lambda_function.func.arn]
+      values   = [local.lambda_reports_notifications_function_arn]
     }
   }
 }
@@ -28,6 +28,6 @@ data "aws_iam_policy_document" "codepipeline_topic_doc" {
       identifiers = ["codestar-notifications.amazonaws.com"]
     }
 
-    resources = ["${aws_sns_topic.codepipeline_notifications.arn}"]
+    resources = [local.codepipeline_notifications_topic_arn]
   }
 }

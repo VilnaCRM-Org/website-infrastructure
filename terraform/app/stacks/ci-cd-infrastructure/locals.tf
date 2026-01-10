@@ -1,5 +1,6 @@
 locals {
   account_id        = data.aws_caller_identity.current.account_id
+  partition         = data.aws_partition.current.partition
   alarm_name        = "website-${var.region}-s3-objects-anomaly-detection"
   terraform_version = "1.10.5"
 
@@ -9,7 +10,7 @@ locals {
     type      = "GITHUB"
     buildspec = "./aws/buildspecs/website/down.yml"
     location  = "https://github.com/${var.source_repo_owner}/${var.source_repo_name}"
-    depth     = 1
+    depth     = 0
     version   = var.source_repo_branch
   }
 
@@ -17,7 +18,7 @@ locals {
     type      = "GITHUB"
     buildspec = "./aws/buildspecs/website/release.yml"
     location  = "https://github.com/${var.source_repo_owner}/${var.source_repo_name}"
-    depth     = 1
+    depth     = 0
     version   = var.source_repo_branch
   }
 
