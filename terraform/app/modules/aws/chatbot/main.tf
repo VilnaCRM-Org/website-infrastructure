@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "chatbot_codepipeline_policy" {
 }
 
 resource "awscc_iam_role" "chatbot_role" {
-  role_name = "${var.project_name}-chatbot-channel-role"
+  role_name            = "${var.project_name}-chatbot-channel-role"
   permissions_boundary = null
   assume_role_policy_document = jsonencode({
     Version = "2012-10-17"
