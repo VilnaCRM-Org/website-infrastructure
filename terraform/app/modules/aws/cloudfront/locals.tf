@@ -9,4 +9,10 @@ locals {
     bad_inputs_rule           = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
     rate_limit_rule           = "AWS-RateLimitRuleSet"
   }
+
+  cloudfront_minimum_protocol_version = lookup(
+    var.cloudfront_configuration,
+    "minimum_protocol_version",
+    "TLSv1.2_2021"
+  )
 }
