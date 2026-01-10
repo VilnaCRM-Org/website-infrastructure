@@ -31,6 +31,6 @@ data "aws_iam_policy_document" "lambda_allow_logging" {
       "logs:CreateLogStream",
       "logs:PutLogEvents",
     ]
-    resources = ["arn:aws:logs:${var.region}:${var.account_id}:log-group:${var.project_name}-aws-reports-notification-group:*"]
+    resources = ["arn:${local.partition}:logs:${local.region}:${local.account_id}:log-group:${var.project_name}-aws-reports-notification-group:*"]
   }
 }

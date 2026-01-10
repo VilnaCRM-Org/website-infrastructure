@@ -127,6 +127,7 @@ You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project 
 Necessary Terraform Version for the Terraspace is 1.10.5. Upgrade from 1.4.7 by
 backing up state, running `terraform init --reconfigure`, and validating in a
 non-production environment because state/backend upgrades are irreversible.
+See the [Terraform 1.10 upgrade guide](https://developer.hashicorp.com/terraform/language/upgrade-guides) for details on breaking changes.
 Please, follow this links to install  [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/) to install it.
 
 Or you can use `make install-terraspace`.

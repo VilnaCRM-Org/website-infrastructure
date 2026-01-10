@@ -81,7 +81,6 @@ resource "awscc_iam_role" "chatbot_role" {
   lifecycle {
     ignore_changes = [
       permissions_boundary,
-      policies,
     ]
   }
 }

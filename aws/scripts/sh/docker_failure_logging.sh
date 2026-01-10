@@ -61,6 +61,26 @@ docker_failure_logs() {
     export DOCKER_FAILURE_LOGGING_IN_PROGRESS=1
     set +e
 
+    redact_common_secrets() {
+        local input="$1"
+        local -a patterns=("_PASSWORD" "_SECRET" "_TOKEN" "_KEY")
+        while IFS='=' read -r name value; do
+            [ -z "$name" ] && continue
+            [ -z "$value" ] && continue
+            local upper_name="${name^^}"
+            local matched=0
+            for suffix in "${patterns[@]}"; do
+                if [[ "$upper_name" == *"$suffix" ]]; then
+                    matched=1
+                    break
+                fi
+            done
+            [ "$matched" -eq 0 ] && continue
+            input="${input//${value}/[REDACTED]}"
+        done < <(env)
+        echo "$input"
+    }
+
     # TODO: Extend redaction to common secret patterns (e.g., *_PASSWORD, *_SECRET,
     # *_TOKEN, *_KEY) by scanning environment variables before logging commands.
     if [ "$log_command" -eq 1 ]; then
@@ -79,6 +99,7 @@ docker_failure_logs() {
         if [ -n "${AWS_ACCESS_KEY_ID:-}" ]; then
             failed_command="${failed_command//${AWS_ACCESS_KEY_ID}/[REDACTED]}"
         fi
+        failed_command="$(redact_common_secrets "$failed_command")"
         echo "#### Command failed (exit ${exit_code}): ${failed_command}"
     else
         echo "#### Command failed (exit ${exit_code}). Set DOCKER_FAILURE_LOG_COMMAND=1 to print the command."
@@ -99,15 +120,15 @@ docker_failure_logs() {
     echo "#### Docker container status"
     docker ps -a || true
 
-    local container_ids
-    container_ids="$(docker ps -aq 2>/dev/null || true)"
-    if [ -z "$container_ids" ]; then
+    local -a container_ids
+    mapfile -t container_ids < <(docker ps -aq 2>/dev/null || true)
+    if [ "${#container_ids[@]}" -eq 0 ]; then
         echo "No Docker containers found."
         docker_failure_cleanup "$errexit_was_set"
         return
     fi
 
-    for container_id in $container_ids; do
+    for container_id in "${container_ids[@]}"; do
         echo "#### Docker logs for ${container_id}"
         docker logs --tail "$log_lines" "$container_id" || true
     done
