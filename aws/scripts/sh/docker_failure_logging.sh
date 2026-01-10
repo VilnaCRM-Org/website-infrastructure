@@ -8,21 +8,8 @@ reset_docker_failure_logging() {
 
 escape_glob_literal() {
     local str="$1"
-    str=${str//\\/\\\\}
-    str=${str//\*/\\*}
-    str=${str//\?/\\?}
-    str=${str//\[/\\[}
-    str=${str//\]/\\]}
-    str=${str//\./\\.}
-    str=${str//\^/\\^}
-    str=${str//\$/\\$}
-    str=${str//\+/\\+}
-    str=${str//\{/\\{}
-    str=${str//\}/\\}}
-    str=${str//\|/\\|}
-    str=${str//\(/\\(}
-    str=${str//\)/\\)}
-    echo "$str"
+    # Escape characters that have special meaning in shell globbing/regex.
+    printf '%s' "$str" | sed 's/[.[\*^$+{}()|?\\/]/\\&/g'
 }
 
 replace_literal() {
@@ -197,13 +184,17 @@ enable_docker_failure_logging() {
     export DOCKER_FAILURE_LOGGING_ENABLED=1
     local existing_exit_trap
     existing_exit_trap=$(trap -p EXIT | awk -F"'" '/EXIT/{print $2}')
-    local combined_trap
-    if [ -n "$existing_exit_trap" ]; then
-        combined_trap="${existing_exit_trap}; docker_failure_logs \"\$?\" \"\${BASH_COMMAND:-unknown}\""
-    else
-        combined_trap='docker_failure_logs "$?" "${BASH_COMMAND:-unknown}"'
-    fi
-    trap "$combined_trap" EXIT
+
+    docker_exit_trap() {
+        local status=$?
+        local cmd=${BASH_COMMAND:-unknown}
+        if [ -n "$existing_exit_trap" ]; then
+            eval "$existing_exit_trap"
+        fi
+        docker_failure_logs "$status" "$cmd"
+    }
+
+    trap docker_exit_trap EXIT
 }
 
 if [ -n "${CODEBUILD_BUILD_ID:-}" ]; then
