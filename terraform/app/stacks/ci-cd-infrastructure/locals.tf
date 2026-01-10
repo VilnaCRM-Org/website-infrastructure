@@ -1,6 +1,7 @@
 locals {
   account_id = data.aws_caller_identity.current.account_id
   alarm_name = "website-${var.region}-s3-objects-anomaly-detection"
+  terraform_version = "1.10.6"
 
   website_infra_codebuild_project_down_name = "${var.website_infra_project_name}-down"
 
@@ -57,6 +58,7 @@ locals {
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
+        "TERRAFORM_VERSION"                      = local.terraform_version,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "GOLANG_VERSION"                         = var.runtime_versions.golang,
@@ -72,6 +74,7 @@ locals {
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
+        "TERRAFORM_VERSION"                      = local.terraform_version,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         }
@@ -85,6 +88,7 @@ locals {
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
+        "TERRAFORM_VERSION"                      = local.terraform_version,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
@@ -106,6 +110,7 @@ locals {
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
+        "TERRAFORM_VERSION"                      = local.terraform_version,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "GOLANG_VERSION"                         = var.runtime_versions.golang,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
@@ -124,6 +129,7 @@ locals {
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
+        "TERRAFORM_VERSION"                      = local.terraform_version,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
@@ -141,6 +147,7 @@ locals {
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
+        "TERRAFORM_VERSION"                      = local.terraform_version,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,

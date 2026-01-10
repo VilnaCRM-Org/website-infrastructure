@@ -124,7 +124,7 @@ The string of letters and numbers beginning with **"C"** is your channel ID.(Als
 Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine.
 You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project locally using this OS. Follow the guides specified in the links.
 
-Necessary Terraform Version for the Terraspace is 1.4.7.
+Necessary Terraform Version for the Terraspace is 1.10.6.
 Please, follow this links to install  [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/) to install it.
 
 Or you can use `make install-terraspace`.
