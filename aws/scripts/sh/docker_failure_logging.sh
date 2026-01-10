@@ -81,10 +81,6 @@ enable_docker_failure_logging() {
     trap 'docker_failure_logs $? "${BASH_COMMAND:-unknown}"' EXIT
 }
 
-reset_docker_failure_logging() {
-    unset DOCKER_FAILURE_LOGGED
-}
-
 if [ -n "${CODEBUILD_BUILD_ID:-}" ]; then
     enable_docker_failure_logging
 fi
