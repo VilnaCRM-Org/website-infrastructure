@@ -47,7 +47,7 @@ show_usage() {
     echo "  GITHUB_TOKEN       - GitHub Personal Access Token"
     echo "  GH_TOKEN           - Alternative token variable"
     echo "  GITHUB_HOST        - GitHub hostname (default: github.com)"
-    echo "  INCLUDE_OUTDATED   - Include outdated comments (default: false)"
+    echo "  INCLUDE_OUTDATED   - Include outdated comments (default: true)"
     echo "  VERBOSE            - Show verbose output (default: false)"
     echo ""
     echo "Examples:"
@@ -85,12 +85,12 @@ check_dependencies() {
 auto_detect_pr() {
     local current_branch
     if ! current_branch=$(git branch --show-current 2>/dev/null); then
-        echo "Error: Could not determine current git branch."
+        echo "Error: Could not determine current git branch." >&2
         exit 1
     fi
 
     if [[ "$VERBOSE" == "true" ]]; then
-        echo " Current branch: $current_branch"
+        echo " Current branch: $current_branch" >&2
     fi
 
     local pr_data
@@ -104,12 +104,12 @@ auto_detect_pr() {
     detected_pr=$(echo "$pr_data" | jq -r '.[0].number // empty' 2>/dev/null)
 
     if [[ -z "$detected_pr" || "$detected_pr" == "null" ]]; then
-        echo "Error: No PR found for branch '$current_branch'."
+        echo "Error: No PR found for branch '$current_branch'." >&2
         exit 1
     fi
 
     if [[ "$VERBOSE" == "true" ]]; then
-        echo " Auto-detected PR #$detected_pr"
+        echo " Auto-detected PR #$detected_pr" >&2
     fi
     PR_NUMBER="$detected_pr"
 }
@@ -346,8 +346,14 @@ get_pr_comments() {
 # Calculate category counts (reusable across output formats)
 calculate_category_counts() {
     local comments="$1"
-
-    echo "$(echo "$comments" | jq '[.[] | select(.category == "committable")] | length')|$(echo "$comments" | jq '[.[] | select(.category == "llm-prompt")] | length')|$(echo "$comments" | jq '[.[] | select(.category == "question")] | length')|$(echo "$comments" | jq '[.[] | select(.category == "feedback")] | length')"
+    echo "$comments" | jq -r '
+        [
+            [.[] | select(.category == "committable")] | length,
+            [.[] | select(.category == "llm-prompt")] | length,
+            [.[] | select(.category == "question")] | length,
+            [.[] | select(.category == "feedback")] | length
+        ] | map(tostring) | join("|")
+    '
 }
 
 # Output functions
@@ -514,4 +520,3 @@ main() {
 }
 
 main "$@"
-

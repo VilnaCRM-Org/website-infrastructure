@@ -17,5 +17,5 @@ jobs:
         uses: bridgecrewio/checkov-action@master
         with:
           directory: terraform
-          download_external_modules: false
-          skip_check: CKV_AWS_174
+          download_external_modules: true
+          skip_check: CKV_AWS_174 # Terraform lookup default for minimum_protocol_version triggers false positive.
