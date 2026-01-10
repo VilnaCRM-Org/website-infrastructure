@@ -1,6 +1,6 @@
 locals {
-  account_id = data.aws_caller_identity.current.account_id
-  alarm_name = "website-${var.region}-s3-objects-anomaly-detection"
+  account_id        = data.aws_caller_identity.current.account_id
+  alarm_name        = "website-${var.region}-s3-objects-anomaly-detection"
   terraform_version = "1.10.6"
 
   website_infra_codebuild_project_down_name = "${var.website_infra_project_name}-down"
