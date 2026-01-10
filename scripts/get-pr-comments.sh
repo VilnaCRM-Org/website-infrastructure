@@ -236,9 +236,13 @@ fetch_all_review_threads() {
         fi
 
         # Extract threads from this page and merge with accumulated threads
+        local merged_file
+        merged_file=$(mktemp)
+        register_temp_file "$merged_file"
+
         echo "$page_data" | jq '.data.repository.pullRequest.reviewThreads.nodes' | \
-            jq -s --slurpfile accumulated "$temp_file" '($accumulated[0] + .[0])' > "${temp_file}.new"
-        mv "${temp_file}.new" "$temp_file"
+            jq -s --slurpfile accumulated "$temp_file" '($accumulated[0] + .[0])' > "$merged_file"
+        mv "$merged_file" "$temp_file"
 
         # Check for next page
         has_next_page=$(echo "$page_data" | jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.hasNextPage')
@@ -438,10 +442,14 @@ output_json() {
     local pr_number="$2"
     local comment_count="$3"
 
-    echo "$comments" | jq --arg pr_number "$pr_number" --arg count "$comment_count" '{
+    echo "$comments" | jq \
+        --arg pr_number "$pr_number" \
+        --arg count "$comment_count" \
+        --arg include_outdated "$INCLUDE_OUTDATED" \
+        '{
         "pr_number": ($pr_number | tonumber),
         "total_comments": ($count | tonumber),
-        "include_outdated": (env.INCLUDE_OUTDATED == "true"),
+        "include_outdated": ($include_outdated == "true"),
         "fetched_at": (now | todate),
         "comments": .
     }'

@@ -129,7 +129,7 @@ backing up state, running `terraform init --reconfigure`, and validating in a
 non-production environment because state/backend upgrades are irreversible. Review
 breaking changes from 1.4.7 through 1.14.3 (including intermediate versions) before upgrading. See the [Terraform 1.14
 upgrade notes](https://developer.hashicorp.com/terraform/language/upgrade-guides/1-14)
-for details on breaking changes. Please, follow this links to install  [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/) to install it.
+for details on breaking changes. Please follow these links to install [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/).
 
 #### Terraform 1.14 upgrade checklist
 - **State safety:** backup state (remote + local `.terraform` folders) before touching workspaces.
