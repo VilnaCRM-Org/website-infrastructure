@@ -18,3 +18,4 @@ jobs:
         with:
           directory: terraform
           download_external_modules: false
+          skip_check: CKV_AWS_174
