@@ -141,6 +141,10 @@ fetch_all_review_threads() {
 
     local temp_file
     temp_file=$(mktemp)
+    cleanup_temp_file() {
+        rm -f "$temp_file"
+    }
+    trap cleanup_temp_file EXIT INT TERM
     echo "[]" > "$temp_file"
 
     local has_next_page=true
@@ -204,7 +208,6 @@ fetch_all_review_threads() {
         local page_data
         if ! page_data=$(gh api graphql "${gh_args[@]}" -f query="$graphql_query" </dev/null 2>/dev/null); then
             echo "Error: Failed to fetch review threads (page $page)" >&2
-            rm -f "$temp_file"
             exit 1
         fi
 
@@ -226,7 +229,8 @@ fetch_all_review_threads() {
 
     local all_threads
     all_threads=$(cat "$temp_file")
-    rm -f "$temp_file"
+    cleanup_temp_file
+    trap - EXIT INT TERM
 
     echo " Fetched total $(echo "$all_threads" | jq 'length') review threads" >&2
     echo "$all_threads"
@@ -261,7 +265,7 @@ process_threads() {
         | map(
             .comments.nodes[] as \$comment |
             (\$comment.body | ascii_downcase) as \$body_lower |
-            (if (\$comment.body | test(\"suggestion\")) then \"committable\"
+            (if (\$body_lower | test(\"suggestion\")) then \"committable\"
              elif (\$body_lower | test(\"refactor|implement|should|must|need to|extract|create new|add new|update|change|modify|fix\")) then \"llm-prompt\"
              elif (\$body_lower | test(\"why|how|what|\\\\?\")) then \"question\"
              else \"feedback\"
@@ -304,12 +308,6 @@ process_threads() {
 
     echo " Found $comment_count unresolved comments" >&2
 
-    if [[ "$comment_count" -eq 0 ]]; then
-        echo "" >&2
-        echo "No unresolved comments found for PR #$pr_number" >&2
-        exit 0
-    fi
-
     echo "$all_comments"
 }
 
@@ -328,6 +326,15 @@ get_pr_comments() {
 
     local comment_count
     comment_count=$(echo "$unresolved_comments" | jq 'length')
+
+    if [[ "$comment_count" -eq 0 ]]; then
+        echo "No unresolved comments found for PR #$pr_number" >&2
+        if [[ "$format" == "json" ]]; then
+            output_json "[]" "$pr_number" "$comment_count"
+            return
+        fi
+        exit 0
+    fi
 
     # Output in requested format
     case "$format" in
