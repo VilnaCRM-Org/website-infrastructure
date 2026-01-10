@@ -21,10 +21,10 @@ phases:
   build:
     commands:
       - |
-        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh
+        . "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
         echo "Running Lighthouse Desktop tests with new batch script"
-        cd ${CODEBUILD_SRC_DIR}/website
-        . ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_lhci_leak.sh test-lighthouse-desktop
+        cd "${CODEBUILD_SRC_DIR}/website"
+        . "${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_lhci_leak.sh" test-lighthouse-desktop
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 

@@ -77,7 +77,6 @@ enable_docker_failure_logging() {
 
     export DOCKER_FAILURE_LOGGING_ENABLED=1
     set -E
-    trap 'docker_failure_logs $? "${BASH_COMMAND:-unknown}"' ERR
     trap 'docker_failure_logs $? "${BASH_COMMAND:-unknown}"' EXIT
 }
 
