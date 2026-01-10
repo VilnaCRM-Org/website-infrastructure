@@ -22,7 +22,6 @@ phases:
   build:
     commands:
       - |
-        enable_docker_failure_logging
         . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh
         echo "Running E2E tests with new batch script"
         cd ${CODEBUILD_SRC_DIR}/website

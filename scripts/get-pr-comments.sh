@@ -271,7 +271,7 @@ process_threads() {
     if [[ "$INCLUDE_OUTDATED" == "true" ]]; then
         outdated_filter="true"
     else
-        outdated_filter="select(.isOutdated == false)"
+        outdated_filter="(.isOutdated == false)"
     fi
 
     # Extract ALL comments from ALL unresolved threads (using stdin to avoid argument size limits)
@@ -521,8 +521,14 @@ main() {
             FORMAT="$1"
         fi
     elif [[ $# -eq 2 ]]; then
-        PR_NUMBER="$1"
-        FORMAT="$2"
+        if [[ "$1" =~ ^[0-9]+$ ]]; then
+            PR_NUMBER="$1"
+            FORMAT="$2"
+        else
+            echo "Error: PR number must be numeric" >&2
+            show_usage
+            exit 1
+        fi
     else
         echo "Error: Too many arguments"
         show_usage

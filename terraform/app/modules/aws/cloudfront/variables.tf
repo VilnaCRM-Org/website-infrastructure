@@ -37,8 +37,8 @@ variable "aws_acm_certificate_arn" {
   type        = string
   description = "ARN of ACM Certificate"
   validation {
-    condition     = length(trimspace(var.aws_acm_certificate_arn)) > 0
-    error_message = "aws_acm_certificate_arn must not be empty."
+    condition     = can(regex("^arn:aws[a-z-]*:acm:[a-z0-9-]+:[0-9]{12}:certificate/[A-Za-z0-9-]+$", trimspace(var.aws_acm_certificate_arn)))
+    error_message = "aws_acm_certificate_arn must be a valid ACM certificate ARN (arn:aws:acm:<region>:<account-id>:certificate/<id>)."
   }
 }
 
