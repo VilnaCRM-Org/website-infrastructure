@@ -3,6 +3,21 @@ variable "project_name" {
   type        = string
 }
 
+variable "region" {
+  description = "Region for this project"
+  type        = string
+}
+
+variable "account_id" {
+  description = "AWS account ID for this project"
+  type        = string
+}
+
+variable "partition" {
+  description = "AWS partition for this project"
+  type        = string
+}
+
 variable "cloudwatch_alarms_arns" {
   description = "CloudWatch Alarms"
   type        = list(string)

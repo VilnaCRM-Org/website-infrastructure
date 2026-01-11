@@ -9,6 +9,6 @@ data "aws_iam_policy_document" "codepipeline_topic_doc" {
       identifiers = ["codestar-notifications.amazonaws.com"]
     }
 
-    resources = ["${aws_sns_topic.codepipeline_notifications.arn}"]
+    resources = [local.sns_topic_arn]
   }
 }

@@ -2,6 +2,10 @@ module "cloudwatch_alerts_sns" {
   source       = "../../modules/aws/sns/ci-cd-alerts"
   project_name = var.project_name
 
+  region     = var.region
+  account_id = local.account_id
+  partition  = local.partition
+
   tags = var.tags
 
   cloudwatch_alarms_arns = concat(

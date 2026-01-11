@@ -1,6 +1,7 @@
-data "aws_region" "current" {}
-data "aws_caller_identity" "current" {}
-data "aws_partition" "current" {}
+locals {
+  codepipeline_notifications_topic_name = "${var.project_name}-notifications"
+  codepipeline_notifications_topic_arn  = "arn:${var.partition}:sns:${var.region}:${var.account_id}:${local.codepipeline_notifications_topic_name}"
+}
 
 data "aws_iam_policy_document" "codepipeline_topic_doc" {
   statement {
@@ -13,6 +14,6 @@ data "aws_iam_policy_document" "codepipeline_topic_doc" {
       identifiers = ["codestar-notifications.amazonaws.com"]
     }
 
-    resources = ["${aws_sns_topic.codepipeline_notifications.arn}"]
+    resources = [local.codepipeline_notifications_topic_arn]
   }
 }

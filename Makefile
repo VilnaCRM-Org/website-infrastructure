@@ -56,7 +56,7 @@ codebuild-local-set-up: ## Setting up CodeBuild Agent for testing buildspecs loc
 codebuild-run: ## Running CodeBuild for specific buildspec. Example: make codebuild-run buildspec='aws/buildspecs/website/buildspec_deploy.yml'
 	./codebuild_build.sh -i $(image) -d -a codebuild_artifacts -b $(buildspec) -e .env -m
 
-TERRAFORM_VERSION ?= 1.4.7
+TERRAFORM_VERSION ?= 1.14.3
 
 install-terraspace: ## Install terraspace locally.
 	@$(ECHO) "## Install OpenTofu"
@@ -126,6 +126,12 @@ terraspace-up: ## Up the stack. Variables: env, stack.
 terraspace-up-plan: ## Up the stack from plan. Variables: env, stack, plan.
 	$(EXEC_TS) up $(stack) --plan $(plan) -y 
 
+terraspace-docker-plan: ## Plan the stack via docker compose (uses host env vars from shell, incl. ~/.bashrc). Variables: env, stack.
+	bash -lc "source ~/.bashrc >/dev/null 2>&1; TS_ENV=$(if $(env),$(env),$(TS_ENV)) docker compose -f docker/docker-compose.yml run --rm --entrypoint /bin/bash terraspace -lc 'terraspace plan $(stack)'"
+
+terraspace-docker-up: ## Up the stack via docker compose (uses host env vars from shell, incl. ~/.bashrc). Variables: env, stack.
+	bash -lc "source ~/.bashrc >/dev/null 2>&1; TS_ENV=$(if $(env),$(env),$(TS_ENV)) docker compose -f docker/docker-compose.yml run --rm --entrypoint /bin/bash terraspace -lc 'terraspace up $(stack) -y'"
+
 # Terraspace Output
 
 terraspace-output: ## Output the stack variables. Variables: env, stack.
@@ -138,3 +144,12 @@ terraspace-output-file: ## Output the stack variables into file. Variables: env,
 
 terraspace-down: ## Down the stack. Variables: env, stack.
 	$(EXEC_TS) down $(stack) -y
+
+pr-comments: ## Retrieve unresolved PR review comments (auto-detects current PR). Variables: PR, FORMAT.
+ifdef PR
+	@GITHUB_HOST="$(GITHUB_HOST)" INCLUDE_OUTDATED="true" \
+		./scripts/get-pr-comments.sh "$(PR)" "$${FORMAT:-text}"
+else
+	@GITHUB_HOST="$(GITHUB_HOST)" INCLUDE_OUTDATED="true" \
+		./scripts/get-pr-comments.sh "$${FORMAT:-text}"
+endif

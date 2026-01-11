@@ -6,6 +6,15 @@ resource "awscc_chatbot_slack_channel_configuration" "slack_channel_configuratio
   sns_topic_arns     = var.sns_topic_arns
 }
 
+locals {
+  iam_role_tags = var.tags == null ? [] : [
+    for key, value in var.tags : {
+      key   = key
+      value = tostring(value)
+    }
+  ]
+}
+
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
@@ -66,4 +75,12 @@ resource "awscc_iam_role" "chatbot_role" {
       policy_name     = "${var.project_name}-chatbot-codepipeline-policy"
     }
   ]
+  tags = local.iam_role_tags
+
+  lifecycle {
+    ignore_changes = [
+      permissions_boundary,
+      policies,
+    ]
+  }
 }

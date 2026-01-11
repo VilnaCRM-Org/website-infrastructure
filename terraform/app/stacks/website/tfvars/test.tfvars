@@ -29,8 +29,8 @@ cloudfront_configuration = {
   max_ttl                    = 31536000
   access_control_max_age_sec = 31536000
   default_root_object        = "index.html"
-  minimum_protocol_version   = "TLSv1.2_2019"
+  minimum_protocol_version   = "TLSv1.2_2021"
 }
 
 ttl_validation     = 60
-ttl_route53_record = "300"
+ttl_route53_record = 300

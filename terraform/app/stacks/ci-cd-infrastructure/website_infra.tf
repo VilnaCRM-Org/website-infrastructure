@@ -93,7 +93,9 @@ module "website_infra_codepipeline" {
 
   stages = var.website_infra_stage_input
 
-  region = var.region
+  region     = var.region
+  account_id = local.account_id
+  partition  = local.partition
 
   s3_bucket_name          = module.website_infra_s3_artifacts_bucket.bucket
   codepipeline_role_arn   = module.website_infra_codepipeline_iam_role.role_arn

@@ -12,7 +12,7 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
   artifacts {
     type                = each.value.build_project_source
     packaging           = "NONE"
-    encryption_disabled = true
+    encryption_disabled = false
   }
   environment {
     compute_type                = each.value.builder_compute_type
@@ -45,9 +45,6 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
   source {
     type            = each.value.build_project_source
     buildspec       = each.value.buildspec
-    git_clone_depth = 1
-  }
-  build_batch_config {
-    service_role = var.role_arn
+    git_clone_depth = lookup(each.value, "git_clone_depth", 0)
   }
 }

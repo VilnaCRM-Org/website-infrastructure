@@ -124,8 +124,20 @@ The string of letters and numbers beginning with **"C"** is your channel ID.(Als
 Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [Ruby](https://terraspace.cloud/docs/install/ruby/), [Docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/) on your machine.
 You need to use the latest [Ubuntu](https://ubuntu.com/) and set up the project locally using this OS. Follow the guides specified in the links.
 
-Necessary Terraform Version for the Terraspace is 1.4.7.
-Please, follow this links to install  [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/) to install it.
+Necessary Terraform Version for the Terraspace is 1.14.3. Upgrade from 1.4.7 by
+backing up state, running `terraform init --reconfigure`, and validating in a
+non-production environment because state/backend upgrades are irreversible. Review
+breaking changes from 1.4.7 through 1.14.3 (including intermediate versions) before upgrading. See the [Terraform 1.14
+upgrade notes](https://developer.hashicorp.com/terraform/language/upgrade-guides/1-14)
+for details on breaking changes. Please follow these links to install [Terraform](https://terraspace.cloud/docs/install/terraform/) and [Terraspace](https://terraspace.cloud/docs/install/gem/).
+
+#### Terraform 1.14 upgrade checklist
+- **State safety:** backup state (remote + local `.terraform` folders) before touching workspaces.
+- **Reinit/lock upgrades:** run `terraform init -upgrade --reconfigure` (or `make terraspace-docker-plan`) to refresh provider versions and backend config.
+- **Provider constraints:** ensure providers allow 1.14; bump constraints in modules if they pin `<1.14`.
+- **Validate in non-prod:** run `make terraspace-docker-plan stack=ci-cd-infrastructure env=test` (and other stacks) before prod. We validated plan/up for `ci-cd-infrastructure` in test using AWS (no drift).
+- **Check deprecations:** address warnings like `data.aws_region.current.name` → use `.id` and clean up any remaining provider deprecations.
+- **Terraspace image alignment:** current Terraspace base image is 2.2.3; confirm your workflows still behave with Terraform 1.14.3 or bump Terraspace to a release that officially supports 1.14 if needed.
 
 Or you can use `make install-terraspace`.
 

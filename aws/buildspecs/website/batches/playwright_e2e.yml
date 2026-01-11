@@ -2,26 +2,30 @@ version: 0.2
 
 env:
   variables:
+    BASH_ENV: "${CODEBUILD_SRC_DIR}/aws/scripts/sh/docker_failure_logging.sh"
     ACCOUNT_ID: $ACCOUNT_ID
     ENVIRONMENT: $ENVIRONMENT
     TEST_REPORTS_BUCKET: $TEST_REPORTS_BUCKET
     LHCI_REPORTS_BUCKET: $LHCI_REPORTS_BUCKET
     WEBSITE_GIT_REPOSITORY_LINK: $WEBSITE_GIT_REPOSITORY_LINK
     DIND: "1"
+    PW_E2E_RUN: "1"
 
 phases:
   install:
     commands:
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/install_packages.sh"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh"
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh"
+      - |
+        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/install_packages.sh
+        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh
+        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh
 
   build:
     commands:
-      - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"
-      - "echo 'Running E2E tests with new batch script'"
-      - "cd ${CODEBUILD_SRC_DIR}/website"
-      - ". ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_pw_load.sh test-e2e"
+      - |
+        . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh
+        echo "Running E2E tests with new batch script"
+        cd ${CODEBUILD_SRC_DIR}/website
+        . ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_pw_load.sh test-e2e
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
 

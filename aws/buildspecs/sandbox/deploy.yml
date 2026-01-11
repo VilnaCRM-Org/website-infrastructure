@@ -1,5 +1,9 @@
 version: 0.2
 
+env:
+  variables:
+    BASH_ENV: "aws/scripts/sh/docker_failure_logging.sh"
+
 phases:
   install:
     runtime-versions:
@@ -15,18 +19,17 @@ phases:
           echo "Error: Required environment variable PR_NUMBER is not set or empty."
           exit 1
         fi
-      - apk add --no-cache docker-cli docker-compose bash git make nodejs npm curl unzip jq aws-cli tar github-cli
-      - npm install -g n
-      - n 23.10.0
-      - echo "Starting Docker daemon..."
-      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
-      - timeout 15 sh -c "until docker info; do echo 'Waiting for Docker to start...'; sleep 1; done"
-      - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_installation.sh"
-      - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh"
+        apk add --no-cache docker-cli docker-compose bash git make nodejs npm curl unzip jq aws-cli tar github-cli
+        npm install -g n
+        n 23.10.0
+        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/setup_docker.sh
+        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sandbox_installation.sh
+        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh
 
   build:
     commands:
       - |
+        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/docker_failure_logging.sh
         COMMENT_BODY="The deployment process for the sandbox has started.
         Please wait until the latest version is ready"
 
@@ -36,17 +39,17 @@ phases:
           echo "Failed to add comment to PR"
           exit 1
         fi
-      - "echo #### Build Project"
-      - export WEBSITE_DIR=${WEBSITE_DIR:-/codebuild-user/website}
-      - cd "$WEBSITE_DIR"
-      - echo "=== Building Docker image ==="
-      - "make build-out"
-      - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
-      - echo "=== Verifying build output ==="
-      - ls -la ./out
-      - 'aws s3 sync out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }'
-      - "echo #### Create EventBridge Rule"
-      - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh"
+        echo "#### Build Project"
+        export WEBSITE_DIR=${WEBSITE_DIR:-/codebuild-user/website}
+        cd "$WEBSITE_DIR"
+        echo "=== Building Docker image ==="
+        make build-out
+        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh
+        echo "=== Verifying build output ==="
+        ls -la ./out
+        aws s3 sync out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }
+        echo "#### Create EventBridge Rule"
+        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh
 
   post_build:
     commands:

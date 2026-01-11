@@ -82,7 +82,9 @@ module "sandbox_codepipeline" {
 
   stages = var.sandbox_stage_input
 
-  region = local.region
+  region     = local.region
+  account_id = local.account_id
+  partition  = local.partition
 
   s3_bucket_name          = module.sandbox_s3_artifacts_bucket.bucket
   codepipeline_role_arn   = "arn:aws:iam::${local.account_id}:role/${local.project_name}-codepipeline-role"

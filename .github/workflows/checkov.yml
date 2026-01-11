@@ -18,3 +18,4 @@ jobs:
         with:
           directory: terraform
           download_external_modules: true
+          skip_check: CKV_AWS_174 # Terraform lookup default for minimum_protocol_version triggers false positive.
