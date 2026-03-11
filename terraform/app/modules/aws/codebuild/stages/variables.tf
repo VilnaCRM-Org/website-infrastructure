@@ -30,7 +30,20 @@ variable "tags" {
 
 variable "build_projects" {
   description = "Map of CodeBuild project definitions to create. Projects may include optional build_batch_config settings."
-  type        = map(any)
+  type = map(object({
+    build_project_source                = string
+    builder_compute_type                = string
+    builder_image                       = string
+    builder_image_pull_credentials_type = string
+    builder_type                        = string
+    buildspec                           = string
+    env_variables                       = map(any)
+    privileged_mode                     = bool
+    build_batch_config = optional(object({
+      combine_artifacts = optional(bool)
+    }))
+    git_clone_depth = optional(number)
+  }))
 }
 
 variable "build_timeout" {
