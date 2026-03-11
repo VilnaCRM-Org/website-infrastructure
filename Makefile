@@ -59,11 +59,6 @@ codebuild-run: ## Running CodeBuild for specific buildspec. Example: make codebu
 TERRAFORM_VERSION ?= 1.14.3
 
 install-terraspace: ## Install terraspace locally.
-	@$(ECHO) "## Install OpenTofu"
-	$(CURL) --proto "=https" --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
-	$(CHMOD) +x install-opentofu.sh
-	./install-opentofu.sh --install-method rpm || { $(ECHO) "Failed to install OpenTofu" && exit 1; }
-	$(RM) install-opentofu.sh
 	@$(ECHO) "## Install Terraform"
 	$(GIT) clone https://github.com/tfutils/tfenv.git ~/.tfenv
 	$(ECHO) 'export PATH="$$HOME/.tfenv/bin:$$PATH"' >>~/.bash_profile

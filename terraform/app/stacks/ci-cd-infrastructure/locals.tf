@@ -3,6 +3,11 @@ locals {
   partition         = data.aws_partition.current.partition
   alarm_name        = "website-${var.region}-s3-objects-anomaly-detection"
   terraform_version = "1.14.3"
+  terraform_runtime_env = {
+    "TERRAFORM_VERSION" = local.terraform_version
+    "TS_TERRAFORM_BIN"  = "terraform"
+    "TS_VERSION_CHECK"  = "0"
+  }
 
   website_infra_codebuild_project_down_name = "${var.website_infra_project_name}-down"
 
@@ -53,56 +58,53 @@ locals {
 locals {
   website_infra_build_projects = {
     validate = merge(local.amazonlinux2_based_build,
-      { env_variables = {
+      { env_variables = merge(local.terraform_runtime_env, {
         "ROLE_ARN"                               = module.website_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
-        "TERRAFORM_VERSION"                      = local.terraform_version,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "GOLANG_VERSION"                         = var.runtime_versions.golang,
         "SCRIPT_DIR"                             = var.script_dir,
-        }
+        })
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/validate.yml" })
 
     plan = merge(local.amazonlinux2_based_build,
-      { env_variables = {
+      { env_variables = merge(local.terraform_runtime_env, {
         "ROLE_ARN"                               = module.website_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
-        "TERRAFORM_VERSION"                      = local.terraform_version,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
-        }
+        })
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/plan.yml" })
 
     up = merge(local.amazonlinux2_based_build,
-      { env_variables = {
+      { env_variables = merge(local.terraform_runtime_env, {
         "ROLE_ARN"                               = module.website_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
-        "TERRAFORM_VERSION"                      = local.terraform_version,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         "CI_CD_WEBSITE_PIPELINE_NAME"            = "${var.ci_cd_website_project_name}-pipeline",
         "CLOUDFRONT_REGION"                      = var.cloudfront_configuration.region,
-        }
+        })
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/up.yml" })
   }
 
   ci_cd_infra_build_projects = {
     validate = merge(local.amazonlinux2_based_build,
-      { env_variables = {
+      { env_variables = merge(local.terraform_runtime_env, {
         "ROLE_ARN"                               = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
         "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID"   = var.CODEPIPELINE_SLACK_CHANNEL_ID,
@@ -111,17 +113,16 @@ locals {
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
-        "TERRAFORM_VERSION"                      = local.terraform_version,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "GOLANG_VERSION"                         = var.runtime_versions.golang,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
-        }
+        })
       },
     { buildspec = "./aws/buildspecs/${var.ci_cd_infra_buildspecs}/validate.yml" })
 
     plan = merge(local.amazonlinux2_based_build,
-      { env_variables = {
+      { env_variables = merge(local.terraform_runtime_env, {
         "ROLE_ARN"                               = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
         "TF_VAR_CODEPIPELINE_SLACK_CHANNEL_ID"   = var.CODEPIPELINE_SLACK_CHANNEL_ID,
@@ -130,17 +131,16 @@ locals {
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
-        "TERRAFORM_VERSION"                      = local.terraform_version,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         "GITHUB_OWNER"                           = var.source_repo_owner,
-        }
+        })
       },
     { buildspec = "./aws/buildspecs/${var.ci_cd_infra_buildspecs}/plan.yml" })
 
     up = merge(local.amazonlinux2_based_build,
-      { env_variables = {
+      { env_variables = merge(local.terraform_runtime_env, {
         "ROLE_ARN"                               = module.ci_cd_infra_codepipeline_iam_role.terraform_role_arn,
         "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
         "TF_VAR_REPORT_SLACK_CHANNEL_ID"         = var.REPORT_SLACK_CHANNEL_ID,
@@ -148,12 +148,11 @@ locals {
         "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
         "TS_ENV"                                 = var.environment,
         "AWS_DEFAULT_REGION"                     = var.region,
-        "TERRAFORM_VERSION"                      = local.terraform_version,
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
         "GITHUB_OWNER"                           = var.source_repo_owner,
-        }
+        })
       },
     { buildspec = "./aws/buildspecs/${var.ci_cd_infra_buildspecs}/up.yml" })
   }

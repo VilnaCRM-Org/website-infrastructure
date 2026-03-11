@@ -15,6 +15,7 @@ services:
       dockerfile: docker/terraspace.Dockerfile
     environment:
       TS_VERSION_CHECK: "0"
+      TS_TERRAFORM_BIN: terraform
       TS_ENV: ${TS_ENV}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
