@@ -9,16 +9,6 @@ locals {
     "TS_VERSION_CHECK"  = "0"
   }
 
-  website_infra_codebuild_project_down_name = "${var.website_infra_project_name}-down"
-
-  website_infra_codebuild_project_down_source_configuration = {
-    type      = "GITHUB"
-    buildspec = "./aws/buildspecs/website/down.yml"
-    location  = "https://github.com/${var.source_repo_owner}/${var.source_repo_name}"
-    depth     = 0
-    version   = var.source_repo_branch
-  }
-
   codebuild_rollback_source_configuration = {
     type      = "GITHUB"
     buildspec = "./aws/buildspecs/website/release.yml"
@@ -246,16 +236,6 @@ locals {
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/release.yml" })
 
-  }
-
-  website_infra_build_project_down_env_variables = {
-    "ROLE_ARN"                               = module.website_infra_codepipeline_iam_role.terraform_role_arn,
-    "TF_VAR_SLACK_WORKSPACE_ID"              = var.SLACK_WORKSPACE_ID,
-    "TF_VAR_WEBSITE_ALERTS_SLACK_CHANNEL_ID" = var.WEBSITE_ALERTS_SLACK_CHANNEL_ID,
-    "TS_ENV"                                 = var.environment,
-    "AWS_DEFAULT_REGION"                     = var.region,
-    "RUBY_VERSION"                           = var.runtime_versions.ruby,
-    "SCRIPT_DIR"                             = var.script_dir,
   }
 
   codebuild_cloudfront_rollback_project_env_variables = {
