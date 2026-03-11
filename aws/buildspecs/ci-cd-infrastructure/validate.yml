@@ -3,6 +3,8 @@ version: 0.2
 env:
   variables:
     TFSEC_VERSION: "v1.28.5"
+    TS_TERRAFORM_BIN: "terraform"
+    TS_VERSION_CHECK: "0"
 
 phases:
   install:

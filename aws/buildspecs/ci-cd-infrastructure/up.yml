@@ -1,5 +1,10 @@
 version: 0.2
 
+env:
+  variables:
+    TS_TERRAFORM_BIN: "terraform"
+    TS_VERSION_CHECK: "0"
+
 phases:
   install:
     runtime-versions:
