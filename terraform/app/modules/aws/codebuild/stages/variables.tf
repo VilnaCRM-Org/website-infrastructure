@@ -29,7 +29,7 @@ variable "tags" {
 }
 
 variable "build_projects" {
-  description = "List of Names of the CodeBuild projects to be created"
+  description = "Map of CodeBuild project definitions to create. Projects may include optional build_batch_config settings."
   type        = map(any)
 }
 
