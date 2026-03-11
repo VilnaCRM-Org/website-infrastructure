@@ -58,30 +58,6 @@ module "website_infra_codebuild" {
   ]
 }
 
-module "website_infra_codebuild_down" {
-  source = "../../modules/aws/codebuild/project"
-
-  project_name = local.website_infra_codebuild_project_down_name
-
-  region      = var.region
-  environment = var.environment
-
-  build_configuration = local.amazonlinux2_based_build
-  env_variables       = local.website_infra_build_project_down_env_variables
-
-  source_configuration = local.website_infra_codebuild_project_down_source_configuration
-
-  role_arn = module.website_infra_codepipeline_iam_role.role_arn
-
-  tags = var.tags
-
-  depends_on = [
-    module.website_infra_s3_artifacts_bucket,
-    module.website_infra_codepipeline_iam_role,
-    module.codestar_connection
-  ]
-}
-
 module "website_infra_codepipeline" {
   source = "../../modules/aws/codepipeline/infrastructure"
 

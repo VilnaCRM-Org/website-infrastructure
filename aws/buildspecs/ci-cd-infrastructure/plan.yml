@@ -1,5 +1,10 @@
 version: 0.2
 
+env:
+  variables:
+    TS_TERRAFORM_BIN: "terraform"
+    TS_VERSION_CHECK: "0"
+
 phases:
   install:
     runtime-versions:
@@ -14,8 +19,8 @@ phases:
   build:
     commands:
       - "cd ${CODEBUILD_SRC_DIR}"
-      - "echo ## TERRASPACE Init : Initialize all providers and modules"
-      - "make terraspace-all-init"
+      - "echo ## TERRASPACE Init : Initialize CI/CD infrastructure providers and modules"
+      - "make terraspace-ci-cd-infra-init"
       - "echo ## Getting Token from Secrets Manager"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/retrieve_token.sh"
       - "echo ## TERRASPACE PLAN : Generate the Terraform Plan"

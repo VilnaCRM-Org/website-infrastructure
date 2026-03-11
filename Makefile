@@ -57,13 +57,9 @@ codebuild-run: ## Running CodeBuild for specific buildspec. Example: make codebu
 	./codebuild_build.sh -i $(image) -d -a codebuild_artifacts -b $(buildspec) -e .env -m
 
 TERRAFORM_VERSION ?= 1.14.3
+CI_CD_INFRA_STACKS = ci-cd-infrastructure ci-cd-iam website-iam iam-groups
 
 install-terraspace: ## Install terraspace locally.
-	@$(ECHO) "## Install OpenTofu"
-	$(CURL) --proto "=https" --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
-	$(CHMOD) +x install-opentofu.sh
-	./install-opentofu.sh --install-method rpm || { $(ECHO) "Failed to install OpenTofu" && exit 1; }
-	$(RM) install-opentofu.sh
 	@$(ECHO) "## Install Terraform"
 	$(GIT) clone https://github.com/tfutils/tfenv.git ~/.tfenv
 	$(ECHO) 'export PATH="$$HOME/.tfenv/bin:$$PATH"' >>~/.bash_profile
@@ -78,6 +74,24 @@ terraspace-all-init: ## Init all the stacks.
 
 terraspace-all-validate: ## Validate all the stacks. 
 	$(EXEC_TS) all validate
+
+terraspace-init-stacks: ## Init a list of stacks. Variables: env, stacks.
+	@for stack in $(stacks); do \
+		$(ECHO) "## TERRASPACE INIT : $$stack"; \
+		($(GO_TO_TERRAFORM_DIR) && $(TERRASPACE_ENVIRONMENT) $(TERRASPACE) init $$stack) || exit 1; \
+	done
+
+terraspace-validate-stacks: ## Validate a list of stacks. Variables: env, stacks.
+	@for stack in $(stacks); do \
+		$(ECHO) "## TERRASPACE VALIDATE : $$stack"; \
+		($(GO_TO_TERRAFORM_DIR) && $(TERRASPACE_ENVIRONMENT) $(TERRASPACE) validate $$stack) || exit 1; \
+	done
+
+terraspace-ci-cd-infra-init: ## Init the stacks used by the CI/CD infrastructure pipeline. Variables: env.
+	$(MAKE) terraspace-init-stacks stacks="$(CI_CD_INFRA_STACKS)" env=$(if $(env),$(env),$(TS_ENV))
+
+terraspace-ci-cd-infra-validate: ## Validate the stacks used by the CI/CD infrastructure pipeline. Variables: env.
+	$(MAKE) terraspace-validate-stacks stacks="$(CI_CD_INFRA_STACKS)" env=$(if $(env),$(env),$(TS_ENV))
 
 terraspace-all-plan: ## Plan all the stacks. Variables: env.
 	$(EXEC_TS) all plan -y 

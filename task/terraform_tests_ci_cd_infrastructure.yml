@@ -1,0 +1,33 @@
+version: "3"
+
+tasks:
+  validate:
+    desc: "Validate Terraform code for CI/CD infrastructure stacks"
+    cmds:
+      - make terraspace-ci-cd-infra-init
+      - make terraspace-ci-cd-infra-validate
+    silent: false
+
+  format:
+    desc: "Format Terraform code"
+    cmds:
+      - terraform fmt -recursive
+    silent: false
+
+  checkov:
+    desc: "Run checkov"
+    cmds:
+      - checkov -o junitxml --framework terraform -d ./ --download-external-modules true | tee checkov.xml
+    silent: false
+
+  tfsec:
+    desc: "Run tfsec"
+    cmds:
+      - tfsec ./ --format junit --out tfsec-junit.xml | tee tfsec-junit.xml
+    silent: false
+
+  summary:
+    desc: "Display summary"
+    deps: [validate, format, checkov, tfsec]
+    cmds:
+      - echo "Validation and checks have been completed."
