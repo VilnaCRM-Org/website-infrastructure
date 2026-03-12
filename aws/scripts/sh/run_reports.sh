@@ -16,6 +16,11 @@ if [ -z "${CODEBUILD_SRC_DIR:-}" ] || [ -z "${SCRIPT_DIR:-}" ]; then
 fi
 
 if [ -z "${WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA:-}" ] || [ -z "${WEBSITE_GIT_REPOSITORY_LAST_COMMIT_NAME:-}" ] || [ -z "${WEBSITE_GIT_REPOSITORY_LAST_COMMIT_AUTHOR:-}" ]; then
+  if [ -z "${WEBSITE_URL:-}" ] || [ -z "${CLOUDFRONT_HEADER:-}" ]; then
+    log_report_warning "missing WEBSITE_URL or CLOUDFRONT_HEADER; skipping reports"
+    exit 0
+  fi
+
   # shellcheck disable=SC1090
   if ! . "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"; then
     log_report_warning "failed to reconstruct git metadata; skipping reports"

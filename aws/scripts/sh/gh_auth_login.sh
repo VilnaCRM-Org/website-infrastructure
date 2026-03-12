@@ -26,10 +26,11 @@ gh_auth_login_main() {
   # Configure git to handle CodeBuild environment ownership issues.
   git config --global --add safe.directory "${CODEBUILD_SRC_DIR}" 2>/dev/null || true
 
-  # Get the GitHub token secret ID.
-  SECRET_ID=$(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'github-token-') && DeletedDate==null].Name" --output text)
+  # Select a single active GitHub token secret so get-secret-value never receives
+  # a whitespace-delimited list when multiple rotated secrets are present.
+  SECRET_ID=$(aws secretsmanager list-secrets --query "sort_by(SecretList[?starts_with(Name, 'github-token-') && DeletedDate==null], &CreatedDate)[-1].Name" --output text)
 
-  if [ -z "$SECRET_ID" ]; then
+  if [ -z "$SECRET_ID" ] || [ "$SECRET_ID" = "None" ]; then
     echo "Error: No active GitHub token secret found."
     return 1
   fi
