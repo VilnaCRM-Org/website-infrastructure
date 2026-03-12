@@ -182,14 +182,13 @@ enable_docker_failure_logging() {
     fi
 
     export DOCKER_FAILURE_LOGGING_ENABLED=1
-    local existing_exit_trap
-    existing_exit_trap=$(trap -p EXIT | awk -F"'" '/EXIT/{print $2}')
+    DOCKER_FAILURE_EXISTING_EXIT_TRAP=$(trap -p EXIT | awk -F"'" '/EXIT/{print $2}')
 
     docker_exit_trap() {
         local status=$?
         local cmd=${BASH_COMMAND:-unknown}
-        if [ -n "$existing_exit_trap" ]; then
-            eval "$existing_exit_trap"
+        if [ -n "${DOCKER_FAILURE_EXISTING_EXIT_TRAP:-}" ]; then
+            eval "${DOCKER_FAILURE_EXISTING_EXIT_TRAP}"
         fi
         docker_failure_logs "$status" "$cmd"
     }

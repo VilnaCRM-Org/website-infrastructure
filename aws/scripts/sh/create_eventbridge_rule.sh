@@ -80,24 +80,80 @@ aws events put-targets \
 
 echo "Lambda added as target in EventBridge rule"
 
-# Check if the permission for EventBridge to invoke Lambda already exists
-existing_permission=$(aws lambda get-policy --function-name sandbox-cleanup-lambda 2>/dev/null | grep "$rule_name" || true)
+wildcard_statement_id="AllowEventBridgeInvokeSandboxCleanup"
+wildcard_source_arn="arn:aws:events:$region:$account_id:rule/sandbox-cleanup-*"
+lambda_policy=$(aws lambda get-policy --function-name sandbox-cleanup-lambda --region "$region" 2>/dev/null || true)
 
-if [ -z "$existing_permission" ]; then
-  echo "🔒 Granting permission for EventBridge to invoke Lambda..."
-  statement_id="AllowEventBridgeInvoke-${rule_name}-$(date +%s)"
+has_wildcard_permission() {
+  [ -n "$lambda_policy" ] || return 1
+
+  printf '%s' "$lambda_policy" | jq -e --arg sid "$wildcard_statement_id" --arg source_arn "$wildcard_source_arn" '
+    .Policy
+    | fromjson
+    | (.Statement // [])
+    | map(
+        select(
+          .Sid == $sid
+          and .Principal.Service == "events.amazonaws.com"
+          and .Action == "lambda:InvokeFunction"
+          and .Condition.ArnLike."AWS:SourceArn" == $source_arn
+        )
+      )
+    | length > 0
+  ' >/dev/null 2>&1
+}
+
+cleanup_legacy_permissions() {
+  [ -n "$lambda_policy" ] || return 0
+
+  legacy_statement_ids=$(printf '%s' "$lambda_policy" | jq -r '
+    .Policy
+    | fromjson
+    | (.Statement // [])
+    | .[]
+    | .Sid
+    | select(startswith("AllowEventBridgeInvoke-sandbox-cleanup-"))
+  ' 2>/dev/null || true)
+
+  [ -n "$legacy_statement_ids" ] || return 0
+
+  echo "Removing legacy per-rule Lambda permissions..."
+  old_ifs=$IFS
+  IFS='
+'
+  for statement_id in $legacy_statement_ids; do
+    aws lambda remove-permission \
+      --function-name sandbox-cleanup-lambda \
+      --statement-id "$statement_id" \
+      --region "$region" >/dev/null || true
+  done
+  IFS=$old_ifs
+
+  lambda_policy=$(aws lambda get-policy --function-name sandbox-cleanup-lambda --region "$region" 2>/dev/null || true)
+}
+
+cleanup_legacy_permissions
+
+if has_wildcard_permission; then
+  echo "Lambda already has wildcard permission for sandbox cleanup rules."
+else
+  echo "🔒 Ensuring EventBridge can invoke sandbox cleanup Lambda..."
+
   if ! aws lambda add-permission \
     --function-name sandbox-cleanup-lambda \
-    --statement-id "$statement_id" \
+    --statement-id "$wildcard_statement_id" \
     --action "lambda:InvokeFunction" \
     --principal events.amazonaws.com \
-    --source-arn "arn:aws:events:$region:$account_id:rule/$rule_name"; then
-    echo "Failed to grant permission for EventBridge to invoke Lambda."
-    exit 1
+    --source-arn "$wildcard_source_arn" \
+    --region "$region"; then
+    lambda_policy=$(aws lambda get-policy --function-name sandbox-cleanup-lambda --region "$region" 2>/dev/null || true)
+    if ! has_wildcard_permission; then
+      echo "Failed to grant wildcard permission for EventBridge to invoke Lambda."
+      exit 1
+    fi
   fi
-  echo "Permission granted for EventBridge to invoke Lambda."
-else
-  echo "Lambda already has permission for EventBridge rule."
+
+  echo "Wildcard permission granted for sandbox cleanup rules."
 fi
 
 echo "Ready! Lambda will be triggered automatically after 7 days."

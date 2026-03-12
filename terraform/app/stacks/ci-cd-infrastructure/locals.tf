@@ -149,6 +149,10 @@ locals {
 
   ci_cd_website_build_projects = {
     batch_unit_mutation_lint = merge(local.ecr_based_build,
+      { build_batch_config = {
+        combine_artifacts = true
+        }
+      },
       { env_variables = {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
@@ -166,6 +170,7 @@ locals {
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_unit_mutation_lint.yml" })
 
     deploy = merge(local.ubuntu_based_build,
+      { build_batch_config = null },
       { env_variables = {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
@@ -183,6 +188,7 @@ locals {
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/deploy.yml" })
 
     healthcheck = merge(local.amazonlinux2_based_build,
+      { build_batch_config = null },
       { env_variables = {
         "WEBSITE_URL" = var.website_url
         }
@@ -190,6 +196,10 @@ locals {
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/healthcheck.yml" })
 
     batch_pw_load = merge(local.ecr_based_build,
+      { build_batch_config = {
+        combine_artifacts = true
+        }
+      },
       { env_variables = {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
@@ -210,6 +220,10 @@ locals {
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_pw_load.yml" })
 
     batch_lhci_leak = merge(local.ecr_based_build,
+      { build_batch_config = {
+        combine_artifacts = true
+        }
+      },
       { env_variables = {
         "CI"                            = 1
         "NODEJS_VERSION"                = var.runtime_versions.nodejs,
@@ -228,6 +242,7 @@ locals {
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/batch_lhci_leak.yml" })
 
     release = merge(local.ubuntu_based_build,
+      { build_batch_config = null },
       { env_variables = {
         "PYTHON_VERSION"    = var.runtime_versions.python,
         "SCRIPT_DIR"        = var.script_dir,
@@ -251,6 +266,17 @@ locals {
     "PROJECT_NAME"       = var.sandbox_project_name,
     "GITHUB_REPOSITORY"  = "${var.source_repo_owner}/${var.website_content_repo_name}",
   }
+
+  sandbox_branch_hash_length        = 8
+  sandbox_branch_hash               = substr(sha1(var.BRANCH_NAME), 0, local.sandbox_branch_hash_length)
+  sandbox_branch_slug               = replace(lower(var.BRANCH_NAME), "/[^a-z0-9]+/", "-")
+  sandbox_branch_trimmed            = replace(local.sandbox_branch_slug, "/^-+|-+$/", "")
+  sandbox_branch_base               = local.sandbox_branch_trimmed != "" ? local.sandbox_branch_trimmed : "branch"
+  sandbox_bucket_suffix_max_length  = max(10, 63 - length(var.sandbox_project_name) - 1)
+  sandbox_bucket_hash_suffix_length = local.sandbox_branch_hash_length + 1
+  sandbox_branch_prefix_max_length  = max(1, local.sandbox_bucket_suffix_max_length - local.sandbox_bucket_hash_suffix_length)
+  sandbox_branch_prefix             = replace(substr(local.sandbox_branch_base, 0, local.sandbox_branch_prefix_max_length), "/-+$/", "")
+  sanitized_sandbox_branch_name     = "${local.sandbox_branch_prefix != "" ? local.sandbox_branch_prefix : "branch"}-${local.sandbox_branch_hash}"
 
   sandbox_build_projects = {
     up = merge(local.amazonlinux2_based_build,

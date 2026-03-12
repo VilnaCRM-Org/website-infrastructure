@@ -1,9 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    BASH_ENV: "aws/scripts/sh/docker_failure_logging.sh"
-
 phases:
   install:
     runtime-versions:
@@ -29,36 +25,41 @@ phases:
   build:
     commands:
       - |
-        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/docker_failure_logging.sh
+        bash <<'EOF'
+        set -euo pipefail
+        . "${CODEBUILD_SRC_DIR}/aws/scripts/sh/docker_failure_logging.sh"
         COMMENT_BODY="The deployment process for the sandbox has started.
         Please wait until the latest version is ready"
 
-        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh
+        . "${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh"
 
         if ! gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body "$COMMENT_BODY"; then
           echo "Failed to add comment to PR"
           exit 1
         fi
         echo "#### Build Project"
-        export WEBSITE_DIR=${WEBSITE_DIR:-/codebuild-user/website}
+        export WEBSITE_DIR="${WEBSITE_DIR:-/codebuild-user/website}"
         cd "$WEBSITE_DIR"
         echo "=== Building Docker image ==="
         make build-out
-        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh
+        . "${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
         echo "=== Verifying build output ==="
         ls -la ./out
-        aws s3 sync out s3://$PROJECT_NAME-$BRANCH_NAME || { echo "S3 sync failed"; exit 1; }
+        aws s3 sync out "s3://$PROJECT_NAME-$BRANCH_NAME" || { echo "S3 sync failed"; exit 1; }
         echo "#### Create EventBridge Rule"
-        . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh
+        . "${CODEBUILD_SRC_DIR}/aws/scripts/sh/create_eventbridge_rule.sh"
+        EOF
 
   post_build:
     commands:
       - |
+        bash <<'EOF'
+        set -euo pipefail
         echo "Post-build phase: Checking if build failed to post comment..."
 
-        if [ "$CODEBUILD_BUILD_SUCCEEDING" != "1" ]; then
+        if [ "${CODEBUILD_BUILD_SUCCEEDING}" != "1" ]; then
           # Use the GitHub auth script with non-exit behavior for post-build
-          if . ${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh false; then
+          if . "${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh" false; then
             COMMENT_BODY="❌ Sandbox Deployment Failed"$'\n'"The deployment to the sandbox environment has failed."$'\n'"Please review the CodeBuild logs and try again. 🔧"
 
             # Post the comment to the PR
@@ -73,6 +74,7 @@ phases:
         else
           echo "Build succeeded - no failure comment needed."
         fi
+        EOF
 
 artifacts:
   files:

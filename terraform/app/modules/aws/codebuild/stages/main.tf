@@ -42,6 +42,14 @@ resource "aws_codebuild_project" "terraform_codebuild_project" {
     }
   }
 
+  dynamic "build_batch_config" {
+    for_each = lookup(each.value, "build_batch_config", null) == null ? [] : [each.value.build_batch_config]
+    content {
+      service_role      = var.role_arn
+      combine_artifacts = lookup(build_batch_config.value, "combine_artifacts", null)
+    }
+  }
+
   source {
     type            = each.value.build_project_source
     buildspec       = each.value.buildspec

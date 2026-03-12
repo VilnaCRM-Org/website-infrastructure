@@ -5,7 +5,7 @@ module "iam_roles" {
   region                  = var.region
   account_id              = data.aws_caller_identity.current.account_id
   codestar_connection_arn = module.codestar_connection.arn
-  BRANCH_NAME             = var.BRANCH_NAME
+  SANITIZED_BRANCH_NAME   = local.sanitized_sandbox_branch_name
 }
 
 module "s3_buckets" {

@@ -48,8 +48,8 @@ resource "aws_iam_policy" "codepipeline_policy" {
           "arn:aws:s3:::${var.project_name}-codebuild-logs-${var.environment}",
           "arn:aws:s3:::${var.project_name}-codebuild-logs-${var.environment}/*",
           "arn:aws:s3:::${var.project_name}-access-logs-${var.environment}",
-          "arn:aws:s3:::sandbox-${var.environment}-${var.BRANCH_NAME}*",
-          "arn:aws:s3:::sandbox-${var.environment}-${var.BRANCH_NAME}*/*"
+          "arn:aws:s3:::sandbox-${var.environment}-${var.SANITIZED_BRANCH_NAME}*",
+          "arn:aws:s3:::sandbox-${var.environment}-${var.SANITIZED_BRANCH_NAME}*/*"
         ]
       },
     ]
@@ -104,8 +104,8 @@ resource "aws_iam_policy" "codebuild_policy" {
           "arn:aws:s3:::${var.project_name}-codepipeline-artifacts-${var.environment}/*",
           "arn:aws:s3:::${var.project_name}-codebuild-logs-${var.environment}/*",
           "arn:aws:s3:::${var.project_name}-access-logs-${var.environment}/*",
-          "arn:aws:s3:::sandbox-${var.environment}-${var.BRANCH_NAME}*",
-          "arn:aws:s3:::sandbox-${var.environment}-${var.BRANCH_NAME}*/*"
+          "arn:aws:s3:::sandbox-${var.environment}-${var.SANITIZED_BRANCH_NAME}*",
+          "arn:aws:s3:::sandbox-${var.environment}-${var.SANITIZED_BRANCH_NAME}*/*"
         ]
       },
       {
