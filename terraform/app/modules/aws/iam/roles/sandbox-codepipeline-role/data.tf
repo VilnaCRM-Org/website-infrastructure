@@ -163,6 +163,7 @@ data "aws_iam_policy_document" "codepipeline_policy_document" {
     effect = "Allow"
     actions = [
       "lambda:AddPermission",
+      "lambda:RemovePermission",
       "lambda:GetPolicy"
     ]
     resources = ["arn:aws:lambda:${data.aws_region.current.id}:${local.account_id}:function:sandbox-cleanup-lambda"]
