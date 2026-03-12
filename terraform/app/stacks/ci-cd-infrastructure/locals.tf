@@ -267,6 +267,15 @@ locals {
     "GITHUB_REPOSITORY"  = "${var.source_repo_owner}/${var.website_content_repo_name}",
   }
 
+  sandbox_branch_hash              = substr(sha1(var.BRANCH_NAME), 0, 8)
+  sandbox_branch_slug              = regexreplace(lower(var.BRANCH_NAME), "[^a-z0-9]+", "-")
+  sandbox_branch_trimmed           = regexreplace(local.sandbox_branch_slug, "^-+|-+$", "")
+  sandbox_branch_base              = local.sandbox_branch_trimmed != "" ? local.sandbox_branch_trimmed : "branch"
+  sandbox_bucket_suffix_max_length = max(10, 63 - length(var.sandbox_project_name) - 1)
+  sandbox_branch_prefix_max_length = max(1, local.sandbox_bucket_suffix_max_length - 9)
+  sandbox_branch_prefix            = regexreplace(substr(local.sandbox_branch_base, 0, local.sandbox_branch_prefix_max_length), "-+$", "")
+  sanitized_sandbox_branch_name    = "${local.sandbox_branch_prefix != "" ? local.sandbox_branch_prefix : "branch"}-${local.sandbox_branch_hash}"
+
   sandbox_build_projects = {
     up = merge(local.amazonlinux2_based_build,
       {

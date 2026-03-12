@@ -54,8 +54,8 @@ phases:
         echo "## Preparing Health Check for S3 Bucket..."
 
         bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
-        if [[ ${#bucket_name} -gt 60 ]]; then
-          echo "Error: Total bucket name length exceeds 60 characters."
+        if [[ ${#bucket_name} -gt 63 ]]; then
+          echo "Error: Total bucket name length exceeds 63 characters."
           exit 1
         fi
 

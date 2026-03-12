@@ -89,7 +89,7 @@ variable "github_token_secret_name" {
   default     = "github-token"
 }
 
-variable "BRANCH_NAME" {
-  description = "Name of the branch"
+variable "SANITIZED_BRANCH_NAME" {
+  description = "Bucket-safe branch suffix used by sandbox resources"
   type        = string
 }

@@ -24,7 +24,7 @@ module "sandbox_codepipeline_iam_role" {
   codepipeline_iam_role_name = "${local.project_name}-codepipeline-role"
   source_repo_owner          = var.source_repo_owner
   source_repo_name           = var.source_repo_name
-  BRANCH_NAME                = var.BRANCH_NAME
+  SANITIZED_BRANCH_NAME      = local.sanitized_sandbox_branch_name
 
   region      = local.region
   environment = var.environment

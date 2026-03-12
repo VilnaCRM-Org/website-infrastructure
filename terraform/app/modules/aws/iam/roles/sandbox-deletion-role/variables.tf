@@ -39,7 +39,7 @@ variable "codestar_connection_arn" {
   type        = string
 }
 
-variable "BRANCH_NAME" {
-  description = "Name of the branch"
+variable "SANITIZED_BRANCH_NAME" {
+  description = "Bucket-safe branch suffix used by sandbox resources"
   type        = string
 }
