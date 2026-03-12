@@ -11,6 +11,7 @@ if ! apk add --no-cache python3 aws-cli; then
 fi
 
 if [ -z "${WEBSITE_GIT_REPOSITORY_LAST_COMMIT_SHA:-}" ] || [ -z "${WEBSITE_GIT_REPOSITORY_LAST_COMMIT_NAME:-}" ] || [ -z "${WEBSITE_GIT_REPOSITORY_LAST_COMMIT_AUTHOR:-}" ]; then
+  # shellcheck disable=SC1090
   if ! . "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/create_env.sh"; then
     log_report_warning "failed to reconstruct git metadata; skipping reports"
     exit 0
