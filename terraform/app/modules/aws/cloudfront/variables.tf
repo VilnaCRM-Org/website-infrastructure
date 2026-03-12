@@ -47,6 +47,16 @@ variable "enable_cloudfront_staging" {
   type        = bool
 }
 
+variable "enable_cloudwatch_alarms" {
+  description = "Whether to create CloudWatch alarms for CloudFront and WAF"
+  type        = bool
+}
+
+variable "enable_waf" {
+  description = "Whether to create and attach the WAF web ACL"
+  type        = bool
+}
+
 variable "cloudfront_configuration" {
   type        = map(any)
   description = "CloudFront Configuration"

@@ -15,4 +15,18 @@ locals {
     "minimum_protocol_version",
     "TLSv1.2_2021"
   )
+
+  cloudwatch_alarm_source_arns = concat(
+    aws_cloudwatch_metric_alarm.cloudfront_500_errors[*].arn,
+    aws_cloudwatch_metric_alarm.cloudfront_origin_latency[*].arn,
+    aws_cloudwatch_metric_alarm.cloudfront_staging_500_errors[*].arn,
+    aws_cloudwatch_metric_alarm.cloudfront_staging_origin_latency[*].arn,
+    aws_cloudwatch_metric_alarm.cloudfront_requests_anomaly_detection[*].arn,
+    aws_cloudwatch_metric_alarm.wafv2_blocked_requests_anomaly_detection[*].arn,
+    aws_cloudwatch_metric_alarm.wafv2_country_blocked_requests[*].arn,
+    aws_cloudwatch_metric_alarm.cloudfront_requests_flood_alarm[*].arn,
+    aws_cloudwatch_metric_alarm.wafv2_high_rate_blocked_requests[*].arn,
+    aws_cloudwatch_metric_alarm.wafv2_scanning_alarm[*].arn,
+    aws_cloudwatch_metric_alarm.wafv2_bots_alarm[*].arn,
+  )
 }

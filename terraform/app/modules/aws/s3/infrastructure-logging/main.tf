@@ -45,6 +45,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "logging_bucket_lifecycle_confi
       days = var.s3_logs_lifecycle_configuration.deletion_days
     }
 
+    noncurrent_version_expiration {
+      noncurrent_days = var.s3_logs_lifecycle_configuration.deletion_days
+    }
+
     transition {
       days          = var.s3_logs_lifecycle_configuration.standard_ia_transition_days
       storage_class = "STANDARD_IA"

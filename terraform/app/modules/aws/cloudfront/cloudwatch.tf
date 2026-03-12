@@ -1,4 +1,5 @@
 resource "aws_cloudwatch_log_group" "waf_web_acl_log_group" {
+  count = var.enable_waf ? 1 : 0
   #checkov:skip=CKV_AWS_338: The one year is too much
   #checkov:skip=CKV_AWS_158: KMS encryption is not needed
   provider          = aws.us-east-1

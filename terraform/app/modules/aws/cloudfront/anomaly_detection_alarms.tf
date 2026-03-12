@@ -1,4 +1,5 @@
 resource "aws_cloudwatch_metric_alarm" "cloudfront_requests_anomaly_detection" {
+  count               = var.enable_cloudwatch_alarms ? 1 : 0
   provider            = aws.us-east-1
   alarm_name          = "${var.project_name}-cloudfront-requests-anomaly-detection"
   comparison_operator = "LessThanLowerOrGreaterThanUpperThreshold"
@@ -32,6 +33,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_requests_anomaly_detection" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "wafv2_blocked_requests_anomaly_detection" {
+  count               = var.enable_cloudwatch_alarms && var.enable_waf ? 1 : 0
   provider            = aws.us-east-1
   alarm_name          = "${var.project_name}-wafv2-blocked-requests-anomaly-detection"
   comparison_operator = "LessThanLowerOrGreaterThanUpperThreshold"

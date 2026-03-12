@@ -24,10 +24,10 @@ output "reports_sns_topic_arn" {
 }
 
 output "cloudwatch_alarms_arns" {
-  value = [
-    aws_cloudwatch_metric_alarm.lambda_invocations_anomaly_detection.arn,
-    aws_cloudwatch_metric_alarm.lambda_errors_detection.arn,
-    aws_cloudwatch_metric_alarm.lambda_throttles_anomaly_detection.arn,
-    aws_cloudwatch_metric_alarm.lambda_duration_anomaly_detection.arn,
-  ]
+  value = concat(
+    aws_cloudwatch_metric_alarm.lambda_invocations_anomaly_detection[*].arn,
+    aws_cloudwatch_metric_alarm.lambda_errors_detection[*].arn,
+    aws_cloudwatch_metric_alarm.lambda_throttles_anomaly_detection[*].arn,
+    aws_cloudwatch_metric_alarm.lambda_duration_anomaly_detection[*].arn,
+  )
 }

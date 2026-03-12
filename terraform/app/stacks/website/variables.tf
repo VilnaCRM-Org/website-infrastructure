@@ -93,6 +93,16 @@ variable "enable_cloudfront_staging" {
   type        = bool
 }
 
+variable "enable_cloudwatch_alarms" {
+  description = "Whether to create CloudWatch alarms for website resources"
+  type        = bool
+}
+
+variable "enable_waf" {
+  description = "Whether to create and attach the website WAF web ACL"
+  type        = bool
+}
+
 variable "create_slack_notification" {
   description = "This responsible for creating Slack Notifications"
   type        = bool
@@ -102,4 +112,3 @@ variable "tags" {
   description = "Tags to be associated with the S3 bucket"
   type        = map(any)
 }
-
