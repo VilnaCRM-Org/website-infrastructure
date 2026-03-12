@@ -7,6 +7,7 @@ resource "aws_cloudwatch_log_group" "reports_notification_group" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_invocations_anomaly_detection" {
+  count               = var.enable_cloudwatch_alarms ? 1 : 0
   alarm_name          = "${var.project_name}-lambda-reports-invocations-anomaly-detection"
   comparison_operator = "GreaterThanUpperThreshold"
   evaluation_periods  = 1
@@ -39,6 +40,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_invocations_anomaly_detection" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_errors_detection" {
+  count               = var.enable_cloudwatch_alarms ? 1 : 0
   alarm_name          = "${var.project_name}-lambda-reports-errors"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 1
@@ -56,6 +58,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors_detection" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_throttles_anomaly_detection" {
+  count               = var.enable_cloudwatch_alarms ? 1 : 0
   alarm_name          = "${var.project_name}-lambda-reports-throttles-anomaly-detection"
   comparison_operator = "GreaterThanUpperThreshold"
   evaluation_periods  = 1
@@ -88,6 +91,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles_anomaly_detection" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_duration_anomaly_detection" {
+  count               = var.enable_cloudwatch_alarms ? 1 : 0
   alarm_name          = "${var.project_name}-lambda-reports-duration-anomaly-detection"
   comparison_operator = "GreaterThanUpperThreshold"
   evaluation_periods  = 1

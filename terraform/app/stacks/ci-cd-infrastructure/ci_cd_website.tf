@@ -69,6 +69,7 @@ module "ci_cd_website_codepipeline" {
   lambda_python_version                 = var.lambda_python_version
   lambda_reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
   cloudwatch_log_group_retention_days   = var.cloudwatch_log_group_retention_days
+  enable_cloudwatch_alarms              = var.enable_cloudwatch_alarms
 
   stages = var.ci_cd_website_stage_input
 

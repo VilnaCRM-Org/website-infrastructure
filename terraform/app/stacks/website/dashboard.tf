@@ -1,4 +1,5 @@
 module "website_dashboard" {
+  count  = var.enable_waf ? 1 : 0
   source = "../../modules/aws/cloudwatch/website-dashboard"
 
   project_name = var.project_name

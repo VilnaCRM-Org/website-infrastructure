@@ -22,6 +22,7 @@ s3_artifacts_bucket_files_deletion_days = 7
 cloudwatch_log_group_retention_days = 7
 
 create_slack_notification = true
+enable_cloudwatch_alarms  = true
 
 runtime_versions = {
   ruby   = "3.2"

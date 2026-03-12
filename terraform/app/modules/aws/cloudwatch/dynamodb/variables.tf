@@ -28,6 +28,11 @@ variable "cloudwatch_alerts_sns_topic_arn" {
   type        = string
 }
 
+variable "enable_cloudwatch_alarms" {
+  description = "Whether to create CloudWatch alarms for DynamoDB logging"
+  type        = bool
+}
+
 variable "tags" {
   description = "Tags to be attached to the CodePipeline"
   type        = map(any)

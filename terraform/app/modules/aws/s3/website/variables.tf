@@ -60,6 +60,11 @@ variable "cloudwatch_log_group_retention_days" {
   type        = number
 }
 
+variable "enable_cloudwatch_alarms" {
+  description = "Whether to create CloudWatch alarms for the website bucket"
+  type        = bool
+}
+
 variable "staging" {
   type        = string
   description = "Domain name for website, used for all resources"

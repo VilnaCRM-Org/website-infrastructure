@@ -16,22 +16,26 @@ data "aws_iam_policy_document" "sns_bucket_topic_doc" {
     }
   }
 
-  statement {
-    sid     = "AllowSNSPublishIntoTopicForCloudWatch"
-    effect  = "Allow"
-    actions = ["sns:Publish"]
+  dynamic "statement" {
+    for_each = var.enable_cloudwatch_alarms ? [1] : []
 
-    principals {
-      type        = "Service"
-      identifiers = ["cloudwatch.amazonaws.com"]
-    }
+    content {
+      sid     = "AllowSNSPublishIntoTopicForCloudWatch"
+      effect  = "Allow"
+      actions = ["sns:Publish"]
 
-    resources = ["${aws_sns_topic.bucket_notifications.arn}"]
+      principals {
+        type        = "Service"
+        identifiers = ["cloudwatch.amazonaws.com"]
+      }
 
-    condition {
-      test     = "ArnLike"
-      variable = "aws:SourceArn"
-      values   = var.staging == true ? local.sns_staging_alarms : local.sns_alarms
+      resources = ["${aws_sns_topic.bucket_notifications.arn}"]
+
+      condition {
+        test     = "ArnLike"
+        variable = "aws:SourceArn"
+        values   = var.staging == true ? local.sns_staging_alarms : local.sns_alarms
+      }
     }
   }
 }

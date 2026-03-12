@@ -12,6 +12,7 @@ module "s3_bucket" {
 
   lambda_configuration                = var.lambda_configuration
   cloudwatch_log_group_retention_days = var.cloudwatch_log_group_retention_days
+  enable_cloudwatch_alarms            = var.enable_cloudwatch_alarms
 
   s3_bucket_custom_name = var.s3_bucket_custom_name
 
@@ -38,6 +39,7 @@ module "staging_s3_bucket" {
 
   lambda_configuration                = var.lambda_configuration
   cloudwatch_log_group_retention_days = var.cloudwatch_log_group_retention_days
+  enable_cloudwatch_alarms            = var.enable_cloudwatch_alarms
 
   s3_bucket_custom_name = "staging.${var.s3_bucket_custom_name}"
 

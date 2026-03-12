@@ -1,4 +1,5 @@
 resource "aws_cloudwatch_metric_alarm" "dynamodb_read_capacity_anomaly_detection" {
+  count               = var.enable_cloudwatch_alarms ? 1 : 0
   alarm_name          = "${var.project_name}-dynamodb-read-capacity-anomaly-detection"
   comparison_operator = "LessThanLowerOrGreaterThanUpperThreshold"
   evaluation_periods  = 5
@@ -30,6 +31,7 @@ resource "aws_cloudwatch_metric_alarm" "dynamodb_read_capacity_anomaly_detection
 }
 
 resource "aws_cloudwatch_metric_alarm" "dynamodb_write_capacity_anomaly_detection" {
+  count               = var.enable_cloudwatch_alarms ? 1 : 0
   alarm_name          = "${var.project_name}-dynamodb-write-capacity-anomaly-detection"
   comparison_operator = "LessThanLowerOrGreaterThanUpperThreshold"
   evaluation_periods  = 5
@@ -61,6 +63,7 @@ resource "aws_cloudwatch_metric_alarm" "dynamodb_write_capacity_anomaly_detectio
 }
 
 resource "aws_cloudwatch_metric_alarm" "dynamodb_system_errors_detection" {
+  count               = var.enable_cloudwatch_alarms ? 1 : 0
   alarm_name          = "${var.project_name}-dynamodb-system-errors"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 1

@@ -7,10 +7,10 @@ resource "aws_sns_topic" "cloudwatch_alarm_notifications" {
 }
 
 resource "aws_sns_topic_policy" "cloudwatch_alarm_notifications" {
+  count    = var.enable_cloudwatch_alarms ? 1 : 0
   provider = aws.us-east-1
   arn      = aws_sns_topic.cloudwatch_alarm_notifications.arn
-  policy   = data.aws_iam_policy_document.cloudwatch_alarm_sns_topic_doc.json
+  policy   = data.aws_iam_policy_document.cloudwatch_alarm_sns_topic_doc[0].json
 
   depends_on = [aws_sns_topic.cloudwatch_alarm_notifications]
 }
-
