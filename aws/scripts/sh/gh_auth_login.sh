@@ -1,28 +1,45 @@
 #!/bin/bash
 
 # GitHub Authentication Script
-# This script handles GitHub CLI authentication using AWS Secrets Manager
+# This script handles GitHub CLI authentication using AWS Secrets Manager.
+# It may be executed directly or sourced from another shell script.
 
 set -e
 
+if (return 0 2>/dev/null); then
+  gh_auth_login_sourced=1
+else
+  gh_auth_login_sourced=0
+fi
+
+gh_auth_login_finish() {
+  local status="$1"
+
+  if [ "$gh_auth_login_sourced" -eq 1 ]; then
+    return "$status"
+  fi
+
+  exit "$status"
+}
+
 echo "Retrieving GitHub token for authentication..."
 
-# Configure git to handle CodeBuild environment ownership issues
+# Configure git to handle CodeBuild environment ownership issues.
 git config --global --add safe.directory "${CODEBUILD_SRC_DIR}" 2>/dev/null || true
 
-# Get the GitHub token secret ID
+# Get the GitHub token secret ID.
 SECRET_ID=$(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'github-token-') && DeletedDate==null].Name" --output text)
 
 if [ -z "$SECRET_ID" ]; then
   echo "Error: No active GitHub token secret found."
-  exit 1
+  gh_auth_login_finish 1
 fi
 
-# Retrieve and use the token for GitHub CLI authentication
+# Retrieve and use the token for GitHub CLI authentication.
 if aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text | jq -r '.token' | gh auth login --with-token; then
   echo "GitHub authentication successful."
-  exit 0
+  gh_auth_login_finish 0
 else
   echo "GitHub authentication failed."
-  exit 1
-fi 
+  gh_auth_login_finish 1
+fi

@@ -51,7 +51,7 @@ phases:
         fi
       - ". ${CODEBUILD_SRC_DIR}/aws/scripts/sh/sanitize_branch.sh"
       - |
-        echo "## Preparing Health Check for S3 Bucket..."
+        echo "## Preparing Health Check for sandbox website..."
 
         bucket_name="${PROJECT_NAME}-${BRANCH_NAME}"
         if [[ ${#bucket_name} -gt 63 ]]; then
@@ -59,17 +59,17 @@ phases:
           exit 1
         fi
 
-        BUCKET_URL="https://s3.${AWS_DEFAULT_REGION}.amazonaws.com/${bucket_name}"
+        WEBSITE_URL="http://${bucket_name}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com"
 
-        echo "Bucket URL: $BUCKET_URL"
+        echo "Website URL: $WEBSITE_URL"
 
         HURL_FILE_PATH="${CODEBUILD_SRC_DIR}/${HURL_DIR}/${HURL_FILE}"
 
         echo "## Running Health Check with Hurl..."
         if ! hurl --test --verbose \
-          --variable bucket_url="$BUCKET_URL" \
+          --variable website_url="$WEBSITE_URL" \
           "$HURL_FILE_PATH"; then
-          echo "Health check failed. Adding comment to PR..."
+          echo "Health check failed for the website endpoint. Adding comment to PR..."
 
           # Use the GitHub authentication script
           . "${CODEBUILD_SRC_DIR}/aws/scripts/sh/gh_auth_login.sh"
