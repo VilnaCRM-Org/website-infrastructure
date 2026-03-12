@@ -87,11 +87,18 @@ lambda_policy=$(aws lambda get-policy --function-name sandbox-cleanup-lambda --r
 has_wildcard_permission() {
   [ -n "$lambda_policy" ] || return 1
 
-  printf '%s' "$lambda_policy" | jq -e --arg sid "$wildcard_statement_id" '
+  printf '%s' "$lambda_policy" | jq -e --arg sid "$wildcard_statement_id" --arg source_arn "$wildcard_source_arn" '
     .Policy
     | fromjson
     | (.Statement // [])
-    | map(select(.Sid == $sid))
+    | map(
+        select(
+          .Sid == $sid
+          and .Principal.Service == "events.amazonaws.com"
+          and .Action == "lambda:InvokeFunction"
+          and .Condition.ArnLike."AWS:SourceArn" == $source_arn
+        )
+      )
     | length > 0
   ' >/dev/null 2>&1
 }
@@ -125,11 +132,12 @@ cleanup_legacy_permissions() {
   lambda_policy=$(aws lambda get-policy --function-name sandbox-cleanup-lambda --region "$region" 2>/dev/null || true)
 }
 
+cleanup_legacy_permissions
+
 if has_wildcard_permission; then
   echo "Lambda already has wildcard permission for sandbox cleanup rules."
 else
   echo "🔒 Ensuring EventBridge can invoke sandbox cleanup Lambda..."
-  cleanup_legacy_permissions
 
   if ! aws lambda add-permission \
     --function-name sandbox-cleanup-lambda \
