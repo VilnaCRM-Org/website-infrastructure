@@ -269,13 +269,13 @@ locals {
 
   sandbox_branch_hash_length        = 8
   sandbox_branch_hash               = substr(sha1(var.BRANCH_NAME), 0, local.sandbox_branch_hash_length)
-  sandbox_branch_slug               = regexreplace(lower(var.BRANCH_NAME), "[^a-z0-9]+", "-")
-  sandbox_branch_trimmed            = regexreplace(local.sandbox_branch_slug, "^-+|-+$", "")
+  sandbox_branch_slug               = replace(lower(var.BRANCH_NAME), "/[^a-z0-9]+/", "-")
+  sandbox_branch_trimmed            = replace(local.sandbox_branch_slug, "/^-+|-+$/", "")
   sandbox_branch_base               = local.sandbox_branch_trimmed != "" ? local.sandbox_branch_trimmed : "branch"
   sandbox_bucket_suffix_max_length  = max(10, 63 - length(var.sandbox_project_name) - 1)
   sandbox_bucket_hash_suffix_length = local.sandbox_branch_hash_length + 1
   sandbox_branch_prefix_max_length  = max(1, local.sandbox_bucket_suffix_max_length - local.sandbox_bucket_hash_suffix_length)
-  sandbox_branch_prefix             = regexreplace(substr(local.sandbox_branch_base, 0, local.sandbox_branch_prefix_max_length), "-+$", "")
+  sandbox_branch_prefix             = replace(substr(local.sandbox_branch_base, 0, local.sandbox_branch_prefix_max_length), "/-+$/", "")
   sanitized_sandbox_branch_name     = "${local.sandbox_branch_prefix != "" ? local.sandbox_branch_prefix : "branch"}-${local.sandbox_branch_hash}"
 
   sandbox_build_projects = {
