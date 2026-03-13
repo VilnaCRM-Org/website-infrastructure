@@ -65,10 +65,6 @@ resource "aws_cloudfront_distribution" "this" {
 
     viewer_protocol_policy = "redirect-to-https"
 
-    min_ttl     = var.cloudfront_configuration.min_ttl
-    default_ttl = var.cloudfront_configuration.default_ttl
-    max_ttl     = var.cloudfront_configuration.max_ttl
-
     compress = true
 
     function_association {
@@ -173,10 +169,6 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
 
     viewer_protocol_policy = "redirect-to-https"
 
-    min_ttl     = var.cloudfront_configuration.min_ttl
-    default_ttl = var.cloudfront_configuration.default_ttl
-    max_ttl     = var.cloudfront_configuration.max_ttl
-
     compress = true
 
     function_association {
@@ -212,4 +204,12 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
   }
 
   wait_for_deployment = true
+
+  # CloudFront continuous deployment staging distributions reject some in-place
+  # distribution updates even when the primary distribution accepts them.
+  lifecycle {
+    ignore_changes = [
+      viewer_certificate[0].minimum_protocol_version,
+    ]
+  }
 }
