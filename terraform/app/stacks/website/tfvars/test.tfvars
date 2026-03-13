@@ -29,7 +29,7 @@ cloudfront_configuration = {
   max_ttl                    = 31536000
   access_control_max_age_sec = 31536000
   default_root_object        = "index.html"
-  minimum_protocol_version   = "TLSv1.2_2021"
+  minimum_protocol_version   = "TLSv1.2_2019"
 }
 
 ttl_validation     = 60
@@ -44,6 +44,5 @@ s3_logs_lifecycle_configuration = {
   deletion_days                = 30
 }
 
-enable_cloudwatch_alarms              = false
-enable_waf                            = true
-ignore_minimum_protocol_version_drift = true
+enable_cloudwatch_alarms = false
+enable_waf               = true

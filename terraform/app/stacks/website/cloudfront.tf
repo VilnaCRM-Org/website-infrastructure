@@ -16,10 +16,9 @@ module "cloudfront" {
   cloudfront_configuration          = var.cloudfront_configuration
   cloudfront_custom_error_responses = var.cloudfront_custom_error_responses
 
-  enable_cloudfront_staging             = var.enable_cloudfront_staging
-  enable_cloudwatch_alarms              = var.enable_cloudwatch_alarms
-  enable_waf                            = var.enable_waf
-  ignore_minimum_protocol_version_drift = var.ignore_minimum_protocol_version_drift
+  enable_cloudfront_staging = var.enable_cloudfront_staging
+  enable_cloudwatch_alarms  = var.enable_cloudwatch_alarms
+  enable_waf                = var.enable_waf
 
   tags = var.tags
 }
