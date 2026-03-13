@@ -71,19 +71,31 @@ resource "aws_s3_bucket_lifecycle_configuration" "replication_logging_bucket_lif
       noncurrent_days = var.s3_logs_lifecycle_configuration.deletion_days
     }
 
-    transition {
-      days          = var.s3_logs_lifecycle_configuration.standard_ia_transition_days
-      storage_class = "STANDARD_IA"
+    dynamic "transition" {
+      for_each = lookup(var.s3_logs_lifecycle_configuration, "standard_ia_transition_days", 0) > 0 ? [1] : []
+
+      content {
+        days          = var.s3_logs_lifecycle_configuration.standard_ia_transition_days
+        storage_class = "STANDARD_IA"
+      }
     }
 
-    transition {
-      days          = var.s3_logs_lifecycle_configuration.glacier_transition_days
-      storage_class = "GLACIER"
+    dynamic "transition" {
+      for_each = lookup(var.s3_logs_lifecycle_configuration, "glacier_transition_days", 0) > 0 ? [1] : []
+
+      content {
+        days          = var.s3_logs_lifecycle_configuration.glacier_transition_days
+        storage_class = "GLACIER"
+      }
     }
 
-    transition {
-      days          = var.s3_logs_lifecycle_configuration.deep_archive_transition_days
-      storage_class = "DEEP_ARCHIVE"
+    dynamic "transition" {
+      for_each = lookup(var.s3_logs_lifecycle_configuration, "deep_archive_transition_days", 0) > 0 ? [1] : []
+
+      content {
+        days          = var.s3_logs_lifecycle_configuration.deep_archive_transition_days
+        storage_class = "DEEP_ARCHIVE"
+      }
     }
 
     status = "Enabled"
