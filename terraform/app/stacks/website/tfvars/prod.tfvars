@@ -29,7 +29,10 @@ cloudfront_configuration = {
   max_ttl                    = 31536000
   access_control_max_age_sec = 31536000
   default_root_object        = "index.html"
-  minimum_protocol_version   = "TLSv1.2_2021"
+  # Keep prod aligned with the staging distribution while CloudFront continuous
+  # deployment is enabled; the prod pipeline failed with IllegalUpdate when this
+  # drifted higher during the issue #102 rollout.
+  minimum_protocol_version = "TLSv1.2_2019"
 }
 
 ttl_validation     = 60
