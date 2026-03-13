@@ -44,5 +44,6 @@ s3_logs_lifecycle_configuration = {
   deletion_days                = 30
 }
 
-enable_cloudwatch_alarms = false
-enable_waf               = true
+enable_cloudwatch_alarms              = false
+enable_waf                            = true
+ignore_minimum_protocol_version_drift = true

@@ -105,9 +105,9 @@ resource "aws_cloudfront_distribution" "this" {
   # attached distributions. Keep the existing protocol until the distribution
   # is updated through the supported CloudFront CD flow.
   lifecycle {
-    ignore_changes = [
+    ignore_changes = var.ignore_minimum_protocol_version_drift ? [
       viewer_certificate[0].minimum_protocol_version,
-    ]
+    ] : []
   }
 
   depends_on = [aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy]
@@ -217,8 +217,8 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
   # CloudFront continuous deployment rejects some in-place protocol upgrades on
   # attached distributions, including the staging distribution.
   lifecycle {
-    ignore_changes = [
+    ignore_changes = var.ignore_minimum_protocol_version_drift ? [
       viewer_certificate[0].minimum_protocol_version,
-    ]
+    ] : []
   }
 }

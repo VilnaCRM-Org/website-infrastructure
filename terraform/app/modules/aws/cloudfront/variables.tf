@@ -57,6 +57,12 @@ variable "enable_waf" {
   type        = bool
 }
 
+variable "ignore_minimum_protocol_version_drift" {
+  description = "Whether to ignore CloudFront minimum protocol version drift for continuous deployment workarounds"
+  type        = bool
+  default     = false
+}
+
 variable "cloudfront_configuration" {
   type        = map(any)
   description = "CloudFront Configuration"

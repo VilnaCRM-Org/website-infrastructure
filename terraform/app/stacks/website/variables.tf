@@ -103,6 +103,12 @@ variable "enable_waf" {
   type        = bool
 }
 
+variable "ignore_minimum_protocol_version_drift" {
+  description = "Whether to ignore CloudFront minimum protocol version drift"
+  type        = bool
+  default     = false
+}
+
 variable "create_slack_notification" {
   description = "This responsible for creating Slack Notifications"
   type        = bool
