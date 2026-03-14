@@ -121,7 +121,7 @@ variable "ci_cd_infra_stage_input" {
     category         = string
     owner            = string
     provider         = string
-    input_artifacts  = any
+    input_artifacts  = list(string)
     output_artifacts = string
   }))
 }
@@ -133,7 +133,7 @@ variable "website_infra_stage_input" {
     category         = string
     owner            = string
     provider         = string
-    input_artifacts  = any
+    input_artifacts  = list(string)
     output_artifacts = string
   }))
 }
@@ -145,7 +145,7 @@ variable "sandbox_stage_input" {
     category         = string
     owner            = string
     provider         = string
-    input_artifacts  = any
+    input_artifacts  = list(string)
     output_artifacts = string
   }))
 }
@@ -157,7 +157,7 @@ variable "sandbox_deletion_stage_input" {
     category         = string
     owner            = string
     provider         = string
-    input_artifacts  = any
+    input_artifacts  = list(string)
     output_artifacts = string
   }))
 }
@@ -169,7 +169,7 @@ variable "ci_cd_website_stage_input" {
     category         = string
     owner            = string
     provider         = string
-    input_artifacts  = any
+    input_artifacts  = list(string)
     output_artifacts = string
   }))
 }
