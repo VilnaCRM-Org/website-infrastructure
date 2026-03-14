@@ -15,7 +15,7 @@ tags = {
   Environment = "test"
 }
 
-s3_artifacts_bucket_files_deletion_days = 2
+s3_artifacts_bucket_files_deletion_days = 1
 
 s3_logs_lifecycle_configuration = {
   standard_ia_transition_days  = 0
@@ -39,11 +39,8 @@ website_infra_stage_input = [
 ]
 
 ci_cd_website_stage_input = [
-  { name = "batch-unit-mutation-lint", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "UnitMutationLintOutput" },
   { name = "deploy", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "DeployOutput" },
   { name = "healthcheck", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "HealthcheckOutput" },
-  { name = "batch-lhci-leak", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "LHCILeakOutput" },
-  { name = "batch-pw-load", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "PWLoadOutput" },
   { name = "release", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "ReleaseOutput" },
 ]
 

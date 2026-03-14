@@ -26,6 +26,26 @@ resource "aws_s3_bucket_versioning" "this" {
   }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "this" {
+  depends_on = [aws_s3_bucket_versioning.this]
+
+  bucket = aws_s3_bucket.this.id
+
+  rule {
+    id = "noncurrent-version-expiration"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = var.noncurrent_version_expiration_days
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = var.noncurrent_version_expiration_days
+    }
+
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "this" {
   bucket                  = aws_s3_bucket.this.id
   block_public_acls       = true

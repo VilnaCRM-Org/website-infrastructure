@@ -28,6 +28,12 @@ variable "s3_logs_lifecycle_configuration" {
   type        = map(number)
 }
 
+variable "s3_noncurrent_version_expiration_days" {
+  description = "Retention time for noncurrent versions in versioned website buckets"
+  type        = number
+  default     = 30
+}
+
 variable "s3_bucket_custom_name" {
   type        = string
   description = "Any non-empty string here will replace default name of bucket `var.domain_name`"

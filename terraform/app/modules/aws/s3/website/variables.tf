@@ -65,6 +65,11 @@ variable "enable_cloudwatch_alarms" {
   type        = bool
 }
 
+variable "noncurrent_version_expiration_days" {
+  description = "Retention time for noncurrent website bucket object versions"
+  type        = number
+}
+
 variable "staging" {
   type        = string
   description = "Domain name for website, used for all resources"

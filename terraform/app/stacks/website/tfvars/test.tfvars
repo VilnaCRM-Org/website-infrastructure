@@ -35,14 +35,15 @@ cloudfront_configuration = {
 ttl_validation     = 60
 ttl_route53_record = 300
 
-s3_artifacts_bucket_files_deletion_days = 2
+s3_artifacts_bucket_files_deletion_days = 1
+s3_noncurrent_version_expiration_days   = 1
 
 s3_logs_lifecycle_configuration = {
   standard_ia_transition_days  = 0
   glacier_transition_days      = 0
   deep_archive_transition_days = 0
-  deletion_days                = 30
+  deletion_days                = 7
 }
 
 enable_cloudwatch_alarms = false
-enable_waf               = true
+enable_waf               = false

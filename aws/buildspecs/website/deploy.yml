@@ -15,10 +15,20 @@ phases:
       - "make build-out"
       - "echo #### Deploy Project"
       - "echo #### Turn Of Alarm Actions"
-      - "aws cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME"
+      - |
+        if [ "$(aws cloudwatch describe-alarms --alarm-names "$ALARM_NAME" --query 'MetricAlarms[0].AlarmName' --output text)" != "None" ]; then
+          aws cloudwatch disable-alarm-actions --alarm-names "$ALARM_NAME"
+        else
+          echo "Alarm $ALARM_NAME not found, skipping disable"
+        fi
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/deploy_content.py"
       - "echo #### Invalidate CloudFront Cache"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/cache_invalidation.py"
       - "echo #### Turn On Alarm Actions"
-      - "aws cloudwatch enable-alarm-actions --alarm-names $ALARM_NAME"
+      - |
+        if [ "$(aws cloudwatch describe-alarms --alarm-names "$ALARM_NAME" --query 'MetricAlarms[0].AlarmName' --output text)" != "None" ]; then
+          aws cloudwatch enable-alarm-actions --alarm-names "$ALARM_NAME"
+        else
+          echo "Alarm $ALARM_NAME not found, skipping enable"
+        fi
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/continuous_deployment_switch.py"
