@@ -120,7 +120,9 @@ def disassociate_waf(distribution):
 def main():
     distributions = find_project_distributions(BUCKET_NAME)
     if not distributions:
-        raise RuntimeError(f"No CloudFront distributions found for bucket {BUCKET_NAME}")
+        raise RuntimeError(
+            f"No CloudFront distributions found for bucket {BUCKET_NAME}"
+        )
 
     for distribution in distributions:
         disassociate_waf(distribution)
