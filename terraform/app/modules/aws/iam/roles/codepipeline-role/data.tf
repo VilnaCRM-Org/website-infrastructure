@@ -125,6 +125,28 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
   }
 
   statement {
+    sid    = "CloudFrontListDistributionsPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudfront:ListDistributions",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "CloudFrontDistributionManagementPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudfront:GetDistribution",
+      "cloudfront:GetDistributionConfig",
+      "cloudfront:UpdateDistribution",
+    ]
+    resources = [
+      "arn:aws:cloudfront::${local.account_id}:distribution/*",
+    ]
+  }
+
+  statement {
     sid    = "TerraformStateListS3Policy"
     effect = "Allow"
     actions = [
