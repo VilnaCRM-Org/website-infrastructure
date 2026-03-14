@@ -27,7 +27,9 @@ phases:
         make test-mutation-ci
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'mutation complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/mutation.txt"
 
 artifacts:
   files:
-    - "website/reports/mutation/**/*"
+    - "codepipeline-artifacts/mutation.txt"

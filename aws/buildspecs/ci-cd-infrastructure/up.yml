@@ -28,10 +28,13 @@ phases:
       - 'make terraspace-up-plan stack="ci-cd-iam" plan="ci-cd-iam.plan"'
       - 'make terraspace-up-plan stack="website-iam" plan="website-iam.plan"'
       - 'make terraspace-up-plan stack="iam-groups" plan="iam-groups.plan"'
+    finally:
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'up complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/up.txt"
 
 artifacts:
   files:
-    - "**/*"
+    - "codepipeline-artifacts/up.txt"
 
 cache:
   paths:

@@ -31,10 +31,13 @@ phases:
       - "task --verbose summary"
       - "cp checkov.xml ${CODEBUILD_SRC_DIR}/reports/checkov.xml"
       - "cp tfsec-junit.xml ${CODEBUILD_SRC_DIR}/reports/tfsec-junit.xml"
+    finally:
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'validate complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/validate.txt"
 
 artifacts:
   files:
-    - "**/*"
+    - "codepipeline-artifacts/validate.txt"
 
 reports:
   checkov-reports:

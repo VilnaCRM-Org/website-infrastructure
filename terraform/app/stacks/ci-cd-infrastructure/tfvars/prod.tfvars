@@ -31,14 +31,14 @@ enable_cloudfront_staging = false
 
 ci_cd_infra_stage_input = [
   { name = "validate", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "ValidateOutput" },
-  { name = "plan", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "ValidateOutput", output_artifacts = "PlanOutput" },
-  { name = "up", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "PlanOutput", output_artifacts = "UpOutput" },
+  { name = "plan", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "PlanOutput" },
+  { name = "up", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput", "PlanOutput"], output_artifacts = "UpOutput" },
 ]
 
 website_infra_stage_input = [
   { name = "validate", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "ValidateOutput" },
-  { name = "plan", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "ValidateOutput", output_artifacts = "PlanOutput" },
-  { name = "up", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "PlanOutput", output_artifacts = "UpOutput" },
+  { name = "plan", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "PlanOutput" },
+  { name = "up", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput", "PlanOutput"], output_artifacts = "UpOutput" },
 ]
 
 ci_cd_website_stage_input = [

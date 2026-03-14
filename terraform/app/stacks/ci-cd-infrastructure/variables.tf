@@ -116,27 +116,27 @@ variable "website_url" {
 
 variable "ci_cd_infra_stage_input" {
   description = "List of maps containing information about the stages of the CI/CD Infrastructure CodePipeline"
-  type        = list(map(string))
+  type        = list(map(any))
 }
 
 variable "website_infra_stage_input" {
   description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
-  type        = list(map(string))
+  type        = list(map(any))
 }
 
 variable "sandbox_stage_input" {
   description = "List of maps containing information about the stages of the Sandbox CodePipeline"
-  type        = list(map(string))
+  type        = list(map(any))
 }
 
 variable "sandbox_deletion_stage_input" {
   description = "List of maps containing information about the stages of the Sandbox CodePipeline"
-  type        = list(map(string))
+  type        = list(map(any))
 }
 
 variable "ci_cd_website_stage_input" {
   description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
-  type        = list(map(string))
+  type        = list(map(any))
 }
 
 variable "codebuild_environment" {

@@ -13,9 +13,11 @@ phases:
       - "cd ${CODEBUILD_SRC_DIR}"
       - "echo ## TERRASPACE PLAN : Generate the Terraform Plan"
       - 'make terraspace-plan-file stack="website" out="website.plan"'
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/plans"
+      - "cp ./website.plan ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/plans/"
 artifacts:
   files:
-    - "**/*"
+    - "codepipeline-artifacts/plans/**/*"
 
 cache:
   paths:

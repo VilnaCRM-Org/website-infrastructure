@@ -46,3 +46,10 @@ phases:
         else
           echo "CloudFront staging disabled, skipping continuous deployment switch"
         fi
+    finally:
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'deploy complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/deploy.txt"
+
+artifacts:
+  files:
+    - "codepipeline-artifacts/deploy.txt"

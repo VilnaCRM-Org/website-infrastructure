@@ -28,10 +28,12 @@ phases:
       - 'make terraspace-plan-file stack="ci-cd-iam" out="ci-cd-iam.plan"'
       - 'make terraspace-plan-file stack="website-iam" out="website-iam.plan"'
       - 'make terraspace-plan-file stack="iam-groups" out="iam-groups.plan"'
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/plans"
+      - "cp ./*.plan ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/plans/"
 
 artifacts:
   files:
-    - "**/*"
+    - "codepipeline-artifacts/plans/**/*"
 
 cache:
   paths:

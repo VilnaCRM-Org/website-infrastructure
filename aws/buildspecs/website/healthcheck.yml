@@ -21,3 +21,10 @@ phases:
     commands:
       - "echo ## Test Website Connection..."
       - "hurl --test --verbose --variable website_url=$WEBSITE_URL ${CODEBUILD_SRC_DIR}/${HURL_DIR}/healthcheck.hurl"
+    finally:
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'healthcheck complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/healthcheck.txt"
+
+artifacts:
+  files:
+    - "codepipeline-artifacts/healthcheck.txt"

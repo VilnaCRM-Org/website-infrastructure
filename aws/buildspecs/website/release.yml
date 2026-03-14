@@ -6,3 +6,11 @@ phases:
       python: $PYTHON_VERSION
     commands:
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/origin_change.py"
+  build:
+    commands:
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'release complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/release.txt"
+
+artifacts:
+  files:
+    - "codepipeline-artifacts/release.txt"
