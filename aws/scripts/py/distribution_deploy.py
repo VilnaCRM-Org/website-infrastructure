@@ -64,7 +64,9 @@ def update_production_distribution_config(config_json):
 def main():
     print("Starting main function...")
     if not continuous_deployment_id:
-        print("No continuous deployment policy configured, skipping distribution update")
+        print(
+            "No continuous deployment policy configured, skipping distribution update"
+        )
         return
     if not production_distribution_id:
         print("No production distribution id configured, skipping distribution update")

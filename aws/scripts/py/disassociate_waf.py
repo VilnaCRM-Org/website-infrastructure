@@ -120,7 +120,9 @@ def wait_for_distribution(distribution_id, timeout_seconds=900, sleep_seconds=15
 def prepare_distribution(distribution):
     distribution_id = distribution["Id"]
     config_json = fetch_distribution_config(distribution_id)
-    policy_id = config_json["DistributionConfig"].get("ContinuousDeploymentPolicyId", "")
+    policy_id = config_json["DistributionConfig"].get(
+        "ContinuousDeploymentPolicyId", ""
+    )
     aliases = config_json["DistributionConfig"].get("Aliases", {}).get("Items") or []
 
     if not policy_id:
