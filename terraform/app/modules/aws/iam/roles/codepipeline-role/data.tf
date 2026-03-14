@@ -134,6 +134,17 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
   }
 
   statement {
+    sid    = "CodeBuildProjectReadPolicy"
+    effect = "Allow"
+    actions = [
+      "codebuild:BatchGetProjects",
+    ]
+    resources = [
+      "arn:aws:codebuild:${data.aws_region.current.id}:${local.account_id}:project/*",
+    ]
+  }
+
+  statement {
     sid    = "CloudFrontDistributionManagementPolicy"
     effect = "Allow"
     actions = [
@@ -359,6 +370,21 @@ data "aws_iam_policy_document" "terraform_iam_policy_document" {
       "iam:DeletePolicyVersion"
     ]
     resources = local.policy_arns
+  }
+
+  statement {
+    sid    = "AllowWebsiteReplicationPoliciesAccessPolicy"
+    effect = "Allow"
+    actions = [
+      "iam:CreatePolicy",
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:ListPolicyVersions",
+      "iam:CreatePolicyVersion",
+      "iam:TagPolicy",
+      "iam:DeletePolicyVersion"
+    ]
+    resources = local.replication_policy_arns
   }
 
   statement {

@@ -15,6 +15,7 @@ phases:
       - "cd ${CODEBUILD_SRC_DIR}"
       - "echo ## TERRASPACE UP : Bringing up the infrastructure"
       - 'if [ "$TS_ENV" = "test" ]; then python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/disassociate_waf.py; fi'
+      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/restore_plan_artifacts.sh"
       - 'make terraspace-up-plan stack="website" plan="website.plan"'
       - 'make terraspace-output-file stack="website" out=".terraform.env"'
       - "cd terraform"

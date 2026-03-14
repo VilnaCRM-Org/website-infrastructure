@@ -7,6 +7,10 @@ locals {
   website_infra_arns       = { for key, policy in var.policy_arns : key => policy if startswith(key, "website_infra_") }
   website_bucket_arn       = "arn:aws:s3:::${var.website_bucket_name}"
   website_bucket_files_arn = "arn:aws:s3:::${var.website_bucket_name}/*"
+  replication_policy_arns = [
+    "arn:aws:iam::${local.account_id}:policy/${var.website_bucket_name}-iam-role-policy-replication",
+    "arn:aws:iam::${local.account_id}:policy/staging.${var.website_bucket_name}-iam-role-policy-replication",
+  ]
 }
 
 locals {
