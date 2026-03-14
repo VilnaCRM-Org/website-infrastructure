@@ -63,7 +63,8 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:policy/sandbox-${var.environment}-codepipeline-role-policy",
       "arn:aws:iam::${local.account_id}:policy/sandbox-creation-trigger-role-policy",
       "arn:aws:iam::${local.account_id}:policy/sandbox-deletion-trigger-role-policy",
-      "arn:aws:iam::${local.account_id}:policy/sandbox-cleanup-function-policy"
+      "arn:aws:iam::${local.account_id}:policy/sandbox-cleanup-function-policy",
+      "arn:aws:iam::${local.account_id}:policy/CodePipelinePolicies/${var.policy_prefix}-*"
     ]
   }
   statement {
@@ -99,4 +100,4 @@ data "aws_iam_policy_document" "iam_policy_doc" {
       "arn:aws:iam::${local.account_id}:role/${var.ci_cd_project_name}-iam-for-cloudtrail"
     ]
   }
-} 
+}
