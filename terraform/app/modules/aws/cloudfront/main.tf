@@ -30,7 +30,7 @@ resource "aws_cloudfront_distribution" "this" {
     origin_access_control_id = aws_cloudfront_origin_access_control.replication.id
   }
 
-  web_acl_id = var.enable_waf ? aws_wafv2_web_acl.waf_web_acl[0].arn : null
+  web_acl_id = var.enable_waf ? aws_wafv2_web_acl.waf_web_acl[0].arn : ""
 
   aliases = [
     var.domain_name,
@@ -139,7 +139,7 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
     origin_access_control_id = aws_cloudfront_origin_access_control.replication.id
   }
 
-  web_acl_id = var.enable_waf ? aws_wafv2_web_acl.waf_web_acl[0].arn : null
+  web_acl_id = var.enable_waf ? aws_wafv2_web_acl.waf_web_acl[0].arn : ""
 
 
   is_ipv6_enabled     = true

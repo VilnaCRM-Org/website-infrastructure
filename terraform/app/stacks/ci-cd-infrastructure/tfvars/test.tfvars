@@ -21,7 +21,7 @@ s3_logs_lifecycle_configuration = {
   standard_ia_transition_days  = 0
   glacier_transition_days      = 0
   deep_archive_transition_days = 0
-  deletion_days                = 30
+  deletion_days                = 7
 }
 
 enable_cloudwatch_alarms = false

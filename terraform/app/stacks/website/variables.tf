@@ -109,6 +109,12 @@ variable "enable_waf" {
   type        = bool
 }
 
+variable "enable_canary" {
+  description = "Whether to create the website heartbeat canary resources"
+  type        = bool
+  default     = true
+}
+
 variable "create_slack_notification" {
   description = "This responsible for creating Slack Notifications"
   type        = bool
