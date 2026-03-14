@@ -35,6 +35,6 @@ cloudfront_configuration = {
   minimum_protocol_version = "TLSv1.2_2019"
 }
 
-ttl_validation     = 60
-ttl_route53_record = "300"
+ttl_validation                        = 60
+ttl_route53_record                    = "300"
 s3_noncurrent_version_expiration_days = 365
