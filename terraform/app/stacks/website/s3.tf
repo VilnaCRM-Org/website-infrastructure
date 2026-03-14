@@ -21,7 +21,7 @@ module "s3_bucket" {
   s3_logging_bucket_id             = module.logging_s3_bucket.id
   replication_s3_logging_bucket_id = module.logging_s3_bucket.replication_id
 
-  aws_cloudfront_distributions_arns = [module.cloudfront.arn, module.cloudfront.staging_arn]
+  aws_cloudfront_distributions_arns = compact([module.cloudfront.arn, module.cloudfront.staging_arn])
 
   tags = var.tags
 }
@@ -48,7 +48,7 @@ module "staging_s3_bucket" {
   s3_logging_bucket_id             = module.logging_s3_bucket.id
   replication_s3_logging_bucket_id = module.logging_s3_bucket.replication_id
 
-  aws_cloudfront_distributions_arns = [module.cloudfront.arn, module.cloudfront.staging_arn]
+  aws_cloudfront_distributions_arns = compact([module.cloudfront.arn, module.cloudfront.staging_arn])
 
   tags = var.tags
 }
