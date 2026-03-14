@@ -159,9 +159,10 @@ def prepare_distribution(distribution):
 def main():
     distributions = find_project_distributions(BUCKET_NAME)
     if not distributions:
-        raise RuntimeError(
-            f"No CloudFront distributions found for bucket {BUCKET_NAME}"
+        print(
+            f"No CloudFront distributions found for bucket {BUCKET_NAME}, nothing to do"
         )
+        return
 
     for distribution in distributions:
         prepare_distribution(distribution)

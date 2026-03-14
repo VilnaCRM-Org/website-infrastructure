@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "codebuild:UpdateProject",
       "codebuild:DeleteProject"
     ]
-    resources = [
+    resources = concat([
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-validate",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-plan",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-up",
@@ -42,19 +42,16 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-validate",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-plan",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-up",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-deploy",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-healthcheck",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-lhci-leak",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-unit-mutation-lint",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-pw-load",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-trigger",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-rollback",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-release",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-healthcheck",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-up",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-delete",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-deploy",
-    ]
+      ],
+      local.ci_cd_website_codebuild_project_arns,
+      [
+        "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-trigger",
+        "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-rollback",
+        "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-healthcheck",
+        "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-up",
+        "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-delete",
+        "arn:aws:codebuild:${var.region}:${local.account_id}:project/sandbox-${var.environment}-deploy",
+    ])
   }
   statement {
     sid    = "CodeBuildPolicy"
@@ -63,7 +60,7 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "codebuild:BatchGetProjects",
       "codebuild:DeleteProject"
     ]
-    resources = [
+    resources = concat([
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-validate",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-plan",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.website_project_name}-up",
@@ -73,15 +70,12 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-validate",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-plan",
       "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_project_name}-up",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-deploy",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-healthcheck",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-lhci-leak",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-unit-mutation-lint",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-batch-pw",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-trigger",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-rollback",
-      "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-release",
-    ]
+      ],
+      local.ci_cd_website_codebuild_project_arns,
+      [
+        "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-trigger",
+        "arn:aws:codebuild:${var.region}:${local.account_id}:project/${var.ci_cd_website_project_name}-rollback",
+    ])
   }
   statement {
     sid    = "CodeStarConnectionsPolicy"
