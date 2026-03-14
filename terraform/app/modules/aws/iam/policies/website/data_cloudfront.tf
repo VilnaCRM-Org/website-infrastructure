@@ -1,5 +1,14 @@
 data "aws_iam_policy_document" "cloudfront_policy_doc" {
   statement {
+    sid    = "CloudfrontListDistributionsPolicy"
+    effect = "Allow"
+    actions = [
+      "cloudfront:ListDistributions"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
     sid    = "CloudfrontHeadersPolicy"
     effect = "Allow"
     actions = [
