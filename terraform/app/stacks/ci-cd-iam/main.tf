@@ -6,6 +6,7 @@ module "codepipeline_policies" {
   website_project_name       = var.website_project_name
   ci_cd_project_name         = var.ci_cd_project_name
   ci_cd_website_project_name = var.ci_cd_website_project_name
+  ci_cd_website_stage_names  = []
   region                     = var.region
   environment                = var.environment
 
