@@ -31,7 +31,7 @@ variable "s3_logs_lifecycle_configuration" {
 variable "s3_noncurrent_version_expiration_days" {
   description = "Retention time for noncurrent versions in versioned website buckets"
   type        = number
-  default     = 30
+  default     = 365
 }
 
 variable "s3_bucket_custom_name" {

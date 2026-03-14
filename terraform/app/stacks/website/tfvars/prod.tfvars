@@ -37,3 +37,4 @@ cloudfront_configuration = {
 
 ttl_validation     = 60
 ttl_route53_record = "300"
+s3_noncurrent_version_expiration_days = 365

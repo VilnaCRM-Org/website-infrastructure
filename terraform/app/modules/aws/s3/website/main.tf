@@ -27,8 +27,6 @@ resource "aws_s3_bucket_versioning" "this" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "this" {
-  depends_on = [aws_s3_bucket_versioning.this]
-
   bucket = aws_s3_bucket.this.id
 
   rule {
@@ -44,6 +42,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
 
     status = "Enabled"
   }
+
+  depends_on = [aws_s3_bucket_versioning.this]
 }
 
 resource "aws_s3_bucket_public_access_block" "this" {
