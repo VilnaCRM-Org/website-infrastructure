@@ -139,6 +139,7 @@ data "aws_iam_policy_document" "terraform_ci_cd_policy_document" {
     actions = [
       "cloudfront:GetDistribution",
       "cloudfront:GetDistributionConfig",
+      "cloudfront:DisassociateDistributionWebACL",
       "cloudfront:UpdateDistribution",
     ]
     resources = [
