@@ -52,7 +52,10 @@ def find_project_distributions(bucket_name):
         project_distribution_ids.add(distribution_id)
         project_distributions.append(dist)
 
-    return project_distributions
+    return sorted(
+        project_distributions,
+        key=lambda dist: not bool(dist.get("Aliases", {}).get("Items") or []),
+    )
 
 
 def fetch_distribution_config(distribution_id):
@@ -108,9 +111,19 @@ def disassociate_waf(distribution):
     distribution_id = distribution["Id"]
     config_json = fetch_distribution_config(distribution_id)
     web_acl_id = config_json["DistributionConfig"].get("WebACLId", "")
+    aliases = config_json["DistributionConfig"].get("Aliases", {}).get("Items") or []
 
     if not web_acl_id:
         print(f"Distribution {distribution_id} already has no WAF association")
+        return
+
+    if not aliases:
+        print(
+            f"Distribution {distribution_id} is a staging distribution; "
+            "waiting for WebACL to clear after the primary distribution update"
+        )
+        wait_for_distribution(distribution_id)
+        print(f"Distribution {distribution_id} WAF association cleared")
         return
 
     print(f"Clearing WAF association for distribution {distribution_id}: {web_acl_id}")
