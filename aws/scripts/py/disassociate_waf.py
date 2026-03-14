@@ -134,13 +134,9 @@ def prepare_distribution(distribution):
     if not aliases:
         print(
             f"Distribution {distribution_id} is a staging distribution; "
-            "waiting for the primary distribution to detach the continuous "
-            "deployment policy"
-        )
-        wait_for_distribution(distribution_id)
-        print(
-            "Distribution "
-            f"{distribution_id} continuous deployment policy association cleared"
+            "its continuous deployment policy cannot be cleared directly, "
+            "so Terraform will reconcile it after the primary distribution "
+            "detaches the policy"
         )
         return
 
