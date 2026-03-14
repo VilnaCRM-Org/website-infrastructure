@@ -16,23 +16,25 @@ jobs:
   trigger-pipeline:
     name: Trigger AWS CodePipeline
     runs-on: ubuntu-latest
+    env:
+      AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_CI_CD_INFRA_ROLE_TO_ASSUME_TEST }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Skip pipeline trigger when AWS role is unavailable
-        if: ${{ secrets.AWS_CI_CD_INFRA_ROLE_TO_ASSUME_TEST == '' }}
+        if: ${{ env.AWS_ROLE_TO_ASSUME == '' }}
         run: echo "AWS_CI_CD_INFRA_ROLE_TO_ASSUME_TEST is unavailable for this event; skipping CodePipeline trigger."
 
       - name: Configure AWS Credentials
-        if: ${{ secrets.AWS_CI_CD_INFRA_ROLE_TO_ASSUME_TEST != '' }}
+        if: ${{ env.AWS_ROLE_TO_ASSUME != '' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_CI_CD_INFRA_ROLE_TO_ASSUME_TEST }}
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Trigger CodePipeline
-        if: ${{ secrets.AWS_CI_CD_INFRA_ROLE_TO_ASSUME_TEST != '' }}
+        if: ${{ env.AWS_ROLE_TO_ASSUME != '' }}
         run: |
           aws codepipeline start-pipeline-execution --name ci-cd-infra-test-pipeline

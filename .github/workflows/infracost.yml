@@ -21,34 +21,34 @@ jobs:
 
     steps:
       - name: Skip Infracost when API key is unavailable
-        if: ${{ secrets.INFRACOST_API_KEY == '' }}
+        if: ${{ env.INFRACOST_API_KEY == '' }}
         run: echo "INFRACOST_API_KEY is unavailable for this event; skipping Infracost diff."
 
       - name: Setup Infracost
-        if: ${{ secrets.INFRACOST_API_KEY != '' }}
+        if: ${{ env.INFRACOST_API_KEY != '' }}
         uses: infracost/actions/setup@v2
         with:
-          api-key: ${{ secrets.INFRACOST_API_KEY }}
+          api-key: ${{ env.INFRACOST_API_KEY }}
 
       - name: Checkout base branch
-        if: ${{ secrets.INFRACOST_API_KEY != '' }}
-        uses: actions/checkout@v3
+        if: ${{ env.INFRACOST_API_KEY != '' }}
+        uses: actions/checkout@v4
         with:
           ref: "${{ github.event.pull_request.base.ref }}"
 
       - name: Generate Infracost cost estimate baseline
-        if: ${{ secrets.INFRACOST_API_KEY != '' }}
+        if: ${{ env.INFRACOST_API_KEY != '' }}
         run: |
           infracost breakdown --path=${TF_ROOT} \
                               --format=json \
                               --out-file=/tmp/infracost-base.json
 
       - name: Checkout PR branch
-        if: ${{ secrets.INFRACOST_API_KEY != '' }}
-        uses: actions/checkout@v3
+        if: ${{ env.INFRACOST_API_KEY != '' }}
+        uses: actions/checkout@v4
 
       - name: Generate Infracost diff
-        if: ${{ secrets.INFRACOST_API_KEY != '' }}
+        if: ${{ env.INFRACOST_API_KEY != '' }}
         run: |
           infracost diff --path=${TF_ROOT} \
                           --format=json \
@@ -56,7 +56,7 @@ jobs:
                           --out-file=/tmp/infracost.json
 
       - name: Post Infracost comment
-        if: ${{ secrets.INFRACOST_API_KEY != '' }}
+        if: ${{ env.INFRACOST_API_KEY != '' }}
         run: |
           infracost comment github --path=/tmp/infracost.json \
                                    --repo=$GITHUB_REPOSITORY \

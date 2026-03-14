@@ -12,14 +12,17 @@ permissions:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    env:
+      VILNACRM_APP_ID: ${{ secrets.VILNACRM_APP_ID }}
+      VILNACRM_APP_PRIVATE_KEY: ${{ secrets.VILNACRM_APP_PRIVATE_KEY }}
     steps:
       - name: Generate token with necessary permissions
         id: generate_token
-        if: ${{ secrets.VILNACRM_APP_ID != '' && secrets.VILNACRM_APP_PRIVATE_KEY != '' }}
+        if: ${{ env.VILNACRM_APP_ID != '' && env.VILNACRM_APP_PRIVATE_KEY != '' }}
         uses: tibdex/github-app-token@v2
         with:
-          app_id: ${{ secrets.VILNACRM_APP_ID }}
-          private_key: ${{ secrets.VILNACRM_APP_PRIVATE_KEY }}
+          app_id: ${{ env.VILNACRM_APP_ID }}
+          private_key: ${{ env.VILNACRM_APP_PRIVATE_KEY }}
 
       - name: Checkout code
         uses: actions/checkout@v4
