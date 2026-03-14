@@ -16,7 +16,22 @@ def run_aws(command):
 
 
 def fetch_distributions():
-    return json.loads(run_aws(["cloudfront", "list-distributions"]))
+    distributions = []
+    marker = None
+
+    while True:
+        command = ["cloudfront", "list-distributions"]
+        if marker:
+            command.extend(["--marker", marker])
+
+        response = json.loads(run_aws(command))
+        distribution_list = response.get("DistributionList", {})
+        distributions.extend(distribution_list.get("Items", []))
+
+        if not distribution_list.get("IsTruncated"):
+            return distributions
+
+        marker = distribution_list["NextMarker"]
 
 
 def matches_origin(bucket_name, origin_domain):
@@ -30,11 +45,10 @@ def matches_origin(bucket_name, origin_domain):
 
 
 def find_project_distributions(bucket_name):
-    cloudfront_distributions = fetch_distributions()
     project_distribution_ids = set()
     project_distributions = []
 
-    for dist in cloudfront_distributions.get("DistributionList", {}).get("Items", []):
+    for dist in fetch_distributions():
         aliases = dist.get("Aliases", {}).get("Items") or []
         origins = dist.get("Origins", {}).get("Items", [])
 
