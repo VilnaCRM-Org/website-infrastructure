@@ -16,7 +16,7 @@ module "cloudfront" {
   cloudfront_configuration          = var.cloudfront_configuration
   cloudfront_custom_error_responses = var.cloudfront_custom_error_responses
 
-  enable_access_logging    = var.enable_access_logging
+  enable_access_logging     = var.enable_access_logging
   enable_cloudfront_staging = var.enable_cloudfront_staging
   enable_cloudwatch_alarms  = var.enable_cloudwatch_alarms
   enable_waf                = var.enable_waf
