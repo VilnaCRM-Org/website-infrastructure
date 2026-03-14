@@ -4,14 +4,14 @@ tasks:
   validate:
     desc: "Validate Terraform code"
     cmds:
-      - make terraspace-all-init
-      - make terraspace-all-validate
+      - make terraspace-init stack=website
+      - make terraspace-validate stack=website
     silent: false
 
   format:
     desc: "Format Terraform code"
     cmds:
-      - terraform fmt -recursive
+      - find ./terraform -path '*/.terraform/*' -prune -o -type f \( -name '*.tf' -o -name '*.tfvars' \) -print0 | xargs -0 -r terraform fmt -check -diff
     silent: false
 
   checkov:
