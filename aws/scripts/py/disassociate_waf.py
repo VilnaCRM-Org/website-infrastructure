@@ -97,7 +97,30 @@ def update_distribution_config(distribution_id, config_json):
         os.unlink(temp_path)
 
 
-def wait_for_distribution(distribution_id, timeout_seconds=900, sleep_seconds=15):
+def disassociate_distribution_web_acl(distribution_id, etag):
+    subprocess.check_call(
+        [
+            "aws",
+            "cloudfront",
+            "disassociate-distribution-web-acl",
+            "--id",
+            distribution_id,
+            "--if-match",
+            etag,
+            "--region",
+            CLOUDFRONT_REGION,
+            "--no-cli-pager",
+        ]
+    )
+
+
+def wait_for_distribution(
+    distribution_id,
+    wait_for_policy_clear=False,
+    wait_for_waf_clear=False,
+    timeout_seconds=900,
+    sleep_seconds=15,
+):
     deadline = time.time() + timeout_seconds
     while time.time() < deadline:
         response = json.loads(
@@ -105,30 +128,55 @@ def wait_for_distribution(distribution_id, timeout_seconds=900, sleep_seconds=15
         )
         distribution = response["Distribution"]
         status = distribution["Status"]
-        policy_id = distribution["DistributionConfig"].get(
-            "ContinuousDeploymentPolicyId", ""
-        )
-        if status == "Deployed" and not policy_id:
+        distribution_config = distribution["DistributionConfig"]
+        policy_id = distribution_config.get("ContinuousDeploymentPolicyId", "")
+        web_acl_id = distribution_config.get("WebACLId", "")
+        if (
+            status == "Deployed"
+            and (not wait_for_policy_clear or not policy_id)
+            and (not wait_for_waf_clear or not web_acl_id)
+        ):
             return
         time.sleep(sleep_seconds)
+
+    waiting_for = []
+    if wait_for_waf_clear:
+        waiting_for.append("WAF web ACL")
+    if wait_for_policy_clear:
+        waiting_for.append("continuous deployment policy")
     raise TimeoutError(
         "Timed out waiting for CloudFront distribution "
-        f"{distribution_id} to clear the continuous deployment policy"
+        f"{distribution_id} to clear the {' and '.join(waiting_for)}"
     )
 
 
 def prepare_distribution(distribution):
     distribution_id = distribution["Id"]
     config_json = fetch_distribution_config(distribution_id)
-    policy_id = config_json["DistributionConfig"].get(
-        "ContinuousDeploymentPolicyId", ""
-    )
-    aliases = config_json["DistributionConfig"].get("Aliases", {}).get("Items") or []
+    distribution_config = config_json["DistributionConfig"]
+    policy_id = distribution_config.get("ContinuousDeploymentPolicyId", "")
+    web_acl_id = distribution_config.get("WebACLId", "")
+    aliases = distribution_config.get("Aliases", {}).get("Items") or []
+
+    if not policy_id and not web_acl_id:
+        print(
+            "Distribution "
+            f"{distribution_id} already has no continuous deployment policy "
+            "or WAF web ACL"
+        )
+        return
+
+    if web_acl_id:
+        print(f"Disassociating WAF web ACL for distribution {distribution_id}: {web_acl_id}")
+        disassociate_distribution_web_acl(distribution_id, config_json["ETag"])
+        wait_for_distribution(distribution_id, wait_for_waf_clear=True)
+        print(f"Distribution {distribution_id} WAF web ACL association cleared")
+        config_json = fetch_distribution_config(distribution_id)
+        distribution_config = config_json["DistributionConfig"]
+        policy_id = distribution_config.get("ContinuousDeploymentPolicyId", "")
+        aliases = distribution_config.get("Aliases", {}).get("Items") or []
 
     if not policy_id:
-        print(
-            f"Distribution {distribution_id} already has no continuous deployment policy"
-        )
         return
 
     if not aliases:
@@ -144,9 +192,9 @@ def prepare_distribution(distribution):
         "Clearing continuous deployment policy "
         f"for distribution {distribution_id}: {policy_id}"
     )
-    config_json["DistributionConfig"]["ContinuousDeploymentPolicyId"] = ""
+    distribution_config["ContinuousDeploymentPolicyId"] = ""
     update_distribution_config(distribution_id, config_json)
-    wait_for_distribution(distribution_id)
+    wait_for_distribution(distribution_id, wait_for_policy_clear=True)
     print(
         f"Distribution {distribution_id} continuous deployment policy association cleared"
     )
