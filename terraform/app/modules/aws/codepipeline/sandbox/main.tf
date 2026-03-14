@@ -37,15 +37,15 @@ resource "aws_codepipeline" "pipeline" {
     for_each = var.stages
 
     content {
-      name = "Stage-${stage.value["name"]}"
+      name = "Stage-${stage.value.name}"
 
       action {
-        category         = stage.value["category"]
-        name             = "Action-${stage.value["name"]}"
-        owner            = stage.value["owner"]
-        provider         = stage.value["provider"]
-        input_artifacts  = [stage.value["input_artifacts"]]
-        output_artifacts = [stage.value["output_artifacts"]]
+        category         = stage.value.category
+        name             = "Action-${stage.value.name}"
+        owner            = stage.value.owner
+        provider         = stage.value.provider
+        input_artifacts  = stage.value.input_artifacts
+        output_artifacts = [stage.value.output_artifacts]
         version          = "1"
         run_order        = index(var.stages, stage.value) + 2
 
@@ -69,8 +69,8 @@ resource "aws_codepipeline" "pipeline" {
               },
             ])
           },
-          stage.value["provider"] == "CodeBuild" ? {
-            ProjectName = "${var.project_name}-${stage.value["name"]}"
+          stage.value.provider == "CodeBuild" ? {
+            ProjectName = "${var.project_name}-${stage.value.name}"
           } : {}
         )
       }
