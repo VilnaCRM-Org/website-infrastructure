@@ -85,6 +85,7 @@ locals {
         "PYTHON_VERSION"                         = var.runtime_versions.python,
         "RUBY_VERSION"                           = var.runtime_versions.ruby,
         "SCRIPT_DIR"                             = var.script_dir,
+        "BUCKET_NAME"                            = var.bucket_name,
         "CI_CD_WEBSITE_PIPELINE_NAME"            = "${var.ci_cd_website_project_name}-pipeline",
         "CLOUDFRONT_REGION"                      = var.cloudfront_configuration.region,
         })
