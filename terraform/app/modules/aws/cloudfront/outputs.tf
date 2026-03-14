@@ -9,7 +9,7 @@ output "id" {
 }
 
 output "staging_arn" {
-  value       = aws_cloudfront_distribution.staging_cloudfront_distribution.arn
+  value       = var.enable_cloudfront_staging ? aws_cloudfront_distribution.staging_cloudfront_distribution[0].arn : ""
   description = "The ARN of the CloudFront Distribution"
 }
 
@@ -35,6 +35,6 @@ output "waf_log_group_name" {
 
 
 output "continuous_deployment_id" {
-  value       = aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy.id
+  value       = var.enable_cloudfront_staging ? aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy[0].id : ""
   description = "The ID of the Continuous Deployment Policy"
 }

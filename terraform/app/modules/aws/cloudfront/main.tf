@@ -100,14 +100,12 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   wait_for_deployment = true
-
-  depends_on = [aws_cloudfront_continuous_deployment_policy.continuous_deployment_policy]
-
 }
 
 resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
   #checkov:skip=CKV2_AWS_47: Log4j protection already included in AWSManagedRulesKnownBadInputsRuleSet
   provider = aws.us-east-1
+  count    = var.enable_cloudfront_staging ? 1 : 0
   staging  = true
   enabled  = true
 

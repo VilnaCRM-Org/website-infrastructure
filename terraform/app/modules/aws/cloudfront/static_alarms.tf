@@ -172,7 +172,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_requests_flood_alarm" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cloudfront_staging_500_errors" {
-  count               = var.enable_cloudwatch_alarms ? 1 : 0
+  count               = var.enable_cloudwatch_alarms && var.enable_cloudfront_staging ? 1 : 0
   provider            = aws.us-east-1
   alarm_name          = "${var.project_name}-cloudfront-staging-5xx-errors-alarm"
   comparison_operator = "GreaterThanThreshold"
@@ -187,13 +187,13 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_staging_500_errors" {
   actions_enabled     = true
 
   dimensions = {
-    DistributionId = aws_cloudfront_distribution.staging_cloudfront_distribution.id
+    DistributionId = aws_cloudfront_distribution.staging_cloudfront_distribution[0].id
     Region         = "Global"
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "cloudfront_staging_origin_latency" {
-  count               = var.enable_cloudwatch_alarms ? 1 : 0
+  count               = var.enable_cloudwatch_alarms && var.enable_cloudfront_staging ? 1 : 0
   provider            = aws.us-east-1
   alarm_name          = "${var.project_name}-cloudfront-staging-origin-latency-alarm"
   comparison_operator = "GreaterThanThreshold"
@@ -208,7 +208,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_staging_origin_latency" {
   actions_enabled     = true
 
   dimensions = {
-    DistributionId = aws_cloudfront_distribution.staging_cloudfront_distribution.id
+    DistributionId = aws_cloudfront_distribution.staging_cloudfront_distribution[0].id
     Region         = "Global"
   }
 }

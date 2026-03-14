@@ -184,6 +184,7 @@ locals {
         "CLOUDFRONT_REGION"             = var.cloudfront_configuration.region,
         "CLOUDFRONT_WEIGHT"             = var.continuous_deployment_policy_weight,
         "CLOUDFRONT_HEADER"             = var.continuous_deployment_policy_header,
+        "ENABLE_CLOUDFRONT_STAGING"     = tostring(var.enable_cloudfront_staging),
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/deploy.yml" })

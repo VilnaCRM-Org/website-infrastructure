@@ -48,6 +48,11 @@ variable "continuous_deployment_policy_header" {
   type        = string
 }
 
+variable "enable_cloudfront_staging" {
+  description = "Whether CloudFront staging is enabled for the website deployment flow"
+  type        = bool
+}
+
 variable "website_buildspecs" {
   description = "Buildspecs for Website"
   type        = string

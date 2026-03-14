@@ -19,6 +19,16 @@ def fetch_distributions():
     return json.loads(run_aws(["cloudfront", "list-distributions"]))
 
 
+def matches_origin(bucket_name, origin_domain):
+    valid_prefixes = {
+        f"{bucket_name}.s3.",
+        f"{bucket_name}-replication.s3.",
+        f"staging.{bucket_name}.s3.",
+        f"staging.{bucket_name}-replication.s3.",
+    }
+    return any(origin_domain.startswith(prefix) for prefix in valid_prefixes)
+
+
 def find_project_distributions(bucket_name):
     cloudfront_distributions = fetch_distributions()
     project_distribution_ids = set()
@@ -35,10 +45,7 @@ def find_project_distributions(bucket_name):
         if not is_our_project:
             for origin in origins:
                 origin_domain = origin.get("DomainName", "")
-                if (
-                    f"{bucket_name}.s3." in origin_domain
-                    or f"staging.{bucket_name}.s3." in origin_domain
-                ):
+                if matches_origin(bucket_name, origin_domain):
                     is_our_project = True
                     break
 
@@ -98,39 +105,53 @@ def wait_for_distribution(distribution_id, timeout_seconds=900, sleep_seconds=15
         )
         distribution = response["Distribution"]
         status = distribution["Status"]
-        web_acl_id = distribution["DistributionConfig"].get("WebACLId", "")
-        if status == "Deployed" and not web_acl_id:
+        policy_id = distribution["DistributionConfig"].get(
+            "ContinuousDeploymentPolicyId", ""
+        )
+        if status == "Deployed" and not policy_id:
             return
         time.sleep(sleep_seconds)
     raise TimeoutError(
-        f"Timed out waiting for CloudFront distribution {distribution_id} to clear WebACL"
+        "Timed out waiting for CloudFront distribution "
+        f"{distribution_id} to clear the continuous deployment policy"
     )
 
 
-def disassociate_waf(distribution):
+def prepare_distribution(distribution):
     distribution_id = distribution["Id"]
     config_json = fetch_distribution_config(distribution_id)
-    web_acl_id = config_json["DistributionConfig"].get("WebACLId", "")
+    policy_id = config_json["DistributionConfig"].get("ContinuousDeploymentPolicyId", "")
     aliases = config_json["DistributionConfig"].get("Aliases", {}).get("Items") or []
 
-    if not web_acl_id:
-        print(f"Distribution {distribution_id} already has no WAF association")
+    if not policy_id:
+        print(
+            f"Distribution {distribution_id} already has no continuous deployment policy"
+        )
         return
 
     if not aliases:
         print(
             f"Distribution {distribution_id} is a staging distribution; "
-            "waiting for WebACL to clear after the primary distribution update"
+            "waiting for the primary distribution to detach the continuous "
+            "deployment policy"
         )
         wait_for_distribution(distribution_id)
-        print(f"Distribution {distribution_id} WAF association cleared")
+        print(
+            "Distribution "
+            f"{distribution_id} continuous deployment policy association cleared"
+        )
         return
 
-    print(f"Clearing WAF association for distribution {distribution_id}: {web_acl_id}")
-    config_json["DistributionConfig"]["WebACLId"] = ""
+    print(
+        "Clearing continuous deployment policy "
+        f"for distribution {distribution_id}: {policy_id}"
+    )
+    config_json["DistributionConfig"]["ContinuousDeploymentPolicyId"] = ""
     update_distribution_config(distribution_id, config_json)
     wait_for_distribution(distribution_id)
-    print(f"Distribution {distribution_id} WAF association cleared")
+    print(
+        f"Distribution {distribution_id} continuous deployment policy association cleared"
+    )
 
 
 def main():
@@ -141,7 +162,7 @@ def main():
         )
 
     for distribution in distributions:
-        disassociate_waf(distribution)
+        prepare_distribution(distribution)
 
 
 if __name__ == "__main__":
