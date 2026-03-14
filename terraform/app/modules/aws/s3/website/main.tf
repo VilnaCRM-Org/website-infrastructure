@@ -8,6 +8,8 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_s3_bucket_logging" "bucket_logging" {
+  count = var.enable_access_logging && var.s3_logging_bucket_id != null ? 1 : 0
+
   bucket = aws_s3_bucket.this.id
 
   target_bucket = var.s3_logging_bucket_id

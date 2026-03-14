@@ -37,4 +37,19 @@ cloudfront_configuration = {
 
 ttl_validation                        = 60
 ttl_route53_record                    = 300
-s3_noncurrent_version_expiration_days = 365
+s3_noncurrent_version_expiration_days = 7
+
+s3_logs_lifecycle_configuration = {
+  standard_ia_transition_days  = 0
+  glacier_transition_days      = 0
+  deep_archive_transition_days = 0
+  deletion_days                = 7
+}
+
+cloudwatch_log_group_retention_days = 1
+
+enable_cloudwatch_alarms  = false
+enable_access_logging     = false
+enable_waf                = false
+enable_canary             = false
+enable_cloudfront_staging = false

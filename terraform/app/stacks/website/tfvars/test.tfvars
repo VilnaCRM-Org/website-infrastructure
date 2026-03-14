@@ -48,6 +48,7 @@ s3_logs_lifecycle_configuration = {
 cloudwatch_log_group_retention_days = 1
 
 enable_cloudwatch_alarms  = false
+enable_access_logging     = false
 enable_waf                = false
 enable_canary             = false
 enable_cloudfront_staging = false

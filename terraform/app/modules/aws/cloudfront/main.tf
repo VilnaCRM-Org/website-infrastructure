@@ -41,10 +41,13 @@ resource "aws_cloudfront_distribution" "this" {
   is_ipv6_enabled     = true
   default_root_object = var.cloudfront_configuration.default_root_object
 
-  logging_config {
-    include_cookies = false
-    bucket          = var.logging_bucket_domain_name
-    prefix          = "cloudfront-logs/"
+  dynamic "logging_config" {
+    for_each = var.enable_access_logging && var.logging_bucket_domain_name != null ? [1] : []
+    content {
+      include_cookies = false
+      bucket          = var.logging_bucket_domain_name
+      prefix          = "cloudfront-logs/"
+    }
   }
 
   default_cache_behavior {
@@ -143,10 +146,13 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
   is_ipv6_enabled     = true
   default_root_object = var.cloudfront_configuration.default_root_object
 
-  logging_config {
-    include_cookies = false
-    bucket          = var.logging_bucket_domain_name
-    prefix          = "cloudfront-logs/"
+  dynamic "logging_config" {
+    for_each = var.enable_access_logging && var.logging_bucket_domain_name != null ? [1] : []
+    content {
+      include_cookies = false
+      bucket          = var.logging_bucket_domain_name
+      prefix          = "cloudfront-logs/"
+    }
   }
 
   default_cache_behavior {

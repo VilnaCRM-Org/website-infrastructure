@@ -115,6 +115,12 @@ variable "enable_canary" {
   default     = true
 }
 
+variable "enable_access_logging" {
+  description = "Whether to enable S3 and CloudFront access logging for the website stack"
+  type        = bool
+  default     = true
+}
+
 variable "create_slack_notification" {
   description = "This responsible for creating Slack Notifications"
   type        = bool

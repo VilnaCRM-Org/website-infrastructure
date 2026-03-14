@@ -26,6 +26,8 @@ resource "aws_s3_bucket_versioning" "replication_versioning" {
 }
 
 resource "aws_s3_bucket_logging" "replication_bucket_logging" {
+  count = var.enable_access_logging && var.replication_s3_logging_bucket_id != null ? 1 : 0
+
   provider = aws.eu-west-1
   bucket   = aws_s3_bucket.replication_bucket.id
 
@@ -66,4 +68,3 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
     }
   }
 }
-

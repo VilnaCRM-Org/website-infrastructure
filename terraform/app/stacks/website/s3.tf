@@ -13,13 +13,14 @@ module "s3_bucket" {
   lambda_configuration                = var.lambda_configuration
   cloudwatch_log_group_retention_days = var.cloudwatch_log_group_retention_days
   enable_cloudwatch_alarms            = var.enable_cloudwatch_alarms
+  enable_access_logging               = var.enable_access_logging
   noncurrent_version_expiration_days  = var.s3_noncurrent_version_expiration_days
 
   s3_bucket_custom_name = var.s3_bucket_custom_name
 
 
-  s3_logging_bucket_id             = module.logging_s3_bucket.id
-  replication_s3_logging_bucket_id = module.logging_s3_bucket.replication_id
+  s3_logging_bucket_id             = var.enable_access_logging ? module.logging_s3_bucket.id : null
+  replication_s3_logging_bucket_id = var.enable_access_logging ? module.logging_s3_bucket.replication_id : null
 
   aws_cloudfront_distributions_arns = compact([module.cloudfront.arn, module.cloudfront.staging_arn])
 
@@ -41,12 +42,13 @@ module "staging_s3_bucket" {
   lambda_configuration                = var.lambda_configuration
   cloudwatch_log_group_retention_days = var.cloudwatch_log_group_retention_days
   enable_cloudwatch_alarms            = var.enable_cloudwatch_alarms
+  enable_access_logging               = var.enable_access_logging
   noncurrent_version_expiration_days  = var.s3_noncurrent_version_expiration_days
 
   s3_bucket_custom_name = "staging.${var.s3_bucket_custom_name}"
 
-  s3_logging_bucket_id             = module.logging_s3_bucket.id
-  replication_s3_logging_bucket_id = module.logging_s3_bucket.replication_id
+  s3_logging_bucket_id             = var.enable_access_logging ? module.logging_s3_bucket.id : null
+  replication_s3_logging_bucket_id = var.enable_access_logging ? module.logging_s3_bucket.replication_id : null
 
   aws_cloudfront_distributions_arns = compact([module.cloudfront.arn, module.cloudfront.staging_arn])
 
