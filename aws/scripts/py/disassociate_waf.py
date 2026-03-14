@@ -167,7 +167,9 @@ def prepare_distribution(distribution):
         return
 
     if web_acl_id:
-        print(f"Disassociating WAF web ACL for distribution {distribution_id}: {web_acl_id}")
+        print(
+            f"Disassociating WAF web ACL for distribution {distribution_id}: {web_acl_id}"
+        )
         disassociate_distribution_web_acl(distribution_id, config_json["ETag"])
         wait_for_distribution(distribution_id, wait_for_waf_clear=True)
         print(f"Distribution {distribution_id} WAF web ACL association cleared")
