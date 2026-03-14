@@ -21,10 +21,11 @@ def fetch_distributions():
 
 def find_project_distributions(bucket_name):
     cloudfront_distributions = fetch_distributions()
-    project_distributions = {"production": None, "staging": None}
+    project_distribution_ids = set()
+    project_distributions = []
 
     for dist in cloudfront_distributions.get("DistributionList", {}).get("Items", []):
-        aliases = dist.get("Aliases", {}).get("Items", [])
+        aliases = dist.get("Aliases", {}).get("Items") or []
         origins = dist.get("Origins", {}).get("Items", [])
 
         is_our_project = any(
@@ -44,12 +45,14 @@ def find_project_distributions(bucket_name):
         if not is_our_project:
             continue
 
-        if dist.get("Staging", False):
-            project_distributions["staging"] = dist
-        elif aliases:
-            project_distributions["production"] = dist
+        distribution_id = dist["Id"]
+        if distribution_id in project_distribution_ids:
+            continue
 
-    return [dist for dist in project_distributions.values() if dist]
+        project_distribution_ids.add(distribution_id)
+        project_distributions.append(dist)
+
+    return project_distributions
 
 
 def fetch_distribution_config(distribution_id):
