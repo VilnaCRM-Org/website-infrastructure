@@ -17,11 +17,15 @@ def parse_name(entries):
 
 
 def fetch_response(url, timeout):
+    parsed_url = urlparse(url)
+    if parsed_url.scheme not in {"http", "https"}:
+        raise ValueError("URL scheme must be http or https")
+
     request = urllib.request.Request(
         url,
         headers={"User-Agent": "vilnacrm-healthcheck/1.0"},
     )
-    context = ssl.create_default_context() if url.startswith("https://") else None
+    context = ssl.create_default_context() if parsed_url.scheme == "https" else None
     with urllib.request.urlopen(request, timeout=timeout, context=context) as response:
         body = response.read().decode("utf-8", errors="replace")
         return response.status, response.headers, body

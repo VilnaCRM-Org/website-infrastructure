@@ -52,7 +52,8 @@ class CloudFrontCacheInvalidator:
         )
         self.invalidation_path = os.getenv("INVALIDATION_PATH", "/*")
         self.enable_cloudfront_staging = (
-            os.getenv("ENABLE_CLOUDFRONT_STAGING", "true").lower() == "true"
+            os.getenv("ENABLE_CLOUDFRONT_STAGING", "").strip().lower()
+            not in {"false", "0", "no"}
         )
 
     @property

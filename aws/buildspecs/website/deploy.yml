@@ -48,7 +48,7 @@ phases:
         echo "#### Invalidate CloudFront Cache"
         python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/cache_invalidation.py
       - |
-        if [ "$ENABLE_CLOUDFRONT_STAGING" = "true" ]; then
+        if [ "${ENABLE_CLOUDFRONT_STAGING:-true}" = "true" ]; then
           python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/continuous_deployment_switch.py
         else
           echo "CloudFront staging disabled, skipping continuous deployment switch"

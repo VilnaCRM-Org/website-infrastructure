@@ -4,6 +4,7 @@ phases:
   install:
     commands:
       - "python3 --version"
+      - '[ -n "${WEBSITE_URL:-}" ] || { echo "WEBSITE_URL must be set for the website healthcheck"; exit 1; }'
   build:
     commands:
       - "echo ## Test Website Connection..."

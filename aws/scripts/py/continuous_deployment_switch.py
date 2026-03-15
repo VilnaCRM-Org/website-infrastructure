@@ -5,7 +5,8 @@ import subprocess
 MAX_ITEMS = "1"
 CONFIG_FILENAME = "continuous_deployment_policy.json"
 ENABLE_CLOUDFRONT_STAGING = (
-    os.environ.get("ENABLE_CLOUDFRONT_STAGING", "true").lower() == "true"
+    os.environ.get("ENABLE_CLOUDFRONT_STAGING", "").strip().lower()
+    not in {"false", "0", "no"}
 )
 
 

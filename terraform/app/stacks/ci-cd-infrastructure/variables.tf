@@ -115,7 +115,7 @@ variable "website_url" {
 }
 
 variable "ci_cd_infra_stage_input" {
-  description = "List of maps containing information about the stages of the CI/CD Infrastructure CodePipeline"
+  description = "List of stage objects for the CI/CD Infrastructure CodePipeline actions"
   type = list(object({
     name             = string
     category         = string
@@ -127,7 +127,7 @@ variable "ci_cd_infra_stage_input" {
 }
 
 variable "website_infra_stage_input" {
-  description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
+  description = "List of stage objects for the Website Infrastructure CodePipeline actions"
   type = list(object({
     name             = string
     category         = string
@@ -139,7 +139,7 @@ variable "website_infra_stage_input" {
 }
 
 variable "sandbox_stage_input" {
-  description = "List of maps containing information about the stages of the Sandbox CodePipeline"
+  description = "List of stage objects for the Sandbox CodePipeline actions"
   type = list(object({
     name             = string
     category         = string
@@ -151,7 +151,7 @@ variable "sandbox_stage_input" {
 }
 
 variable "sandbox_deletion_stage_input" {
-  description = "List of maps containing information about the stages of the Sandbox CodePipeline"
+  description = "List of stage objects for the Sandbox deletion CodePipeline actions"
   type = list(object({
     name             = string
     category         = string
@@ -163,7 +163,7 @@ variable "sandbox_deletion_stage_input" {
 }
 
 variable "ci_cd_website_stage_input" {
-  description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
+  description = "List of stage objects for the CI/CD Website CodePipeline actions"
   type = list(object({
     name             = string
     category         = string

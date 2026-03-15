@@ -14,7 +14,7 @@ locals {
   ci_cd_website_duration_metric_ids = [
     for idx, _ in var.ci_cd_website_stage_names : "m${idx + 1}"
   ]
-  ci_cd_website_duration_expression = "SUM([${join(",", local.ci_cd_website_duration_metric_ids)}])/60"
+  ci_cd_website_duration_expression = length(var.ci_cd_website_stage_names) > 0 ? "SUM([${join(",", local.ci_cd_website_duration_metric_ids)}])/60" : "0"
   ci_cd_website_duration_widget_metrics = concat(
     [[{
       expression = local.ci_cd_website_duration_expression
