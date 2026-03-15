@@ -26,7 +26,11 @@ locals {
     "arn:aws:iam::${local.account_id}:policy/ci-cd-website-${var.environment}-*",
     "arn:aws:iam::${local.account_id}:policy/website-infra-${var.environment}-*",
     "arn:aws:iam::${local.account_id}:policy/ci-cd-infra-trigger-role-policy",
-    "arn:aws:iam::${local.account_id}:role/*trigger-role",
+    "arn:aws:iam::${local.account_id}:role/website-infrastructure-trigger-role",
+    "arn:aws:iam::${local.account_id}:role/website-deploy-trigger-role",
+    "arn:aws:iam::${local.account_id}:role/sandbox-deletion-trigger-role",
+    "arn:aws:iam::${local.account_id}:role/sandbox-creation-trigger-role",
+    "arn:aws:iam::${local.account_id}:role/ci-cd-infra-trigger-role",
     "arn:aws:iam::${local.account_id}:role/github-actions-role",
   ]
 }
