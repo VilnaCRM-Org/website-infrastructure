@@ -15,6 +15,20 @@ tags = {
   Environment = "prod"
 }
 
+s3_artifacts_bucket_files_deletion_days = 1
+
+s3_logs_lifecycle_configuration = {
+  standard_ia_transition_days  = 0
+  glacier_transition_days      = 0
+  deep_archive_transition_days = 0
+  deletion_days                = 1
+}
+
+cloudwatch_log_group_retention_days = 1
+
+enable_cloudwatch_alarms  = false
+enable_cloudfront_staging = false
+
 ci_cd_infra_stage_input = [
   { name = "validate", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "ValidateOutput" },
   { name = "plan", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "PlanOutput" },
@@ -28,11 +42,8 @@ website_infra_stage_input = [
 ]
 
 ci_cd_website_stage_input = [
-  { name = "batch-unit-mutation-lint", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "UnitMutationLintOutput" },
   { name = "deploy", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "DeployOutput" },
   { name = "healthcheck", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "HealthcheckOutput" },
-  { name = "batch-lhci-leak", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "LHCILeakOutput" },
-  { name = "batch-pw-load", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "PWLoadOutput" },
   { name = "release", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "ReleaseOutput" },
 ]
 
