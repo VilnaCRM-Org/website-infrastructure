@@ -26,6 +26,9 @@ class CloudFrontOriginSwapper:
     def __init__(self) -> None:
         self.logger = logging.getLogger(self.__class__.__name__)
         self.region = self._get_region()
+        self.enable_cloudfront_staging = (
+            os.environ.get("ENABLE_CLOUDFRONT_STAGING", "true").lower() == "true"
+        )
 
     def _get_region(self) -> str:
         """Get CloudFront region from environment variable"""
@@ -184,6 +187,12 @@ class CloudFrontOriginSwapper:
         self.logger.info("Starting CloudFront origin swap...")
 
         try:
+            if not self.enable_cloudfront_staging:
+                self.logger.info(
+                    "CloudFront staging is disabled, skipping origin swap"
+                )
+                return
+
             distribution_ids, configs = self._filter_distributions()
 
             updated_configs = self._swap_origins(configs)

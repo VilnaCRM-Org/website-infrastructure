@@ -3,6 +3,9 @@ import subprocess
 import os
 
 CLOUDFRONT_REGION = os.environ["CLOUDFRONT_REGION"]
+ENABLE_CLOUDFRONT_STAGING = (
+    os.environ.get("ENABLE_CLOUDFRONT_STAGING", "true").lower() == "true"
+)
 
 
 def get_bucket():
@@ -124,6 +127,12 @@ def determine_deployment_target(bucket_name):
     Only considers distributions for this specific project.
     """
     print("Determining deployment target for blue-green deployment...")
+
+    if not ENABLE_CLOUDFRONT_STAGING:
+        print(
+            "CloudFront staging is disabled, deploying directly to the production bucket"
+        )
+        return bucket_name
 
     project_distributions = find_project_distributions(bucket_name)
 
