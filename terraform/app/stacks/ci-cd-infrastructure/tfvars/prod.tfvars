@@ -15,6 +15,21 @@ tags = {
   Environment = "prod"
 }
 
+s3_artifacts_bucket_files_deletion_days = 1
+
+s3_logs_lifecycle_configuration = {
+  standard_ia_transition_days  = 0
+  glacier_transition_days      = 0
+  deep_archive_transition_days = 0
+  deletion_days                = 1
+}
+
+cloudwatch_log_group_retention_days = 1
+
+enable_cloudwatch_alarms = false
+# Keep CloudFront staging enabled so prod rollouts retain the safer traffic-shift path.
+enable_cloudfront_staging = true
+
 ci_cd_infra_stage_input = [
   { name = "validate", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "ValidateOutput" },
   { name = "plan", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "PlanOutput" },
