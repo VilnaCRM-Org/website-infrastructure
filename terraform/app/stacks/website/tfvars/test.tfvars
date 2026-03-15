@@ -51,4 +51,4 @@ enable_cloudwatch_alarms  = false
 enable_access_logging     = false
 enable_waf                = false
 enable_canary             = false
-enable_cloudfront_staging = false
+enable_cloudfront_staging = true
