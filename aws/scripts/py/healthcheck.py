@@ -120,7 +120,9 @@ def main():
             print(f"Issuer CN: {issuer['commonName']}")
 
         if args.min_cert_days is not None:
-            seconds_until_expiry = ssl.cert_time_to_seconds(certificate["notAfter"]) - time.time()
+            seconds_until_expiry = (
+                ssl.cert_time_to_seconds(certificate["notAfter"]) - time.time()
+            )
             days_until_expiry = seconds_until_expiry / 86400
             if days_until_expiry <= args.min_cert_days:
                 raise AssertionError(
