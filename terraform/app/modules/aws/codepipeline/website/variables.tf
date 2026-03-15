@@ -78,7 +78,7 @@ variable "tags" {
 }
 
 variable "stages" {
-  description = "List of Map containing information about the stages of the CodePipeline"
+  description = "List of objects containing information about the stages of the CodePipeline"
   type = list(object({
     name             = string
     category         = string
