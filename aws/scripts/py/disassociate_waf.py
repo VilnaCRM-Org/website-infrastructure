@@ -1,16 +1,21 @@
 import json
 import os
+import shutil
 import subprocess
 import tempfile
 import time
 
 CLOUDFRONT_REGION = os.environ["CLOUDFRONT_REGION"]
 BUCKET_NAME = os.environ["BUCKET_NAME"]
+AWS_CLI_PATH = shutil.which("aws")
+
+if AWS_CLI_PATH is None:
+    raise RuntimeError("aws CLI not found in PATH")
 
 
 def run_aws(command):
     return subprocess.check_output(
-        ["aws", *command, "--region", CLOUDFRONT_REGION, "--no-cli-pager"],
+        [AWS_CLI_PATH, *command, "--region", CLOUDFRONT_REGION, "--no-cli-pager"],
         text=True,
     )
 
@@ -93,7 +98,7 @@ def update_distribution_config(distribution_id, config_json):
     try:
         subprocess.check_call(
             [
-                "aws",
+                AWS_CLI_PATH,
                 "cloudfront",
                 "update-distribution",
                 "--id",
@@ -114,7 +119,7 @@ def update_distribution_config(distribution_id, config_json):
 def disassociate_distribution_web_acl(distribution_id, etag):
     subprocess.check_call(
         [
-            "aws",
+            AWS_CLI_PATH,
             "cloudfront",
             "disassociate-distribution-web-acl",
             "--id",

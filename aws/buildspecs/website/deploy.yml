@@ -19,22 +19,29 @@ phases:
           [ "$(aws cloudwatch describe-alarms --alarm-names "$ALARM_NAME" --query 'MetricAlarms[0].AlarmName' --output text)" != "None" ]
         }
 
+        alarm_actions_enabled() {
+          [ "$(aws cloudwatch describe-alarms --alarm-names "$ALARM_NAME" --query 'MetricAlarms[0].ActionsEnabled' --output text)" = "True" ]
+        }
+
+        did_disable_alarm=false
+
         restore_alarm_actions() {
           echo "#### Turn On Alarm Actions"
-          if alarm_exists; then
+          if [ "$did_disable_alarm" = "true" ] && alarm_exists; then
             aws cloudwatch enable-alarm-actions --alarm-names "$ALARM_NAME"
           else
-            echo "Alarm $ALARM_NAME not found, skipping enable"
+            echo "Alarm $ALARM_NAME not found or already disabled, skipping enable"
           fi
         }
 
         trap restore_alarm_actions EXIT
 
         echo "#### Turn Off Alarm Actions"
-        if alarm_exists; then
+        if alarm_exists && alarm_actions_enabled; then
+          did_disable_alarm=true
           aws cloudwatch disable-alarm-actions --alarm-names "$ALARM_NAME"
         else
-          echo "Alarm $ALARM_NAME not found, skipping disable"
+          echo "Alarm $ALARM_NAME not found or already disabled, skipping disable"
         fi
 
         python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/deploy_content.py

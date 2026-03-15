@@ -1,13 +1,9 @@
 import json
-import subprocess
 import os
+import subprocess
 
 MAX_ITEMS = "1"
 CONFIG_FILENAME = "continuous_deployment_policy.json"
-
-CLOUDFRONT_WEIGHT = os.environ["CLOUDFRONT_WEIGHT"]
-CLOUDFRONT_HEADER = os.environ["CLOUDFRONT_HEADER"]
-CLOUDFRONT_REGION = os.environ["CLOUDFRONT_REGION"]
 ENABLE_CLOUDFRONT_STAGING = (
     os.environ.get("ENABLE_CLOUDFRONT_STAGING", "true").lower() == "true"
 )
@@ -40,17 +36,17 @@ def create_config(staging_dns_name, config_value, config_type="weight"):
     return base_config
 
 
-def type_handler(config_type, staging_dns_name):
+def type_handler(config_type, staging_dns_name, cloudfront_header, cloudfront_weight):
     print(
         f"Handling type with config_type: {config_type}, "
         f"staging_dns_name: {staging_dns_name}"
     )
     if config_type != "SingleHeader":
-        return create_config(staging_dns_name, CLOUDFRONT_HEADER, config_type="header")
-    return create_config(staging_dns_name, CLOUDFRONT_WEIGHT, config_type="weight")
+        return create_config(staging_dns_name, cloudfront_header, config_type="header")
+    return create_config(staging_dns_name, cloudfront_weight, config_type="weight")
 
 
-def fetch_continuous_deployment_policies():
+def fetch_continuous_deployment_policies(cloudfront_region):
     print("Fetching continuous deployment policies")
     result = subprocess.check_output(
         [
@@ -58,7 +54,7 @@ def fetch_continuous_deployment_policies():
             "cloudfront",
             "list-continuous-deployment-policies",
             "--region",
-            CLOUDFRONT_REGION,
+            cloudfront_region,
             "--no-cli-pager",
             "--max-items",
             MAX_ITEMS,
@@ -69,18 +65,18 @@ def fetch_continuous_deployment_policies():
     return policies
 
 
-def fetch_continuous_deployment_policy(id):
-    print(f"Fetching continuous deployment policy with id: {id}")
+def fetch_continuous_deployment_policy(policy_id, cloudfront_region):
+    print(f"Fetching continuous deployment policy with id: {policy_id}")
     result = subprocess.check_output(
         [
             "aws",
             "cloudfront",
             "get-continuous-deployment-policy",
             "--region",
-            CLOUDFRONT_REGION,
+            cloudfront_region,
             "--no-cli-pager",
             "--id",
-            id,
+            policy_id,
         ]
     )
     policy = json.loads(result.decode())
@@ -88,7 +84,9 @@ def fetch_continuous_deployment_policy(id):
     return policy
 
 
-def update_continuous_deployment_policy(policy_id, policy_etag, config_filename):
+def update_continuous_deployment_policy(
+    policy_id, policy_etag, config_filename, cloudfront_region
+):
     print(
         f"Updating continuous deployment policy with id: {policy_id}, "
         f"etag: {policy_etag}, config_filename: {config_filename}"
@@ -103,7 +101,7 @@ def update_continuous_deployment_policy(policy_id, policy_etag, config_filename)
             "--continuous-deployment-policy-config",
             f"file://{config_filename}",
             "--region",
-            CLOUDFRONT_REGION,
+            cloudfront_region,
             "--if-match",
             policy_etag,
         ]
@@ -116,7 +114,20 @@ def main():
     if not ENABLE_CLOUDFRONT_STAGING:
         print("CloudFront staging is disabled, skipping continuous deployment switch")
         return
-    policies_list = fetch_continuous_deployment_policies()
+    required_env = {
+        "CLOUDFRONT_WEIGHT": os.environ.get("CLOUDFRONT_WEIGHT"),
+        "CLOUDFRONT_HEADER": os.environ.get("CLOUDFRONT_HEADER"),
+        "CLOUDFRONT_REGION": os.environ.get("CLOUDFRONT_REGION"),
+    }
+    missing_env = [name for name, value in required_env.items() if not value]
+    if missing_env:
+        raise RuntimeError(
+            "Missing required environment variables: " + ", ".join(missing_env)
+        )
+
+    policies_list = fetch_continuous_deployment_policies(
+        required_env["CLOUDFRONT_REGION"]
+    )
     items = policies_list["ContinuousDeploymentPolicyList"].get("Items", [])
     if not items:
         print("No continuous deployment policy found, skipping switch")
@@ -125,7 +136,9 @@ def main():
     policy_item_id = policy_item["Id"]
     print(f"Policy item id: {policy_item_id}")
 
-    policy = fetch_continuous_deployment_policy(policy_item_id)
+    policy = fetch_continuous_deployment_policy(
+        policy_item_id, required_env["CLOUDFRONT_REGION"]
+    )
     policy_etag = policy["ETag"]
     policy_config = policy["ContinuousDeploymentPolicy"][
         "ContinuousDeploymentPolicyConfig"
@@ -137,13 +150,23 @@ def main():
         f"Config Type: {config_type}"
     )
 
-    continuous_deployment_policy = type_handler(config_type, staging_dns_name)
+    continuous_deployment_policy = type_handler(
+        config_type,
+        staging_dns_name,
+        required_env["CLOUDFRONT_HEADER"],
+        required_env["CLOUDFRONT_WEIGHT"],
+    )
 
     with open(CONFIG_FILENAME, "w") as config_file:
         print(f"Writing config to {CONFIG_FILENAME}")
         json.dump(continuous_deployment_policy, config_file, indent=4)
 
-    update_continuous_deployment_policy(policy_item_id, policy_etag, CONFIG_FILENAME)
+    update_continuous_deployment_policy(
+        policy_item_id,
+        policy_etag,
+        CONFIG_FILENAME,
+        required_env["CLOUDFRONT_REGION"],
+    )
     print("Main function completed")
 
 
