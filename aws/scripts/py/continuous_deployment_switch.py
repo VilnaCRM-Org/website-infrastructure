@@ -4,10 +4,9 @@ import subprocess
 
 MAX_ITEMS = "1"
 CONFIG_FILENAME = "continuous_deployment_policy.json"
-ENABLE_CLOUDFRONT_STAGING = (
-    os.environ.get("ENABLE_CLOUDFRONT_STAGING", "").strip().lower()
-    not in {"false", "0", "no"}
-)
+ENABLE_CLOUDFRONT_STAGING = os.environ.get(
+    "ENABLE_CLOUDFRONT_STAGING", ""
+).strip().lower() not in {"false", "0", "no"}
 
 
 def create_config(staging_dns_name, config_value, config_type="weight"):

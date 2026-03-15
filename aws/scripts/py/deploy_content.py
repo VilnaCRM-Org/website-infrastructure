@@ -4,10 +4,11 @@ import subprocess
 
 
 def cloudfront_staging_enabled():
-    return (
-        os.environ.get("ENABLE_CLOUDFRONT_STAGING", "").strip().lower()
-        not in {"false", "0", "no"}
-    )
+    return os.environ.get("ENABLE_CLOUDFRONT_STAGING", "").strip().lower() not in {
+        "false",
+        "0",
+        "no",
+    }
 
 
 def get_bucket():

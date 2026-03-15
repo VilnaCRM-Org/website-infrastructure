@@ -26,10 +26,9 @@ class CloudFrontOriginSwapper:
     def __init__(self) -> None:
         self.logger = logging.getLogger(self.__class__.__name__)
         self.region = self._get_region()
-        self.enable_cloudfront_staging = (
-            os.environ.get("ENABLE_CLOUDFRONT_STAGING", "").strip().lower()
-            not in {"false", "0", "no"}
-        )
+        self.enable_cloudfront_staging = os.environ.get(
+            "ENABLE_CLOUDFRONT_STAGING", ""
+        ).strip().lower() not in {"false", "0", "no"}
 
     def _get_region(self) -> str:
         """Get CloudFront region from environment variable"""

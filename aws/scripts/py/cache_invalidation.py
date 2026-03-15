@@ -51,10 +51,9 @@ class CloudFrontCacheInvalidator:
             os.getenv("INVALIDATION_STABILIZATION_WAIT_SECONDS", "30")
         )
         self.invalidation_path = os.getenv("INVALIDATION_PATH", "/*")
-        self.enable_cloudfront_staging = (
-            os.getenv("ENABLE_CLOUDFRONT_STAGING", "").strip().lower()
-            not in {"false", "0", "no"}
-        )
+        self.enable_cloudfront_staging = os.getenv(
+            "ENABLE_CLOUDFRONT_STAGING", ""
+        ).strip().lower() not in {"false", "0", "no"}
 
     @property
     def client(self) -> CloudFrontClient:
