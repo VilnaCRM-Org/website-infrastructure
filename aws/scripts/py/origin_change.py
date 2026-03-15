@@ -127,6 +127,12 @@ class CloudFrontOriginSwapper:
 
         self.logger.info("Filtered to %d distributions", len(filtered_configs))
 
+        if len(filtered_configs) == 1:
+            self.logger.info(
+                "Found a single non-app distribution, assuming staging is disabled"
+            )
+            return filtered_ids, filtered_configs
+
         if len(filtered_configs) != 2:
             raise CloudFrontOriginSwapError(
                 f"Expected exactly 2 distributions for origin swap (excluding app distributions), "
@@ -192,6 +198,11 @@ class CloudFrontOriginSwapper:
                 return
 
             distribution_ids, configs = self._filter_distributions()
+            if len(configs) < 2:
+                self.logger.info(
+                    "Skipping origin swap because only one non-app distribution exists"
+                )
+                return
 
             updated_configs = self._swap_origins(configs)
 
