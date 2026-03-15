@@ -11,5 +11,5 @@ if ! compgen -G "${source_dir}/*.plan" >/dev/null; then
   exit 1
 fi
 
-cp "${source_dir}"/*.plan "${destination_dir}/"
+mv "${source_dir}"/*.plan "${destination_dir}/"
 ls -lh "${destination_dir}"
