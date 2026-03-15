@@ -47,9 +47,9 @@ s3_logs_lifecycle_configuration = {
 
 cloudwatch_log_group_retention_days = 1
 
-enable_cloudwatch_alarms  = false
-enable_access_logging     = false
-enable_waf                = false
-enable_canary             = false
+enable_cloudwatch_alarms = false
+enable_access_logging    = false
+enable_waf               = false
+enable_canary            = false
 # Keep CloudFront staging enabled so test exercises the same promotion flow as prod.
 enable_cloudfront_staging = true

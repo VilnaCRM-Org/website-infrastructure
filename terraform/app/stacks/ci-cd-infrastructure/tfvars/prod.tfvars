@@ -26,7 +26,7 @@ s3_logs_lifecycle_configuration = {
 
 cloudwatch_log_group_retention_days = 1
 
-enable_cloudwatch_alarms  = false
+enable_cloudwatch_alarms = false
 # Keep CloudFront staging enabled so prod rollouts retain the safer traffic-shift path.
 enable_cloudfront_staging = true
 
