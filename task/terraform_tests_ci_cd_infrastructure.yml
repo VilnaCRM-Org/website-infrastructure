@@ -10,8 +10,6 @@ tasks:
       - make terraspace-validate stack=ci-cd-iam
       - make terraspace-init stack=website-iam
       - make terraspace-validate stack=website-iam
-      - make terraspace-init stack=iam-groups
-      - make terraspace-validate stack=iam-groups
     silent: false
 
   format:
