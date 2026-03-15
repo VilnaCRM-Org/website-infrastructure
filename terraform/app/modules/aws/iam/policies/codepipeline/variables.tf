@@ -18,6 +18,11 @@ variable "ci_cd_website_project_name" {
   type        = string
 }
 
+variable "ci_cd_website_codebuild_project_names" {
+  description = "CodeBuild project names managed for the website deploy pipeline"
+  type        = list(string)
+}
+
 variable "policy_prefix" {
   description = "Policy Prefix for policies"
   type        = string

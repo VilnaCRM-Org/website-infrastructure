@@ -26,7 +26,9 @@ phases:
         . ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_unit_mutation_lint.sh test-unit
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'unit complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/unit.txt"
 
 artifacts:
   files:
-    - "website/coverage/**/*"
+    - "codepipeline-artifacts/unit.txt"

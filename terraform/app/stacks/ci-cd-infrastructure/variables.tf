@@ -48,6 +48,11 @@ variable "continuous_deployment_policy_header" {
   type        = string
 }
 
+variable "enable_cloudfront_staging" {
+  description = "Whether CloudFront staging is enabled for the website deployment flow"
+  type        = bool
+}
+
 variable "website_buildspecs" {
   description = "Buildspecs for Website"
   type        = string
@@ -110,28 +115,63 @@ variable "website_url" {
 }
 
 variable "ci_cd_infra_stage_input" {
-  description = "List of maps containing information about the stages of the CI/CD Infrastructure CodePipeline"
-  type        = list(map(string))
+  description = "List of stage objects for the CI/CD Infrastructure CodePipeline actions"
+  type = list(object({
+    name             = string
+    category         = string
+    owner            = string
+    provider         = string
+    input_artifacts  = list(string)
+    output_artifacts = string
+  }))
 }
 
 variable "website_infra_stage_input" {
-  description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
-  type        = list(map(string))
+  description = "List of stage objects for the Website Infrastructure CodePipeline actions"
+  type = list(object({
+    name             = string
+    category         = string
+    owner            = string
+    provider         = string
+    input_artifacts  = list(string)
+    output_artifacts = string
+  }))
 }
 
 variable "sandbox_stage_input" {
-  description = "List of maps containing information about the stages of the Sandbox CodePipeline"
-  type        = list(map(string))
+  description = "List of stage objects for the Sandbox CodePipeline actions"
+  type = list(object({
+    name             = string
+    category         = string
+    owner            = string
+    provider         = string
+    input_artifacts  = list(string)
+    output_artifacts = string
+  }))
 }
 
 variable "sandbox_deletion_stage_input" {
-  description = "List of maps containing information about the stages of the Sandbox CodePipeline"
-  type        = list(map(string))
+  description = "List of stage objects for the Sandbox deletion CodePipeline actions"
+  type = list(object({
+    name             = string
+    category         = string
+    owner            = string
+    provider         = string
+    input_artifacts  = list(string)
+    output_artifacts = string
+  }))
 }
 
 variable "ci_cd_website_stage_input" {
-  description = "List of maps containing information about the stages of the Website Infrastructure CodePipeline"
-  type        = list(map(string))
+  description = "List of stage objects for the CI/CD Website CodePipeline actions"
+  type = list(object({
+    name             = string
+    category         = string
+    owner            = string
+    provider         = string
+    input_artifacts  = list(string)
+    output_artifacts = string
+  }))
 }
 
 variable "codebuild_environment" {

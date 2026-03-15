@@ -14,16 +14,21 @@ phases:
     commands:
       - "cd ${CODEBUILD_SRC_DIR}"
       - "echo ## TERRASPACE UP : Bringing up the infrastructure"
+      - 'if [ "$TS_ENV" = "test" ]; then python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/disassociate_waf.py; fi'
+      - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/restore_plan_artifacts.sh"
       - 'make terraspace-up-plan stack="website" plan="website.plan"'
       - 'make terraspace-output-file stack="website" out=".terraform.env"'
       - "cd terraform"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py"
       - "echo Triggering CI-CD Website Pipeline"
       - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME || { echo 'Error starting CodePipeline'; exit 1; }"
+    finally:
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'up complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/up.txt"
 
 artifacts:
   files:
-    - "**/*"
+    - "codepipeline-artifacts/up.txt"
 cache:
   paths:
     - "/bin"

@@ -67,7 +67,14 @@ variable "tags" {
 
 variable "stages" {
   description = "List containing information about the stages of the CodePipeline"
-  type        = list(map(any))
+  type = list(object({
+    name             = string
+    category         = string
+    owner            = string
+    provider         = string
+    input_artifacts  = list(string)
+    output_artifacts = string
+  }))
 }
 
 variable "BRANCH_NAME" {

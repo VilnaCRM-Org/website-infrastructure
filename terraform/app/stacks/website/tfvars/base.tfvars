@@ -17,6 +17,7 @@ canary_configuration = {
 }
 
 s3_artifacts_bucket_files_deletion_days = 7
+s3_noncurrent_version_expiration_days   = 365
 
 cloudwatch_log_group_retention_days = 7
 

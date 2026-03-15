@@ -33,8 +33,6 @@ module "ci_cd_infra_codepipeline_iam_role" {
   policy_arns = merge(module.ci_cd_infra_policies.policy_arns, module.website_infra_policies.policy_arns)
 
   tags = var.tags
-
-  depends_on = [module.ci_cd_infra_policies]
 }
 
 module "ci_cd_infra_codebuild" {
@@ -54,7 +52,9 @@ module "ci_cd_infra_codebuild" {
   depends_on = [
     module.ci_cd_infra_s3_artifacts_bucket,
     module.ci_cd_infra_codepipeline_iam_role,
-    module.codestar_connection
+    module.ci_cd_infra_policies,
+    module.website_infra_policies,
+    module.codestar_connection,
   ]
 }
 

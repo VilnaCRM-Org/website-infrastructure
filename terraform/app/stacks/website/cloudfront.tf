@@ -11,11 +11,12 @@ module "cloudfront" {
   aws_acm_certificate_arn = module.dns.arn
   aws_acm_certificate_id  = module.dns.id
 
-  logging_bucket_domain_name = module.logging_s3_bucket.bucket_domain_name
+  logging_bucket_domain_name = var.enable_access_logging ? module.logging_s3_bucket.bucket_domain_name : null
 
   cloudfront_configuration          = var.cloudfront_configuration
   cloudfront_custom_error_responses = var.cloudfront_custom_error_responses
 
+  enable_access_logging     = var.enable_access_logging
   enable_cloudfront_staging = var.enable_cloudfront_staging
   enable_cloudwatch_alarms  = var.enable_cloudwatch_alarms
   enable_waf                = var.enable_waf

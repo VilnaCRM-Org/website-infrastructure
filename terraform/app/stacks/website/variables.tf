@@ -28,6 +28,12 @@ variable "s3_logs_lifecycle_configuration" {
   type        = map(number)
 }
 
+variable "s3_noncurrent_version_expiration_days" {
+  description = "Retention time for noncurrent versions in versioned website buckets"
+  type        = number
+  default     = 365
+}
+
 variable "s3_bucket_custom_name" {
   type        = string
   description = "Any non-empty string here will replace default name of bucket `var.domain_name`"
@@ -101,6 +107,18 @@ variable "enable_cloudwatch_alarms" {
 variable "enable_waf" {
   description = "Whether to create and attach the website WAF web ACL"
   type        = bool
+}
+
+variable "enable_canary" {
+  description = "Whether to create the website heartbeat canary resources"
+  type        = bool
+  default     = true
+}
+
+variable "enable_access_logging" {
+  description = "Whether to enable S3 and CloudFront access logging for the website stack"
+  type        = bool
+  default     = true
 }
 
 variable "create_slack_notification" {

@@ -26,11 +26,13 @@ data "aws_iam_policy_document" "iam_policy_doc" {
     effect = "Allow"
     actions = [
       "iam:CreatePolicy",
+      "iam:CreatePolicyVersion",
       "iam:GetPolicy",
       "iam:GetPolicyVersion",
       "iam:ListPolicyVersions",
       "iam:TagPolicy",
-      "iam:DeletePolicy"
+      "iam:DeletePolicy",
+      "iam:DeletePolicyVersion"
     ]
     resources = [
       "arn:aws:iam::${local.account_id}:policy/${var.project_name}-staging-iam-policy-allow-sns-for-lambda",
@@ -61,4 +63,4 @@ data "aws_iam_policy_document" "iam_policy_doc" {
     ]
     resources = ["arn:aws:iam::${local.account_id}:role/*"]
   }
-} 
+}

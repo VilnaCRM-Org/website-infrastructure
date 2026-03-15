@@ -8,6 +8,8 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_s3_bucket_logging" "bucket_logging" {
+  count = var.enable_access_logging && var.s3_logging_bucket_id != null ? 1 : 0
+
   bucket = aws_s3_bucket.this.id
 
   target_bucket = var.s3_logging_bucket_id
@@ -24,6 +26,26 @@ resource "aws_s3_bucket_versioning" "this" {
   versioning_configuration {
     status = "Enabled"
   }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "this" {
+  bucket = aws_s3_bucket.this.id
+
+  rule {
+    id = "noncurrent-version-expiration"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = var.noncurrent_version_expiration_days
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = var.noncurrent_version_expiration_days
+    }
+
+    status = "Enabled"
+  }
+
+  depends_on = [aws_s3_bucket_versioning.this]
 }
 
 resource "aws_s3_bucket_public_access_block" "this" {

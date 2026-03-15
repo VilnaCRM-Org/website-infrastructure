@@ -27,8 +27,9 @@ phases:
         . ${CODEBUILD_SRC_DIR}/website/scripts/ci/batch_pw_load.sh test-load
     finally:
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'load complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/load.txt"
 
 artifacts:
   files:
-    - "website/src/test/load/reports/**/*"
-    - "website/**/*"
+    - "codepipeline-artifacts/load.txt"

@@ -1,13 +1,29 @@
 import json
-import subprocess
 import os
+import subprocess
 
-CLOUDFRONT_REGION = os.environ["CLOUDFRONT_REGION"]
+
+def cloudfront_staging_enabled():
+    return os.environ.get("ENABLE_CLOUDFRONT_STAGING", "").strip().lower() not in {
+        "false",
+        "0",
+        "no",
+    }
 
 
 def get_bucket():
     print("Getting bucket...")
     return os.environ["BUCKET_NAME"]
+
+
+def get_cloudfront_region():
+    cloudfront_region = os.environ.get("CLOUDFRONT_REGION")
+    if not cloudfront_region:
+        raise RuntimeError(
+            "CLOUDFRONT_REGION environment variable is required when CloudFront "
+            "staging is enabled"
+        )
+    return cloudfront_region
 
 
 def fetch_distributions():
@@ -18,7 +34,7 @@ def fetch_distributions():
             "cloudfront",
             "list-distributions",
             "--region",
-            CLOUDFRONT_REGION,
+            get_cloudfront_region(),
             "--no-cli-pager",
         ]
     )
@@ -124,6 +140,12 @@ def determine_deployment_target(bucket_name):
     Only considers distributions for this specific project.
     """
     print("Determining deployment target for blue-green deployment...")
+
+    if not cloudfront_staging_enabled():
+        print(
+            "CloudFront staging is disabled, deploying directly to the production bucket"
+        )
+        return bucket_name
 
     project_distributions = find_project_distributions(bucket_name)
 

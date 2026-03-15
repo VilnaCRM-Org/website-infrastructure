@@ -51,6 +51,9 @@ class CloudFrontCacheInvalidator:
             os.getenv("INVALIDATION_STABILIZATION_WAIT_SECONDS", "30")
         )
         self.invalidation_path = os.getenv("INVALIDATION_PATH", "/*")
+        self.enable_cloudfront_staging = os.getenv(
+            "ENABLE_CLOUDFRONT_STAGING", ""
+        ).strip().lower() not in {"false", "0", "no"}
 
     @property
     def client(self) -> CloudFrontClient:
@@ -167,8 +170,12 @@ class CloudFrontCacheInvalidator:
         self, env_distributions: dict[Environment, dict[str, Any]]
     ) -> None:
         """Ensure we found distributions for all required environments"""
+        required_environments = [Environment.PRODUCTION]
+        if self.enable_cloudfront_staging:
+            required_environments.insert(0, Environment.STAGING)
+
         missing_environments = [
-            env for env in Environment if env not in env_distributions
+            env for env in required_environments if env not in env_distributions
         ]
         if missing_environments:
             missing_names = [env.value for env in missing_environments]
@@ -181,11 +188,18 @@ class CloudFrontCacheInvalidator:
         self, env_distributions: dict[Environment, dict[str, Any]]
     ) -> None:
         """Log the distributions we found for each environment"""
-        staging_id = env_distributions[Environment.STAGING]["Id"]
         production_id = env_distributions[Environment.PRODUCTION]["Id"]
+        if self.enable_cloudfront_staging:
+            staging_id = env_distributions[Environment.STAGING]["Id"]
+            self.logger.info(
+                "Using distributions - Staging: %s, Production: %s",
+                staging_id,
+                production_id,
+            )
+            return
+
         self.logger.info(
-            "Using distributions - Staging: %s, Production: %s",
-            staging_id,
+            "Using production distribution only: %s",
             production_id,
         )
 
@@ -278,7 +292,9 @@ class CloudFrontCacheInvalidator:
             distributions = self.find_distributions_by_environment()
 
             # Process staging first, then production
-            environments_to_process = [Environment.STAGING, Environment.PRODUCTION]
+            environments_to_process = [Environment.PRODUCTION]
+            if self.enable_cloudfront_staging:
+                environments_to_process.insert(0, Environment.STAGING)
 
             for step, environment in enumerate(environments_to_process, 1):
                 self.logger.info(

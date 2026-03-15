@@ -13,6 +13,11 @@ variable "ci_cd_website_project_name" {
   type        = string
 }
 
+variable "ci_cd_website_stage_names" {
+  description = "CodeBuild stage names configured for the website deploy pipeline"
+  type        = list(string)
+}
+
 variable "region" {
   description = "Region for this project"
   type        = string

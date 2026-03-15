@@ -5,11 +5,15 @@ variable "aws_cloudfront_distributions_arns" {
 
 variable "s3_logging_bucket_id" {
   type        = string
+  default     = null
+  nullable    = true
   description = "ID of the logging bucket"
 }
 
 variable "replication_s3_logging_bucket_id" {
   type        = string
+  default     = null
+  nullable    = true
   description = "ID of the logging bucket for the replication"
 }
 
@@ -63,6 +67,16 @@ variable "cloudwatch_log_group_retention_days" {
 variable "enable_cloudwatch_alarms" {
   description = "Whether to create CloudWatch alarms for the website bucket"
   type        = bool
+}
+
+variable "enable_access_logging" {
+  description = "Whether to enable S3 access logging for the website buckets"
+  type        = bool
+}
+
+variable "noncurrent_version_expiration_days" {
+  description = "Retention time for noncurrent website bucket object versions"
+  type        = number
 }
 
 variable "staging" {

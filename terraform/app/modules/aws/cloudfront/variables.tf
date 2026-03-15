@@ -15,6 +15,8 @@ variable "domain_name" {
 
 variable "logging_bucket_domain_name" {
   type        = string
+  default     = null
+  nullable    = true
   description = "Domain name for logging bucket"
 }
 
@@ -44,6 +46,11 @@ variable "aws_acm_certificate_arn" {
 
 variable "enable_cloudfront_staging" {
   description = "This responsible for enabling Staging for Cloudfront"
+  type        = bool
+}
+
+variable "enable_access_logging" {
+  description = "Whether to enable CloudFront access logging"
   type        = bool
 }
 

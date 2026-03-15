@@ -36,4 +36,4 @@ cloudfront_configuration = {
 }
 
 ttl_validation     = 60
-ttl_route53_record = "300"
+ttl_route53_record = 300

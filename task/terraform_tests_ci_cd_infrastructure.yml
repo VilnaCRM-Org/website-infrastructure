@@ -4,8 +4,12 @@ tasks:
   validate:
     desc: "Validate Terraform code for CI/CD infrastructure stacks"
     cmds:
-      - make terraspace-ci-cd-infra-init
-      - make terraspace-ci-cd-infra-validate
+      - make terraspace-init stack=ci-cd-infrastructure
+      - make terraspace-validate stack=ci-cd-infrastructure
+      - make terraspace-init stack=ci-cd-iam
+      - make terraspace-validate stack=ci-cd-iam
+      - make terraspace-init stack=website-iam
+      - make terraspace-validate stack=website-iam
     silent: false
 
   format:

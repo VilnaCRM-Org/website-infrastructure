@@ -26,6 +26,9 @@ class CloudFrontOriginSwapper:
     def __init__(self) -> None:
         self.logger = logging.getLogger(self.__class__.__name__)
         self.region = self._get_region()
+        self.enable_cloudfront_staging = os.environ.get(
+            "ENABLE_CLOUDFRONT_STAGING", ""
+        ).strip().lower() not in {"false", "0", "no"}
 
     def _get_region(self) -> str:
         """Get CloudFront region from environment variable"""
@@ -124,6 +127,13 @@ class CloudFrontOriginSwapper:
 
         self.logger.info("Filtered to %d distributions", len(filtered_configs))
 
+        if len(filtered_configs) == 1:
+            raise CloudFrontOriginSwapError(
+                "Expected both production and staging distributions for origin swap, "
+                "but found only one non-app distribution. Check the CloudFront "
+                "staging configuration.",
+            )
+
         if len(filtered_configs) != 2:
             raise CloudFrontOriginSwapError(
                 f"Expected exactly 2 distributions for origin swap (excluding app distributions), "
@@ -184,8 +194,11 @@ class CloudFrontOriginSwapper:
         self.logger.info("Starting CloudFront origin swap...")
 
         try:
-            distribution_ids, configs = self._filter_distributions()
+            if not self.enable_cloudfront_staging:
+                self.logger.info("CloudFront staging is disabled, skipping origin swap")
+                return
 
+            distribution_ids, configs = self._filter_distributions()
             updated_configs = self._swap_origins(configs)
 
             self.logger.info("Updating distributions...")

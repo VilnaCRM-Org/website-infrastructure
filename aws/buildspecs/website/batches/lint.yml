@@ -27,7 +27,9 @@ phases:
     finally:
       - echo "📊 Generating test reports"
       - ". ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/run_reports.sh"
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'lint complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/lint.txt"
 
 artifacts:
   files:
-    - "website/lint-logs/**/*"
+    - "codepipeline-artifacts/lint.txt"

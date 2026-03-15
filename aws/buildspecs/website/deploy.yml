@@ -14,11 +14,49 @@ phases:
       - "echo #### Build Project"
       - "make build-out"
       - "echo #### Deploy Project"
-      - "echo #### Turn Of Alarm Actions"
-      - "aws cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME"
-      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/deploy_content.py"
-      - "echo #### Invalidate CloudFront Cache"
-      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/cache_invalidation.py"
-      - "echo #### Turn On Alarm Actions"
-      - "aws cloudwatch enable-alarm-actions --alarm-names $ALARM_NAME"
-      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/continuous_deployment_switch.py"
+      - |
+        alarm_exists() {
+          [ "$(aws cloudwatch describe-alarms --alarm-names "$ALARM_NAME" --query 'MetricAlarms[0].AlarmName' --output text)" != "None" ]
+        }
+
+        alarm_actions_enabled() {
+          [ "$(aws cloudwatch describe-alarms --alarm-names "$ALARM_NAME" --query 'MetricAlarms[0].ActionsEnabled' --output text)" = "True" ]
+        }
+
+        did_disable_alarm=false
+
+        restore_alarm_actions() {
+          echo "#### Turn On Alarm Actions"
+          if [ "$did_disable_alarm" = "true" ] && alarm_exists; then
+            aws cloudwatch enable-alarm-actions --alarm-names "$ALARM_NAME"
+          else
+            echo "Alarm $ALARM_NAME not found or already disabled, skipping enable"
+          fi
+        }
+
+        trap restore_alarm_actions EXIT
+
+        echo "#### Turn Off Alarm Actions"
+        if alarm_exists && alarm_actions_enabled; then
+          did_disable_alarm=true
+          aws cloudwatch disable-alarm-actions --alarm-names "$ALARM_NAME"
+        else
+          echo "Alarm $ALARM_NAME not found or already disabled, skipping disable"
+        fi
+
+        python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/deploy_content.py
+        echo "#### Invalidate CloudFront Cache"
+        python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/cache_invalidation.py
+      - |
+        if [ "${ENABLE_CLOUDFRONT_STAGING:-true}" = "true" ]; then
+          python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/continuous_deployment_switch.py
+        else
+          echo "CloudFront staging disabled, skipping continuous deployment switch"
+        fi
+    finally:
+      - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
+      - "printf 'deploy complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/deploy.txt"
+
+artifacts:
+  files:
+    - "codepipeline-artifacts/deploy.txt"
