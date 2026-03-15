@@ -27,6 +27,7 @@ s3_logs_lifecycle_configuration = {
 cloudwatch_log_group_retention_days = 1
 
 enable_cloudwatch_alarms  = false
+# Keep CloudFront staging enabled so test mirrors the rollout path used in prod.
 enable_cloudfront_staging = true
 
 ci_cd_infra_stage_input = [

@@ -51,4 +51,5 @@ enable_cloudwatch_alarms  = false
 enable_access_logging     = false
 enable_waf                = false
 enable_canary             = false
+# Keep CloudFront staging enabled so test exercises the same promotion flow as prod.
 enable_cloudfront_staging = true
