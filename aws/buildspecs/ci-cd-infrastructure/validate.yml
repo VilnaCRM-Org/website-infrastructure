@@ -36,7 +36,14 @@ phases:
       - "printf 'validate complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/validate.txt"
 
 artifacts:
+  # Temporary bootstrap payload for stale shared-pipeline artifact wiring.
+  # After issue #106 is fully rolled out and the live pipeline is stable on
+  # SourceOutput/PlanOutput, tighten this back to the minimal validate set.
   files:
+    - "Makefile"
+    - "aws/buildspecs/ci-cd-infrastructure/**/*"
+    - "aws/scripts/**/*"
+    - "terraform/**/*"
     - "codepipeline-artifacts/validate.txt"
 
 reports:

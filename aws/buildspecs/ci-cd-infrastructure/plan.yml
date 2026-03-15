@@ -32,6 +32,10 @@ phases:
 
 artifacts:
   files:
+    - "Makefile"
+    - "aws/buildspecs/ci-cd-infrastructure/**/*"
+    - "aws/scripts/**/*"
+    - "terraform/**/*"
     - "codepipeline-artifacts/plans/**/*"
 
 cache:

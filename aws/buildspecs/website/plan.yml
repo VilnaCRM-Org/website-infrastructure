@@ -16,6 +16,12 @@ phases:
       - "bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/stage_plan_artifacts.sh"
 artifacts:
   files:
+    - "Makefile"
+    - "aws/canary/heartbeat/python/canary.py"
+    - "aws/canary/heartbeat/zip/canary.zip"
+    - "aws/buildspecs/website/**/*"
+    - "aws/scripts/**/*"
+    - "terraform/**/*"
     - "codepipeline-artifacts/plans/**/*"
 
 cache:
