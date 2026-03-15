@@ -34,6 +34,8 @@ phases:
 artifacts:
   files:
     - "Makefile"
+    - "aws/canary/heartbeat/python/canary.py"
+    - "aws/canary/heartbeat/zip/canary.zip"
     - "aws/buildspecs/website/**/*"
     - "aws/scripts/**/*"
     - "terraform/**/*"
