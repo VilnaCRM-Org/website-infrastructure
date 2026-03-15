@@ -188,9 +188,7 @@ class CloudFrontOriginSwapper:
 
         try:
             if not self.enable_cloudfront_staging:
-                self.logger.info(
-                    "CloudFront staging is disabled, skipping origin swap"
-                )
+                self.logger.info("CloudFront staging is disabled, skipping origin swap")
                 return
 
             distribution_ids, configs = self._filter_distributions()
