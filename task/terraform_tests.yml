@@ -6,8 +6,6 @@ tasks:
     cmds:
       - make terraspace-init stack=website
       - make terraspace-validate stack=website
-      - make terraspace-init stack=ci-cd-infrastructure
-      - make terraspace-validate stack=ci-cd-infrastructure
     silent: false
 
   format:
