@@ -1,5 +1,6 @@
 resource "aws_cloudfront_distribution" "this" {
   #checkov:skip=CKV2_AWS_47: Log4j protection already included in AWSManagedRulesKnownBadInputsRuleSet
+  #checkov:skip=CKV_AWS_174: Prod/staging continuous deployment still relies on TLSv1.2_2019 until the staged CloudFront rollout is migrated safely.
   provider = aws.us-east-1
   enabled  = true
   origin_group {
@@ -107,6 +108,7 @@ resource "aws_cloudfront_distribution" "this" {
 
 resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
   #checkov:skip=CKV2_AWS_47: Log4j protection already included in AWSManagedRulesKnownBadInputsRuleSet
+  #checkov:skip=CKV_AWS_174: Prod/staging continuous deployment still relies on TLSv1.2_2019 until the staged CloudFront rollout is migrated safely.
   provider = aws.us-east-1
   count    = var.enable_cloudfront_staging ? 1 : 0
   staging  = true
