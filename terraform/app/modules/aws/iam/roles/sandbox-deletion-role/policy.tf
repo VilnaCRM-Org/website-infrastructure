@@ -48,8 +48,22 @@ resource "aws_iam_policy" "codepipeline_policy" {
           "arn:aws:s3:::${var.project_name}-codebuild-logs-${var.environment}",
           "arn:aws:s3:::${var.project_name}-codebuild-logs-${var.environment}/*",
           "arn:aws:s3:::${var.project_name}-access-logs-${var.environment}",
+          "arn:aws:s3:::sandbox-${var.environment}-${var.LEGACY_SANITIZED_BRANCH_NAME}",
+          "arn:aws:s3:::sandbox-${var.environment}-${var.LEGACY_SANITIZED_BRANCH_NAME}/*",
           "arn:aws:s3:::sandbox-${var.environment}-${var.SANITIZED_BRANCH_NAME}*",
           "arn:aws:s3:::sandbox-${var.environment}-${var.SANITIZED_BRANCH_NAME}*/*"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "events:DescribeRule",
+          "events:ListTargetsByRule",
+          "events:RemoveTargets",
+          "events:DeleteRule"
+        ],
+        Resource = [
+          "arn:aws:events:${var.region}:${var.account_id}:rule/sandbox-cleanup-sandbox-${var.environment}-*"
         ]
       },
     ]
@@ -104,8 +118,22 @@ resource "aws_iam_policy" "codebuild_policy" {
           "arn:aws:s3:::${var.project_name}-codepipeline-artifacts-${var.environment}/*",
           "arn:aws:s3:::${var.project_name}-codebuild-logs-${var.environment}/*",
           "arn:aws:s3:::${var.project_name}-access-logs-${var.environment}/*",
+          "arn:aws:s3:::sandbox-${var.environment}-${var.LEGACY_SANITIZED_BRANCH_NAME}",
+          "arn:aws:s3:::sandbox-${var.environment}-${var.LEGACY_SANITIZED_BRANCH_NAME}/*",
           "arn:aws:s3:::sandbox-${var.environment}-${var.SANITIZED_BRANCH_NAME}*",
           "arn:aws:s3:::sandbox-${var.environment}-${var.SANITIZED_BRANCH_NAME}*/*"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "events:DescribeRule",
+          "events:ListTargetsByRule",
+          "events:RemoveTargets",
+          "events:DeleteRule"
+        ],
+        Resource = [
+          "arn:aws:events:${var.region}:${var.account_id}:rule/sandbox-cleanup-sandbox-${var.environment}-*"
         ]
       },
       {
