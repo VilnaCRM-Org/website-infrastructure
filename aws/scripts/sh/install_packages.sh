@@ -9,6 +9,7 @@ echo "#### Installing Required Packages"
 
 # Install required packages using apk
 apk add --no-cache \
+    bash \
     git \
     curl \
     nodejs \
@@ -22,4 +23,4 @@ apk add --no-cache \
         exit 1
     }
 
-echo "✅ All required packages installed successfully" 
+echo "✅ All required packages installed successfully"
