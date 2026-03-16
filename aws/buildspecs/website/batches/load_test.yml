@@ -16,6 +16,7 @@ phases:
       - |
         . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/install_packages.sh
         . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/website_installation.sh
+        bash ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/normalize_load_test_dockerfile.sh
         . ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/sh/setup_docker.sh
 
   build:
