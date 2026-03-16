@@ -1,10 +1,10 @@
 module "iam_roles" {
-  source                  = "../../modules/aws/iam/roles/sandbox-deletion-role"
-  project_name            = var.project_name
-  environment             = var.environment
-  region                  = var.region
-  account_id              = data.aws_caller_identity.current.account_id
-  codestar_connection_arn = module.codestar_connection.arn
+  source                       = "../../modules/aws/iam/roles/sandbox-deletion-role"
+  project_name                 = var.project_name
+  environment                  = var.environment
+  region                       = var.region
+  account_id                   = data.aws_caller_identity.current.account_id
+  codestar_connection_arn      = module.codestar_connection.arn
   SANITIZED_BRANCH_NAME        = local.sanitized_sandbox_branch_name
   LEGACY_SANITIZED_BRANCH_NAME = local.legacy_sandbox_branch_name
 }
