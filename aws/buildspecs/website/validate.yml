@@ -3,6 +3,7 @@ version: 0.2
 env:
   variables:
     TFSEC_VERSION: "v1.28.5"
+    GO_TASK_VERSION: "v3.49.0"
 
 phases:
   install:
@@ -17,7 +18,7 @@ phases:
       - "dnf install -y jq yum-utils"
       - "pip3 install checkov"
       - "curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash"
-      - "go install github.com/go-task/task/v3/cmd/task@latest"
+      - "go install github.com/go-task/task/v3/cmd/task@${GO_TASK_VERSION}"
   build:
     commands:
       - "cd ${CODEBUILD_SRC_DIR}"

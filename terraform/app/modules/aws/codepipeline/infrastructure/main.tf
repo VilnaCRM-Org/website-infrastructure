@@ -4,6 +4,8 @@ resource "aws_codepipeline" "terraform_pipeline" {
   role_arn = var.codepipeline_role_arn
   tags     = var.tags
 
+  pipeline_type = "V2"
+
   artifact_store {
     location = var.s3_bucket_name
     type     = "S3"
