@@ -1,0 +1,59 @@
+name: OIDC trust smoke test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "29 7 * * *"
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  assume-roles:
+    name: assume ${{ matrix.account }} ${{ matrix.role }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - account: test
+            account_id: ${{ vars.TEST_AWS_ACCOUNT_ID }}
+            role: github-actions-role
+          - account: prod
+            account_id: ${{ vars.PROD_AWS_ACCOUNT_ID }}
+            role: github-actions-role
+          - account: prod
+            account_id: ${{ vars.PROD_AWS_ACCOUNT_ID }}
+            role: website-deploy-trigger-role
+          - account: prod
+            account_id: ${{ vars.PROD_AWS_ACCOUNT_ID }}
+            role: sandbox-creation-trigger-role
+          - account: prod
+            account_id: ${{ vars.PROD_AWS_ACCOUNT_ID }}
+            role: sandbox-deletion-trigger-role
+
+    steps:
+      - name: Validate inputs
+        run: |
+          if [ -z "${AWS_REGION}" ]; then
+            echo "::error::AWS_REGION is not set"
+            exit 1
+          fi
+          if [ -z "${{ matrix.account_id }}" ]; then
+            echo "::error::AWS account ID is not set for ${{ matrix.account }}"
+            exit 1
+          fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ matrix.account_id }}:role/${{ matrix.role }}
+          role-session-name: GitHubOidcTrustSmokeTest
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify caller identity
+        run: aws sts get-caller-identity
