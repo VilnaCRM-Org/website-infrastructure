@@ -17,7 +17,7 @@ phases:
       - "dnf update -y"
       - "dnf install -y jq yum-utils"
       - "pip3 install checkov"
-      - "curl -fsSL https://raw.githubusercontent.com/aquasecurity/tfsec/${TFSEC_VERSION}/scripts/install_linux.sh | bash"
+      - "curl -fsSL https://raw.githubusercontent.com/aquasecurity/tfsec/${TFSEC_VERSION}/scripts/install_linux.sh -o /tmp/install_tfsec.sh && bash /tmp/install_tfsec.sh"
       - "go install github.com/go-task/task/v3/cmd/task@${GO_TASK_VERSION}"
   build:
     commands:
