@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    TFSEC_VERSION: "v1.28.5"
+    TFSEC_VERSION: "v1.28.14"
     GO_TASK_VERSION: "v3.49.0"
     TS_TERRAFORM_BIN: "terraform"
     TS_VERSION_CHECK: "0"
@@ -21,7 +21,7 @@ phases:
       - "dnf update -y"
       - "echo ## Install Validation Software"
       - "pip3 install checkov"
-      - "curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash"
+      - "curl -fsSL https://raw.githubusercontent.com/aquasecurity/tfsec/${TFSEC_VERSION}/scripts/install_linux.sh | bash"
       - "go install github.com/go-task/task/v3/cmd/task@${GO_TASK_VERSION}"
   build:
     commands:
