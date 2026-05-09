@@ -38,13 +38,3 @@ variable "codestar_connection_arn" {
   description = "CodeStar connection ARN"
   type        = string
 }
-
-variable "SANITIZED_BRANCH_NAME" {
-  description = "Bucket-safe branch suffix used by sandbox resources"
-  type        = string
-}
-
-variable "LEGACY_SANITIZED_BRANCH_NAME" {
-  description = "Legacy pre-hash sandbox bucket suffix used before branch hashing was introduced"
-  type        = string
-}

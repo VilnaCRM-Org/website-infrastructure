@@ -273,9 +273,6 @@ locals {
   sandbox_branch_hash               = substr(sha1(var.BRANCH_NAME), 0, local.sandbox_branch_hash_length)
   sandbox_branch_slug               = replace(lower(var.BRANCH_NAME), "/[^a-z0-9]+/", "-")
   sandbox_branch_trimmed            = replace(local.sandbox_branch_slug, "/^-+|-+$/", "")
-  legacy_sandbox_branch_raw         = replace(lower(var.BRANCH_NAME), "/[^a-z0-9.-]/", "")
-  legacy_sandbox_branch_trimmed     = replace(local.legacy_sandbox_branch_raw, "/^[.-]+|[.-]+$/", "")
-  legacy_sandbox_branch_name        = local.legacy_sandbox_branch_trimmed != "" ? substr(local.legacy_sandbox_branch_trimmed, 0, min(47, length(local.legacy_sandbox_branch_trimmed))) : "branch"
   sandbox_branch_base               = local.sandbox_branch_trimmed != "" ? local.sandbox_branch_trimmed : "branch"
   sandbox_bucket_suffix_max_length  = max(10, 63 - length(var.sandbox_project_name) - 1)
   sandbox_bucket_hash_suffix_length = local.sandbox_branch_hash_length + 1
