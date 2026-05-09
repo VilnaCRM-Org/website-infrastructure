@@ -24,9 +24,30 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_CI_CD_INFRA_ROLE_TO_ASSUME_TEST }}
+          role-to-assume: arn:aws:iam::${{vars.TEST_AWS_ACCOUNT_ID}}:role/ci-cd-infra-trigger-role
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Trigger CodePipeline
         run: |
-          aws codepipeline start-pipeline-execution --name ci-cd-infra-test-pipeline
+          set +e
+          OUTPUT=$(aws codepipeline start-pipeline-execution \
+            --name ci-cd-infra-test-pipeline \
+            --source-revisions "actionName=Download-Source,revisionType=COMMIT_ID,revisionValue=${GITHUB_SHA}" 2>&1)
+          STATUS=$?
+          set -e
+
+          if [ "${STATUS}" -eq 0 ]; then
+            echo "${OUTPUT}"
+            exit 0
+          fi
+
+          echo "${OUTPUT}"
+
+          if echo "${OUTPUT}" | grep -q "Source revisions can only be used with V2 pipelines"; then
+            echo "::warning::ci-cd-infra-test-pipeline is still V1; starting without a source revision override until the V2 pipeline update is applied."
+            aws codepipeline start-pipeline-execution --name ci-cd-infra-test-pipeline
+            exit 0
+          fi
+
+          echo "::error::Failed to start V2 pipeline with source revision ${GITHUB_SHA}."
+          exit 1

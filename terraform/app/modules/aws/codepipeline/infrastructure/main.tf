@@ -1,8 +1,14 @@
+locals {
+  source_change_detection_enabled = lower(var.detect_changes) == "true"
+}
+
 resource "aws_codepipeline" "terraform_pipeline" {
   #checkov:skip=CKV_AWS_219: S3 bucket has encryption by default
   name     = "${var.project_name}-pipeline"
   role_arn = var.codepipeline_role_arn
   tags     = var.tags
+
+  pipeline_type = "V2"
 
   artifact_store {
     location = var.s3_bucket_name
@@ -26,7 +32,25 @@ resource "aws_codepipeline" "terraform_pipeline" {
         ConnectionArn    = var.codestar_connection_arn
         FullRepositoryId = "${var.source_repo_owner}/${var.source_repo_name}"
         BranchName       = var.source_repo_branch
-        DetectChanges    = var.detect_changes
+        DetectChanges    = local.source_change_detection_enabled ? "false" : var.detect_changes
+      }
+    }
+  }
+
+  dynamic "trigger" {
+    for_each = local.source_change_detection_enabled ? [var.source_repo_branch] : []
+
+    content {
+      provider_type = "CodeStarSourceConnection"
+
+      git_configuration {
+        source_action_name = "Download-Source"
+
+        push {
+          branches {
+            includes = [trigger.value]
+          }
+        }
       }
     }
   }
