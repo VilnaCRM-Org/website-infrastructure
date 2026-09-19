@@ -49,16 +49,6 @@ variable "cloudfront_configuration" {
   description = "CloudFront Configuration"
 }
 
-variable "cloudfront_routing_function_revision" {
-  type        = string
-  description = "Website commit containing the routing function, promoted through the test and production IaC pipelines"
-
-  validation {
-    condition     = can(regex("^[0-9a-f]{40}$", var.cloudfront_routing_function_revision))
-    error_message = "cloudfront_routing_function_revision must be a full 40-character Git commit SHA."
-  }
-}
-
 variable "cloudfront_custom_error_responses" {
   type = list(object({
     error_code            = number
