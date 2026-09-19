@@ -178,18 +178,17 @@ def main():
 
     if policy_config == continuous_deployment_policy:
         print("Website staging policy is already header-only")
-        return
+    else:
+        with open(CONFIG_FILENAME, "w") as config_file:
+            print(f"Writing config to {CONFIG_FILENAME}")
+            json.dump(continuous_deployment_policy, config_file, indent=4)
 
-    with open(CONFIG_FILENAME, "w") as config_file:
-        print(f"Writing config to {CONFIG_FILENAME}")
-        json.dump(continuous_deployment_policy, config_file, indent=4)
-
-    update_continuous_deployment_policy(
-        policy_item_id,
-        policy_etag,
-        CONFIG_FILENAME,
-        required_env["CLOUDFRONT_REGION"],
-    )
+        update_continuous_deployment_policy(
+            policy_item_id,
+            policy_etag,
+            CONFIG_FILENAME,
+            required_env["CLOUDFRONT_REGION"],
+        )
     for distribution in (production, staging):
         subprocess.check_call(
             [

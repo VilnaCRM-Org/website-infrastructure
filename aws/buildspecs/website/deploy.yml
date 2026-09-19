@@ -57,3 +57,4 @@ phases:
 artifacts:
   files:
     - "codepipeline-artifacts/deploy.txt"
+    - "codepipeline-artifacts/deployment.json"

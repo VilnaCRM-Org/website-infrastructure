@@ -194,7 +194,7 @@ class CloudFrontOriginSwapper:
         finally:
             Path(temp_path).unlink(missing_ok=True)
 
-    def execute_origin_swap(self) -> None:
+    def execute_origin_swap(self, deployment: dict | None = None) -> None:
         """Execute the complete origin swap process"""
         self.logger.info("Starting CloudFront origin swap...")
 
@@ -204,11 +204,37 @@ class CloudFrontOriginSwapper:
                 return
 
             distribution_ids, configs = self._filter_distributions()
-            updated_configs = self._swap_origins(configs)
-
-            self.logger.info("Updating distributions...")
-            for dist_id, config in zip(distribution_ids, updated_configs):
-                self._update_distribution(dist_id, config)
+            if deployment is not None:
+                bucket = os.environ["BUCKET_NAME"]
+                target_bucket = deployment["target_bucket"]
+                if target_bucket not in {bucket, f"staging.{bucket}"}:
+                    raise CloudFrontOriginSwapError(
+                        "Deployment target is outside this website"
+                    )
+                desired = deployment["origins"]
+                if set(desired) != set(distribution_ids):
+                    raise CloudFrontOriginSwapError(
+                        "Deployment artifact refers to different distributions"
+                    )
+                if not any(
+                    origin["DomainName"].startswith(f"{target_bucket}.s3.")
+                    for origin in desired[distribution_ids[0]]["Items"]
+                ):
+                    raise CloudFrontOriginSwapError(
+                        "Deployment artifact has an inconsistent target"
+                    )
+                # Reconcile each side independently: a failed second update must
+                # not swap the first side back on retry.
+                for dist_id, config in zip(distribution_ids, configs):
+                    if config["DistributionConfig"]["Origins"] != desired[dist_id]:
+                        config["DistributionConfig"]["Origins"] = desired[dist_id]
+                        self._update_distribution(dist_id, config)
+            else:
+                # Explicit rollback jobs retain the existing swap operation.
+                updated_configs = self._swap_origins(configs)
+                self.logger.info("Updating distributions...")
+                for dist_id, config in zip(distribution_ids, updated_configs):
+                    self._update_distribution(dist_id, config)
 
             for dist_id in distribution_ids:
                 subprocess.check_call(
@@ -253,6 +279,9 @@ def main() -> None:
         default="INFO",
         help="Set logging level",
     )
+    parser.add_argument(
+        "--deployment-manifest", help="Artifact identifying the intended active bucket"
+    )
 
     args = parser.parse_args()
     setup_logging(args.log_level)
@@ -260,7 +289,12 @@ def main() -> None:
 
     try:
         swapper = CloudFrontOriginSwapper()
-        swapper.execute_origin_swap()
+        deployment = None
+        if args.deployment_manifest:
+            deployment = json.loads(
+                Path(args.deployment_manifest).read_text(encoding="utf-8")
+            )
+        swapper.execute_origin_swap(deployment)
     except CloudFrontOriginSwapError:
         logger.exception("CloudFront origin swap error")
         sys.exit(1)

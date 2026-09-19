@@ -2,11 +2,13 @@
 
 import json
 import os
+import copy
 import unittest
 from unittest.mock import patch
 
 import continuous_deployment_switch as policy
 import deploy_content
+import origin_change
 import route_healthcheck
 
 
@@ -89,12 +91,60 @@ class BlueGreenTests(unittest.TestCase):
             },
         ) as fetch, patch.object(
             policy, "update_continuous_deployment_policy"
-        ) as update:
+        ) as update, patch.object(
+            policy.subprocess, "check_call"
+        ) as wait:
             policy.main()
         self.assertIn("get-distribution-config", command.call_args.args[0])
         self.assertIn("website", command.call_args.args[0])
         fetch.assert_called_once_with("website-policy", "us-east-1")
         update.assert_not_called()
+        self.assertEqual(wait.call_count, 2)
+
+    def test_promotion_retries_reconcile_both_sides_without_swapping_back(self):
+        blue = distribution("primary", "vilnacrmtest.com")["Origins"]
+        green = distribution("staging", "staging.vilnacrmtest.com", True)["Origins"]
+        manifest = {
+            "target_bucket": "staging.vilnacrmtest.com",
+            "origins": {"primary": green, "staging": blue},
+        }
+        for current, expected_updates in [
+            ([blue, green], ["primary", "staging"]),
+            ([green, green], ["staging"]),
+            ([green, blue], []),
+        ]:
+            configs = [
+                {
+                    "ETag": "etag",
+                    "DistributionConfig": {"Origins": copy.deepcopy(origins)},
+                }
+                for origins in current
+            ]
+            with patch.dict(
+                os.environ,
+                {
+                    "BUCKET_NAME": "vilnacrmtest.com",
+                    "CLOUDFRONT_REGION": "us-east-1",
+                    "ENABLE_CLOUDFRONT_STAGING": "true",
+                },
+            ):
+                swapper = origin_change.CloudFrontOriginSwapper()
+                with patch.object(
+                    swapper,
+                    "_filter_distributions",
+                    return_value=(["primary", "staging"], configs),
+                ), patch.object(
+                    swapper, "_update_distribution"
+                ) as update, patch.object(
+                    origin_change.subprocess, "check_call"
+                ) as wait:
+                    swapper.execute_origin_swap(manifest)
+                self.assertEqual(
+                    [call.args[0] for call in update.call_args_list], expected_updates
+                )
+                self.assertEqual(wait.call_count, 2)
+                self.assertEqual(configs[0]["DistributionConfig"]["Origins"], green)
+                self.assertEqual(configs[1]["DistributionConfig"]["Origins"], blue)
 
     def test_missing_staging_fails_before_upload(self):
         with patch.dict(

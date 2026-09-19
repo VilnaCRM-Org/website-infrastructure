@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+from pathlib import Path
 
 
 def cloudfront_staging_enabled():
@@ -201,8 +202,31 @@ def main():
     # Determine which environment to deploy to (the non-production one)
     target_bucket = determine_deployment_target(bucket_name)
 
+    manifest = {"target_bucket": target_bucket}
+    if cloudfront_staging_enabled():
+        project = find_project_distributions(bucket_name)
+        primary, staging = project["production"], project["staging"]
+        if not primary or not staging:
+            raise RuntimeError("Both website distributions are required")
+        if not any(
+            origin["DomainName"].startswith(f"{target_bucket}.s3.")
+            for origin in staging["Origins"]["Items"]
+        ):
+            raise RuntimeError(
+                "Inactive bucket does not match the staging distribution"
+            )
+        manifest["origins"] = {
+            primary["Id"]: staging["Origins"],
+            staging["Id"]: primary["Origins"],
+        }
+
     # Deploy to the target environment only
     deploy_files(target_bucket)
+    artifact_dir = Path(os.environ["CODEBUILD_SRC_DIR"]) / "codepipeline-artifacts"
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    (artifact_dir / "deployment.json").write_text(
+        json.dumps(manifest) + "\n", encoding="utf-8"
+    )
     print(f"Blue-green deployment completed. New version deployed to: {target_bucket}")
     print("Use the release pipeline to promote this version to production.")
 

@@ -258,6 +258,7 @@ locals {
   }
 
   codebuild_cloudfront_rollback_project_env_variables = {
+    "ROLLBACK"                  = "true",
     "BUCKET_NAME"               = var.bucket_name,
     "ENABLE_CLOUDFRONT_STAGING" = tostring(var.enable_cloudfront_staging),
     "CLOUDFRONT_REGION"         = var.cloudfront_configuration.region,
