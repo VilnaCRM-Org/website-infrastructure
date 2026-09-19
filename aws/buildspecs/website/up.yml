@@ -21,7 +21,22 @@ phases:
       - "cd terraform"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py"
       - "echo Triggering CI-CD Website Pipeline"
-      - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME || { echo 'Error starting CodePipeline'; exit 1; }"
+      - |
+        # Also tolerate an older in-flight run during the initial V2 migration;
+        # never fall back to deploying scripts from a different source ref.
+        for attempt in $(seq 1 60); do
+          if result=$(aws codepipeline start-pipeline-execution \
+            --name "$CI_CD_WEBSITE_PIPELINE_NAME" \
+            --source-revisions "actionName=Download-Source,revisionType=COMMIT_ID,revisionValue=$CODEBUILD_RESOLVED_SOURCE_VERSION" 2>&1); then
+            echo "$result"
+            break
+          fi
+          echo "$result"
+          if ! echo "$result" | grep -q "Source revisions can only be used with V2 pipelines" || [ "$attempt" -eq 60 ]; then
+            exit 1
+          fi
+          sleep 15
+        done
     finally:
       - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
       - "printf 'up complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/up.txt"

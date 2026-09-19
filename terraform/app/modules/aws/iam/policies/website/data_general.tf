@@ -96,6 +96,7 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "cloudfront:UpdateFunction",
       "cloudfront:DescribeFunction",
       "cloudfront:GetFunction",
+      "cloudfront:ListTagsForResource",
       "cloudfront:CreateFunction",
       "cloudfront:PublishFunction",
       "cloudfront:DeleteFunction"
@@ -124,4 +125,4 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "arn:aws:codepipeline:${var.region}:${local.account_id}:ci-cd-website-${var.environment}-pipeline"
     ]
   }
-} 
+}

@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+from pathlib import Path
 
 
 def cloudfront_staging_enabled():
@@ -110,10 +111,9 @@ def find_project_distributions(bucket_name):
         if not is_our_project:
             for origin in origins:
                 origin_domain = origin.get("DomainName", "")
-                if (
-                    f"{bucket_name}.s3." in origin_domain
-                    or f"staging.{bucket_name}.s3." in origin_domain
-                ):
+                if origin_domain.startswith(
+                    f"{bucket_name}.s3."
+                ) or origin_domain.startswith(f"staging.{bucket_name}.s3."):
                     is_our_project = True
                     print(f"Distribution {dist['Id']} matches origin: {origin_domain}")
                     break
@@ -124,9 +124,17 @@ def find_project_distributions(bucket_name):
 
         # Determine if this is production or staging distribution
         if dist.get("Staging", False):
+            if project_distributions["staging"]:
+                raise ValueError(
+                    f"Multiple staging distributions found for {bucket_name}"
+                )
             project_distributions["staging"] = dist
             print(f"Found staging distribution: {dist['Id']}")
         elif aliases:  # Production has aliases (domain names)
+            if project_distributions["production"]:
+                raise ValueError(
+                    f"Multiple production distributions found for {bucket_name}"
+                )
             project_distributions["production"] = dist
             print(f"Found production distribution: {dist['Id']}")
 
@@ -161,9 +169,7 @@ def determine_deployment_target(bucket_name):
         raise ValueError(f"No production distribution found for {bucket_name}")
 
     if not staging_distribution:
-        print(f"WARNING: Could not find staging distribution for {bucket_name}")
-        print("Defaulting to staging bucket")
-        return f"staging.{bucket_name}"
+        raise ValueError(f"No staging distribution found for {bucket_name}")
 
     # Check which bucket production is currently pointing to
     origins = production_distribution["Origins"]["Items"]
@@ -196,8 +202,31 @@ def main():
     # Determine which environment to deploy to (the non-production one)
     target_bucket = determine_deployment_target(bucket_name)
 
+    manifest = {"target_bucket": target_bucket}
+    if cloudfront_staging_enabled():
+        project = find_project_distributions(bucket_name)
+        primary, staging = project["production"], project["staging"]
+        if not primary or not staging:
+            raise RuntimeError("Both website distributions are required")
+        if not any(
+            origin["DomainName"].startswith(f"{target_bucket}.s3.")
+            for origin in staging["Origins"]["Items"]
+        ):
+            raise RuntimeError(
+                "Inactive bucket does not match the staging distribution"
+            )
+        manifest["origins"] = {
+            primary["Id"]: staging["Origins"],
+            staging["Id"]: primary["Origins"],
+        }
+
     # Deploy to the target environment only
     deploy_files(target_bucket)
+    artifact_dir = Path(os.environ["CODEBUILD_SRC_DIR"]) / "codepipeline-artifacts"
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    (artifact_dir / "deployment.json").write_text(
+        json.dumps(manifest) + "\n", encoding="utf-8"
+    )
     print(f"Blue-green deployment completed. New version deployed to: {target_bucket}")
     print("Use the release pipeline to promote this version to production.")
 

@@ -22,6 +22,7 @@ phases:
   build:
     commands:
       - "cd ${CODEBUILD_SRC_DIR}"
+      - "python3 -m unittest discover -s aws/scripts/py -p 'test_*.py'"
       - "echo ## VALIDATION : Starting ..."
       - "mkdir -p ${CODEBUILD_SRC_DIR}/reports"
       - "cp ${CODEBUILD_SRC_DIR}/task/terraform_tests.yml ${CODEBUILD_SRC_DIR}/Taskfile.yml"

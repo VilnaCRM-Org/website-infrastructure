@@ -104,6 +104,12 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   wait_for_deployment = true
+
+  # The release pipeline owns which bucket is active after a blue/green swap.
+  # Reapplying routing or other IaC must not roll that release back.
+  lifecycle {
+    ignore_changes = [origin, continuous_deployment_policy_id]
+  }
 }
 
 resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
@@ -210,5 +216,9 @@ resource "aws_cloudfront_distribution" "staging_cloudfront_distribution" {
   }
 
   wait_for_deployment = true
+
+  lifecycle {
+    ignore_changes = [origin]
+  }
 
 }
