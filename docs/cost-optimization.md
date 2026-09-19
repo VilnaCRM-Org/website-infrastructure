@@ -16,7 +16,7 @@ were $32.03 for test and $89.35 for prod. No AWS configuration was applied.
   (default false). Both distributions returned NoSuchMonitoringSubscription;
   OriginLatency requires additional metrics. Keep CloudFront 5xx, WAF and
   availability-canary alarms.
-- Exclude changes confined to root README.md, diagrams/** and docs/** from
+- Exclude changes confined to root README.md, diagrams/**and docs/** from
   automatic infrastructure runs: CodePipeline V2 filters main-branch pushes and
   the GitHub workflow filters non-main pushes. Mixed code/docs commits and manual
   executions still run. This also avoids unnecessary downstream application
