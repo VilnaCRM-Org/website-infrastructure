@@ -20,7 +20,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_500_errors" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cloudfront_origin_latency" {
-  count               = var.enable_cloudwatch_alarms ? 1 : 0
+  count               = var.enable_cloudwatch_alarms && var.enable_origin_latency_alarms ? 1 : 0
   provider            = aws.us-east-1
   alarm_name          = "${var.project_name}-cloudfront-origin-latency-alarm"
   comparison_operator = "GreaterThanThreshold"
@@ -193,7 +193,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_staging_500_errors" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cloudfront_staging_origin_latency" {
-  count               = var.enable_cloudwatch_alarms && var.enable_cloudfront_staging ? 1 : 0
+  count               = var.enable_cloudwatch_alarms && var.enable_origin_latency_alarms && var.enable_cloudfront_staging ? 1 : 0
   provider            = aws.us-east-1
   alarm_name          = "${var.project_name}-cloudfront-staging-origin-latency-alarm"
   comparison_operator = "GreaterThanThreshold"

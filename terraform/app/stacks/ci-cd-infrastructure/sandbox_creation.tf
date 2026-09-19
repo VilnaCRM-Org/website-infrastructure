@@ -6,6 +6,8 @@ locals {
 module "sandbox_s3_artifacts_bucket" {
   source = "../../modules/aws/s3/codepipeline"
 
+  logging_bucket_id = module.infrastructure_logging_bucket.id
+
   project_name = local.project_name
   region       = local.region
   environment  = var.environment
