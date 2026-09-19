@@ -53,7 +53,11 @@ def main():
     if args.staging:
         header = os.environ.get("CLOUDFRONT_HEADER", "staging")
         headers[f"aws-cf-cd-{header}"] = header
-    for path, locale, route in [("/", "uk", "/"), ("/en", "en", "/en"), ("/en/", "en", "/en")]:
+    for path, locale, route in [
+        ("/", "uk", "/"),
+        ("/en", "en", "/en"),
+        ("/en/", "en", "/en"),
+    ]:
         check(args.url.rstrip("/") + path, headers, locale, route)
 
 

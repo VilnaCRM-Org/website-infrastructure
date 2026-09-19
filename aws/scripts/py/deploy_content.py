@@ -110,10 +110,9 @@ def find_project_distributions(bucket_name):
         if not is_our_project:
             for origin in origins:
                 origin_domain = origin.get("DomainName", "")
-                if (
-                    origin_domain.startswith(f"{bucket_name}.s3.")
-                    or origin_domain.startswith(f"staging.{bucket_name}.s3.")
-                ):
+                if origin_domain.startswith(
+                    f"{bucket_name}.s3."
+                ) or origin_domain.startswith(f"staging.{bucket_name}.s3."):
                     is_our_project = True
                     print(f"Distribution {dist['Id']} matches origin: {origin_domain}")
                     break
@@ -125,12 +124,16 @@ def find_project_distributions(bucket_name):
         # Determine if this is production or staging distribution
         if dist.get("Staging", False):
             if project_distributions["staging"]:
-                raise ValueError(f"Multiple staging distributions found for {bucket_name}")
+                raise ValueError(
+                    f"Multiple staging distributions found for {bucket_name}"
+                )
             project_distributions["staging"] = dist
             print(f"Found staging distribution: {dist['Id']}")
         elif aliases:  # Production has aliases (domain names)
             if project_distributions["production"]:
-                raise ValueError(f"Multiple production distributions found for {bucket_name}")
+                raise ValueError(
+                    f"Multiple production distributions found for {bucket_name}"
+                )
             project_distributions["production"] = dist
             print(f"Found production distribution: {dist['Id']}")
 

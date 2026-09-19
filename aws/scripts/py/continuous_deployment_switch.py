@@ -131,7 +131,24 @@ def main():
     staging = distributions["staging"]
     if not production or not staging:
         raise RuntimeError("Both website distributions are required")
-    policy_item_id = production.get("ContinuousDeploymentPolicyId")
+    # ListDistributions omits the policy ID; read the selected primary config.
+    production_config = json.loads(
+        subprocess.check_output(
+            [
+                "aws",
+                "cloudfront",
+                "get-distribution-config",
+                "--id",
+                production["Id"],
+                "--region",
+                required_env["CLOUDFRONT_REGION"],
+                "--no-cli-pager",
+            ]
+        )
+    )
+    policy_item_id = production_config["DistributionConfig"].get(
+        "ContinuousDeploymentPolicyId"
+    )
     if not policy_item_id:
         raise RuntimeError("Website production distribution has no deployment policy")
     print(f"Policy item id: {policy_item_id}")
@@ -174,11 +191,18 @@ def main():
         required_env["CLOUDFRONT_REGION"],
     )
     for distribution in (production, staging):
-        subprocess.check_call([
-            "aws", "cloudfront", "wait", "distribution-deployed",
-            "--id", distribution["Id"],
-            "--region", required_env["CLOUDFRONT_REGION"],
-        ])
+        subprocess.check_call(
+            [
+                "aws",
+                "cloudfront",
+                "wait",
+                "distribution-deployed",
+                "--id",
+                distribution["Id"],
+                "--region",
+                required_env["CLOUDFRONT_REGION"],
+            ]
+        )
     print("Main function completed")
 
 

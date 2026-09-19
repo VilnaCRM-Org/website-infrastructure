@@ -211,10 +211,18 @@ class CloudFrontOriginSwapper:
                 self._update_distribution(dist_id, config)
 
             for dist_id in distribution_ids:
-                subprocess.check_call([
-                    "aws", "cloudfront", "wait", "distribution-deployed",
-                    "--id", dist_id, "--region", self.region,
-                ])
+                subprocess.check_call(
+                    [
+                        "aws",
+                        "cloudfront",
+                        "wait",
+                        "distribution-deployed",
+                        "--id",
+                        dist_id,
+                        "--region",
+                        self.region,
+                    ]
+                )
 
             self.logger.info("Origin swap completed successfully")
 
