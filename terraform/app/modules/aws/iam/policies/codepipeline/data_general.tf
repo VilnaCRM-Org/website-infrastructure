@@ -3,6 +3,14 @@ data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
 data "aws_iam_policy_document" "general_policy_doc" {
+  # Keep orchestration separate from the near-limit CodePipeline/CodeBuild policy.
+  statement {
+    sid       = "StartWebsiteInfrastructureAfterApply"
+    effect    = "Allow"
+    actions   = ["codepipeline:StartPipelineExecution"]
+    resources = ["arn:aws:codepipeline:${var.region}:${local.account_id}:${var.website_project_name}-pipeline"]
+  }
+
   statement {
     sid    = "GeneralPolicy"
     effect = "Allow"
@@ -178,4 +186,4 @@ data "aws_iam_policy_document" "general_policy_doc" {
       "arn:aws:events:${var.region}:${local.account_id}:rule/sandbox-cleanup-rule"
     ]
   }
-} 
+}
