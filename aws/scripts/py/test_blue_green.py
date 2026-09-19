@@ -1,5 +1,6 @@
 """Regression checks for website selection and localized release gates."""
 
+import json
 import os
 import unittest
 from unittest.mock import patch
@@ -46,6 +47,54 @@ class BlueGreenTests(unittest.TestCase):
         )
         self.assertEqual(first, retry)
         self.assertEqual(retry["TrafficConfig"]["Type"], "SingleHeader")
+
+    def test_policy_id_is_read_from_primary_config(self):
+        primary = distribution("website", "vilnacrmtest.com")
+        staging = distribution("website-staging", "staging.vilnacrmtest.com", True)
+        staging["DomainName"] = "staging.cloudfront.net"
+        config = policy.create_config("staging.cloudfront.net", "staging", "header")
+        with patch.dict(
+            os.environ,
+            {
+                "BUCKET_NAME": "vilnacrmtest.com",
+                "CLOUDFRONT_REGION": "us-east-1",
+                "CLOUDFRONT_HEADER": "staging",
+                "CLOUDFRONT_WEIGHT": "0.15",
+            },
+        ), patch.object(
+            policy,
+            "find_project_distributions",
+            return_value={
+                "production": primary,
+                "staging": staging,
+            },
+        ), patch.object(
+            policy.subprocess,
+            "check_output",
+            return_value=json.dumps(
+                {
+                    "DistributionConfig": {
+                        "ContinuousDeploymentPolicyId": "website-policy"
+                    },
+                }
+            ).encode(),
+        ) as command, patch.object(
+            policy,
+            "fetch_continuous_deployment_policy",
+            return_value={
+                "ETag": "etag",
+                "ContinuousDeploymentPolicy": {
+                    "ContinuousDeploymentPolicyConfig": config
+                },
+            },
+        ) as fetch, patch.object(
+            policy, "update_continuous_deployment_policy"
+        ) as update:
+            policy.main()
+        self.assertIn("get-distribution-config", command.call_args.args[0])
+        self.assertIn("website", command.call_args.args[0])
+        fetch.assert_called_once_with("website-policy", "us-east-1")
+        update.assert_not_called()
 
     def test_missing_staging_fails_before_upload(self):
         with patch.dict(
