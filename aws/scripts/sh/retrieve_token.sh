@@ -28,4 +28,5 @@ if ! [[ $GITHUB_TOKEN =~ ^gh[ps]_[a-zA-Z0-9]{36,40}$ ]]; then
   echo "Error: Invalid GitHub token format."
   exit 1
 fi
+export GITHUB_TOKEN
 echo "GitHub token retrieved successfully."
