@@ -1,6 +1,10 @@
 region        = "eu-central-1"
 alias_zone_id = "Z2FDTNDATAQYW2"
 
+# Next.js exports /en as /en.html. Pin the matching routing function so both
+# CloudFront distributions receive the same reviewed code in test and prod.
+cloudfront_routing_function_revision = "c8f0a755b101bab45b49232f91641362cd0d1cbc"
+
 s3_logs_lifecycle_configuration = {
   standard_ia_transition_days  = 30
   glacier_transition_days      = 60

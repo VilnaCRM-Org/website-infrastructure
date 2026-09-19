@@ -2,6 +2,8 @@ import json
 import os
 import subprocess
 
+from deploy_content import find_project_distributions
+
 MAX_ITEMS = "1"
 CONFIG_FILENAME = "continuous_deployment_policy.json"
 ENABLE_CLOUDFRONT_STAGING = os.environ.get(
@@ -41,9 +43,8 @@ def type_handler(config_type, staging_dns_name, cloudfront_header, cloudfront_we
         f"Handling type with config_type: {config_type}, "
         f"staging_dns_name: {staging_dns_name}"
     )
-    if config_type != "SingleHeader":
-        return create_config(staging_dns_name, cloudfront_header, config_type="header")
-    return create_config(staging_dns_name, cloudfront_weight, config_type="weight")
+    # Retrying a deployment must not send public traffic to the inactive bucket.
+    return create_config(staging_dns_name, cloudfront_header, config_type="header")
 
 
 def fetch_continuous_deployment_policies(cloudfront_region):
@@ -125,15 +126,14 @@ def main():
             "Missing required environment variables: " + ", ".join(missing_env)
         )
 
-    policies_list = fetch_continuous_deployment_policies(
-        required_env["CLOUDFRONT_REGION"]
-    )
-    items = policies_list["ContinuousDeploymentPolicyList"].get("Items", [])
-    if not items:
-        print("No continuous deployment policy found, skipping switch")
-        return
-    policy_item = items[0]["ContinuousDeploymentPolicy"]
-    policy_item_id = policy_item["Id"]
+    distributions = find_project_distributions(os.environ["BUCKET_NAME"])
+    production = distributions["production"]
+    staging = distributions["staging"]
+    if not production or not staging:
+        raise RuntimeError("Both website distributions are required")
+    policy_item_id = production.get("ContinuousDeploymentPolicyId")
+    if not policy_item_id:
+        raise RuntimeError("Website production distribution has no deployment policy")
     print(f"Policy item id: {policy_item_id}")
 
     policy = fetch_continuous_deployment_policy(
@@ -144,6 +144,8 @@ def main():
         "ContinuousDeploymentPolicyConfig"
     ]
     staging_dns_name = policy_config["StagingDistributionDnsNames"]["Items"][0]
+    if staging_dns_name != staging["DomainName"]:
+        raise RuntimeError("Deployment policy points to another staging distribution")
     config_type = policy_config["TrafficConfig"]["Type"]
     print(
         f"Policy ETag: {policy_etag}, Staging DNS Name: {staging_dns_name}, "
@@ -157,6 +159,10 @@ def main():
         required_env["CLOUDFRONT_WEIGHT"],
     )
 
+    if policy_config == continuous_deployment_policy:
+        print("Website staging policy is already header-only")
+        return
+
     with open(CONFIG_FILENAME, "w") as config_file:
         print(f"Writing config to {CONFIG_FILENAME}")
         json.dump(continuous_deployment_policy, config_file, indent=4)
@@ -167,6 +173,12 @@ def main():
         CONFIG_FILENAME,
         required_env["CLOUDFRONT_REGION"],
     )
+    for distribution in (production, staging):
+        subprocess.check_call([
+            "aws", "cloudfront", "wait", "distribution-deployed",
+            "--id", distribution["Id"],
+            "--region", required_env["CLOUDFRONT_REGION"],
+        ])
     print("Main function completed")
 
 

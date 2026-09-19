@@ -15,6 +15,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from deploy_content import find_project_distributions
+
 
 class CloudFrontOriginSwapError(Exception):
     """CloudFront origin swap operation error"""
@@ -116,7 +118,10 @@ class CloudFrontOriginSwapper:
         """Fetch and filter distributions, excluding app distributions"""
         self.logger.info("Filtering distributions...")
 
-        distribution_ids = self._fetch_distribution_ids()
+        project = find_project_distributions(os.environ["BUCKET_NAME"])
+        if not project["production"] or not project["staging"]:
+            raise CloudFrontOriginSwapError("Both website distributions are required")
+        distribution_ids = [project["production"]["Id"], project["staging"]["Id"]]
         filtered_configs, filtered_ids = [], []
 
         for dist_id in distribution_ids:
@@ -204,6 +209,12 @@ class CloudFrontOriginSwapper:
             self.logger.info("Updating distributions...")
             for dist_id, config in zip(distribution_ids, updated_configs):
                 self._update_distribution(dist_id, config)
+
+            for dist_id in distribution_ids:
+                subprocess.check_call([
+                    "aws", "cloudfront", "wait", "distribution-deployed",
+                    "--id", dist_id, "--region", self.region,
+                ])
 
             self.logger.info("Origin swap completed successfully")
 

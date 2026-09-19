@@ -21,7 +21,7 @@ phases:
       - "cd terraform"
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py"
       - "echo Triggering CI-CD Website Pipeline"
-      - "aws codepipeline start-pipeline-execution --name $CI_CD_WEBSITE_PIPELINE_NAME || { echo 'Error starting CodePipeline'; exit 1; }"
+      - 'aws codepipeline start-pipeline-execution --name "$CI_CD_WEBSITE_PIPELINE_NAME" --source-revisions "actionName=Download-Source,revisionType=COMMIT_ID,revisionValue=$CODEBUILD_RESOLVED_SOURCE_VERSION"'
     finally:
       - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
       - "printf 'up complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/up.txt"

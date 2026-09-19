@@ -85,17 +85,8 @@ class CloudFrontCacheInvalidator:
         self, distribution: dict[str, Any], origin_domains: list[str]
     ) -> bool:
         """Check if this is a staging distribution"""
-        # Check staging flag
-        if distribution.get("IsStagingDistribution", False):
-            return True
-
-        # Check for staging in origin domains (but not app domains)
-        staging_origins = [
-            domain
-            for domain in origin_domains
-            if "staging" in domain.lower() and "app." not in domain
-        ]
-        return len(staging_origins) > 0
+        # Origin bucket names swap on promotion; the distribution role does not.
+        return distribution.get("Staging", False)
 
     def _classify_distribution(
         self, distribution: dict[str, Any]
@@ -112,6 +103,14 @@ class CloudFrontCacheInvalidator:
             origin.get("DomainName", "")
             for origin in distribution.get("Origins", {}).get("Items", [])
         ]
+
+        bucket = os.environ["BUCKET_NAME"]
+        if not any(
+            domain.startswith(f"{bucket}.s3.")
+            or domain.startswith(f"staging.{bucket}.s3.")
+            for domain in origin_domains
+        ):
+            return None
 
         # Skip app distributions
         if self._is_app_distribution(origin_domains):
