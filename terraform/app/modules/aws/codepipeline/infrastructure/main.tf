@@ -53,7 +53,7 @@ resource "aws_codepipeline" "terraform_pipeline" {
 
           # Any other changed path still triggers, including mixed code/docs pushes.
           file_paths {
-            excludes = ["README.md", "diagrams/**"]
+            excludes = ["README.md", "diagrams/**", "docs/**"]
           }
         }
       }
