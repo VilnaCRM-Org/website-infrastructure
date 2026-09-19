@@ -22,8 +22,8 @@ phases:
       - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/distribution_deploy.py"
       - "echo Triggering CI-CD Website Pipeline"
       - |
-        # CI/CD IaC and website IaC both run on merge. Allow the V2 migration to
-        # finish, but never fall back to deploying scripts from a different ref.
+        # Also tolerate an older in-flight run during the initial V2 migration;
+        # never fall back to deploying scripts from a different source ref.
         for attempt in $(seq 1 60); do
           if result=$(aws codepipeline start-pipeline-execution \
             --name "$CI_CD_WEBSITE_PIPELINE_NAME" \

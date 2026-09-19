@@ -14,18 +14,16 @@ if [ -z "$SECRET_ID" ]; then
 fi
 # Retrieve secret value once and parse both token and expiry
 SECRET_VALUE=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ID" --query 'SecretString' --output text)
-GITHUB_TOKEN=$(echo "$SECRET_VALUE" | jq -r '.token')
-if [ -z "$GITHUB_TOKEN" ]; then
-  echo "Error: Failed to retrieve GitHub token."
+# Tokens are opaque credentials; validate the JSON type before shell extraction
+# so nulls, whitespace and control characters cannot become usable credentials.
+if ! GITHUB_TOKEN=$(printf '%s' "$SECRET_VALUE" | jq -er \
+  '.token | strings | select(length > 0 and (test("[[:space:][:cntrl:]]") | not))' 2>/dev/null); then
+  echo "Error: GitHub token must be a nonempty string without whitespace or control characters."
   exit 1
 fi
 EXPIRY=$(echo "$SECRET_VALUE" | jq -r '.expires_at // empty')
 if [[ -n "$EXPIRY" ]] && [[ "$(date -u +%s)" -gt "$(date -u -d "$EXPIRY" +%s)" ]]; then
   echo "Error: GitHub token has expired."
-  exit 1
-fi
-if ! [[ $GITHUB_TOKEN =~ ^gh[ps]_[a-zA-Z0-9]{36,40}$ ]]; then
-  echo "Error: Invalid GitHub token format."
   exit 1
 fi
 export GITHUB_TOKEN

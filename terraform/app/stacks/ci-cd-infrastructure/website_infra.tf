@@ -65,7 +65,8 @@ module "website_infra_codepipeline" {
   source_repo_owner  = var.source_repo_owner
   source_repo_name   = var.source_repo_name
   source_repo_branch = var.source_repo_branch
-  detect_changes     = "true"
+  # CI/CD apply starts this pipeline after permissions and projects are ready.
+  detect_changes     = "false"
 
   stages = var.website_infra_stage_input
 
