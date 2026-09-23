@@ -13,6 +13,7 @@ module "s3_bucket" {
   lambda_configuration                = var.lambda_configuration
   cloudwatch_log_group_retention_days = var.cloudwatch_log_group_retention_days
   enable_cloudwatch_alarms            = var.enable_cloudwatch_alarms
+  enable_anomaly_detection_alarms     = var.enable_storage_anomaly_alarms
   enable_access_logging               = var.enable_access_logging
   noncurrent_version_expiration_days  = var.s3_noncurrent_version_expiration_days
 
@@ -42,6 +43,7 @@ module "staging_s3_bucket" {
   lambda_configuration                = var.lambda_configuration
   cloudwatch_log_group_retention_days = var.cloudwatch_log_group_retention_days
   enable_cloudwatch_alarms            = var.enable_cloudwatch_alarms
+  enable_anomaly_detection_alarms     = var.enable_storage_anomaly_alarms
   enable_access_logging               = var.enable_access_logging
   noncurrent_version_expiration_days  = var.s3_noncurrent_version_expiration_days
 

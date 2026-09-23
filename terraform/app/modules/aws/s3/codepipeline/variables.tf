@@ -24,6 +24,11 @@ variable "tags" {
   type        = map(any)
 }
 
+variable "logging_bucket_id" {
+  description = "Destination bucket for artifact access logs; its delivery policy must be ready before use"
+  type        = string
+}
+
 variable "codepipeline_role_arn" {
   description = "ARN of the codepipeline IAM role"
   type        = string

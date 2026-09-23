@@ -34,6 +34,24 @@ resource "aws_s3_bucket_lifecycle_configuration" "logging_bucket_lifecycle_confi
 
   bucket = aws_s3_bucket.logging_bucket.id
 
+  # The shorter expiry wins where this overlaps the existing bucket-wide rule.
+  rule {
+    id     = "artifact-access-logs-deletion"
+    status = "Enabled"
+
+    filter {
+      prefix = "s3-access-logs/"
+    }
+
+    expiration {
+      days = var.artifact_access_log_retention_days
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = var.artifact_access_log_retention_days
+    }
+  }
+
   rule {
     id = "files-deletion"
 

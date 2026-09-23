@@ -17,10 +17,11 @@ module "cloudfront" {
   cloudfront_custom_error_responses = var.cloudfront_custom_error_responses
   cloudfront_routing_function_url   = "https://raw.githubusercontent.com/VilnaCRM-Org/website/main/scripts/cloudfront_routing.js"
 
-  enable_access_logging     = var.enable_access_logging
-  enable_cloudfront_staging = var.enable_cloudfront_staging
-  enable_cloudwatch_alarms  = var.enable_cloudwatch_alarms
-  enable_waf                = var.enable_waf
+  enable_access_logging        = var.enable_access_logging
+  enable_cloudfront_staging    = var.enable_cloudfront_staging
+  enable_cloudwatch_alarms     = var.enable_cloudwatch_alarms
+  enable_waf                   = var.enable_waf
+  enable_origin_latency_alarms = var.enable_origin_latency_alarms
 
   tags = var.tags
 }

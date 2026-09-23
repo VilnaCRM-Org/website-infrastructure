@@ -59,6 +59,12 @@ variable "enable_cloudwatch_alarms" {
   type        = bool
 }
 
+variable "enable_origin_latency_alarms" {
+  description = "Enable only after provisioning CloudFront additional metrics; OriginLatency is not a default metric"
+  type        = bool
+  default     = false
+}
+
 variable "enable_waf" {
   description = "Whether to create and attach the WAF web ACL"
   type        = bool

@@ -28,6 +28,11 @@ output "waf_web_acl_name" {
   description = "Name of the WAF2 Web ACL Of Distribution"
 }
 
+output "waf_web_acl_arn" {
+  value       = var.enable_waf ? aws_wafv2_web_acl.waf_web_acl[0].arn : null
+  description = "Canonical CloudFront WAF ACL ARN; website infrastructure owns its rules and logging"
+}
+
 output "waf_log_group_name" {
   value       = var.enable_waf ? aws_cloudwatch_log_group.waf_web_acl_log_group[0].name : null
   description = "Name of the WAF2 Log Group"

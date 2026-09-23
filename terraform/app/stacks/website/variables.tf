@@ -104,6 +104,18 @@ variable "enable_cloudwatch_alarms" {
   type        = bool
 }
 
+variable "enable_origin_latency_alarms" {
+  description = "Opt in only after CloudFront additional metrics are provisioned"
+  type        = bool
+  default     = false
+}
+
+variable "enable_storage_anomaly_alarms" {
+  description = "Opt in to S3 and notification-Lambda anomaly alarms after verifying metric dimensions, request metrics and sufficient traffic"
+  type        = bool
+  default     = false
+}
+
 variable "enable_waf" {
   description = "Whether to create and attach the website WAF web ACL"
   type        = bool

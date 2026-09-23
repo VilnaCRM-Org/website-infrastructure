@@ -1,4 +1,6 @@
 resource "aws_wafv2_web_acl" "waf_web_acl" {
+  # Canonical ACL for optional CRM sharing. Consumers must migrate away before
+  # this owner is removed; separate Terraform states cannot enforce that order.
   count    = var.enable_waf ? 1 : 0
   provider = aws.us-east-1
   name     = "wafv2-web-acl"
@@ -113,6 +115,10 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
   }
 
   tags = var.tags
+
+  lifecycle {
+    prevent_destroy = true
+  }
 
 }
 

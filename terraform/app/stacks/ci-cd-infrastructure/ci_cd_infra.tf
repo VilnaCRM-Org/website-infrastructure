@@ -1,6 +1,8 @@
 module "ci_cd_infra_s3_artifacts_bucket" {
   source = "../../modules/aws/s3/codepipeline"
 
+  logging_bucket_id = module.infrastructure_logging_bucket.id
+
   project_name = var.ci_cd_infra_project_name
 
   region      = var.region

@@ -42,8 +42,15 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "codepipeline_buck
 
 resource "aws_s3_bucket_logging" "codepipeline_bucket_logging" {
   bucket        = aws_s3_bucket.codepipeline_bucket.id
-  target_bucket = aws_s3_bucket.codepipeline_bucket.id
-  target_prefix = "log/"
+  target_bucket = var.logging_bucket_id
+  target_prefix = "s3-access-logs/${aws_s3_bucket.codepipeline_bucket.id}/"
+
+  lifecycle {
+    precondition {
+      condition     = var.logging_bucket_id != aws_s3_bucket.codepipeline_bucket.id
+      error_message = "Artifact access logs must be delivered to a separate logging bucket."
+    }
+  }
 }
 
 

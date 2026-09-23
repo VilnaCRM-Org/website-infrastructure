@@ -64,6 +64,12 @@ variable "cloudwatch_log_group_retention_days" {
   type        = number
 }
 
+variable "enable_anomaly_detection_alarms" {
+  description = "Whether to create storage and notification-Lambda anomaly alarms; requires populated metrics and a useful baseline"
+  type        = bool
+  default     = false
+}
+
 variable "enable_cloudwatch_alarms" {
   description = "Whether to create CloudWatch alarms for the website bucket"
   type        = bool
