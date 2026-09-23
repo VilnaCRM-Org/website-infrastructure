@@ -39,7 +39,8 @@ class PipelineOrchestrationTests(unittest.TestCase):
         # Exercise the actual saved-plan apply commands and final handoff block,
         # in their original order. Installation and credential loading are excluded.
         handoff = "\n".join(
-            command for command in commands
+            command
+            for command in commands
             if "make terraspace-up-plan" in command
             or "make terraspace-output-file" in command
         )
@@ -64,12 +65,18 @@ class PipelineOrchestrationTests(unittest.TestCase):
     def test_starts_once_after_all_applies_with_the_exact_revision(self):
         result = self.run_handoff()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout.splitlines(), [
-            *(f"MAKE terraspace-up-plan stack={stack} plan={stack}.plan" for stack in STACKS),
-            "MAKE terraspace-output-file stack=ci-cd-infrastructure out=.ci-cd-infrastructure.env",
-            "AWS codepipeline start-pipeline-execution --name website-infra-test-pipeline "
-            f"--source-revisions actionName=Download-Source,revisionType=COMMIT_ID,revisionValue={REVISION}",
-        ])
+        self.assertEqual(
+            result.stdout.splitlines(),
+            [
+                *(
+                    f"MAKE terraspace-up-plan stack={stack} plan={stack}.plan"
+                    for stack in STACKS
+                ),
+                "MAKE terraspace-output-file stack=ci-cd-infrastructure out=.ci-cd-infrastructure.env",
+                "AWS codepipeline start-pipeline-execution --name website-infra-test-pipeline "
+                f"--source-revisions actionName=Download-Source,revisionType=COMMIT_ID,revisionValue={REVISION}",
+            ],
+        )
 
     def test_each_failed_apply_prevents_the_handoff(self):
         for stack in STACKS:

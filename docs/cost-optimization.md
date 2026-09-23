@@ -16,7 +16,7 @@ were $32.03 for test and $89.35 for prod. No AWS configuration was applied.
   (default false). Both distributions returned NoSuchMonitoringSubscription;
   OriginLatency requires additional metrics. Keep CloudFront 5xx, WAF and
   availability-canary alarms.
-- Exclude changes confined to root README.md, diagrams/** and docs/** from
+- Exclude changes confined to root README.md, diagrams/**and docs/** from
   automatic main-branch CI/CD infrastructure CodePipeline V2 runs. The GitHub
   TEST trigger remains unchanged: every non-main push, including docs-only
   changes, still starts the test pipeline. Mixed code/docs main-branch pushes
