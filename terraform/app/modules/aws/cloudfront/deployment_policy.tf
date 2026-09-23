@@ -8,9 +8,10 @@ resource "aws_cloudfront_continuous_deployment_policy" "continuous_deployment_po
   }
 
   traffic_config {
-    type = "SingleWeight"
-    single_weight_config {
-      weight = "0.15"
+    type = "SingleHeader"
+    single_header_config {
+      header = "aws-cf-cd-staging"
+      value  = "staging"
     }
   }
 }

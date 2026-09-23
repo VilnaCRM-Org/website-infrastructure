@@ -246,9 +246,11 @@ locals {
     release = merge(local.ubuntu_based_build,
       { build_batch_config = null },
       { env_variables = {
-        "PYTHON_VERSION"    = var.runtime_versions.python,
-        "SCRIPT_DIR"        = var.script_dir,
-        "CLOUDFRONT_REGION" = var.cloudfront_configuration.region,
+        "BUCKET_NAME"               = var.bucket_name,
+        "ENABLE_CLOUDFRONT_STAGING" = tostring(var.enable_cloudfront_staging),
+        "PYTHON_VERSION"            = var.runtime_versions.python,
+        "SCRIPT_DIR"                = var.script_dir,
+        "CLOUDFRONT_REGION"         = var.cloudfront_configuration.region,
         }
       },
     { buildspec = "./aws/buildspecs/${var.website_buildspecs}/release.yml" })
@@ -256,9 +258,12 @@ locals {
   }
 
   codebuild_cloudfront_rollback_project_env_variables = {
-    "CLOUDFRONT_REGION" = var.cloudfront_configuration.region,
-    "PYTHON_VERSION"    = var.runtime_versions.python,
-    "SCRIPT_DIR"        = var.script_dir,
+    "ROLLBACK"                  = "true",
+    "BUCKET_NAME"               = var.bucket_name,
+    "ENABLE_CLOUDFRONT_STAGING" = tostring(var.enable_cloudfront_staging),
+    "CLOUDFRONT_REGION"         = var.cloudfront_configuration.region,
+    "PYTHON_VERSION"            = var.runtime_versions.python,
+    "SCRIPT_DIR"                = var.script_dir,
   }
 
   common_sandbox_env_variables = {

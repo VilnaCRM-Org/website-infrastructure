@@ -29,6 +29,15 @@ phases:
       - 'make terraspace-up-plan stack="ci-cd-iam" plan="ci-cd-iam.plan"'
       - 'make terraspace-up-plan stack="website-iam" plan="website-iam.plan"'
       - 'make terraspace-up-plan stack="iam-groups" plan="iam-groups.plan"'
+      - |
+        # Read the just-applied output: an in-flight build retains its old env
+        # during the initial migration, even after its project is updated.
+        make terraspace-output-file stack="ci-cd-infrastructure" out=".ci-cd-infrastructure.env"
+        pipeline_name=$(sed -n 's/^website_infra_pipeline_name = "\([^"]*\)"$/\1/p' "${CODEBUILD_SRC_DIR}/terraform/.ci-cd-infrastructure.env")
+        test -n "$pipeline_name" || { echo "Missing website pipeline output" >&2; exit 1; }
+        aws codepipeline start-pipeline-execution \
+          --name "$pipeline_name" \
+          --source-revisions "actionName=Download-Source,revisionType=COMMIT_ID,revisionValue=${CODEBUILD_RESOLVED_SOURCE_VERSION:?Missing source revision}"
     finally:
       - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"
       - "printf 'up complete\n' > ${CODEBUILD_SRC_DIR}/codepipeline-artifacts/up.txt"

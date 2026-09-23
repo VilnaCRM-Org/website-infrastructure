@@ -48,7 +48,7 @@ ci_cd_website_stage_input = [
   { name = "healthcheck", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "HealthcheckOutput" },
   { name = "batch-lhci-leak", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "LHCILeakOutput" },
   { name = "batch-pw-load", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "PWLoadOutput" },
-  { name = "release", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput"], output_artifacts = "ReleaseOutput" },
+  { name = "release", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = ["SourceOutput", "DeployOutput"], output_artifacts = "ReleaseOutput" },
 ]
 
 sandbox_stage_input = [

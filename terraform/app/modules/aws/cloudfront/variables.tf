@@ -77,8 +77,7 @@ variable "cloudfront_configuration" {
 
 variable "cloudfront_routing_function_url" {
   type        = string
-  description = "CloudFront Routing Function URL"
-  default     = "https://raw.githubusercontent.com/VilnaCRM-Org/website/main/scripts/cloudfront_routing.js"
+  description = "Immutable URL of the website CloudFront routing function source"
 }
 
 variable "cloudfront_custom_error_responses" {

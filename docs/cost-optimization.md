@@ -16,11 +16,16 @@ were $32.03 for test and $89.35 for prod. No AWS configuration was applied.
   (default false). Both distributions returned NoSuchMonitoringSubscription;
   OriginLatency requires additional metrics. Keep CloudFront 5xx, WAF and
   availability-canary alarms.
-- Exclude changes confined to root README.md, diagrams/**and docs/** from
-  automatic infrastructure runs: CodePipeline V2 filters main-branch pushes and
-  the GitHub workflow filters non-main pushes. Mixed code/docs commits and manual
-  executions still run. This also avoids unnecessary downstream application
-  deployments.
+- Exclude changes confined to root README.md, diagrams/** and docs/** from
+  automatic main-branch CI/CD infrastructure CodePipeline V2 runs. The GitHub
+  TEST trigger remains unchanged: every non-main push, including docs-only
+  changes, still starts the test pipeline. Mixed code/docs main-branch pushes
+  and manual executions still run.
+- Preserve the deployment sequencing introduced in PR #124: website
+  infrastructure source detection stays disabled. After the CI/CD and IAM
+  saved-plan applies succeed, the build starts the website infrastructure
+  pipeline explicitly using CODEBUILD_RESOLVED_SOURCE_VERSION. Do not restore
+  its independent source trigger or substitute the current branch tip.
 
 Together with CRM: fourteen fewer anomaly alarms and four fewer latency alarms,
 approximately $4.60/month before free-tier and partial-month effects. Actual

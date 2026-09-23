@@ -7,6 +7,7 @@ phases:
       - '[ -n "${WEBSITE_URL:-}" ] || { echo "WEBSITE_URL must be set for the website healthcheck"; exit 1; }'
   build:
     commands:
+      - "python3 ${CODEBUILD_SRC_DIR}/aws/scripts/py/route_healthcheck.py --url https://${WEBSITE_URL} --staging"
       - "echo ## Test Website Connection..."
       - "python3 ${CODEBUILD_SRC_DIR}/aws/scripts/py/healthcheck.py --url https://www.${WEBSITE_URL} --expect-cn ${WEBSITE_URL} --expect-issuer-country US --expect-issuer-org Amazon --expect-issuer-cn-regex 'Amazon RSA 2048 M[0-9]+' --min-cert-days 30"
       - "python3 ${CODEBUILD_SRC_DIR}/aws/scripts/py/healthcheck.py --url https://${WEBSITE_URL} --expect-cn ${WEBSITE_URL} --expect-issuer-country US --expect-issuer-org Amazon --expect-issuer-cn-regex 'Amazon RSA 2048 M[0-9]+' --min-cert-days 30"

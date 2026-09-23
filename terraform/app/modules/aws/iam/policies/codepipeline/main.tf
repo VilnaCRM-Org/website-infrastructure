@@ -41,6 +41,13 @@ resource "aws_iam_policy" "general_policy" {
   description = "Policy to allow to use general features"
 
   tags = var.tags
+
+  lifecycle {
+    precondition {
+      condition     = length(jsonencode(jsondecode(data.aws_iam_policy_document.general_policy_doc.json))) <= 6144
+      error_message = "The general managed policy exceeds IAM's 6144-character limit. Split permissions before applying."
+    }
+  }
 }
 
 resource "aws_iam_policy" "codepipeline_policy" {
@@ -50,4 +57,11 @@ resource "aws_iam_policy" "codepipeline_policy" {
   description = "Policy to allow to use CodePipeline related resources"
 
   tags = var.tags
+
+  lifecycle {
+    precondition {
+      condition     = length(jsonencode(jsondecode(data.aws_iam_policy_document.codepipeline_policy_doc.json))) <= 6144
+      error_message = "The CodePipeline managed policy exceeds IAM's 6144-character limit. Split permissions before applying."
+    }
+  }
 }

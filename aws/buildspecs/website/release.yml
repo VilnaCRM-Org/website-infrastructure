@@ -5,7 +5,15 @@ phases:
     runtime-versions:
       python: $PYTHON_VERSION
     commands:
-      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/origin_change.py"
+      - |
+        if [ "${ROLLBACK:-false}" = "true" ]; then
+          python3 "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/origin_change.py"
+        else
+          python3 "${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/origin_change.py" \
+            --deployment-manifest "${CODEBUILD_SRC_DIR_DeployOutput:?Missing deployment artifact}/codepipeline-artifacts/deployment.json"
+        fi
+      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/cache_invalidation.py"
+      - "python3 ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}/py/route_healthcheck.py --url https://${BUCKET_NAME}"
   build:
     commands:
       - "mkdir -p ${CODEBUILD_SRC_DIR}/codepipeline-artifacts"

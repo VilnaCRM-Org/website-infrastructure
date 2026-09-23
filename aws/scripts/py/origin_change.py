@@ -15,6 +15,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from deploy_content import find_project_distributions
+
 
 class CloudFrontOriginSwapError(Exception):
     """CloudFront origin swap operation error"""
@@ -116,7 +118,10 @@ class CloudFrontOriginSwapper:
         """Fetch and filter distributions, excluding app distributions"""
         self.logger.info("Filtering distributions...")
 
-        distribution_ids = self._fetch_distribution_ids()
+        project = find_project_distributions(os.environ["BUCKET_NAME"])
+        if not project["production"] or not project["staging"]:
+            raise CloudFrontOriginSwapError("Both website distributions are required")
+        distribution_ids = [project["production"]["Id"], project["staging"]["Id"]]
         filtered_configs, filtered_ids = [], []
 
         for dist_id in distribution_ids:
@@ -189,7 +194,7 @@ class CloudFrontOriginSwapper:
         finally:
             Path(temp_path).unlink(missing_ok=True)
 
-    def execute_origin_swap(self) -> None:
+    def execute_origin_swap(self, deployment: dict | None = None) -> None:
         """Execute the complete origin swap process"""
         self.logger.info("Starting CloudFront origin swap...")
 
@@ -199,11 +204,51 @@ class CloudFrontOriginSwapper:
                 return
 
             distribution_ids, configs = self._filter_distributions()
-            updated_configs = self._swap_origins(configs)
+            if deployment is not None:
+                bucket = os.environ["BUCKET_NAME"]
+                target_bucket = deployment["target_bucket"]
+                if target_bucket not in {bucket, f"staging.{bucket}"}:
+                    raise CloudFrontOriginSwapError(
+                        "Deployment target is outside this website"
+                    )
+                desired = deployment["origins"]
+                if set(desired) != set(distribution_ids):
+                    raise CloudFrontOriginSwapError(
+                        "Deployment artifact refers to different distributions"
+                    )
+                if not any(
+                    origin["DomainName"].startswith(f"{target_bucket}.s3.")
+                    for origin in desired[distribution_ids[0]]["Items"]
+                ):
+                    raise CloudFrontOriginSwapError(
+                        "Deployment artifact has an inconsistent target"
+                    )
+                # Reconcile each side independently: a failed second update must
+                # not swap the first side back on retry.
+                for dist_id, config in zip(distribution_ids, configs):
+                    if config["DistributionConfig"]["Origins"] != desired[dist_id]:
+                        config["DistributionConfig"]["Origins"] = desired[dist_id]
+                        self._update_distribution(dist_id, config)
+            else:
+                # Explicit rollback jobs retain the existing swap operation.
+                updated_configs = self._swap_origins(configs)
+                self.logger.info("Updating distributions...")
+                for dist_id, config in zip(distribution_ids, updated_configs):
+                    self._update_distribution(dist_id, config)
 
-            self.logger.info("Updating distributions...")
-            for dist_id, config in zip(distribution_ids, updated_configs):
-                self._update_distribution(dist_id, config)
+            for dist_id in distribution_ids:
+                subprocess.check_call(
+                    [
+                        "aws",
+                        "cloudfront",
+                        "wait",
+                        "distribution-deployed",
+                        "--id",
+                        dist_id,
+                        "--region",
+                        self.region,
+                    ]
+                )
 
             self.logger.info("Origin swap completed successfully")
 
@@ -234,6 +279,9 @@ def main() -> None:
         default="INFO",
         help="Set logging level",
     )
+    parser.add_argument(
+        "--deployment-manifest", help="Artifact identifying the intended active bucket"
+    )
 
     args = parser.parse_args()
     setup_logging(args.log_level)
@@ -241,7 +289,12 @@ def main() -> None:
 
     try:
         swapper = CloudFrontOriginSwapper()
-        swapper.execute_origin_swap()
+        deployment = None
+        if args.deployment_manifest:
+            deployment = json.loads(
+                Path(args.deployment_manifest).read_text(encoding="utf-8")
+            )
+        swapper.execute_origin_swap(deployment)
     except CloudFrontOriginSwapError:
         logger.exception("CloudFront origin swap error")
         sys.exit(1)
