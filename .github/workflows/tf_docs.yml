@@ -4,11 +4,21 @@ on:
   pull_request:
     branches: ["main"]
 
+permissions:
+  contents: read
+
 jobs:
-  terraform-docs:
+  internal:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name &&
+      github.event.pull_request.user.login != 'dependabot[bot]' &&
+      github.actor != 'dependabot[bot]' &&
+      github.triggering_actor != 'dependabot[bot]'
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
@@ -19,3 +29,97 @@ jobs:
           output-file: README.md
           output-method: inject
           git-push: "true"
+
+  fork:
+    if: >-
+      github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code without push credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check generated Terraform documentation
+        uses: terraform-docs/gh-actions@v1.0.0
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          git-push: "false"
+          fail-on-diff: "true"
+
+      - name: Require committed documentation to be current
+        run: git diff --exit-code HEAD
+
+  dependabot:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name &&
+      (github.event.pull_request.user.login == 'dependabot[bot]' ||
+      github.actor == 'dependabot[bot]' ||
+      github.triggering_actor == 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code without push credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check generated Terraform documentation
+        uses: terraform-docs/gh-actions@v1.0.0
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          git-push: "false"
+          fail-on-diff: "true"
+
+      - name: Require committed documentation to be current
+        run: git diff --exit-code HEAD
+
+  # Keep the required check name; skipped/failed/cancelled work cannot pass.
+  terraform-docs:
+    if: ${{ always() }}
+    needs: [internal, fork, dependabot]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Require the applicable lane to succeed
+        env:
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.event.pull_request.base.repo.full_name }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          head, base = os.environ["HEAD_REPO"], os.environ["BASE_REPO"]
+          if not head or not base:
+              raise SystemExit("Missing PR repository identity")
+          bot = "dependabot[bot]" in [
+              os.environ["AUTHOR"],
+              os.environ["ACTOR"],
+              os.environ["TRIGGERING_ACTOR"],
+          ]
+          lane = "fork" if head != base else "dependabot" if bot else "internal"
+          results = {
+              key: value["result"]
+              for key, value in json.loads(os.environ["RESULTS"]).items()
+          }
+          expected = {
+              key: "success" if key == lane else "skipped"
+              for key in ("internal", "fork", "dependabot")
+          }
+          if results != expected:
+              raise SystemExit(f"Required {lane} lane did not succeed: {results}")
+          print(f"Required {lane} lane succeeded")
+          PY

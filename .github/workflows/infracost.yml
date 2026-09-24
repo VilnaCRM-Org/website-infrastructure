@@ -7,9 +7,17 @@ on:
 env:
   SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
+permissions:
+  contents: read
+
 jobs:
-  infracost:
-    name: run infracost
+  internal:
+    name: Estimate internal PR costs
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name &&
+      github.event.pull_request.user.login != 'dependabot[bot]' &&
+      github.actor != 'dependabot[bot]' &&
+      github.triggering_actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,22 +34,25 @@ jobs:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
       - name: Checkout base branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          ref: "${{ github.event.pull_request.base.ref }}"
+          ref: "${{ github.event.pull_request.base.sha }}"
+          persist-credentials: false
 
       - name: Generate Infracost cost estimate baseline
         run: |
-          infracost breakdown --path=${TF_ROOT} \
+          infracost breakdown --path="${TF_ROOT}" \
                               --format=json \
                               --out-file=/tmp/infracost-base.json
 
       - name: Checkout PR branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Generate Infracost diff
         run: |
-          infracost diff --path=${TF_ROOT} \
+          infracost diff --path="${TF_ROOT}" \
                           --format=json \
                           --compare-to=/tmp/infracost-base.json \
                           --out-file=/tmp/infracost.json
@@ -49,7 +60,166 @@ jobs:
       - name: Post Infracost comment
         run: |
           infracost comment github --path=/tmp/infracost.json \
-                                   --repo=$GITHUB_REPOSITORY \
+                                   --repo="$GITHUB_REPOSITORY" \
                                    --github-token=${{github.token}} \
                                    --pull-request=${{github.event.pull_request.number}} \
                                    --behavior=update
+
+  fork:
+    if: >-
+      github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout complete PR history without push credentials
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Exact allowlist: unknown inputs require a trusted cost estimate.
+      # --no-renames reports BOTH sides of a rename, including deletions.
+      - name: Verify only non-IaC paths changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          import subprocess
+
+          base, head = os.environ["BASE_SHA"], os.environ["HEAD_SHA"]
+          if not all(re.fullmatch(r"[0-9a-f]{40}", ref) for ref in (base, head)):
+              raise SystemExit("Missing or invalid PR commit identity")
+          merge_bases = subprocess.check_output(
+              ["git", "merge-base", "--all", base, head]
+          ).splitlines()
+          if len(merge_bases) != 1:
+              raise SystemExit("Cannot establish a unique PR merge base")
+          changed = subprocess.check_output([
+              "git", "diff", "--no-ext-diff", "--no-textconv", "--no-renames",
+              "--name-only", "-z", f"{base}...{head}", "--",
+          ]).split(b"\0")
+          allowed = {
+              b".github/workflows/super-linter.yml",
+              b".github/workflows/infracost.yml",
+              b".github/workflows/tf_docs.yml",
+              b"tests/test_fork_pr_ci_safety.py",
+              b"README.md",
+              b"CHANGELOG.md",
+              b".github/pull_request_template.md",
+          }
+          blocked = [path for path in changed if path and path not in allowed]
+          if blocked:
+              for path in blocked:
+                  print(f"Requires trusted cost estimation: {path!r}")
+              raise SystemExit(
+                  "No estimator key in this lane; IaC/unknown changes fail closed"
+              )
+          print("Verified non-IaC changes only; no cost estimate was generated")
+          PY
+
+  dependabot:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name &&
+      (github.event.pull_request.user.login == 'dependabot[bot]' ||
+      github.actor == 'dependabot[bot]' ||
+      github.triggering_actor == 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout complete PR history without push credentials
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Exact allowlist: unknown inputs require a trusted cost estimate.
+      # --no-renames reports BOTH sides of a rename, including deletions.
+      - name: Verify only non-IaC paths changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          import subprocess
+
+          base, head = os.environ["BASE_SHA"], os.environ["HEAD_SHA"]
+          if not all(re.fullmatch(r"[0-9a-f]{40}", ref) for ref in (base, head)):
+              raise SystemExit("Missing or invalid PR commit identity")
+          merge_bases = subprocess.check_output(
+              ["git", "merge-base", "--all", base, head]
+          ).splitlines()
+          if len(merge_bases) != 1:
+              raise SystemExit("Cannot establish a unique PR merge base")
+          changed = subprocess.check_output([
+              "git", "diff", "--no-ext-diff", "--no-textconv", "--no-renames",
+              "--name-only", "-z", f"{base}...{head}", "--",
+          ]).split(b"\0")
+          allowed = {
+              b".github/workflows/super-linter.yml",
+              b".github/workflows/infracost.yml",
+              b".github/workflows/tf_docs.yml",
+              b"tests/test_fork_pr_ci_safety.py",
+              b"README.md",
+              b"CHANGELOG.md",
+              b".github/pull_request_template.md",
+          }
+          blocked = [path for path in changed if path and path not in allowed]
+          if blocked:
+              for path in blocked:
+                  print(f"Requires trusted cost estimation: {path!r}")
+              raise SystemExit(
+                  "No estimator key in this lane; IaC/unknown changes fail closed"
+              )
+          print("Verified non-IaC changes only; no cost estimate was generated")
+          PY
+
+  # Keep the required check name; skipped/failed/cancelled work cannot pass.
+  infracost:
+    name: run infracost
+    if: ${{ always() }}
+    needs: [internal, fork, dependabot]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Require the applicable lane to succeed
+        env:
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.event.pull_request.base.repo.full_name }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          head, base = os.environ["HEAD_REPO"], os.environ["BASE_REPO"]
+          if not head or not base:
+              raise SystemExit("Missing PR repository identity")
+          bot = "dependabot[bot]" in [
+              os.environ["AUTHOR"],
+              os.environ["ACTOR"],
+              os.environ["TRIGGERING_ACTOR"],
+          ]
+          lane = "fork" if head != base else "dependabot" if bot else "internal"
+          results = {
+              key: value["result"]
+              for key, value in json.loads(os.environ["RESULTS"]).items()
+          }
+          expected = {
+              key: "success" if key == lane else "skipped"
+              for key in ("internal", "fork", "dependabot")
+          }
+          if results != expected:
+              raise SystemExit(f"Required {lane} lane did not succeed: {results}")
+          print(f"Required {lane} lane succeeded")
+          PY
