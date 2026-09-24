@@ -260,6 +260,23 @@ See [SECURITY](https://github.com/VilnaCRM-Org/infrastructure/tree/main/SECURITY
 
 Please submit bug reports, suggestions, and pull requests to the [GitHub issue tracker](https://github.com/VilnaCRM-Org/infrastructure/issues).
 
+### Terraform dependency updates
+
+The [Dependabot configuration](.github/dependabot.yml) proposes Terraform
+updates. Its pull requests, like fork pull requests, have no access to the
+Infracost key. Changes under `terraform/`, including
+`terraform/.terraform.lock.hcl`, therefore intentionally fail the
+`run infracost` cost gate. Do not add those paths to the non-IaC allowlist,
+grant Dependabot deployment secrets, or bypass the check to merge them.
+
+There is currently no trusted, non-deploying estimator for these changes.
+Keep such updates unmerged until one is reviewed and connected to the
+exact-head cost gate. Do not mirror a bot commit onto an organization branch
+as a workaround: a non-main branch push can start the TEST Terraspace
+deployment pipeline. A trusted estimator must verify the PR head and base,
+produce a complete cost/plan result without executing untrusted PR code with
+secrets, and let the normal required checks and reviews decide the merge.
+
 We're particularly interested in fixing edge cases, expanding test coverage, and updating translations.
 
 If you found a mistake in the docs, or want to add something, go ahead and amend the wiki – anyone can edit it.

@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import yaml
 
@@ -35,10 +36,20 @@ def selected(condition, context):
     return eval(expression, {"__builtins__": {}}, {})
 
 
+def isolated_env(extra=None):
+    """Keep offline Git fixtures independent of the invoking repository."""
+    env = {
+        key: value for key, value in os.environ.items() if not key.startswith("GIT_")
+    }
+    env.update(GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
+    env.update(extra or {})
+    return env
+
+
 def run_script(script, env, cwd=None):
     return subprocess.run(
         ["bash", "-e", "-c", script],
-        env={**os.environ, **env},
+        env=isolated_env(env),
         cwd=cwd,
         capture_output=True,
         text=True,
@@ -185,7 +196,11 @@ class GitDiffContracts(unittest.TestCase):
 
     def git(self, *args):
         return subprocess.check_output(
-            ["git", *args], cwd=self.repo, stderr=subprocess.PIPE, text=True
+            ["git", *args],
+            cwd=self.repo,
+            env=isolated_env(),
+            stderr=subprocess.PIPE,
+            text=True,
         ).strip()
 
     def write(self, path, content):
@@ -214,6 +229,23 @@ class GitDiffContracts(unittest.TestCase):
         self.write("README.md", "Updated documentation\n")
         self.check(self.commit(), True)
 
+    def test_git_subprocesses_ignore_inherited_repository_state(self):
+        poison = {
+            "GIT_DIR": str(self.repo / "not-this-repository.git"),
+            "GIT_INDEX_FILE": str(self.repo / "not-this-index"),
+            "GIT_CONFIG_GLOBAL": str(self.repo / "not-this-config"),
+        }
+        with patch.dict(os.environ, poison):
+            self.assertEqual(Path(self.git("rev-parse", "--show-toplevel")), self.repo)
+            result = run_script(
+                'test "$EXPLICIT_VALUE" = present && git rev-parse --show-toplevel',
+                {"EXPLICIT_VALUE": "present"},
+                cwd=self.repo,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(Path(result.stdout.strip()), self.repo)
+            self.assertEqual(isolated_env()["GIT_CONFIG_GLOBAL"], os.devnull)
+
     def test_docs_detect_staged_and_unstaged_changes(self):
         jobs = load_workflow("tf_docs.yml")["jobs"]
         for lane in ("fork", "dependabot"):
@@ -230,6 +262,7 @@ class GitDiffContracts(unittest.TestCase):
     def test_all_unknown_and_iac_inputs_fail(self):
         for path in (
             "terraform/main.tf",
+            "terraform/.terraform.lock.hcl",
             "terraform/plan.json",
             "terraform/config/app.rb",
             "terraform/Terrafile",
