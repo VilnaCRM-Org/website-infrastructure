@@ -96,4 +96,10 @@ module "ci_cd_pipeline_role" {
   website_repo = var.website_content_repo_name
   branch       = var.source_repo_branch
   pipeline_arn = module.ci_cd_website_codepipeline.arn
+
+  # The website deploy job declares `environment: production`, so GitHub mints
+  # this subject for it instead of a branch subject. Only this role accepts it.
+  environment_subjects = [
+    "repo:${var.source_repo_owner}/${var.website_content_repo_name}:environment:production"
+  ]
 }

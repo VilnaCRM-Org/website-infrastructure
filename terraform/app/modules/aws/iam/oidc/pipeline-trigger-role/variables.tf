@@ -32,3 +32,17 @@ variable "pipeline_arn" {
     error_message = "Pipeline ARN must be a valid AWS CodePipeline ARN."
   }
 }
+
+variable "environment_subjects" {
+  description = "Exact GitHub OIDC environment subjects this role alone may also be assumed under (e.g. 'repo:VilnaCRM-Org/website:environment:production'). Each one is rendered as its own StringEquals statement. Defaults to none, so callers that do not set it keep the branch and pull-request subjects only."
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for subject in var.environment_subjects :
+      can(regex("^repo:[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+:environment:[^*?]+$", subject))
+    ])
+    error_message = "Each environment subject must be an exact 'repo:<owner>/<repo>:environment:<name>' subject with no '*' or '?' wildcard."
+  }
+}
